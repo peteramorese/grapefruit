@@ -502,5 +502,5 @@ void ProductSystem<T>::print() const {
 }
 
 
-template class ProductSystem<State>;
-template class ProductSystem<BlockingState>;
+template class ProductSystem<State<StateSpace>>;
+template class ProductSystem<BlockingState<BlockingStateSpace>>;
