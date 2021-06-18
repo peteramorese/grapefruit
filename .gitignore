@@ -1,0 +1,4 @@
+# Ignore build directory
+build/
+include/copies/
+*.swp
