@@ -30,7 +30,7 @@ class TransitionSystem {
 		void setInitState(T* init_state_);
 		T* getState(int node_index);
 		void generate();
-		T compose(const T* mult_TS) const;
+		//T compose(const T* mult_TS) const;
 		virtual void print() const;
 };
 

@@ -16,12 +16,7 @@ TransitionSystem<T>::TransitionSystem (Edge* graph_TS_) : has_conditions(false),
 		std::cout<<"Error: Transition System must take in an ordered graph\n";
 	}
 	conditions.clear();
-	all_states.clear();
-	T::generateAllPossibleStates(all_states);
-	state_added.resize(all_states.size());
-	for (int i=0; i<state_added.size(); ++i) {
-		state_added[i] = false;
-	}
+	
 }
 
 template <class T>
@@ -40,6 +35,12 @@ template <class T>
 void TransitionSystem<T>::setInitState(T* init_state_) {
 	init_state = init_state_;
 	has_init_state = true;
+	all_states.clear();
+	init_state->generateAllPossibleStates(all_states);
+	state_added.resize(all_states.size());
+	for (int i=0; i<state_added.size(); ++i) {
+		state_added[i] = false;
+	}
 }
 
 template <class T>
@@ -107,10 +108,12 @@ void TransitionSystem<T>::generate() {
 	generated = true;
 }
 
+/*
 template <class T>
 T TransitionSystem<T>::compose() const {
 
 }
+*/
 
 template <class T>
 void TransitionSystem<T>::print() const {
