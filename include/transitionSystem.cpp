@@ -76,17 +76,22 @@ void TransitionSystem<T>::generate() {
 	   }
 	   */
 	T* init_state_in_set;
+	bool init_state_found = false;
 	for (int i=0; i<state_count; ++i) {
 		if (all_states[i] == init_state) {
 			init_state_in_set = &all_states[i];
 			state_added[i] = true;
+			init_state_found = true;
 		}	
+	}
+	if (!init_state_found) {
+		std::cout<<"Error: Init State not found in "<<all_states.size()<< " generated states\n";
 	}
 
 	state_map.clear();
 	state_map.push_back(init_state_in_set);
 	q_i = 0; // State index for current state
-	while (q_i<state_map.size()) {
+	while (q_i<state_map.size() && init_state_found) {
 		T* curr_state = state_map[q_i];
 		for (unsigned int i=0; i<state_count; ++i) {
 			T* new_state = &all_states[i];
@@ -330,7 +335,9 @@ void ProductSystem<T>::compose() {
 			while (currptr_TS!=nullptr){
 				TS_f = currptr_TS->nodeind;
 				auto currptr_DA = heads_DA[DA_i]->adjptr;	
+				std::cout<<"TS loop"<<std::endl;
 				while (currptr_DA!=nullptr){
+					std::cout<<"DA loop"<<std::endl;
 					DA_f = currptr_DA->nodeind;
 					//ind_from = Edge::augmentedStateFunc(i, j, n, m);
 					int add_state_ind = Edge::augmentedStateFunc(TS_f, DA_f, n, m);
@@ -343,7 +350,10 @@ void ProductSystem<T>::compose() {
 					// This determines the grounds for connection in the
 					// product graph
 					T* add_state = TransitionSystem<T>::state_map[to_state_ind];
+					std::cout<<"dfa obs: "<<currptr_DA->label<<std::endl;
+					add_state->print();
 					connecting = parseLabelAndEval(currptr_DA->label, add_state);
+					std::cout<<"connecting: "<<connecting<<std::endl;
 					if (connecting) {
 						// Use the edge labels in the TS because 
 						// those represent actions. Also use the 
@@ -500,7 +510,7 @@ void ProductSystem<T>::print() const {
 			}
 		}
 	} else {
-		std::cout<<"Warning: Transition has not been generated, or has failed to generate. Cannot print\n";
+		std::cout<<"Warning: Product System has not been generated, or has failed to generate. Cannot print\n";
 	}
 }
 

@@ -23,20 +23,21 @@ class StateSpace {
 		std::vector<domain> groups;
 		friend class State;
 	public:
-		//StateSpace();
+		StateSpace();
 		void resizeAll_(unsigned int size);
 		void resizeAll_();
 		//void initNewSS();
 		static const std::string UNDEF;
-		void setStateDimension_(const std::vector<std::string>& var_labels, unsigned int dim);
+		void setStateDimension(const std::vector<std::string>& var_labels, unsigned int dim);
 		void generateAllPossibleStates_(std::vector<State>& all_states) ;
+		unsigned int getDim() const;
 		int getVarOptionsCount_(unsigned int dim);
-		void setStateDimensionLabel_(unsigned int dim, const std::string& dimension_label);
-		void setDomain_(const std::string& domain_label, const std::vector<std::string>& vars);
-		void setDomain_(const std::string& domain_label, const std::vector<std::string>& vars, unsigned int index);
+		void setStateDimensionLabel(unsigned int dim, const std::string& dimension_label);
+		void setDomain(const std::string& domain_label, const std::vector<std::string>& vars);
+		void setDomain(const std::string& domain_label, const std::vector<std::string>& vars, unsigned int index);
 		bool getDomains_(const std::string& var, std::vector<std::string>& in_domains) const;
-		void setLabelGroup_(const std::string& group_label, const std::vector<std::string>& dimension_labels);
-		void setLabelGroup_(const std::string& group_label, const std::vector<std::string>& dimension_labels, unsigned int index);
+		void setLabelGroup(const std::string& group_label, const std::vector<std::string>& dimension_labels);
+		void setLabelGroup(const std::string& group_label, const std::vector<std::string>& dimension_labels, unsigned int index);
 		void getGroupDimLabels_(const std::string& group_label, std::vector<std::string>& group_dim_labels) const;
 		bool argFindGroup_(const std::string& var_find, const std::string& group_label, std::string& arg_dimension_label, const std::vector<int>& state_space); 
 		void setState_(const std::vector<std::string>& set_state, std::vector<int>& state_space);

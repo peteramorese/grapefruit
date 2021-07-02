@@ -18,15 +18,9 @@ bool StateSpace::is_dimensions_defined = false;
 */
 const std::string StateSpace::UNDEF = "UNDEF";
 
-/*
-StateSpace::State() {
-	// Set Static Variables (setStateDimension) before instantiating a State
-	initNewSS();
-	if (!is_dimensions_defined) {
-		std::cout<<"Error: Must define State Dimensions before instantiating a State\n";	
-	}
+StateSpace::StateSpace() {
+	state_space_dim = 0;
 }
-*/
 
 void StateSpace::resizeAll_(unsigned int size) {
 	state_space_named.resize(size);
@@ -48,7 +42,7 @@ void StateSpace::initNewSS() {
 */
 
 
-void StateSpace::setStateDimension_(const std::vector<std::string>& var_labels, unsigned int dim) {
+void StateSpace::setStateDimension(const std::vector<std::string>& var_labels, unsigned int dim) {
 	is_dimensions_defined = true;
 	if (dim+1 > state_space_dim) {
 		state_space_dim = dim + 1;
@@ -84,10 +78,16 @@ void StateSpace::generateAllPossibleStates_(std::vector<State>& all_states) {
 		for (int ii=0; ii<state_space_dim; ii++){
 			if (digits[ii] > column_wrapper[ii]-1) {
 				digits[ii] = 0;
-				digits[ii+1]++;
+				if (ii != state_space_dim-1) {
+					digits[ii+1]++;
+				}
 			}
 		}
 	}
+}
+
+unsigned int StateSpace::getDim() const {
+	return state_space_dim;
 }
 
 int StateSpace::getVarOptionsCount_(unsigned int dim) {
@@ -98,7 +98,7 @@ int StateSpace::getVarOptionsCount_(unsigned int dim) {
 	}
 }
 
-void StateSpace::setStateDimensionLabel_(unsigned int dim, const std::string& dimension_label){
+void StateSpace::setStateDimensionLabel(unsigned int dim, const std::string& dimension_label){
 	if (dim < state_space_dim) {
 		index_labels[dimension_label] = dim;
 	} else {
@@ -106,7 +106,7 @@ void StateSpace::setStateDimensionLabel_(unsigned int dim, const std::string& di
 	}
 }
 
-void StateSpace::setDomain_(const std::string& domain_label, const std::vector<std::string>& vars){
+void StateSpace::setDomain(const std::string& domain_label, const std::vector<std::string>& vars){
 	bool names_found = true;
 	for (int i=0; i<vars.size(); i++){
 		bool names_found_i = false;
@@ -136,7 +136,7 @@ void StateSpace::setDomain_(const std::string& domain_label, const std::vector<s
 	}
 }
 
-void StateSpace::setDomain_(const std::string& domain_label, const std::vector<std::string>& vars, unsigned int index){
+void StateSpace::setDomain(const std::string& domain_label, const std::vector<std::string>& vars, unsigned int index){
 	bool names_found = true;
 	for (int i=0; i<vars.size(); i++){
 		bool names_found_i = false;
@@ -183,7 +183,7 @@ bool StateSpace::getDomains_(const std::string& var, std::vector<std::string>& i
 	return found;
 }
 
-void StateSpace::setLabelGroup_(const std::string& group_label, const std::vector<std::string>& dimension_labels) {
+void StateSpace::setLabelGroup(const std::string& group_label, const std::vector<std::string>& dimension_labels) {
 	domain add_group;
 	add_group.label = group_label;
 	add_group.vars = dimension_labels;
@@ -191,7 +191,7 @@ void StateSpace::setLabelGroup_(const std::string& group_label, const std::vecto
 
 }
 
-void StateSpace::setLabelGroup_(const std::string& group_label, const std::vector<std::string>& dimension_labels, unsigned int index) {
+void StateSpace::setLabelGroup(const std::string& group_label, const std::vector<std::string>& dimension_labels, unsigned int index) {
 	if (index+1 > groups.size()) {
 		groups.resize(index+1);
 	}
@@ -262,12 +262,16 @@ void StateSpace::setState_(const std::string& set_state_var, unsigned int dim, s
 	if (dim+1 > state_space_dim) {
 		std::cout<<"Error: Dimension out of bounds\n";
 	} else {
-		for (int i=0; i<num_vars[i]; i++){
+		//std::cout<<"   DIM = "<<dim<<" num_vars[dim] = "<<num
+		for (int i=0; i<num_vars[dim]; i++){
 			if (state_space_named[dim][i] == set_state_var) {
 				name_found = true;
 				state_space[dim] = i;
 			}
 		}
+	}
+	if (!name_found) {
+		std::cout<<"Error: Unrecognized label in set stat\n";
 	}
 }
 
@@ -411,7 +415,6 @@ loopexit:
 }
 
 bool BlockingStateSpace::setState_(const std::vector<std::string>& set_state, std::vector<int>& state_space) {
-	std::cout<<" ******** hello there, i am settting a blocignig state"<<std::endl;
 	if (set_state.size() == state_space_dim){
 		bool conflict = false;
 		bool names_found = true;
@@ -460,7 +463,6 @@ blocking:
 }
 
 bool BlockingStateSpace::setState_(const std::string& set_state_var, unsigned int dim, std::vector<int>& state_space) {
-	std::cout<<" ******** hello there, i am settting a blocignig state"<<std::endl;
 	bool name_found = false;
 	if (dim+1 > state_space_dim) {
 		std::cout<<"Error: Dimension out of bounds\n";
@@ -469,7 +471,6 @@ bool BlockingStateSpace::setState_(const std::string& set_state_var, unsigned in
 		if (blocking_dims[dim]) {
 			for (int i=0; i<state_space_dim; i++) {
 				if (blocking_dims[i] && i!=dim) {
-					//std::cout<<"statevar: "<<state_space_named[i][state_space[i]]<<std::endl;
 					if (state_space_named[i][state_space[i]] == set_state_var) {
 						if (debug) {
 							std::cout<<"Warning: Cannot set Blocking State, duplication location: "<<set_state_var<<"\n";

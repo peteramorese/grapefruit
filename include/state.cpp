@@ -26,6 +26,7 @@ int State::ssAccess(int ind) const {
 */
 
 State::State(StateSpace* SS_) : SS(SS_) {
+	state_space.resize(SS->getDim());
 	// Set Static Variables (setStateDimension) before instantiating a State
 	//initNewSS();
 	/*
@@ -59,21 +60,12 @@ void State::initNewSS() {
 */
 
 
+/*
 void State::setStateDimension(const std::vector<std::string>& var_labels, unsigned int dim) {
 	SS->setStateDimension_(var_labels, dim);
-	/*
-	is_dimensions_defined = true;
-	if (dim+1 > state_space_dim) {
-		state_space_dim = dim + 1;
-		resizeAll();
-	}	
-	// The last label for each dimension is automatically set to be undefined
-	std::vector<std::string> set_labels = var_labels;
-	set_labels.push_back(UNDEF);
-	state_space_named[dim] = set_labels;
-	num_vars[dim] = set_labels.size();
-	*/
 }
+*/
+
 
 void State::generateAllPossibleStates(std::vector<State>& all_states) {
 	SS->generateAllPossibleStates_(all_states);
@@ -119,8 +111,10 @@ int State::getVarOptionsCount(unsigned int dim) {
 	*/
 }
 
+/*
 void State::setStateDimensionLabel(unsigned int dim, const std::string& dimension_label){
 	SS->setStateDimensionLabel_(dim, dimension_label);
+	*/
 	/*
 	if (dim < state_space_dim) {
 		index_labels[dimension_label] = dim;
@@ -128,10 +122,10 @@ void State::setStateDimensionLabel(unsigned int dim, const std::string& dimensio
 		std::cout<<"Error: Index out of bounds\n";
 	}
 	*/
-}
+//}
 
-void State::setDomain(const std::string& domain_label, const std::vector<std::string>& vars){
-	SS->setDomain_(domain_label, vars);
+//void State::setDomain(const std::string& domain_label, const std::vector<std::string>& vars){
+	//SS->setDomain_(domain_label, vars);
 	/*
 	bool names_found = true;
 	for (int i=0; i<vars.size(); i++){
@@ -161,10 +155,10 @@ void State::setDomain(const std::string& domain_label, const std::vector<std::st
 		std::cout<<"Error: At least one variable was not recognized in input vector. Make sure to call setStateDimension before setting domains\n";
 	}
 	*/
-}
+//}
 
-void State::setDomain(const std::string& domain_label, const std::vector<std::string>& vars, unsigned int index){
-	SS->setDomain_(domain_label, vars, index);
+//void State::setDomain(const std::string& domain_label, const std::vector<std::string>& vars, unsigned int index){
+	//SS->setDomain_(domain_label, vars, index);
 	/*
 	bool names_found = true;
 	for (int i=0; i<vars.size(); i++){
@@ -197,7 +191,7 @@ void State::setDomain(const std::string& domain_label, const std::vector<std::st
 		std::cout<<"Error: At least one variable was not recognized in input vector. Make sure to call setStateDimension before setting domains\n";
 	}
 	*/
-}
+//}
 
 bool State::getDomains(const std::string& var, std::vector<std::string>& in_domains) const {
 	return SS->getDomains_(var, in_domains);
@@ -216,8 +210,8 @@ bool State::getDomains(const std::string& var, std::vector<std::string>& in_doma
 	*/
 }
 
-void State::setLabelGroup(const std::string& group_label, const std::vector<std::string>& dimension_labels) {
-	SS->setLabelGroup_(group_label, dimension_labels);
+//void State::setLabelGroup(const std::string& group_label, const std::vector<std::string>& dimension_labels) {
+	//SS->setLabelGroup_(group_label, dimension_labels);
 	/*
 	domain add_group;
 	add_group.label = group_label;
@@ -225,10 +219,10 @@ void State::setLabelGroup(const std::string& group_label, const std::vector<std:
 	groups.push_back(add_group);
 	*/
 
-}
+//}
 
-void State::setLabelGroup(const std::string& group_label, const std::vector<std::string>& dimension_labels, unsigned int index) {
-	SS->setLabelGroup_(group_label, dimension_labels, index);
+//void State::setLabelGroup(const std::string& group_label, const std::vector<std::string>& dimension_labels, unsigned int index) {
+	//SS->setLabelGroup_(group_label, dimension_labels, index);
 	/*
 	if (index+1 > groups.size()) {
 		groups.resize(index+1);
@@ -238,7 +232,7 @@ void State::setLabelGroup(const std::string& group_label, const std::vector<std:
 	add_group.vars = dimension_labels;
 	groups[index] = add_group;
 	*/
-}
+//}
 
 void State::getGroupDimLabels(const std::string& group_label, std::vector<std::string>& group_dim_labels) const {
 	SS->getGroupDimLabels_(group_label, group_dim_labels);
@@ -279,7 +273,11 @@ bool State::argFindGroup(const std::string& var_find, const std::string& group_l
 }
 
 void State::setState(const std::vector<std::string>& set_state) {
-	SS->setState_(set_state, state_space);
+	if (state_space.size() == SS->getDim()) {
+		SS->setState_(set_state, state_space);
+	} else {
+		std::cout<<"Error: Dimension mismatch when trying to set state\n";
+	}
 	/*
 	if (set_state.size() == state_space_dim){
 		bool names_found = true;
@@ -306,7 +304,11 @@ void State::setState(const std::vector<std::string>& set_state) {
 }
 
 void State::setState(const std::string& set_state_var, unsigned int dim) {
-	SS->setState_(set_state_var, dim, state_space);
+	if (state_space.size() == SS->getDim()) {
+		SS->setState_(set_state_var, dim, state_space);
+	} else {
+		std::cout<<"Error: Dimension mismatch when trying to set state\n";
+	}
 	/*
 	bool name_found = false;
 	if (dim+1 > state_space_dim) {
@@ -359,6 +361,7 @@ bool State::isDefined() const {
 }
 
 void State::print() const {
+	std::cout<<"made it halfway: "<<SS->getDim()<<std::endl;
 	SS->print_(state_space);
 	/*
 	for (int i=0; i<state_space_dim; i++){
@@ -401,10 +404,12 @@ bool State::operator== (const State* state_ptr_) const {
 
 void State::operator= (const State& state_eq) {
 	state_space = state_eq.state_space;
+	SS = state_eq.SS;
 }
 
 void State::operator= (const State* state_eq_ptr) {
 	state_space = state_eq_ptr->state_space;
+	SS = state_eq_ptr->SS;
 }
 
 /* BlockingState DEFINTION */
@@ -549,7 +554,6 @@ bool BlockingState::setState(const std::string& set_state_var, unsigned int dim)
 		if (blocking_dims[dim]) {
 			for (int i=0; i<state_space_dim; i++) {
 				if (blocking_dims[i] && i!=dim) {
-					//std::cout<<"statevar: "<<state_space_named[i][state_space[i]]<<std::endl;
 					if (state_space_named[i][state_space[i]] == set_state_var) {
 						if (debug) {
 							std::cout<<"Warning: Cannot set Blocking State, duplication location: "<<set_state_var<<"\n";
