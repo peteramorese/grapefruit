@@ -23,12 +23,19 @@ void Astar::setVInit(unsigned int vinit_){
 	}
 }
 
-void Astar::setVGoal(unsigned int vgoal_){
-	if (vgoal_>Nv-1){
-		std::cout<<"Error: vgoal index is larger than any node index"<<std::endl;
-	} else {
-		vgoal = vgoal_;	
+void Astar::setVGoalSet(const std::vector<int>& vgoal_set_){
+	bool in_bounds = true;
+	for (int i=0; i<vgoal_set_.size(); i++) {
+		if (vgoal_set_[i]>Nv-1){
+			in_bounds = false;
+			break;
+		} 
+	}	
+	if (in_bounds) {
+		vgoal_set = vgoal_set_;	
 		initialized[2] = true;
+	} else {
+		std::cout<<"Error: vgoal index is larger than any node index"<<std::endl;
 	}
 }
 
@@ -41,7 +48,10 @@ struct Astar::listO{
 bool Astar::searchDijkstra(std::vector<int>& path, float& pathlength){
 	bool init = true;
 	bool path_found = false;
-	if (!path.empty()){
+	int vgoal;
+	std::vector<int> reverse_path;
+	reverse_path.clear();
+	if (!reverse_path.empty()){
 		init = false;
 	} else if (!(initialized[0] && initialized[1] && initialized[2])){
 		init = false;	
@@ -74,7 +84,17 @@ bool Astar::searchDijkstra(std::vector<int>& path, float& pathlength){
 				}
 			}
 			C.push_back(O[minI]);
-			if (nbest==vgoal){
+
+			// Search through the goal set to check if nbest is included
+			bool goal_found = false;
+			for (int i=0; i<vgoal_set.size(); i++){
+				if (nbest == vgoal_set[i]) {
+					vgoal = vgoal_set[i];
+					goal_found = true;
+					break;
+				}
+			}
+			if (goal_found) {
 				break;
 			}
 			O[minI] = O[O.size()-1];
@@ -124,11 +144,9 @@ bool Astar::searchDijkstra(std::vector<int>& path, float& pathlength){
 				reached_goal = true;
 			}
 		}
-
-
 		if (reached_goal){
 			int currnode = vgoal;
-			path.push_back(vgoal);
+			reverse_path.push_back(vgoal);
 			while (currnode!=vinit){
 				for (int i=0; i<C.size(); i++){
 					if (C[i].node==currnode){
@@ -136,10 +154,17 @@ bool Astar::searchDijkstra(std::vector<int>& path, float& pathlength){
 							pathlength = C[i].g;
 						}
 						currnode = C[i].parent;
-						path.push_back(currnode);
+						reverse_path.push_back(currnode);
 					}	
 				}
 			}	
+			path.resize(reverse_path.size());
+			std::cout<<"REVERSE PATH SIZE: "<<reverse_path.size()<<std::endl;
+			for (int i=0; i<reverse_path.size(); ++i) {
+				path[i] = reverse_path[reverse_path.size()-1-i];
+			}
+			std::cout<<"PATH SIZE: "<<path.size()<<std::endl;
+			
 			path_found = true;
 		} else {
 			std::cout<<"Could not find path"<<std::endl;
@@ -149,3 +174,7 @@ bool Astar::searchDijkstra(std::vector<int>& path, float& pathlength){
 	}
 	return path_found;
 }
+
+
+
+

@@ -255,6 +255,16 @@ bool ProductSystem<T>::parseLabelAndEval(const std::string& label, const T* stat
 				arg_conj = sub_eval;
 				arg = arg && sub_eval;
 				break;
+			case '|':
+				sub_eval = propositions[temp_name]->evaluate(state);	
+				if (negate_next) {
+					sub_eval = !sub_eval;
+				}
+				temp_name.clear();
+				negate_next = false;
+				arg_conj = sub_eval;
+				arg = arg || sub_eval;
+				break;
 			case ' ':
 				break;
 			default:
@@ -335,9 +345,7 @@ void ProductSystem<T>::compose() {
 			while (currptr_TS!=nullptr){
 				TS_f = currptr_TS->nodeind;
 				auto currptr_DA = heads_DA[DA_i]->adjptr;	
-				std::cout<<"TS loop"<<std::endl;
 				while (currptr_DA!=nullptr){
-					std::cout<<"DA loop"<<std::endl;
 					DA_f = currptr_DA->nodeind;
 					//ind_from = Edge::augmentedStateFunc(i, j, n, m);
 					int add_state_ind = Edge::augmentedStateFunc(TS_f, DA_f, n, m);
@@ -350,10 +358,7 @@ void ProductSystem<T>::compose() {
 					// This determines the grounds for connection in the
 					// product graph
 					T* add_state = TransitionSystem<T>::state_map[to_state_ind];
-					std::cout<<"dfa obs: "<<currptr_DA->label<<std::endl;
-					add_state->print();
 					connecting = parseLabelAndEval(currptr_DA->label, add_state);
-					std::cout<<"connecting: "<<connecting<<std::endl;
 					if (connecting) {
 						// Use the edge labels in the TS because 
 						// those represent actions. Also use the 
@@ -419,19 +424,25 @@ bool ProductSystem<T>::plan(std::vector<int>& plan) {
 	planner.setGraph(graph_product);
 	// The init state is 0 by construction
 	planner.setVInit(0);
+	std::vector<int> goal_set;
+	goal_set.clear();
 	for (int i=0; i<is_accepting.size(); ++i) {
 		if (is_accepting[i]) {
 			std::cout<<"Info: Planning with goal state index: "<<i<<"\n";
-			planner.setVGoal(i);
+			goal_set.push_back(i);
 		}
 	}
-	std::vector<int> reverse_plan;
+	planner.setVGoalSet(goal_set);
+	//std::vector<int> reverse_plan;
 	float pathlength;
-	plan_found = planner.searchDijkstra(reverse_plan, pathlength);
+	plan_found = planner.searchDijkstra(plan, pathlength);
+	std::cout<<"HELLO: "<<plan.size()<<std::endl;
+	/*
 	plan.resize(reverse_plan.size());
 	for (int i=0; i<reverse_plan.size(); ++i) {
 		plan[i] = reverse_plan[reverse_plan.size()-1-i];
 	}
+	*/
 	stored_plan = plan;
 	return plan_found;
 }
@@ -442,19 +453,25 @@ bool ProductSystem<T>::plan() {
 	planner.setGraph(graph_product);
 	// The init state is 0 by construction
 	planner.setVInit(0);
+	std::vector<int> goal_set;
+	goal_set.clear();
 	for (int i=0; i<is_accepting.size(); ++i) {
 		if (is_accepting[i]) {
 			std::cout<<"Info: Planning with goal state index: "<<i<<"\n";
-			planner.setVGoal(i);
+			goal_set.push_back(i);
 		}
 	}
-	std::vector<int> reverse_plan;
+	planner.setVGoalSet(goal_set);
+	//std::vector<int> reverse_plan;
 	float pathlength;
-	plan_found = planner.searchDijkstra(reverse_plan, pathlength);
+	plan_found = planner.searchDijkstra(stored_plan, pathlength);
+	std::cout<<"HELLO: "<<stored_plan.size()<<std::endl;
+	/*
 	stored_plan.resize(reverse_plan.size());
 	for (int i=0; i<reverse_plan.size(); ++i) {
 		stored_plan[i] = reverse_plan[reverse_plan.size()-1-i];
 	}
+	*/
 	return plan_found;
 }
 
@@ -481,6 +498,14 @@ void ProductSystem<T>::getPlan(std::vector<T*>& state_sequence, std::vector<std:
 	} else {
 		std::cout<<"Error: Plan was not found, cannot return plan\n";
 	}
+}
+
+template <class T>
+void ProductSystem<T>::updateEdgeWeight(unsigned int action_ind, float weight) {
+	int ind_from, ind_to;
+	ind_from = stored_plan[action_ind];
+	ind_to = stored_plan[action_ind + 1];
+	graph_product->updateWeight(ind_from, ind_to, weight);
 }
 
 template <class T>

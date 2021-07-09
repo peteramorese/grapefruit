@@ -66,6 +66,7 @@ class ProductSystem : public TransitionSystem<T> {
 		bool plan(std::vector<int>& plan);
 		bool plan();
 		void getPlan(std::vector<T*>& state_sequence, std::vector<std::string>& action_sequence);
+		void updateEdgeWeight(unsigned int action_ind, float weight);
 		void print() const;
 };
 

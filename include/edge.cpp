@@ -225,6 +225,30 @@ void Edge::print() const {
 
 }
 
+void Edge::updateWeight(unsigned int ind_from, unsigned int ind_to, float weight_) {
+	if (ind_from < heads.size()) {
+		auto currptr = heads[ind_from]->adjptr;
+		//std::cout<<"Node: "<<currptr->nodeind<<" "<<currptr<<" connects to:\n";
+		bool found = false;
+		while (currptr!=nullptr) {
+			if (currptr->nodeind == ind_to) {
+				found = true;
+				currptr->weight = weight_;
+				break; 
+				// REMOVE THIS BREAK STATEMENT TO UPDATE ALL
+				// EDGES THAT CONNECT TWO STATES. THIS WILL 
+				// DECREASE THE EFFICIENCY
+			}
+			currptr = currptr->adjptr;
+		}
+		if (!found) {
+			std::cout<<"Error: Update ind_to not found within list\n";
+		}
+	} else {
+		std::cout<<"Error: Update ind_from out of bounds\n";
+	}
+}
+
 int Edge::augmentedStateFunc(int i, int j, int n, int m) {
 	int ret_int;
 	ret_int = m*i+j;

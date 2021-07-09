@@ -361,7 +361,6 @@ bool State::isDefined() const {
 }
 
 void State::print() const {
-	std::cout<<"made it halfway: "<<SS->getDim()<<std::endl;
 	SS->print_(state_space);
 	/*
 	for (int i=0; i<state_space_dim; i++){
