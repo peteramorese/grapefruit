@@ -44,6 +44,7 @@ void Edge::append(unsigned int nodeind_, float weight_, std::string label_) {
 		newNode->weight = 0; 
 		newNode->label = "none"; 
 		head = newNode;
+		//std::cout<<" IND CHECKOUT: "<<ind_checkout<<" IND: "<<ind<<std::endl;
 		heads[ind_checkout] = head;
 		prev = newNode;
 		prevs[ind_checkout] = prev;
@@ -64,6 +65,7 @@ void Edge::append(unsigned int nodeind_, float weight_, std::string label_) {
 
 void Edge::checkout(int ind_checkout_) {
 	if (ind_checkout_<=heads.size()){
+		/*
 		if (isEmpty()) {
 			//std::cout<<"im checking out empty"<<std::endl;
 			ind_checkout = ind_checkout_;
@@ -71,20 +73,22 @@ void Edge::checkout(int ind_checkout_) {
 			head = heads[ind_checkout];
 			prev = prevs[ind_checkout];	
 			checking = true;
+			std::cout<<"If you see this, there is an error in 'checkout'"<<std::endl;
 		} else {
-			if (heads[ind_checkout] == head) {
-				//heads[ind_checkout] = head;
-				//prevs[ind_checkout] = prev; 
-				// reset the pointer keeping track of last node in list using the current checkout
-				ind_checkout = ind_checkout_;
-				head = heads[ind_checkout];
-				prev = prevs[ind_checkout];	
-				checking = true;
-			} else {
-				std::cout<<"Error: Heads are mismatched"<<std::endl;
-			}
-
+		*/
+		if (heads[ind_checkout] == head) {
+			//heads[ind_checkout] = head;
+			//prevs[ind_checkout] = prev; 
+			// reset the pointer keeping track of last node in list using the current checkout
+			ind_checkout = ind_checkout_;
+			head = heads[ind_checkout];
+			prev = prevs[ind_checkout];	
+			checking = true;
+		} else {
+			std::cout<<"Error: Heads are mismatched"<<std::endl;
 		}
+
+		//}
 	} else {
 		std::cout << "Index out of bounds for number of lists\n";
 	}
@@ -108,10 +112,10 @@ void Edge::newlist(){
 		prevs.push_back(prev);
 		ind = heads.size()-1;
 		ind_checkout = ind;
+		head = nullptr;
+		prev = nullptr;
+		append(ind, 0, "none");
 	}
-	head = nullptr;
-	prev = nullptr;
-	append(ind, 0, "none");
 } 
 
 
@@ -140,8 +144,14 @@ void Edge::connect(unsigned int ind_from, unsigned int ind_to, float weight_, st
 	while (ind_to > ind){
 		newlist();
 	}
+	/*
+	for (int i=0; i<heads.size(); i++) {
+		std::cout<<"  head "<<i<<": "<<heads[i]<<std::endl;
+	}
+	*/
 
 	checkout(ind_from);
+	//std::cout<<"checking out: "<<ind_from<<" with prev ptr: "<<prev<<" head ptr: "<<head<<std::endl;
 	/*
 	if (isEmpty()){
 		append(ind_from, 0, "none");
@@ -203,7 +213,7 @@ void Edge::returnListWeights(unsigned int ind_, std::vector<float>& weights_list
 void Edge::print() const {
 	for (int i=0; i<heads.size(); i++) {
 		auto currptr = heads[i];
-		std::cout<<"Node: "<<currptr->nodeind<<" connects to:\n";
+		std::cout<<"Node: "<<currptr->nodeind<<" "<<currptr<<" connects to:\n";
 		currptr = currptr->adjptr;
 		while (currptr!=nullptr) {
 			auto nextptr = currptr->adjptr;
@@ -213,6 +223,30 @@ void Edge::print() const {
 		}
 	}
 
+}
+
+void Edge::updateWeight(unsigned int ind_from, unsigned int ind_to, float weight_) {
+	if (ind_from < heads.size()) {
+		auto currptr = heads[ind_from]->adjptr;
+		//std::cout<<"Node: "<<currptr->nodeind<<" "<<currptr<<" connects to:\n";
+		bool found = false;
+		while (currptr!=nullptr) {
+			if (currptr->nodeind == ind_to) {
+				found = true;
+				currptr->weight = weight_;
+				break; 
+				// REMOVE THIS BREAK STATEMENT TO UPDATE ALL
+				// EDGES THAT CONNECT TWO STATES. THIS WILL 
+				// DECREASE THE EFFICIENCY
+			}
+			currptr = currptr->adjptr;
+		}
+		if (!found) {
+			std::cout<<"Error: Update ind_to not found within list\n";
+		}
+	} else {
+		std::cout<<"Error: Update ind_from out of bounds\n";
+	}
 }
 
 int Edge::augmentedStateFunc(int i, int j, int n, int m) {

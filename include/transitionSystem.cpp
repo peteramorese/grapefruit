@@ -16,12 +16,7 @@ TransitionSystem<T>::TransitionSystem (Edge* graph_TS_) : has_conditions(false),
 		std::cout<<"Error: Transition System must take in an ordered graph\n";
 	}
 	conditions.clear();
-	all_states.clear();
-	T::generateAllPossibleStates(all_states);
-	state_added.resize(all_states.size());
-	for (int i=0; i<state_added.size(); ++i) {
-		state_added[i] = false;
-	}
+	
 }
 
 template <class T>
@@ -40,6 +35,12 @@ template <class T>
 void TransitionSystem<T>::setInitState(T* init_state_) {
 	init_state = init_state_;
 	has_init_state = true;
+	all_states.clear();
+	init_state->generateAllPossibleStates(all_states);
+	state_added.resize(all_states.size());
+	for (int i=0; i<state_added.size(); ++i) {
+		state_added[i] = false;
+	}
 }
 
 template <class T>
@@ -75,17 +76,22 @@ void TransitionSystem<T>::generate() {
 	   }
 	   */
 	T* init_state_in_set;
+	bool init_state_found = false;
 	for (int i=0; i<state_count; ++i) {
 		if (all_states[i] == init_state) {
 			init_state_in_set = &all_states[i];
 			state_added[i] = true;
+			init_state_found = true;
 		}	
+	}
+	if (!init_state_found) {
+		std::cout<<"Error: Init State not found in "<<all_states.size()<< " generated states\n";
 	}
 
 	state_map.clear();
 	state_map.push_back(init_state_in_set);
 	q_i = 0; // State index for current state
-	while (q_i<state_map.size()) {
+	while (q_i<state_map.size() && init_state_found) {
 		T* curr_state = state_map[q_i];
 		for (unsigned int i=0; i<state_count; ++i) {
 			T* new_state = &all_states[i];
@@ -107,10 +113,12 @@ void TransitionSystem<T>::generate() {
 	generated = true;
 }
 
+/*
 template <class T>
 T TransitionSystem<T>::compose() const {
 
 }
+*/
 
 template <class T>
 void TransitionSystem<T>::print() const {
@@ -246,6 +254,16 @@ bool ProductSystem<T>::parseLabelAndEval(const std::string& label, const T* stat
 				negate_next = false;
 				arg_conj = sub_eval;
 				arg = arg && sub_eval;
+				break;
+			case '|':
+				sub_eval = propositions[temp_name]->evaluate(state);	
+				if (negate_next) {
+					sub_eval = !sub_eval;
+				}
+				temp_name.clear();
+				negate_next = false;
+				arg_conj = sub_eval;
+				arg = arg || sub_eval;
 				break;
 			case ' ':
 				break;
@@ -406,19 +424,25 @@ bool ProductSystem<T>::plan(std::vector<int>& plan) {
 	planner.setGraph(graph_product);
 	// The init state is 0 by construction
 	planner.setVInit(0);
+	std::vector<int> goal_set;
+	goal_set.clear();
 	for (int i=0; i<is_accepting.size(); ++i) {
 		if (is_accepting[i]) {
 			std::cout<<"Info: Planning with goal state index: "<<i<<"\n";
-			planner.setVGoal(i);
+			goal_set.push_back(i);
 		}
 	}
-	std::vector<int> reverse_plan;
+	planner.setVGoalSet(goal_set);
+	//std::vector<int> reverse_plan;
 	float pathlength;
-	plan_found = planner.searchDijkstra(reverse_plan, pathlength);
+	plan_found = planner.searchDijkstra(plan, pathlength);
+	std::cout<<"HELLO: "<<plan.size()<<std::endl;
+	/*
 	plan.resize(reverse_plan.size());
 	for (int i=0; i<reverse_plan.size(); ++i) {
 		plan[i] = reverse_plan[reverse_plan.size()-1-i];
 	}
+	*/
 	stored_plan = plan;
 	return plan_found;
 }
@@ -429,19 +453,25 @@ bool ProductSystem<T>::plan() {
 	planner.setGraph(graph_product);
 	// The init state is 0 by construction
 	planner.setVInit(0);
+	std::vector<int> goal_set;
+	goal_set.clear();
 	for (int i=0; i<is_accepting.size(); ++i) {
 		if (is_accepting[i]) {
 			std::cout<<"Info: Planning with goal state index: "<<i<<"\n";
-			planner.setVGoal(i);
+			goal_set.push_back(i);
 		}
 	}
-	std::vector<int> reverse_plan;
+	planner.setVGoalSet(goal_set);
+	//std::vector<int> reverse_plan;
 	float pathlength;
-	plan_found = planner.searchDijkstra(reverse_plan, pathlength);
+	plan_found = planner.searchDijkstra(stored_plan, pathlength);
+	std::cout<<"HELLO: "<<stored_plan.size()<<std::endl;
+	/*
 	stored_plan.resize(reverse_plan.size());
 	for (int i=0; i<reverse_plan.size(); ++i) {
 		stored_plan[i] = reverse_plan[reverse_plan.size()-1-i];
 	}
+	*/
 	return plan_found;
 }
 
@@ -471,6 +501,14 @@ void ProductSystem<T>::getPlan(std::vector<T*>& state_sequence, std::vector<std:
 }
 
 template <class T>
+void ProductSystem<T>::updateEdgeWeight(unsigned int action_ind, float weight) {
+	int ind_from, ind_to;
+	ind_from = stored_plan[action_ind];
+	ind_to = stored_plan[action_ind + 1];
+	graph_product->updateWeight(ind_from, ind_to, weight);
+}
+
+template <class T>
 void ProductSystem<T>::print() const {
 	if (prod_state_map.size() > 1) {
 		for (int i=0; i<prod_state_map.size(); ++i) {
@@ -497,10 +535,10 @@ void ProductSystem<T>::print() const {
 			}
 		}
 	} else {
-		std::cout<<"Warning: Transition has not been generated, or has failed to generate. Cannot print\n";
+		std::cout<<"Warning: Product System has not been generated, or has failed to generate. Cannot print\n";
 	}
 }
 
 
-template class ProductSystem<State<StateSpace>>;
-template class ProductSystem<BlockingState<BlockingStateSpace>>;
+template class ProductSystem<State>;
+template class ProductSystem<BlockingState>;

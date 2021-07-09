@@ -11,6 +11,7 @@ link_directories(${PROJECT_NAME} PUBLIC include)
 target_link_libraries(${PROJECT_NAME} 
 	EdgeClass 
 	AstarClass 
+	StateSpaceClass 
 	StateClass 
 	ConditionClass
         TransitionSystemClass

@@ -3,6 +3,7 @@
 #include<iostream>
 #include<unordered_map>
 #include "stateSpace.h"
+#include "state.h"
 
 
 /* StateSpace DEFINITION */
@@ -13,29 +14,24 @@ std::vector<int> StateSpace::num_vars;
 unsigned int StateSpace::state_space_dim;
 std::vector<StateSpace::domain> StateSpace::domains;
 std::vector<StateSpace::domain> StateSpace::groups;
-const std::string StateSpace::UNDEF = "UNDEF";
 bool StateSpace::is_dimensions_defined = false;
 */
+const std::string StateSpace::UNDEF = "UNDEF";
 
-/*
-StateSpace::State() {
-	//initNewSS();
+StateSpace::StateSpace() {
+	state_space_dim = 0;
 }
-*/
 
-void StateSpace::resizeAll(unsigned int size) {
+void StateSpace::resizeAll_(unsigned int size) {
 	state_space_named.resize(size);
 	num_vars.resize(size);
 }
 
-void StateSpace::resizeAll() {
+void StateSpace::resizeAll_() {
 	state_space_named.resize(state_space_dim);
 	num_vars.resize(state_space_dim);
 }
 
-unsigned int StateSpace::getStateSpaceDim(){
-	return state_space_dim;
-}
 /*
 void StateSpace::initNewSS() {
 	state_space.resize(state_space_dim);
@@ -47,10 +43,10 @@ void StateSpace::initNewSS() {
 
 
 void StateSpace::setStateDimension(const std::vector<std::string>& var_labels, unsigned int dim) {
-	//is_dimensions_defined = true;
+	is_dimensions_defined = true;
 	if (dim+1 > state_space_dim) {
 		state_space_dim = dim + 1;
-		resizeAll();
+		resizeAll_();
 	}	
 	// The last label for each dimension is automatically set to be undefined
 	std::vector<std::string> set_labels = var_labels;
@@ -59,7 +55,7 @@ void StateSpace::setStateDimension(const std::vector<std::string>& var_labels, u
 	num_vars[dim] = set_labels.size();
 }
 
-void StateSpace::generateAllPossibleStates(std::vector<State<StateSpace>>& all_states) {
+void StateSpace::generateAllPossibleStates_(std::vector<State>& all_states) {
 	int counter = 1;
 	// Count the number of possible states using a permutation. Omit the last element in each
 	// state_space_named array because it represents UNDEF
@@ -71,7 +67,7 @@ void StateSpace::generateAllPossibleStates(std::vector<State<StateSpace>>& all_s
 		column_wrapper[i] = inds;
 		digits[i] = 0;
 	}
-	all_states.resize(counter);
+	all_states.resize(counter, State(this));
 	int a = 0;
 	int b = 0;
 	for (int i=0; i<counter; i++) {
@@ -82,13 +78,19 @@ void StateSpace::generateAllPossibleStates(std::vector<State<StateSpace>>& all_s
 		for (int ii=0; ii<state_space_dim; ii++){
 			if (digits[ii] > column_wrapper[ii]-1) {
 				digits[ii] = 0;
-				digits[ii+1]++;
+				if (ii != state_space_dim-1) {
+					digits[ii+1]++;
+				}
 			}
 		}
 	}
 }
 
-int StateSpace::getVarOptionsCount(unsigned int dim) {
+unsigned int StateSpace::getDim() const {
+	return state_space_dim;
+}
+
+int StateSpace::getVarOptionsCount_(unsigned int dim) {
 	if (dim < state_space_dim){
 		return state_space_named[dim].size();
 	} else {
@@ -102,11 +104,6 @@ void StateSpace::setStateDimensionLabel(unsigned int dim, const std::string& dim
 	} else {
 		std::cout<<"Error: Index out of bounds\n";
 	}
-}
-
-unsigned int StateSpace::getStateDimensionLabel(const std::string& dimension_label) {
-	unsigned int ret_ind = index_labels[dimension_label];
-	return ret_ind;
 }
 
 void StateSpace::setDomain(const std::string& domain_label, const std::vector<std::string>& vars){
@@ -172,7 +169,7 @@ void StateSpace::setDomain(const std::string& domain_label, const std::vector<st
 	}
 }
 
-bool StateSpace::getDomains(const std::string& var, std::vector<std::string>& in_domains) {
+bool StateSpace::getDomains_(const std::string& var, std::vector<std::string>& in_domains) const {
 	in_domains.clear();
 	bool found = false;
 	for (int i=0; i<domains.size(); i++){
@@ -204,7 +201,7 @@ void StateSpace::setLabelGroup(const std::string& group_label, const std::vector
 	groups[index] = add_group;
 }
 
-void StateSpace::getGroupDimLabels(const std::string& group_label, std::vector<std::string>& group_dim_labels) const {
+void StateSpace::getGroupDimLabels_(const std::string& group_label, std::vector<std::string>& group_dim_labels) const {
 	for (int i=0; i<groups.size(); ++i) {
 		if (groups[i].label == group_label) {
 			group_dim_labels = groups[i].vars;
@@ -213,7 +210,7 @@ void StateSpace::getGroupDimLabels(const std::string& group_label, std::vector<s
 	}
 }
 
-bool StateSpace::argFindGroupSS(const std::string& var_find, const std::string& group_label, std::string& arg_dimension_label, const std::vector<int>& state_space) {
+bool StateSpace::argFindGroup_(const std::string& var_find, const std::string& group_label, std::string& arg_dimension_label, const std::vector<int>& state_space) {
 	bool is_found = false;
 	arg_dimension_label = "NOT FOUND";
 	for (int i=0; i<groups.size(); i++) {
@@ -236,55 +233,7 @@ bool StateSpace::argFindGroupSS(const std::string& var_find, const std::string& 
 	return is_found;
 }
 
-bool StateSpace::findVar(const std::vector<std::string>& var_find_vec, std::vector<int>& var_inds) const {
-	bool names_found = false;
-	if (var_find_vec.size() == state_space_dim){
-		names_found = true;
-		for (int i=0; i<state_space_dim; i++){
-			bool names_found_i = false;
-			for (int ii=0; ii<num_vars[i]; ii++){
-				if (state_space_named[i][ii] == var_find_vec[i]){
-					names_found_i = true;
-					var_inds[i] = ii;
-				}
-			}
-			if (!names_found_i) {
-				names_found = false;
-			}
-
-		}	
-		if (!names_found) {
-			std::cout<<"Error: Unrecognized label in set state\n";
-		}
-	} else {
-		std::cout<<"Error: Set state must have same dimension as state space\n";
-	}
-	return names_found;
-
-}
-
-bool StateSpace::findVar(const std::string& var_find, unsigned int dim, int& var_ind) const {
-	bool name_found = false;
-	if (dim+1 > state_space_dim) {
-		std::cout<<"Error: Dimension out of bounds\n";
-	} else {
-		for (int i=0; i<num_vars[i]; i++){
-			if (state_space_named[dim][i] == var_find) {
-				name_found = true;
-				var_ind = i;
-				break;
-			}
-		}
-	}
-	return name_found;
-}
-
-void StateSpace::indexGetVar(unsigned int dim, unsigned int var_ind, std::string& ret_var) const {
-	ret_var = state_space_named[dim][var_ind];
-}
-
-/*
-void StateSpace::setState(const std::vector<std::string>& set_state) {
+void StateSpace::setState_(const std::vector<std::string>& set_state, std::vector<int>& state_space) {
 	if (set_state.size() == state_space_dim){
 		bool names_found = true;
 		for (int i=0; i<state_space_dim; i++){
@@ -308,21 +257,25 @@ void StateSpace::setState(const std::vector<std::string>& set_state) {
 	}
 }
 
-void StateSpace::setState(const std::string& set_state_var, unsigned int dim) {
+void StateSpace::setState_(const std::string& set_state_var, unsigned int dim, std::vector<int>& state_space) {
 	bool name_found = false;
 	if (dim+1 > state_space_dim) {
 		std::cout<<"Error: Dimension out of bounds\n";
 	} else {
-		for (int i=0; i<num_vars[i]; i++){
+		//std::cout<<"   DIM = "<<dim<<" num_vars[dim] = "<<num
+		for (int i=0; i<num_vars[dim]; i++){
 			if (state_space_named[dim][i] == set_state_var) {
 				name_found = true;
 				state_space[dim] = i;
 			}
 		}
 	}
+	if (!name_found) {
+		std::cout<<"Error: Unrecognized label in set stat\n";
+	}
 }
 
-void StateSpace::getState(std::vector<std::string>& ret_state) const {
+void StateSpace::getState_(std::vector<std::string>& ret_state, const std::vector<int>& state_space) const {
 	ret_state.clear();
 	ret_state.resize(state_space_dim);
 	for (int i=0; i<state_space_dim; i++){
@@ -330,13 +283,13 @@ void StateSpace::getState(std::vector<std::string>& ret_state) const {
 	}
 }
 
-std::string StateSpace::getVar(const std::string& dimension_label) const {
+std::string StateSpace::getVar_(const std::string& dimension_label, const std::vector<int>& state_space) {
 	unsigned int ind = index_labels[dimension_label];
 	int named_ind = state_space[ind];
        	return state_space_named[ind][named_ind];
 }
 
-bool StateSpace::isDefined() const {
+bool StateSpace::isDefined_(const std::vector<int>& state_space) const {
 	bool ret_bool = true;
 	for (int i=0; i<state_space_dim; i++){
 		// If the state space index is the last value for the dimension, it was
@@ -348,13 +301,13 @@ bool StateSpace::isDefined() const {
 	return ret_bool;
 }
 
-void StateSpace::print() const {
+void StateSpace::print_(const std::vector<int>& state_space) const {
 	for (int i=0; i<state_space_dim; i++){
 		std::cout<<"State variable "<< i << " = " << state_space_named[i][state_space[i]]<< "\n";
 	}
 }
 
-bool StateSpace::exclEquals(const State* state_ptr_, const std::vector<std::string>& excl_dimension_labels) const {
+bool StateSpace::exclEquals_(const State* state_ptr_, const std::vector<std::string>& excl_dimension_labels, const std::vector<int>& state_space) {
 	bool ret_bool = true;
 	std::vector<bool> check(state_space_dim);
 	for (int i=0; i<state_space_dim; i++) {
@@ -375,6 +328,7 @@ bool StateSpace::exclEquals(const State* state_ptr_, const std::vector<std::stri
 	return ret_bool;
 }
 
+/*
 bool StateSpace::operator== (const State& state_) const {
 	return (state_space == state_.state_space);
 }
@@ -392,22 +346,20 @@ void StateSpace::operator= (const State* state_eq_ptr) {
 }
 */
 
-/* BlockingStateSpace DEFINTION */
+/* BlockingState DEFINTION */
 
-/*
-std::vector<bool> BlockingStateSpace::blocking_dims;
-bool BlockingStateSpace::debug = false;
-*/
+//std::vector<bool> BlockingStateSpace::blocking_dims;
+//bool BlockingStateSpace::debug = false;
 
-void BlockingStateSpace::toggleDebug(bool debug_) {
+void BlockingStateSpace::toggleDebug_(bool debug_) {
 	debug = debug_;
 }
 
-void BlockingStateSpace::setBlockingDim(const std::vector<bool>& blocking_dims_) {
+void BlockingStateSpace::setBlockingDim_(const std::vector<bool>& blocking_dims_) {
 	blocking_dims = blocking_dims_;
 }
 
-void BlockingStateSpace::setBlockingDim(bool blocking, unsigned int dim) {
+void BlockingStateSpace::setBlockingDim_(bool blocking, unsigned int dim) {
 	if (dim < state_space_dim){
 		blocking_dims[dim] = blocking;
 	} else {
@@ -415,11 +367,7 @@ void BlockingStateSpace::setBlockingDim(bool blocking, unsigned int dim) {
 	}
 }
 
-bool BlockingStateSpace::isBlocking(unsigned int dim) const {
-	return blocking_dims[dim];
-}
-
-void BlockingStateSpace::generateAllPossibleStates(std::vector<BlockingState<BlockingStateSpace>>& all_states) {
+void BlockingStateSpace::generateAllPossibleStates_(std::vector<BlockingState>& all_states) {
 	int counter = 1;
 	// Count the number of possible states using a permutation. Omit the last element in each
 	// state_space_named array because it represents UNDEF
@@ -431,7 +379,7 @@ void BlockingStateSpace::generateAllPossibleStates(std::vector<BlockingState<Blo
 		column_wrapper[i] = inds;
 		digits[i] = 0;
 	}
-	all_states.resize(counter);
+	all_states.resize(counter, BlockingState(this));
 	int i = 0;
 	int j = 0;
 	while (i<counter) {
@@ -462,11 +410,11 @@ void BlockingStateSpace::generateAllPossibleStates(std::vector<BlockingState<Blo
 		}
 	}
 loopexit:
-	all_states.resize(j);
+	all_states.resize(j, BlockingState(this));
 	std::cout<<"Info: Generated "<<j<<" blocking states out of "<<counter<<" possible states\n";
 }
-/*
-bool BlockingStateSpace::setState(const std::vector<std::string>& set_state) {
+
+bool BlockingStateSpace::setState_(const std::vector<std::string>& set_state, std::vector<int>& state_space) {
 	if (set_state.size() == state_space_dim){
 		bool conflict = false;
 		bool names_found = true;
@@ -514,7 +462,7 @@ blocking:
 	}
 }
 
-bool BlockingStateSpace::setState(const std::string& set_state_var, unsigned int dim) {
+bool BlockingStateSpace::setState_(const std::string& set_state_var, unsigned int dim, std::vector<int>& state_space) {
 	bool name_found = false;
 	if (dim+1 > state_space_dim) {
 		std::cout<<"Error: Dimension out of bounds\n";
@@ -523,7 +471,6 @@ bool BlockingStateSpace::setState(const std::string& set_state_var, unsigned int
 		if (blocking_dims[dim]) {
 			for (int i=0; i<state_space_dim; i++) {
 				if (blocking_dims[i] && i!=dim) {
-					//std::cout<<"statevar: "<<state_space_named[i][state_space[i]]<<std::endl;
 					if (state_space_named[i][state_space[i]] == set_state_var) {
 						if (debug) {
 							std::cout<<"Warning: Cannot set Blocking State, duplication location: "<<set_state_var<<"\n";
@@ -554,7 +501,4 @@ blocking:
 
 	}
 }
-*/
-
-
 
