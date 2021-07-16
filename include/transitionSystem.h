@@ -31,7 +31,8 @@ class TransitionSystem {
 		T* getState(int node_index);
 		void generate();
 		//T compose(const T* mult_TS) const;
-		virtual void print() const;
+		void clearTS();
+		void printTS() const;
 };
 
 template <class T>
@@ -67,6 +68,7 @@ class ProductSystem : public TransitionSystem<T> {
 		bool plan();
 		void getPlan(std::vector<T*>& state_sequence, std::vector<std::string>& action_sequence);
 		void updateEdgeWeight(unsigned int action_ind, float weight);
-		void print() const;
+		void clearPS();
+		void printPS() const;
 };
 

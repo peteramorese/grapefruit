@@ -37,6 +37,7 @@ class Edge {
 		static int augmentedStateFunc(int i, int j, int n, int m);
 		void compose(const Edge &mult_graph, Edge& product_graph);
 		static void augmentedStateMap(unsigned int ind_product, int n, int m, std::pair<unsigned int, unsigned int>& ret_indices);
+		void clear();
 		~Edge(); 
 
 };

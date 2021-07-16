@@ -306,6 +306,27 @@ void Edge::augmentedStateMap(unsigned int ind_product, int n, int m, std::pair<u
 	ret_indices.second = j;
 }
 
+void Edge::clear() {
+	std::cout<< "Clearing " << heads.size() << " lists...\n";
+
+	for (int i=0; i<heads.size(); i++) {
+		auto currptr = heads[i];
+		while (currptr!=nullptr) {
+			auto nextptr = currptr->adjptr;
+			//std::cout<<"PTR DELETE: "<<currptr<<std::endl;
+			delete currptr;
+			currptr = nextptr;
+		}
+	}
+	prevs.clear();
+	heads.clear();
+	head = nullptr;
+	prev = nullptr;
+	ind = 0;
+	ind_checkout = 0;
+	checking = false;
+}
+
 Edge::~Edge() {
 	std::cout<< "Deconstructing " << heads.size() << " lists...\n";
 

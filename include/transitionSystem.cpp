@@ -113,15 +113,15 @@ void TransitionSystem<T>::generate() {
 	generated = true;
 }
 
-/*
 template <class T>
-T TransitionSystem<T>::compose() const {
-
+void TransitionSystem<T>::clearTS() {
+	graph_TS->clear();
+	state_map.clear();	
+	generated = false;
 }
-*/
 
 template <class T>
-void TransitionSystem<T>::print() const {
+void TransitionSystem<T>::printTS() const {
 	if (state_map.size() > 1) {
 	for (int i=0; i<state_map.size(); ++i) {
 		T* curr_state = state_map[i];
@@ -222,6 +222,7 @@ void ProductSystem<T>::addAutomatonAcceptingStateIndex(int accepting_DA_state_) 
 	if (accepting_DA_state_ > graph_DA->returnListCount()-1) {
 		std::cout<<"Error: Accepting state must appear in automaton";	
 	} else {
+		std::cout<<"is_DA_accepting size:"<<is_DA_accepting.size()<<std::endl;
 		is_DA_accepting[accepting_DA_state_] = true;
 	}
 }
@@ -234,10 +235,11 @@ bool ProductSystem<T>::parseLabelAndEval(const std::string& label, const T* stat
 	// propositions. All other logical capability should be deferred to the 
 	// SimpleCondition definition
 	bool arg = true;
-	bool arg_conj;
+	//bool arg_conj;
 	//std::vector<bool> propositions;
 	int prop_i = -1;
 	std::string temp_name;
+	char prev_operator;
 	for (int i=0; i<label.size(); ++i) {
 		char character = label[i];
 		bool sub_eval;
@@ -252,17 +254,25 @@ bool ProductSystem<T>::parseLabelAndEval(const std::string& label, const T* stat
 				}
 				temp_name.clear();
 				negate_next = false;
-				arg_conj = sub_eval;
+				prev_operator = '&';
 				arg = arg && sub_eval;
 				break;
 			case '|':
 				sub_eval = propositions[temp_name]->evaluate(state);	
+
+				/*
+				std::cout<<"sub evaling: "<<temp_name<<" on state:" <<std::endl;
+				state->print();
+				std::cout<<"with result: "<<sub_eval<<std::endl;
+				*/
+
 				if (negate_next) {
 					sub_eval = !sub_eval;
 				}
+				//std::cout<<"with final result: "<<sub_eval<<std::endl;
 				temp_name.clear();
 				negate_next = false;
-				arg_conj = sub_eval;
+				prev_operator = '|';
 				arg = arg || sub_eval;
 				break;
 			case ' ':
@@ -271,17 +281,39 @@ bool ProductSystem<T>::parseLabelAndEval(const std::string& label, const T* stat
 				temp_name.push_back(character);
 				if (i == label.size()-1) {
 					sub_eval = propositions[temp_name]->evaluate(state);	
+					/*
+					std::cout<<"sub evaling: "<<temp_name<<" on state:" <<std::endl;
+					state->print();
+					std::cout<<"with result: "<<sub_eval<<std::endl;
+					*/
+
 					if (negate_next) {
 						sub_eval = !sub_eval;
 					}
-					arg_conj = sub_eval;
-					arg = arg && sub_eval;
+					switch (prev_operator) {
+						//case '&':	
+						case '|':	
+							arg = arg || sub_eval;
+							break;
+						default:
+							// Defaults to conjunction because
+							// arg is initialized to 'true'
+							arg = arg && sub_eval;
+					}
 				}
 		}
+		/*
 		if (!arg) {
 			break;
 		}
+		*/
 	}
+	/*
+	std::cout<<"\nPrinting state:"<<std::endl;
+	state->print();
+	std::cout<<"label: " <<label<<std::endl;
+	std::cout<<"--evaluated to: "<<arg<<std::endl;
+	*/
 	return arg;
 	
 }
@@ -432,6 +464,7 @@ bool ProductSystem<T>::plan(std::vector<int>& plan) {
 			goal_set.push_back(i);
 		}
 	}
+	if (goal_set.size() >= 1) {
 	planner.setVGoalSet(goal_set);
 	//std::vector<int> reverse_plan;
 	float pathlength;
@@ -445,6 +478,10 @@ bool ProductSystem<T>::plan(std::vector<int>& plan) {
 	*/
 	stored_plan = plan;
 	return plan_found;
+	} else {
+		std::cout<<"Warning: No goal states were found, cannot plan\n";
+		return false;
+	}
 }
 
 template <class T>
@@ -461,18 +498,23 @@ bool ProductSystem<T>::plan() {
 			goal_set.push_back(i);
 		}
 	}
-	planner.setVGoalSet(goal_set);
-	//std::vector<int> reverse_plan;
-	float pathlength;
-	plan_found = planner.searchDijkstra(stored_plan, pathlength);
-	std::cout<<"HELLO: "<<stored_plan.size()<<std::endl;
-	/*
-	stored_plan.resize(reverse_plan.size());
-	for (int i=0; i<reverse_plan.size(); ++i) {
-		stored_plan[i] = reverse_plan[reverse_plan.size()-1-i];
+	if (goal_set.size() >= 1) {
+		planner.setVGoalSet(goal_set);
+		//std::vector<int> reverse_plan;
+		float pathlength;
+		plan_found = planner.searchDijkstra(stored_plan, pathlength);
+		std::cout<<"HELLO: "<<stored_plan.size()<<std::endl;
+		/*
+		   stored_plan.resize(reverse_plan.size());
+		   for (int i=0; i<reverse_plan.size(); ++i) {
+		   stored_plan[i] = reverse_plan[reverse_plan.size()-1-i];
+		   }
+		   */
+		return plan_found;
+	} else {
+		std::cout<<"Warning: No goal states were found, cannot plan\n";
+		return false;
 	}
-	*/
-	return plan_found;
 }
 
 template <class T>
@@ -509,7 +551,15 @@ void ProductSystem<T>::updateEdgeWeight(unsigned int action_ind, float weight) {
 }
 
 template <class T>
-void ProductSystem<T>::print() const {
+void ProductSystem<T>::clearPS() {
+	// UNFINISHED
+	graph_product->clear();
+	prod_state_map.clear();
+}
+
+
+template <class T>
+void ProductSystem<T>::printPS() const {
 	if (prod_state_map.size() > 1) {
 		for (int i=0; i<prod_state_map.size(); ++i) {
 			T* curr_state = prod_state_map[i];
