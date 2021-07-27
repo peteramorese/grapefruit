@@ -543,6 +543,14 @@ void ProductSystem<T>::getPlan(std::vector<T*>& state_sequence, std::vector<std:
 }
 
 template <class T>
+float ProductSystem<T>::getEdgeWeight(unsigned int action_ind) const {
+	int ind_from, ind_to;
+	ind_from = stored_plan[action_ind];
+	ind_to = stored_plan[action_ind + 1];
+	return graph_product->getWeight(ind_from, ind_to);
+}
+
+template <class T>
 void ProductSystem<T>::updateEdgeWeight(unsigned int action_ind, float weight) {
 	int ind_from, ind_to;
 	ind_from = stored_plan[action_ind];

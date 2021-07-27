@@ -33,6 +33,7 @@ class Edge {
 		void returnListWeights(unsigned int ind_, std::vector<float>& weights_list) const;
 		void connect(unsigned int ind_from, unsigned int ind_to, float weight_, std::string label_);
 		void print() const;
+		float getWeight(unsigned int ind_from, unsigned int ind_to) const;
 		void updateWeight(unsigned int ind_from, unsigned int ind_to, float weight_);
 		static int augmentedStateFunc(int i, int j, int n, int m);
 		void compose(const Edge &mult_graph, Edge& product_graph);
