@@ -231,10 +231,8 @@ void ProductSystem<T>::addAutomatonAcceptingStateIndex(int accepting_DA_state_) 
 template <class T>
 bool ProductSystem<T>::parseLabelAndEval(const std::string& label, const T* state) {
 	bool negate_next = false;
-	// This member currently only supports the conjunction of individual atomic
-	// propositions. All other logical capability should be deferred to the 
-	// SimpleCondition definition
-	bool arg = true;
+	bool is_first = true;
+	bool arg;
 	//bool arg_conj;
 	//std::vector<bool> propositions;
 	int prop_i = -1;
@@ -255,25 +253,28 @@ bool ProductSystem<T>::parseLabelAndEval(const std::string& label, const T* stat
 				temp_name.clear();
 				negate_next = false;
 				prev_operator = '&';
-				arg = arg && sub_eval;
+				if (is_first) {
+					arg = sub_eval;
+					is_first = false;
+				} else {
+					arg = arg && sub_eval;
+				}
 				break;
 			case '|':
 				sub_eval = propositions[temp_name]->evaluate(state);	
-
-				/*
-				std::cout<<"sub evaling: "<<temp_name<<" on state:" <<std::endl;
-				state->print();
-				std::cout<<"with result: "<<sub_eval<<std::endl;
-				*/
-
+				
 				if (negate_next) {
 					sub_eval = !sub_eval;
 				}
-				//std::cout<<"with final result: "<<sub_eval<<std::endl;
 				temp_name.clear();
 				negate_next = false;
 				prev_operator = '|';
-				arg = arg || sub_eval;
+				if (is_first) {
+					arg = sub_eval;
+					is_first = false;
+				} else {
+					arg = arg || sub_eval;
+				}
 				break;
 			case ' ':
 				break;
@@ -281,12 +282,6 @@ bool ProductSystem<T>::parseLabelAndEval(const std::string& label, const T* stat
 				temp_name.push_back(character);
 				if (i == label.size()-1) {
 					sub_eval = propositions[temp_name]->evaluate(state);	
-					/*
-					std::cout<<"sub evaling: "<<temp_name<<" on state:" <<std::endl;
-					state->print();
-					std::cout<<"with result: "<<sub_eval<<std::endl;
-					*/
-
 					if (negate_next) {
 						sub_eval = !sub_eval;
 					}
@@ -298,7 +293,12 @@ bool ProductSystem<T>::parseLabelAndEval(const std::string& label, const T* stat
 						default:
 							// Defaults to conjunction because
 							// arg is initialized to 'true'
-							arg = arg && sub_eval;
+							if (is_first) {
+								arg = sub_eval;
+								is_first = false;
+							} else {
+								arg = arg && sub_eval;
+							}
 					}
 				}
 		}
@@ -308,12 +308,6 @@ bool ProductSystem<T>::parseLabelAndEval(const std::string& label, const T* stat
 		}
 		*/
 	}
-	/*
-	std::cout<<"\nPrinting state:"<<std::endl;
-	state->print();
-	std::cout<<"label: " <<label<<std::endl;
-	std::cout<<"--evaluated to: "<<arg<<std::endl;
-	*/
 	return arg;
 	
 }
@@ -390,6 +384,7 @@ void ProductSystem<T>::compose() {
 					// This determines the grounds for connection in the
 					// product graph
 					T* add_state = TransitionSystem<T>::state_map[to_state_ind];
+					
 					connecting = parseLabelAndEval(currptr_DA->label, add_state);
 					if (connecting) {
 						// Use the edge labels in the TS because 
