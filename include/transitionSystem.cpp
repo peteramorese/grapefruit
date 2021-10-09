@@ -168,8 +168,8 @@ ProductSystem<T>::ProductSystem(Edge* graph_TS_, Edge* graph_DA_, Edge* graph_pr
 		} else {
 			std::cout<<"Error: Product System must take in an ordered graph (DA)\n";
 		}
-		is_DA_accepting.resize(graph_DA->returnListCount());
-		for (int i=0; i<graph_DA->returnListCount(); ++i) {
+		is_DA_accepting.resize(graph_DA->size());
+		for (int i=0; i<graph_DA->size(); ++i) {
 			is_DA_accepting[i] = false;	
 		}
 	}
@@ -204,7 +204,7 @@ template <class T>
 void ProductSystem<T>::setAutomatonAcceptingStateIndices(const std::vector<int>& accepting_DA_states_) {
 	bool in_bounds = true;
 	for (int i=0; i<accepting_DA_states_.size(); ++i) {
-		if (accepting_DA_states_[i] > graph_DA->returnListCount()-1) {
+		if (accepting_DA_states_[i] > graph_DA->size()-1) {
 			std::cout<<"Error: All accepting state indices have to appear in automaton";	
 			in_bounds = false;
 		}
@@ -219,7 +219,7 @@ void ProductSystem<T>::setAutomatonAcceptingStateIndices(const std::vector<int>&
 
 template <class T>
 void ProductSystem<T>::addAutomatonAcceptingStateIndex(int accepting_DA_state_) {
-	if (accepting_DA_state_ > graph_DA->returnListCount()-1) {
+	if (accepting_DA_state_ > graph_DA->size()-1) {
 		std::cout<<"Error: Accepting state must appear in automaton";	
 	} else {
 		std::cout<<"is_DA_accepting size:"<<is_DA_accepting.size()<<std::endl;
@@ -343,13 +343,13 @@ void ProductSystem<T>::safeAddProdState(T* add_state, int add_state_ind, float w
 template <class T> 
 void ProductSystem<T>::compose() {
 	if (automaton_init && TransitionSystem<T>::generated) {
-		int possible_states = graph_DA->returnListCount() * TransitionSystem<T>::graph_TS->returnListCount();
+		int possible_states = graph_DA->size() * TransitionSystem<T>::graph_TS->size();
 		prod_state_added.resize(possible_states);
 		for (int i=0; i<prod_state_added.size(); i++) {
 			prod_state_added[i] = false;	
 		}
-		int n = TransitionSystem<T>::graph_TS->returnListCount();
-		int m = graph_DA->returnListCount();
+		int n = TransitionSystem<T>::graph_TS->size();
+		int m = graph_DA->size();
 		std::cout<<"n = "<<n<<std::endl;
 		std::cout<<"m = "<<m<<std::endl;
 		auto heads_TS = TransitionSystem<T>::graph_TS->getHeads();
@@ -412,8 +412,8 @@ template <class T>
 void ProductSystem<T>::print() const {
 	if (TransitionSystem<T>::state_map.size() > 1) {
 		std::pair<unsigned int, unsigned int> temp_TS_DA_indices;
-		for (int i=0; i<graph_product->returnListCount(); ++i) {
-			Edge::augmentedStateMap(i, TransitionSystem<T>::graph_TS->returnListCount(), graph_DA->returnListCount(), temp_TS_DA_indices);
+		for (int i=0; i<graph_product->size(); ++i) {
+			Edge::augmentedStateMap(i, TransitionSystem<T>::graph_TS->size(), graph_DA->size(), temp_TS_DA_indices);
 			T* curr_state = TransitionSystem<T>::state_map[temp_TS_DA_indices.first];
 			std::vector<int> list_nodes; 
 			std::vector<std::string> list_actions; 
@@ -428,7 +428,7 @@ void ProductSystem<T>::print() const {
 				}
 				std::cout<<"connects to:\n";
 				for (int ii=0; ii<list_nodes.size(); ++ii) {
-					Edge::augmentedStateMap(list_nodes[ii], TransitionSystem<T>::graph_TS->returnListCount(), graph_DA->returnListCount(), temp_TS_DA_indices);
+					Edge::augmentedStateMap(list_nodes[ii], TransitionSystem<T>::graph_TS->size(), graph_DA->size(), temp_TS_DA_indices);
 					T* con_state = TransitionSystem<T>::state_map[temp_TS_DA_indices.first];
 					std::cout<<"   ~>Product State "<<list_nodes[ii]<<" with state: ";
 					con_state->getState(state_i);

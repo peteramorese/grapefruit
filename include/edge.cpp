@@ -119,7 +119,7 @@ void Edge::newlist(){
 } 
 
 
-int Edge::returnListCount() const {
+int Edge::size() const {
 	if (ind+1 == heads.size()){
 		return ind+1;
 	} else if (heads.size() == 0) {
