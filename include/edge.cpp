@@ -136,12 +136,15 @@ const std::vector<Edge::edgelist*> Edge::getHeads() const {
 
 }
 
-void Edge::connect(unsigned int ind_from, unsigned int ind_to, float weight_, std::string label_){
+bool Edge::connect(unsigned int ind_from, unsigned int ind_to, float weight_, std::string label_){
 	// Add lists until ind_from and ind_to are included in the graph
 	while (ind_from > ind){
 		newlist();	
 	}
 	while (ind_to > ind){
+		newlist();
+	}
+	if (heads.size() == 0) {
 		newlist();
 	}
 	/*
@@ -167,6 +170,7 @@ void Edge::connect(unsigned int ind_from, unsigned int ind_to, float weight_, st
 		*/
 		append(ind_from, weight_, label_);
 	}
+	return true;
 }
 
 void Edge::returnListNodes(unsigned int ind_, std::vector<int>& node_list) const {
@@ -250,6 +254,7 @@ float Edge::getWeight(unsigned int ind_from, unsigned int ind_to) const {
 		}
 	} else {
 		std::cout<<"Error: Update ind_from out of bounds\n";
+		return 0;
 	}
 }
 
@@ -284,12 +289,13 @@ int Edge::augmentedStateFunc(int i, int j, int n, int m) {
 		return ret_int;
 	} else {
 		std::cout<<"Error: augmentedStateFunc mapping out of bounds\n";
+		return -1;
 	}
 }
 
 void Edge::compose(const Edge &mult_graph, Edge& product_graph){
 	int n = heads.size();
-	int m = mult_graph.returnListCount();
+	int m = mult_graph.size();
 	auto mult_heads = mult_graph.getHeads();
 	int ind_from, ind_to;
 	for (int i = 0; i<n; i++){

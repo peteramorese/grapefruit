@@ -31,8 +31,8 @@ class Edge {
 		void returnListNodes(unsigned int ind_, std::vector<int>& node_list) const;
 		void returnListLabels(unsigned int ind_, std::vector<std::string>& label_list) const;
 		void returnListWeights(unsigned int ind_, std::vector<float>& weights_list) const;
-		virtual void connect(unsigned int ind_from, unsigned int ind_to, float weight_, std::string label_);
-		void print() const;
+		virtual bool connect(unsigned int ind_from, unsigned int ind_to, float weight_, std::string label_);
+		virtual void print() const;
 		float getWeight(unsigned int ind_from, unsigned int ind_to) const;
 		void updateWeight(unsigned int ind_from, unsigned int ind_to, float weight_);
 		static int augmentedStateFunc(int i, int j, int n, int m);

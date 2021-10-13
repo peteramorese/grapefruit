@@ -2,28 +2,6 @@ Alphabet:
 - a
 - b
 Initial States: 
-- 2
-Graph:
-- 0
-   - 0 -> 0 : 1
-- 1
-   - 1 -> 0 : b
-   - 1 -> 1 : !b
-- 2
-   - 2 -> 0 : a & b
-   - 2 -> 1 : a & !b
-   - 2 -> 2 : !a & !b
-   - 2 -> 3 : !a & b
-- 3
-   - 3 -> 0 : a
-   - 3 -> 3 : !a
-Accepting States:
-- 0
-
-Alphabet: 
-- a
-- b
-Initial States: 
 - 1
 Graph:
 - 0

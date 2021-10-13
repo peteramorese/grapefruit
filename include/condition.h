@@ -35,12 +35,12 @@ class Condition {
 		static const int NONE;
 		static const int LABEL;
 		static const int VAR;	
-		static const int DOMAIN;	
+		static const int DOM;	
 		static const int GROUP;
 		static const int ARG_L;	
 		static const int ARG_V;	
 		static const int EQUALS;	
-		static const int IN_DOMAIN;	
+		static const int IN_DOM;	
 		static const int ARG_FIND;	
 		static const int ARG_EQUALS;	
 		static const int CONJUNCTION;	

@@ -10,7 +10,7 @@ Astar::Astar() {
 
 void Astar::setGraph(Edge* e_) {
 	e = e_;
-	Nv = e->returnListCount();
+	Nv = e->size();
 	initialized[0] = true;
 }
 

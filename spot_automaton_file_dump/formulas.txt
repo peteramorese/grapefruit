@@ -1,2 +1,1 @@
-Fa & Fb
 F(a & Fb)

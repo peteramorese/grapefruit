@@ -95,6 +95,7 @@ int StateSpace::getVarOptionsCount_(unsigned int dim) {
 		return state_space_named[dim].size();
 	} else {
 		std::cout<<"Error: Index out of bounds\n";
+		return -1;
 	}
 }
 
@@ -459,7 +460,9 @@ blocking:
 		}
 	} else {
 		std::cout<<"Error: Set state must have same dimension as state space\n";
+		return false;
 	}
+	return false;
 }
 
 bool BlockingStateSpace::setState_(const std::string& set_state_var, unsigned int dim, std::vector<int>& state_space) {
@@ -500,5 +503,6 @@ blocking:
 		}
 
 	}
+	return false;
 }
 
