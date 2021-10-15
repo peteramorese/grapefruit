@@ -39,7 +39,7 @@ bool Edge::isListEmpty(Edge::edgelist* head_) const {
 void Edge::append(unsigned int nodeind_, float weight_, std::string label_) {
 	if (isEmpty()) {
 		Edge::edgelist* newNode = new Edge::edgelist;
-		//std::cout<<"PTR: "<<newNode<<std::endl;
+		//std::cout<<"PTR ADDED: "<<newNode<<std::endl;
 		newNode->nodeind = nodeind_;
 		newNode->weight = 0; 
 		newNode->label = "none"; 
@@ -51,7 +51,7 @@ void Edge::append(unsigned int nodeind_, float weight_, std::string label_) {
 		newNode->adjptr = nullptr;
 	} else {
 		Edge::edgelist* newNode = new Edge::edgelist;
-		//std::cout<<"PTR: "<<newNode<<std::endl;
+		//std::cout<<"PTR ADDED: "<<newNode<<std::endl;
 		newNode->nodeind = nodeind_;
 		newNode->weight = weight_;
 		newNode->label = label_;

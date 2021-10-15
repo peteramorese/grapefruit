@@ -39,7 +39,7 @@ class Edge {
 		virtual void compose(const Edge &mult_graph, Edge& product_graph);
 		static void augmentedStateMap(unsigned int ind_product, int n, int m, std::pair<unsigned int, unsigned int>& ret_indices);
 		void clear();
-		~Edge(); 
+		virtual ~Edge(); 
 
 };
 

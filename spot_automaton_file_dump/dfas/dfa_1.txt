@@ -1,0 +1,13 @@
+Alphabet: 
+- green
+Initial States: 
+- 1
+Graph:
+- 0
+   - 0 -> 0 : 1
+- 1
+   - 1 -> 0 : green
+   - 1 -> 1 : !green
+Accepting States:
+- 0
+
