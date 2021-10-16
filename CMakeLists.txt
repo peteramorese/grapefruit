@@ -13,7 +13,7 @@ link_directories(${PROJECT_NAME} PUBLIC include)
 #target_link_libraries(${PROJECT_NAME} EdgeClass AstarClass StateClass TransitionSystemClass)
 target_link_libraries(${PROJECT_NAME} 
 	EdgeClass 
-	TEMPLATEGraphClass
+	GraphClass
 	AstarClass 
 	StateSpaceClass 
 	StateClass 
@@ -32,8 +32,8 @@ target_include_directories(add_delete_nodes_example PUBLIC include)
 target_link_libraries(add_delete_nodes_example 
 	EdgeClass
 	)
-add_executable(TEMPLATE_graph_test examples/TEMPLATE_graph_test.cpp)
-target_include_directories(TEMPLATE_graph_test PUBLIC include)
-target_link_libraries(TEMPLATE_graph_test 
-	TEMPLATEGraphClass
+add_executable(graph_test examples/graph_test.cpp)
+target_include_directories(graph_test PUBLIC include)
+target_link_libraries(graph_test 
+	GraphClass
 	)

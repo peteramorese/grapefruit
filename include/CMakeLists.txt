@@ -1,5 +1,5 @@
 add_library(EdgeClass edge.cpp)
-add_library(TEMPLATEGraphClass TEMPLATE_graph.cpp)
+add_library(GraphClass graph.cpp)
 add_library(AstarClass astar.cpp)
 add_library(StateSpaceClass stateSpace.cpp)
 add_library(StateClass state.cpp)

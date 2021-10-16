@@ -3,7 +3,7 @@
 #include<iostream>
 #include<fstream>
 #include "automaton.h"
-#include "edge.h"
+#include "graph.h"
 
 void Automaton::addWord(const std::string& word) {
 	if (!word.empty()){
@@ -20,7 +20,7 @@ void Automaton::addAcceptingState(unsigned int accepting_state) {
 
 }
 
-Automaton::Automaton() : Edge(true), max_accepting_state_index(0), max_init_state_index(0)
+Automaton::Automaton() : Graph<WL>(true), max_accepting_state_index(0), max_init_state_index(0)
 {
 	
 }
@@ -109,36 +109,27 @@ int DFA::getInitState() {
 	return init_states[0];
 }
 
-bool DFA::connect(unsigned int ind_from, unsigned int ind_to, float weight_, std::string label_) {
-	//if (inAlphabet(label_)) {
-		if (check_det){
-			bool new_state_from, new_state_to;
-			new_state_from = (ind_from > size()) ? true : false;
-			//if (state_ind_from > g.size()) {
-			//	new_state_from = true;
-			//} else {
-			//	new_state_from = false;
-			//}
-			if (new_state_from) {
-				std::vector<std::string> label_list;
-				returnListLabels(ind_from, label_list);
-				for (int i=0; i<label_list.size(); ++i) {
-					if (label_ == label_list[i]) {
-						std::cout<<"Error: Determinism check failed when connecting state "<<ind_from<<" to "<<ind_to<<" with letter: "<<label_<<"\n";
-						return false;
-					}
+bool DFA::connect(unsigned int ind_from, unsigned int ind_to, const std::string& label_) {
+	node_data_list.push_back(label_);
+	if (check_det){
+		bool new_state_from, new_state_to;
+		new_state_from = (ind_from > size()) ? true : false;
+		if (new_state_from) {
+			std::vector<std::string> label_list;
+			returnListLabels(ind_from, label_list);
+			for (int i=0; i<label_list.size(); ++i) {
+				if (label_ == label_list[i]) {
+					std::cout<<"Error: Determinism check failed when connecting state "<<ind_from<<" to "<<ind_to<<" with letter: "<<label_<<"\n";
+					return false;
 				}
 			}
 		}
-		// If the letter is not seen among all other outgoing edges
-		// from the 'from state', the connection is deterministic and
-		// the states can be connected. DFA is unweighted by default.
-		Edge::connect(ind_from, ind_to, 0, label_);
-		return true;
-	//} else {
-	//	std::cout<<"Warning: Connecting edge with label that is not in alphabet: "<<label_<<"\n";
-	//	return false;
-	//}
+	}
+	// If the letter is not seen among all other outgoing edges
+	// from the 'from state', the connection is deterministic and
+	// the states can be connected. DFA is unweighted by default.
+	Graph::connect({ind_from, nullptr}, {ind_to, node_data_list.end()});
+	return true;
 }
 
 bool DFA::readFileSingle(const std::string& filename) {
