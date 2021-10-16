@@ -37,7 +37,7 @@ class DFA : public Automaton {
 		int getInitState();
 		bool connect(unsigned int ind_from, unsigned int ind_to, float weight_, std::string label_);
 		bool readFileSingle(const std::string& filename);
-		void operator*(const DFA& arg_dfa);
+		//void operator*(const DFA& arg_dfa);
 		//static bool syncProduct( const DFA* arg_dfa, const DFA* arg_dfa2, DFA* product);
 		//static bool readFileMultiple(const std::string& filename, std::array<DFA, int>& dfa_arr);
 };

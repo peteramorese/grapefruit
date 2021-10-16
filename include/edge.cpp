@@ -28,7 +28,7 @@ bool Edge::isEmpty() {
 	}
 }
 
-bool Edge::isListEmpty(Edge::edgelist* head_) const {
+bool Edge::isListEmpty(Edge::node* head_) const {
 	if (head_==nullptr) {
 		return true;
 	} else {
@@ -38,7 +38,7 @@ bool Edge::isListEmpty(Edge::edgelist* head_) const {
 
 void Edge::append(unsigned int nodeind_, float weight_, std::string label_) {
 	if (isEmpty()) {
-		Edge::edgelist* newNode = new Edge::edgelist;
+		Edge::node* newNode = new Edge::node;
 		//std::cout<<"PTR ADDED: "<<newNode<<std::endl;
 		newNode->nodeind = nodeind_;
 		newNode->weight = 0; 
@@ -50,7 +50,7 @@ void Edge::append(unsigned int nodeind_, float weight_, std::string label_) {
 		prevs[ind_checkout] = prev;
 		newNode->adjptr = nullptr;
 	} else {
-		Edge::edgelist* newNode = new Edge::edgelist;
+		Edge::node* newNode = new Edge::node;
 		//std::cout<<"PTR ADDED: "<<newNode<<std::endl;
 		newNode->nodeind = nodeind_;
 		newNode->weight = weight_;
@@ -65,20 +65,7 @@ void Edge::append(unsigned int nodeind_, float weight_, std::string label_) {
 
 void Edge::checkout(int ind_checkout_) {
 	if (ind_checkout_<=heads.size()){
-		/*
-		if (isEmpty()) {
-			//std::cout<<"im checking out empty"<<std::endl;
-			ind_checkout = ind_checkout_;
-			//std::cout<<" head ptr:"<<head<<std::endl;
-			head = heads[ind_checkout];
-			prev = prevs[ind_checkout];	
-			checking = true;
-			std::cout<<"If you see this, there is an error in 'checkout'"<<std::endl;
-		} else {
-		*/
 		if (heads[ind_checkout] == head) {
-			//heads[ind_checkout] = head;
-			//prevs[ind_checkout] = prev; 
 			// reset the pointer keeping track of last node in list using the current checkout
 			ind_checkout = ind_checkout_;
 			head = heads[ind_checkout];
@@ -99,8 +86,6 @@ void Edge::newlist(){
 	if (checking) {
 		//std::cout<< "checking head:"<<heads[ind_checkout]<< ", reset head:"<<head<<std::endl;
 		if (heads[ind_checkout] == head) {
-			//heads[ind_checkout] = head;
-			//prevs[ind_checkout] = prev; 
 			// reset the pointer keeping track of last node in list
 			ind_checkout = ind;
 			checking = false;
@@ -130,8 +115,8 @@ int Edge::size() const {
 	}
 }
 
-const std::vector<Edge::edgelist*> Edge::getHeads() const {
-	const std::vector<Edge::edgelist*> heads_out = heads;
+const std::vector<Edge::node*> Edge::getHeads() const {
+	const std::vector<Edge::node*> heads_out = heads;
 	return heads_out;
 
 }
@@ -147,30 +132,45 @@ bool Edge::connect(unsigned int ind_from, unsigned int ind_to, float weight_, st
 	if (heads.size() == 0) {
 		newlist();
 	}
-	/*
-	for (int i=0; i<heads.size(); i++) {
-		std::cout<<"  head "<<i<<": "<<heads[i]<<std::endl;
-	}
-	*/
 
 	checkout(ind_from);
-	//std::cout<<"checking out: "<<ind_from<<" with prev ptr: "<<prev<<" head ptr: "<<head<<std::endl;
-	/*
-	if (isEmpty()){
-		append(ind_from, 0, "none");
-	}
-	*/
 	append(ind_to, weight_, label_);
 	if (!ordered){
 		checkout(ind_to);
-		/*
-		if (isEmpty()){
-			append(ind_to, 0, "none");
-		}
-		*/
 		append(ind_from, weight_, label_);
 	}
 	return true;
+}
+
+bool Edge::remove(unsigned int ind_) {
+	for (int i=0; i<heads.size(); i++) {
+		std::cout<<"i: "<<i<<std::endl;
+		if (i == ind_) {
+			std::cout<<"Deleting list: "<<ind_<<std::endl;
+			deleteList(heads[ind_]);
+			std::cout<<"done deleting list... "<<std::endl;
+			//remove element from vector
+		} else {
+			auto prevptr = heads[i];
+			auto currptr = heads[i]->adjptr;
+			currptr = currptr->adjptr;
+			std::cout<<"currptr: "<<currptr<<std::endl;
+			while (currptr!=nullptr) {
+				auto nextptr = currptr->adjptr;
+				std::cout<<"Curr node: "<<currptr->nodeind<<std::endl;
+				if (currptr->nodeind == ind_) {
+					std::cout<<"Found node to delete: "<<currptr->nodeind<<std::endl;
+					prevptr->adjptr = currptr->adjptr;
+					std::cout<<"Deleted: "<<currptr<<std::endl;
+					delete currptr;
+
+				}
+				prevptr = currptr;
+				currptr = nextptr;
+			}
+		}
+	}
+
 }
 
 void Edge::returnListNodes(unsigned int ind_, std::vector<int>& node_list) const {
@@ -361,20 +361,33 @@ void Edge::clear() {
 	checking = false;
 }
 
+void Edge::deleteList(node* head) {
+	auto currptr = head;
+	while (currptr!=nullptr) {
+		auto nextptr = currptr->adjptr;
+		//std::cout<<"PTR DELETE: "<<currptr<<std::endl;
+		delete currptr;
+		currptr = nextptr;
+	}
+}
+
 Edge::~Edge() {
 	std::cout<< "Deconstructing " << heads.size() << " lists...\n";
-
 	for (int i=0; i<heads.size(); i++) {
-		auto currptr = heads[i];
-		while (currptr!=nullptr) {
-			auto nextptr = currptr->adjptr;
-			//std::cout<<"PTR DELETE: "<<currptr<<std::endl;
-			delete currptr;
-			currptr = nextptr;
-		}
+		deleteList(heads[i]);
+		//auto currptr = heads[i];
+		//while (currptr!=nullptr) {
+		//	auto nextptr = currptr->adjptr;
+		//	//std::cout<<"PTR DELETE: "<<currptr<<std::endl;
+		//	delete currptr;
+		//	currptr = nextptr;
+		//}
 	}
-
 }
+
+
+
+//PrioQueue
 
 
 
