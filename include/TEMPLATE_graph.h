@@ -39,9 +39,8 @@ class Graph {
 		//void returnListWeights(unsigned int ind_, std::vector<float>& weights_list) const;
 		virtual bool connect(std::pair<unsigned int, T*> src, std::pair<unsigned int, T*> dst);
 		
-		template<typename LAM> 
-			bool hop(unsigned int ind, LAM lambda);
-		virtual bool remove(unsigned int ind_);
+		template<typename LAM> bool hop(unsigned int ind, LAM lambda);
+		virtual void remove(unsigned int ind_);
 		virtual void print();
 		//float getWeight(unsigned int ind_from, unsigned int ind_to) const;
 		//void updateWeight(unsigned int ind_from, unsigned int ind_to, float weight_);

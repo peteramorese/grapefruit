@@ -72,7 +72,7 @@ bool Graph<T>::connect(std::pair<unsigned int, T*> src, std::pair<unsigned int, 
 	}
 
 	Graph<T>::node* new_node = new Graph<T>::node;
-	//std::cout<<"PTR ADDED: "<<newNode<<std::endl;
+	std::cout<<"PTR ADDED: "<<new_node<<std::endl;
 	new_node->nodeind = dst.first;
 	new_node->dataptr = dst.second;
 	new_node->adjptr = nullptr;	
@@ -85,13 +85,19 @@ bool Graph<T>::connect(std::pair<unsigned int, T*> src, std::pair<unsigned int, 
 template<class T> 
 template<typename LAM>
 bool Graph<T>::hop(unsigned int ind, LAM lambda) {
+	node* prevptr = heads[ind];
+	std::cout<<"prevptr: "<<prevptr<<std::endl;
 	node* currptr = heads[ind]->adjptr; 
+	std::cout<<"currptr: "<<currptr<<std::endl;
 	while (currptr!=nullptr) {
 		node* nextptr = currptr->adjptr;
-		//std::cout<<"PTR DELETE: "<<currptr<<std::endl;
-		lambda(currptr);
+		//std::cout<<"   currptr going in: "<<currptr<<", prevptr going in: "<<prevptr<<std::endl;
+		lambda(currptr, prevptr);
+		//std::cout<<"   currptr coming out: "<<currptr<<", prevptr coming out: "<<prevptr<<std::endl;
+		prevptr = currptr;
 		currptr = nextptr;
 	}
+	return true;
 }
 
 //template<class T>
@@ -140,14 +146,6 @@ bool Graph<T>::hop(unsigned int ind, LAM lambda) {
 template<class T>
 int Graph<T>::size() const {
 	return heads.size();
-	//if (ind+1 == heads.size()){
-	//	return ind+1;
-	//} else if (heads.size() == 0) {
-	//	return 0;	
-	//} else {
-	//	std::cout<<"Error: Number of heads does not match number of lists\n";
-	//	return 0;
-	//}
 }
 
 //template<class T>
@@ -178,33 +176,66 @@ int Graph<T>::size() const {
 //	return true;
 //}
 
-template<class T>
-bool Graph<T>::remove(unsigned int ind_) {
-	for (int i=0; i<heads.size(); i++) {
-		std::cout<<"i: "<<i<<std::endl;
-		if (i == ind_) {
-			std::cout<<"Deleting list: "<<ind_<<std::endl;
-			//deleteList(heads[ind_]);
-			std::cout<<"done deleting list... "<<std::endl;
-			//remove element from vector
-		} else {
-			auto prevptr = heads[i];
-			auto currptr = heads[i]->adjptr;
-			currptr = currptr->adjptr;
-			std::cout<<"currptr: "<<currptr<<std::endl;
-			while (currptr!=nullptr) {
-				auto nextptr = currptr->adjptr;
-				std::cout<<"Curr node: "<<currptr->nodeind<<std::endl;
-				if (currptr->nodeind == ind_) {
-					std::cout<<"Found node to delete: "<<currptr->nodeind<<std::endl;
-					prevptr->adjptr = currptr->adjptr;
-					std::cout<<"Deleted: "<<currptr<<std::endl;
-					delete currptr;
 
-				}
-				prevptr = currptr;
-				currptr = nextptr;
+
+//template<class T>
+//bool Graph<T>::remove(unsigned int ind_) {
+//	for (int i=0; i<heads.size(); i++) {
+//		std::cout<<"i: "<<i<<std::endl;
+//		if (i == ind_) {
+//			std::cout<<"Deleting list: "<<ind_<<std::endl;
+//			//deleteList(heads[ind_]);
+//			std::cout<<"done deleting list... "<<std::endl;
+//			//remove element from vector
+//		} else {
+//			auto prevptr = heads[i];
+//			auto currptr = heads[i]->adjptr;
+//			currptr = currptr->adjptr;
+//			std::cout<<"currptr: "<<currptr<<std::endl;
+//			while (currptr!=nullptr) {
+//				auto nextptr = currptr->adjptr;
+//				std::cout<<"Curr node: "<<currptr->nodeind<<std::endl;
+//				if (currptr->nodeind == ind_) {
+//					std::cout<<"Found node to delete: "<<currptr->nodeind<<std::endl;
+//					prevptr->adjptr = currptr->adjptr;
+//					std::cout<<"Deleted: "<<currptr<<std::endl;
+//					delete currptr;
+//
+//				}
+//				prevptr = currptr;
+//				currptr = nextptr;
+//			}
+//		}
+//	}
+//}
+
+template<class T>
+void Graph<T>::remove(unsigned int ind_) {
+	auto rmLAMB = [&](Graph<T>::node*& dst, Graph<T>::node*& prv){
+		//std::cout<<"       dst->nodeind: "<<dst->nodeind<<", ind: "<<ind_<<std::endl;
+		if (dst->nodeind == ind_) {
+			prv->adjptr = dst->adjptr;
+			std::cout<<"Deleted: "<<dst<<std::endl;
+			//prv = prv->adjptr;
+			node* tempptr = dst->adjptr;
+			delete dst;
+			dst = tempptr;
+		}
+	};
+	auto deleteLAMB = [](Graph<T>::node* dst, Graph<T>::node* prv){std::cout<<"deleting: "<<dst<<std::endl; delete dst;};
+	for (int i=0; i<heads.size(); ++i) {
+		//std::cout<<"CURRENT NODE IND: "<<i<<std::endl;
+		if (i == ind_) {
+			//std::cout<<"DELETING ENTIRE LIST"<<std::endl;
+			hop(i, deleteLAMB);	
+			if (!isEmpty(heads[i])) {
+				std::cout<<"Deleting: "<<heads[i]<<std::endl;
+				delete heads[i];
+				heads[i] = nullptr;
 			}
+		} else {
+			//std::cout<<"SEARCHING FOR ELEMENT"<<std::endl;
+			hop(i, rmLAMB);
 		}
 	}
 }
@@ -255,13 +286,15 @@ bool Graph<T>::remove(unsigned int ind_) {
 
 template<class T>
 void Graph<T>::print() {
-	auto printLAMB = [](Graph<T>::node* dst){std::cout<<"   ~> "<<dst->nodeind<<"\n";};
+	auto printLAMB = [](Graph<T>::node* dst, Graph<T>::node* prv){std::cout<<"   ~> "<<dst->nodeind<<" "<<dst<<"\n";};
 	for (int i=0; i<heads.size(); i++) {
-		if (!isEmpty(heads[i]->adjptr)) {
-			std::cout<<"Node: "<<i<<" is connected to:\n";
-			hop(i, printLAMB);
-		} else {
-			std::cout<<"Node: "<<i<<" has no outgoing transitions.\n";
+		if (!isEmpty(heads[i])) {
+			if (!isEmpty(heads[i]->adjptr)) {
+				std::cout<<"Node: "<<i<<" "<<heads[i]<<" is connected to:\n";
+				hop(i, printLAMB);
+			} else {
+				std::cout<<"Node: "<<i<<" has no outgoing transitions.\n";
+			}
 		}
 		//auto currptr = heads[i];
 		//std::cout<<"Node: "<<currptr->nodeind<<" "<<currptr<<" connects to:\n";
@@ -427,12 +460,21 @@ void Graph<T>::augmentedStateMap(unsigned int ind_product, int n, int m, std::pa
 
 template<class T>
 Graph<T>::~Graph() {
-	auto deleteLAMB = [](Graph<T>::node* dst){std::cout<<"deleting: "<<dst<<std::endl; delete dst;};
+	auto deleteLAMB = [](Graph<T>::node* dst, Graph<T>::node* prv){
+		std::cout<<"deleting: "<<dst<<std::endl; 
+		delete dst;
+	};
 	std::cout<< "Deconstructing " << heads.size() << " lists...\n";
 	for (int i=0; i<heads.size(); i++) {
 		//deleteList(heads[i]);
-		std::cout<<"deleting: "<<heads[i]<<std::endl;
-		delete heads[i];
+		std::cout<<"CURRENT LIST: "<<i<<std::endl;
+		if (!isEmpty(heads[i])) {
+			std::cout<<"we in"<<std::endl;
+			hop(i, deleteLAMB);
+			std::cout<<"we out"<<std::endl;
+			std::cout<<"deleting: "<<heads[i]<<std::endl;
+			delete heads[i];
+		}
 		//auto currptr = heads[i];
 		//while (currptr!=nullptr) {
 		//	auto nextptr = currptr->adjptr;

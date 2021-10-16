@@ -13,10 +13,18 @@ int main() {
 		nodes[i].first = i;
 		nodes[i].second = &data[i];
 	}
+	g.connect(nodes[0], nodes[2]);
 	g.connect(nodes[0], nodes[1]);
 	g.connect(nodes[1], nodes[0]);
 	g.connect(nodes[1], nodes[2]);
 	g.print();
+
+	std::cout<<"Removing node 2"<<std::endl;
+	g.remove(2);
+	std::cout<<"\n\n printing again:"<<std::endl;
+	g.print();
+
+	std::cout<<"made it out phew"<<std::endl;
 
 	return 0;
 }
