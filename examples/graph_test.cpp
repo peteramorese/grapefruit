@@ -19,6 +19,8 @@ int main() {
 	g.connect(nodes[1], nodes[2]);
 	int* p = &data[2];
 	g.connect({3, p}, {5, p});
+	g.connect({3, p}, {5, p});
+	g.connect({3, p}, {5, p});
 	g.print();
 
 	//std::cout<<"Removing node 2"<<std::endl;

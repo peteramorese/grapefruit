@@ -1,5 +1,5 @@
 #include<iostream>
-#include "automaton.h"
+#include "graph.h"
 
 int main() {
 	DFA A;

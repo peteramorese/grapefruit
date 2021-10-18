@@ -19,13 +19,13 @@ target_link_libraries(${PROJECT_NAME}
 	StateClass 
 	ConditionClass
         TransitionSystemClass
-	AutomatonClass
+	#AutomatonClass
 	)	
 
 add_executable(file_read_example examples/file_read.cpp)
 target_include_directories(file_read_example PUBLIC include)
 target_link_libraries(file_read_example 
-	AutomatonClass
+	GraphClass
 	)
 add_executable(add_delete_nodes_example examples/add_delete_nodes.cpp)
 target_include_directories(add_delete_nodes_example PUBLIC include)

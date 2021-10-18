@@ -5,36 +5,40 @@
 #include "automaton.h"
 #include "graph.h"
 
-void Automaton::addWord(const std::string& word) {
+template<class T>
+void Automaton<T>::addWord(const std::string& word) {
 	if (!word.empty()){
 		alphabet.push_back(word);
 	}
 	
 }
 
-void Automaton::addAcceptingState(unsigned int accepting_state) {
-	accepting_states.push_back(accepting_state);
+template<class T>
+void Automaton<T>::addAcceptingState(unsigned int accepting_state) {
 	if (accepting_state > max_accepting_state_index) {
 		max_accepting_state_index = accepting_state;	
 	}
 
 }
 
-Automaton::Automaton() : Graph<WL>(true), max_accepting_state_index(0), max_init_state_index(0)
+template<class T>
+Automaton<T>::Automaton() : Graph<T>(true), max_accepting_state_index(0), max_init_state_index(0)
 {
 	
 }
 
-bool Automaton::isAutomatonValid() {
+template<class T>
+bool Automaton<T>::isAutomatonValid() {
 	bool valid = true;
-	int graph_size = size();
+	int graph_size = Graph<T>::size();
 	if (max_accepting_state_index > graph_size || max_init_state_index > graph_size) {
 		valid = false;	
 	}
 	return valid;
 }
 
-bool Automaton::inAlphabet(std::string s) {
+template<class T>
+bool Automaton<T>::inAlphabet(std::string s) {
 	for (int i=0; i<alphabet.size(); ++i) {
 		if (s == alphabet[i]) {
 			return true;
@@ -44,7 +48,8 @@ bool Automaton::inAlphabet(std::string s) {
 	return false;
 }
 
-bool Automaton::checkAlphabet(const Automaton* arg_dfa) {
+template<class T>
+bool Automaton<T>::checkAlphabet(const Automaton* arg_dfa) {
 	for (int i=0; i<arg_dfa->alphabet.size(); ++i) {
 		if (!inAlphabet(arg_dfa->alphabet[i])) {
 			return false;
@@ -53,7 +58,10 @@ bool Automaton::checkAlphabet(const Automaton* arg_dfa) {
 	return true;
 }
 
-void Automaton::setAcceptingStates(const std::vector<unsigned int>& accepting_states_){
+
+
+template<class T>
+void Automaton<T>::setAcceptingStates(const std::vector<unsigned int>& accepting_states_){
 	// Determine the max accepting state index to easily verify that all
 	// accepting states exist in the graph
 	accepting_states = accepting_states_;
@@ -64,7 +72,8 @@ void Automaton::setAcceptingStates(const std::vector<unsigned int>& accepting_st
 	}	
 }
 
-void Automaton::setInitStates(const std::vector<unsigned int>& init_states_){
+template<class T>
+void Automaton<T>::setInitStates(const std::vector<unsigned int>& init_states_){
 	// Determine the max init state index to easily verify that all
 	// init states exist in the graph
 	init_states = init_states_;
@@ -75,26 +84,12 @@ void Automaton::setInitStates(const std::vector<unsigned int>& init_states_){
 	}	
 }
 
-void Automaton::setAlphabet(const std::vector<std::string>& alphabet_) {
+template<class T>
+void Automaton<T>::setAlphabet(const std::vector<std::string>& alphabet_) {
 	alphabet = alphabet_;
 }
 
-void Automaton::print() {
-	std::cout<<"Alphabet: ";
-	for (int i=0; i<alphabet.size(); ++i) {
-		std::cout<<alphabet[i]<<" ";
-	}
-	std::cout<<"\nInitial States: ";
-	for (int i=0; i<init_states.size(); ++i) {
-		std::cout<<init_states[i]<<" ";
-	}
-	std::cout<<"\nAccepting States: ";
-	for (int i=0; i<accepting_states.size(); ++i) {
-		std::cout<<accepting_states[i]<<" ";
-	}
-	std::cout<<"\n";
-	Edge::print();
-}
+
 
 
 
@@ -109,16 +104,16 @@ int DFA::getInitState() {
 	return init_states[0];
 }
 
-bool DFA::connect(unsigned int ind_from, unsigned int ind_to, const std::string& label_) {
+bool DFA::connectDFA(unsigned int ind_from, unsigned int ind_to, const std::string& label_) {
 	node_data_list.push_back(label_);
 	if (check_det){
 		bool new_state_from, new_state_to;
 		new_state_from = (ind_from > size()) ? true : false;
 		if (new_state_from) {
-			std::vector<std::string> label_list;
-			returnListLabels(ind_from, label_list);
+			std::vector<std::string*> label_list;
+			getConnectedData(ind_from, label_list);
 			for (int i=0; i<label_list.size(); ++i) {
-				if (label_ == label_list[i]) {
+				if (label_ == *label_list[i]) {
 					std::cout<<"Error: Determinism check failed when connecting state "<<ind_from<<" to "<<ind_to<<" with letter: "<<label_<<"\n";
 					return false;
 				}
@@ -128,7 +123,7 @@ bool DFA::connect(unsigned int ind_from, unsigned int ind_to, const std::string&
 	// If the letter is not seen among all other outgoing edges
 	// from the 'from state', the connection is deterministic and
 	// the states can be connected. DFA is unweighted by default.
-	Graph::connect({ind_from, nullptr}, {ind_to, node_data_list.end()});
+	Graph::connect({ind_from, nullptr}, {ind_to, &node_data_list.back()});
 	return true;
 }
 
@@ -282,7 +277,7 @@ bool DFA::readFileSingle(const std::string& filename) {
 							{
 								std::string::size_type sz;
 								to_state = std::stoi(temp_word_2,&sz);
-								connect(source_state, to_state, 0, temp_label);
+								connectDFA(source_state, to_state, temp_label);
 							}
 						}
 					}
@@ -311,6 +306,35 @@ bool DFA::readFileSingle(const std::string& filename) {
 	} else {
 		std::cout<<"Cannot open file: "<<filename<<"\n";
 		return false;
+	}
+}
+
+void DFA::print() {
+	auto printLAM = [](Graph<std::string>::node* dst, Graph<std::string>::node* prv){std::cout<<"   ~> "<<dst->nodeind<<" : "<<*(dst->dataptr)<<"\n";};
+	std::cout<<"Alphabet: ";
+	for (int i=0; i<alphabet.size(); ++i) {
+		std::cout<<alphabet[i]<<" ";
+	}
+	std::cout<<"\nInitial States: ";
+	for (int i=0; i<init_states.size(); ++i) {
+		std::cout<<init_states[i]<<" ";
+	}
+	std::cout<<"\nAccepting States: ";
+	for (int i=0; i<accepting_states.size(); ++i) {
+		std::cout<<accepting_states[i]<<" ";
+	}
+	std::cout<<"\n";
+	//Graph<std::string>::print(printLAM);
+
+	for (int i=0; i<heads.size(); i++) {
+		if (!isEmpty(heads[i])) {
+			if (!isEmpty(heads[i]->adjptr)) {
+				std::cout<<"Node: "<<i<<" is connected to:\n";
+				Graph<std::string>::hop(i, printLAM);
+			} else {
+				std::cout<<"Node: "<<i<<" has no outgoing transitions.\n";
+			}
+		}
 	}
 }
 
