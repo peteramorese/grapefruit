@@ -4,6 +4,7 @@
 #include<fstream>
 #include<unordered_map>
 #include "graph.h"
+#include "state.h"
 
 //template<class T>
 //const static auto typename printLAM = [](Graph<T>::node* dst){std::cout<<dst->nodeind;};
@@ -124,6 +125,24 @@ bool Graph<T>::hop(unsigned int ind, LAM lambda) {
 }
 
 template<class T>
+bool Graph<T>::hopF(unsigned int ind, std::function<bool(node*, node*)> lambda) {
+	node* prevptr = heads[ind];
+	//std::cout<<"prevptr: "<<prevptr<<std::endl;
+	node* currptr = heads[ind]->adjptr; 
+	//std::cout<<"currptr: "<<currptr<<std::endl;
+	bool ret;
+	while (currptr!=nullptr) {
+		node* nextptr = currptr->adjptr;
+		//std::cout<<"   currptr going in: "<<currptr<<", prevptr going in: "<<prevptr<<std::endl;
+		ret = lambda(currptr, prevptr);
+		//std::cout<<"   currptr coming out: "<<currptr<<", prevptr coming out: "<<prevptr<<std::endl;
+		prevptr = currptr;
+		currptr = nextptr;
+	}
+	return ret;
+}
+
+template<class T>
 int Graph<T>::size() const {
 	return heads.size();
 }
@@ -143,9 +162,9 @@ void Graph<T>::remove(unsigned int ind_) {
 	};
 	auto deleteLAM = [](Graph<T>::node* dst, Graph<T>::node* prv){std::cout<<"deleting: "<<dst<<std::endl; delete dst;};
 	for (int i=0; i<heads.size(); ++i) {
-		//std::cout<<"CURRENT NODE IND: "<<i<<std::endl;
+		std::cout<<"CURRENT NODE IND: "<<i<<std::endl;
 		if (i == ind_) {
-			//std::cout<<"DELETING ENTIRE LIST"<<std::endl;
+			std::cout<<"DELETING ENTIRE LIST"<<std::endl;
 			hop(i, deleteLAM);	
 			if (!isEmpty(heads[i])) {
 				std::cout<<"Deleting: "<<heads[i]<<std::endl;
@@ -153,7 +172,7 @@ void Graph<T>::remove(unsigned int ind_) {
 				heads[i] = nullptr;
 			}
 		} else {
-			//std::cout<<"SEARCHING FOR ELEMENT"<<std::endl;
+			std::cout<<"SEARCHING FOR ELEMENT"<<std::endl;
 			hop(i, rmLAM);
 		}
 	}
@@ -171,6 +190,11 @@ void Graph<T>::getConnectedData(unsigned int ind, std::vector<T*>& data_list) {
 	data_list.clear();
 	auto fillDataLAM = [&data_list](Graph<T>::node* dst, Graph<T>::node* prv){data_list.push_back(dst->dataptr);};
 	hop(ind, fillDataLAM);
+}
+
+template<class T>
+const std::vector<typename Graph<T>::node*>* Graph<T>::getHeads() const {
+	return &heads;
 }
 
 template<class T>
@@ -310,6 +334,8 @@ template class Graph<double>;
 template class Graph<std::string>;
 template class Graph<WL>;
 template class Graph<WLI>;
+template class Graph<State>;
+template class Graph<BlockingState>;
 
 
 
@@ -389,6 +415,11 @@ void Automaton<T>::setAcceptingStates(const std::vector<unsigned int>& accepting
 }
 
 template<class T>
+const std::vector<unsigned int>* Automaton<T>::getAcceptingStates() const {
+	return &Automaton<T>::accepting_states;
+}
+
+template<class T>
 void Automaton<T>::setInitStates(const std::vector<unsigned int>& init_states_){
 	// Determine the max init state index to easily verify that all
 	// init states exist in the graph
@@ -398,6 +429,11 @@ void Automaton<T>::setInitStates(const std::vector<unsigned int>& init_states_){
 			max_init_state_index = init_states[i];	
 		}
 	}	
+}
+
+template<class T>
+const std::vector<unsigned int>* Automaton<T>::getInitStates() const {
+	return &Automaton<T>::init_states;
 }
 
 template<class T>
@@ -669,8 +705,6 @@ DFA::~DFA() {
 		//std::cout<<"DELETING: "<<node_data_list[i]<<std::endl;
 		delete node_data_list[i];
 	}
-	
-	//delete node_data_list;
 }
 //bool DFA::syncProduct(const DFA* dfa1, const DFA* dfa2, DFA* product) {
 //	if (!dfa1->checkAlphabet(dfa2)) {

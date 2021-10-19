@@ -39,10 +39,12 @@ class Graph {
 		int size() const; 
 		void getConnectedNodes(unsigned int ind_, std::vector<int>& node_list);
 		void getConnectedData(unsigned int ind_, std::vector<T*>& data_list);
+		const std::vector<node*>* getHeads() const; // DO NOT USE UNLESS YOU NEED RAW ACCESS
 		virtual bool connect(const std::pair<unsigned int, T*>& src, const std::pair<unsigned int, T*>& dst);
 		virtual bool connect(unsigned int src_ind, const std::pair<unsigned int, T*>& dst);
 		
 		template<typename LAM> bool hop(unsigned int ind, LAM lambda);
+		bool hopF(unsigned int ind, std::function<bool(node*, node*)> lambda);
 		virtual void remove(unsigned int ind_);
 		virtual void print();
 		void updateData(unsigned int ind_from, unsigned int ind_to, T* dataptr_);
@@ -74,7 +76,9 @@ class Automaton : public Graph<T> {
 	public:
 		Automaton();
 		void setAcceptingStates(const std::vector<unsigned int>& accepting_states_);
+		const std::vector<unsigned int>* getAcceptingStates() const;
 		void setInitStates(const std::vector<unsigned int>& init_states_);
+		const std::vector<unsigned int>* getInitStates() const;
 		void setAlphabet(const std::vector<std::string>& alphabet_);
 };
 

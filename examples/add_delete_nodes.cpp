@@ -1,5 +1,5 @@
 #include<iostream>
-#include "edge.h"
+#include "graph.h"
 
 int main() {
 	//std::vector<int*> hello(0, nullptr);
@@ -13,13 +13,16 @@ int main() {
 	//
 	//delete boop;
 
-	Edge graph(true);
-	graph.connect(0,0,1,"hello_0_0");
-	graph.connect(0,1,1,"hello_0_1");
-	graph.connect(1,2,1,"hello_1_2");
-	graph.connect(2,4,1,"hello_2_4");
-	graph.connect(3,1,1,"hello_3_1");
-	graph.connect(2,3,1,"hello_2_3");
+	std::string test = "hello";
+	std::string* str_ptr = &test;
+
+	Graph<std::string> graph(true);
+	graph.connect(0, {0, str_ptr});
+	graph.connect(0, {1, str_ptr});
+	graph.connect(1, {2, str_ptr});
+	graph.connect(2, {4, str_ptr});
+	graph.connect(3, {1, str_ptr});
+	graph.connect(2, {3, str_ptr});
 
 	std::cout<<"Initial graph:"<<std::endl;
 	graph.print();

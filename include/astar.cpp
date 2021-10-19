@@ -2,19 +2,23 @@
 #include<vector>
 #include "astar.h"
 #include "edge.h"
-Astar::Astar() {
+
+template<class T>
+Astar<T>::Astar() {
 	for (int i=0;i<3;i++){
 		initialized[i] = false; 
 	}
 }
 
-void Astar::setGraph(Edge* e_) {
+template<class T>
+void Astar<T>::setGraph(Graph<T>* e_) {
 	e = e_;
 	Nv = e->size();
 	initialized[0] = true;
 }
 
-void Astar::setVInit(unsigned int vinit_){
+template<class T>
+void Astar<T>::setVInit(unsigned int vinit_){
 	if (vinit_>Nv-1){
 		std::cout<<"Error: vinit index is larger than any node index"<<std::endl;
 	} else {
@@ -23,7 +27,8 @@ void Astar::setVInit(unsigned int vinit_){
 	}
 }
 
-void Astar::setVGoalSet(const std::vector<int>& vgoal_set_){
+template<class T>
+void Astar<T>::setVGoalSet(const std::vector<int>& vgoal_set_){
 	bool in_bounds = true;
 	for (int i=0; i<vgoal_set_.size(); i++) {
 		if (vgoal_set_[i]>Nv-1){
@@ -39,13 +44,15 @@ void Astar::setVGoalSet(const std::vector<int>& vgoal_set_){
 	}
 }
 
-struct Astar::listO{
+template<class T>
+struct Astar<T>::listO{
 	unsigned int node;
 	float g;
 	int parent;
 };
 
-bool Astar::searchDijkstra(std::vector<int>& path, float& pathlength){
+template<class T>
+bool Astar<T>::searchDijkstra(std::vector<int>& path, float& pathlength){
 	bool init = true;
 	bool path_found = false;
 	int vgoal;
@@ -103,7 +110,7 @@ bool Astar::searchDijkstra(std::vector<int>& path, float& pathlength){
 			std::vector<int> star_set;
 			std::vector<float> star_weight_set;  
 			auto heads = e->getHeads();
-			auto currptr = heads[nbest]->adjptr;
+			auto currptr = heads->operator[](nbest)->adjptr;
 			while (currptr!=nullptr) {
 				auto nextptr = currptr->adjptr;
 				bool in_C = false;
