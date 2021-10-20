@@ -1,0 +1,4 @@
+add_executable(file_read_example file_read.cpp)
+target_include_directories(file_read_example PUBLIC include)
+target_link_libraries(file_read_example 
+	AutomatonClass)

@@ -543,7 +543,7 @@ blocking:
 }
 
 bool BlockingState::setState(const std::string& set_state_var, unsigned int dim) {
-	BSS->setState_(set_state_var, dim, state_space);
+	return BSS->setState_(set_state_var, dim, state_space);
 	/*
 	bool name_found = false;
 	if (dim+1 > state_space_dim) {

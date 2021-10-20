@@ -10,12 +10,12 @@ const std::string Condition::FILLER = "FILLER";
 const int Condition::NONE = -1;
 const int Condition::LABEL = 0;
 const int Condition::VAR = 1;
-const int Condition::DOMAIN = 2;
+const int Condition::DOM = 2;
 const int Condition::GROUP = 3;
 const int Condition::ARG_L = 4;
 const int Condition::ARG_V = 5;
 const int Condition::EQUALS = 6;
-const int Condition::IN_DOMAIN = 7;
+const int Condition::IN_DOM = 7;
 const int Condition::ARG_FIND = 8;
 const int Condition::ARG_EQUALS = 9;
 const int Condition::CONJUNCTION = 10;
@@ -160,8 +160,8 @@ bool Condition::subEvaluate(const State* state, const sub_condition& cond) {
 				std::cout<<"Error: Condition Syntax error for operator EQUALS\n";
 			}
 			break;
-		case IN_DOMAIN:
-			if (cond.ARG_2_TYPE == DOMAIN) {
+		case IN_DOM:
+			if (cond.ARG_2_TYPE == DOM) {
 				sub_eval = false;
 				bool found;
 				std::vector<std::string> in_domains;
@@ -204,10 +204,10 @@ bool Condition::subEvaluate(const State* state, const sub_condition& cond) {
 						}
 						break;
 					default:
-						std::cout<<"Error: Condition Syntax error for operator IN_DOMAIN\n";
+						std::cout<<"Error: Condition Syntax error for operator IN_DOM\n";
 				}
 			} else {
-				std::cout<<"Error: Condition Syntax error for operator IN_DOMAIN\n";
+				std::cout<<"Error: Condition Syntax error for operator IN_DOM\n";
 			}
 			break;
 		case ARG_FIND:
@@ -462,7 +462,7 @@ returncondition:
 						std::cout<<"is not equal to ";
 					}
 					break;
-				case IN_DOMAIN:
+				case IN_DOM:
 					if (logi) {
 						std::cout<<"is in ";
 					} else {
@@ -490,7 +490,7 @@ returncondition:
 				case VAR:
 					std::cout<<"Dimension Variable: '"<<p_c[i].arg_2<<"'\n";
 					break;
-				case DOMAIN:
+				case DOM:
 					std::cout<<"Domain: '"<<p_c[i].arg_2<<"'\n";
 					break;
 			}
