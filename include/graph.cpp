@@ -162,18 +162,20 @@ void Graph<T>::remove(unsigned int ind_) {
 	};
 	auto deleteLAM = [](Graph<T>::node* dst, Graph<T>::node* prv){std::cout<<"deleting: "<<dst<<std::endl; delete dst;};
 	for (int i=0; i<heads.size(); ++i) {
-		std::cout<<"CURRENT NODE IND: "<<i<<std::endl;
-		if (i == ind_) {
-			std::cout<<"DELETING ENTIRE LIST"<<std::endl;
-			hop(i, deleteLAM);	
-			if (!isEmpty(heads[i])) {
-				std::cout<<"Deleting: "<<heads[i]<<std::endl;
-				delete heads[i];
-				heads[i] = nullptr;
+		if (!isEmpty(heads[i])){
+			//std::cout<<"CURRENT NODE IND: "<<i<<std::endl;
+			if (i == ind_) {
+				//std::cout<<"DELETING ENTIRE LIST"<<std::endl;
+				hop(i, deleteLAM);	
+				if (!isEmpty(heads[i])) {
+					//std::cout<<"Deleting: "<<heads[i]<<std::endl;
+					delete heads[i];
+					heads[i] = nullptr;
+				}
+			} else {
+				//std::cout<<"SEARCHING FOR ELEMENT"<<std::endl;
+				hop(i, rmLAM);
 			}
-		} else {
-			std::cout<<"SEARCHING FOR ELEMENT"<<std::endl;
-			hop(i, rmLAM);
 		}
 	}
 }
@@ -416,7 +418,7 @@ void Automaton<T>::setAcceptingStates(const std::vector<unsigned int>& accepting
 
 template<class T>
 const std::vector<unsigned int>* Automaton<T>::getAcceptingStates() const {
-	return &Automaton<T>::accepting_states;
+	return &accepting_states;
 }
 
 template<class T>
@@ -433,7 +435,7 @@ void Automaton<T>::setInitStates(const std::vector<unsigned int>& init_states_){
 
 template<class T>
 const std::vector<unsigned int>* Automaton<T>::getInitStates() const {
-	return &Automaton<T>::init_states;
+	return &init_states;
 }
 
 template<class T>
@@ -441,6 +443,15 @@ void Automaton<T>::setAlphabet(const std::vector<std::string>& alphabet_) {
 	alphabet = alphabet_;
 }
 
+template class Automaton<int>;
+template class Automaton<unsigned int>;
+template class Automaton<float>;
+template class Automaton<double>;
+template class Automaton<std::string>;
+template class Automaton<WL>;
+template class Automaton<WLI>;
+template class Automaton<State>;
+template class Automaton<BlockingState>;
 
 
 

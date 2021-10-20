@@ -6,6 +6,7 @@
 #include "graph.h"
 #include "state.h"
 #include "condition.h"
+#include "astar.h"
 
 template <class T>
 class TransitionSystem {

@@ -38,3 +38,13 @@ target_include_directories(graph_test PUBLIC include)
 target_link_libraries(graph_test 
 	GraphClass
 	)
+add_executable(create_transition_system examples/create_transition_system.cpp)
+target_include_directories(create_transition_system PUBLIC include)
+target_link_libraries(create_transition_system 
+	StateSpaceClass
+	StateClass
+	ConditionClass
+	TransitionSystemClass
+	AstarClass
+	GraphClass
+	)

@@ -3,10 +3,6 @@
 #include<array>
 #include<iostream>
 #include "transitionSystem.h"
-#include "graph.h"
-#include "state.h"
-#include "condition.h"
-#include "astar.h"
 
 template <class T>
 TransitionSystem<T>::TransitionSystem (Graph<WL>* graph_TS_) : has_conditions(false), generated(false) {

@@ -121,7 +121,7 @@ bool Astar<T>::searchDijkstra(std::vector<int>& path, float& pathlength){
 				}
 				if (!in_C){
 					star_set.push_back(currptr->nodeind);
-					star_weight_set.push_back(currptr->weight);
+					star_weight_set.push_back(currptr->dataptr->weight);
 				}
 				//std::cout<<"pushing back"<<currptr->nodeind<<std::endl;
 				currptr = nextptr;
@@ -182,6 +182,11 @@ bool Astar<T>::searchDijkstra(std::vector<int>& path, float& pathlength){
 	return path_found;
 }
 
-
-
+// Only accept template parameters that have defined edge weights
+//template class Astar<int>;
+//template class Astar<unsigned int>;
+//template class Astar<float>;
+//template class Astar<double>;
+template class Astar<WL>;
+template class Astar<WLI>;
 
