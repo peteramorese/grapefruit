@@ -8,7 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #add_executable(${PROJECT_NAME} src/tp_test.cpp)
 #target_include_directories(${PROJECT_NAME} PUBLIC include)
 #link_directories(${PROJECT_NAME} PUBLIC include)
+
 add_subdirectory(include)
+add_subdirectory(pref_include)
 #add_subdirectory(examples)
 
 #target_link_libraries(${PROJECT_NAME} 
@@ -47,4 +49,11 @@ target_link_libraries(create_transition_system
 	TransitionSystemClass
 	AstarClass
 	GraphClass
+	)
+
+# Preference Planning Examples:
+add_executable(lex_set_comp examples/lex_set_comp.cpp)
+target_include_directories(lex_set_comp PUBLIC include pref_include)
+target_link_libraries(lex_set_comp 
+	LexSetClass
 	)
