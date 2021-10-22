@@ -43,6 +43,25 @@ class TransitionSystem {
 };
 
 template <class T>
+class TS_EVAL {
+	private:
+		const TransitionSystem<T>* tsptr;
+		int curr_node;
+		friend class TransitionSystem<T>;
+		std::unordered_map<int, std::vector<std::string>> state_to_label_map;
+	public:
+		TS_EVAL(const TransitionSystem<T>* tsptr_, int init_node);
+		void mapStatesToLabels(const std::vector<std::vector<std::string>*>& alphabet);
+		bool eval(const std::string& action);
+		int getCurrNode() const;
+		void getConnectedDataEVAL(std::vector<WL*>& con_data);
+		const std::vector<std::string>* returnStateLabels(int state_ind);
+		void set(int set_node);
+		void reset(int init_node);
+		T* getCurrState() const;
+};
+
+template <class T>
 class ProductSystem : public TransitionSystem<T> {
 	private:
 		//std::vector<SimpleCondition*> propositions;

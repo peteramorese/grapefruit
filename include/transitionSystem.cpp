@@ -225,10 +225,10 @@ void TransitionSystem<T>::generate() {
 			}
 			q_i++;
 		}
+		generated = true;
 	} else {
 		std::cout<<"Error: Must set init state and conditions before calling generate()\n";
 	}
-	generated = true;
 }
 
 template <class T>
@@ -283,6 +283,110 @@ TransitionSystem<T>::~TransitionSystem() {
 
 template class TransitionSystem<State>;
 template class TransitionSystem<BlockingState>;
+
+
+
+
+
+		////////////////////////
+		/* GRAPH EVAL CLASSES */
+		////////////////////////
+
+
+
+template <class T>
+TS_EVAL<T>::TS_EVAL(const TransitionSystem<T>* tsptr_, int init_node) : tsptr(tsptr_) {
+	curr_node = init_node; //ts is generated around 0 being init state
+}
+
+template <class T>
+bool TS_EVAL<T>::mapStatesToLabels(const std::vector<std::vector<std::string>*>& alphabet) {
+	std::cout<<"Info: Mapping states to labels...\n";
+	for (int si=0; si<tsptr->state_map.size(); ++si) {
+		std::vector<std::string> temp_labels;
+		temp_labels.clear();
+		for (int i=0; i<alphabet.size(); ++i) {
+			for (int ii=0; ii<alphabet[i]->size(); ++ii) {
+				bool found = false;
+				// Make sure the label is not already in the set to prevent duplicates
+				for (int iii=0; iii<temp_labels.size(); ++iii) {
+					if (temp_labels[iii] == alphabet[i]->operator[](ii)) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					if (parseLabelAndEval(&alphabet[i]->operator[](ii), state)) {
+						temp_labels.push_back(alphabet[i]->operator[](ii));
+					}
+				}
+			}
+		}
+		state_to_label_map[si] = temp_labels;
+	}
+	std::cout<<"Info: Done mapping states to labels.\n";
+}
+
+template <class T>
+const std::vector<std::string>* TS_EVAL<T>::returnStateLabels(int state_ind) {
+	if (state_ind > state_map.size()-1) {
+		std::cout<<"Error: State ind map out of bounds\n";
+	} else {
+		return &state_to_label_map[state_ind];
+	}
+}
+
+
+template <class T>
+bool TS_EVAL<T>::eval(const std::string& action) {
+	int curr_node_g = curr_node;
+	auto evalLAM = [&curr_node_g, &action, &ret_weight](Graph<WL>::node* dst, Graph<WL>::node* prv){
+	//auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
+		if (*(dst->dataptr) == action) {
+			curr_node_g = dst->nodeind;
+			//ret_weight = dst->dataptr->weight;
+			return true;
+		} else {
+			return false;
+		}
+	};
+	if (tsptr->graph_TS->hopS(curr_node, evalLAM)) {
+		//std::cout<<"new curr_node:"<<curr_node<<std::endl;
+		curr_node = curr_node_g;
+		return true;
+	} else {
+		std::cout<<"Error: Action ("<<action<<") not found at state: "<<curr_node<<std::endl;
+		return false;
+	}
+}
+
+template <class T>
+int TS_EVAL<T>::getCurrNode() const {
+	return curr_node;
+}
+
+template <class T>
+void TS_EVAL<T>::getConnectedDataEVAL(std::vector<WL*>& con_data) {
+	tsptr->graph_TS->getConnectedData(curr_node, con_data);
+}
+
+template <class T>
+void TS_EVAL<T>::set(int set_node) {
+	curr_node = set_node;
+}
+
+template <class T>
+void TS_EVAL<T>::reset(int init_node) {
+	curr_node = init_node;
+}
+
+template <class T>
+T* TS_EVAL<T>::getCurrState() const {
+	return tsptr->getState(curr_node);
+}
+
+
+
 
 template <class T>
 ProductSystem<T>::ProductSystem(Graph<WL>* graph_TS_, DFA* graph_DFA_, Graph<WL>* graph_product_) : 

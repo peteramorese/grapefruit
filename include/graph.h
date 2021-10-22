@@ -17,6 +17,12 @@ struct WLI {
 	int i;
 };
 
+struct WIV {
+	float weight;
+	int i;
+	std::vector<int> v;
+};
+
 template<class T>
 class Graph {
 	private:
@@ -85,6 +91,7 @@ class Automaton : public Graph<T> {
 		void setInitStates(const std::vector<unsigned int>& init_states_);
 		const std::vector<unsigned int>* getInitStates() const;
 		void setAlphabet(const std::vector<std::string>& alphabet_);
+		const std::vector<std::string>* getAlphabet() const;
 };
 
 class NFA : public Automaton<std::string> {
@@ -118,8 +125,10 @@ class DFA_EVAL {
 		//friend class Graph<std::string>;
 	public:
 		DFA_EVAL(const DFA* dfaptr_);
+		const std::vector<std::string>* getAlphabetEVAL() const;
 		bool eval(const std::string& letter);
-		int getCurrNode();
+		int getCurrNode() const;
+		void set(int set_node);
 		void reset();
 		bool isCurrAccepting() const;
 };

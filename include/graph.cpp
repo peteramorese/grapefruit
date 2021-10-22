@@ -360,6 +360,8 @@ template class Graph<double>;
 template class Graph<std::string>;
 template class Graph<WL>;
 template class Graph<WLI>;
+template class Graph<WIV>;
+template class Graph<std::vector<unsigned int>>;
 template class Graph<State>;
 template class Graph<BlockingState>;
 
@@ -376,9 +378,17 @@ template class Graph<BlockingState>;
 template<class T>
 void Automaton<T>::addWord(const std::string& word) {
 	if (!word.empty()){
-		alphabet.push_back(word);
+		bool not_found = true;
+		for (auto test_word : alphabet) {
+			if (word == test_word) {
+				not_found = false;
+				break;
+			}
+		}
+		if (not_found) {
+			alphabet.push_back(word);
+		}
 	}
-	
 }
 
 template<class T>
@@ -490,6 +500,11 @@ const std::vector<unsigned int>* Automaton<T>::getInitStates() const {
 template<class T>
 void Automaton<T>::setAlphabet(const std::vector<std::string>& alphabet_) {
 	alphabet = alphabet_;
+}
+
+template<class T>
+const std::vector<std::string>* Automaton<T>::getAlphabet() const {
+	return &alphabet;
 }
 
 template class Automaton<int>;
@@ -630,20 +645,20 @@ bool DFA::readFileSingle(const std::string& filename) {
 				case -1: 
 					std::cout<<"Error: No field specified\n";
 					break;
-				case 0:
-					for (int i=0; i<line.size(); ++i) {
-						switch (line.at(i)) {
-							case '-':
-								break;
-							case ' ':
-								break;
-							default:
-								temp_word_2.push_back(line[i]);
-						}
-					}
-					addWord(temp_word);
+				case 0: // ALPHABET
+					//for (int i=0; i<line.size(); ++i) {
+					//	switch (line.at(i)) {
+					//		case '-':
+					//			break;
+					//		case ' ':
+					//			break;
+					//		default:
+					//			temp_word_2.push_back(line[i]);
+					//	}
+					//}
+					//addWord(temp_word);
 					break;
-				case 1:
+				case 1: // INIT STATES
 					for (int i=0; i<line.size(); ++i) {
 						switch (line.at(i)) {
 							case '-':
@@ -663,7 +678,7 @@ bool DFA::readFileSingle(const std::string& filename) {
 						setInitStates(init_states);
 					}
 					break;
-				case 2:
+				case 2: // GRAPH
 					{
 						bool is_label = false;
 						bool is_source_state = true;
@@ -699,11 +714,12 @@ bool DFA::readFileSingle(const std::string& filename) {
 								std::string::size_type sz;
 								to_state = std::stoi(temp_word_2,&sz);
 								connectDFA(source_state, to_state, temp_label);
+								addWord(temp_label);
 							}
 						}
 					}
 					break;
-				case 3:
+				case 3: // ACCEPTING STATES
 					for (int i=0; i<line.size(); ++i) {
 						switch (line[i]) {
 							case '-':
@@ -734,6 +750,8 @@ bool DFA::readFileSingle(const std::string& filename) {
 void DFA::print() {
 	
 	auto printLAM = [](Graph<std::string>::node* dst, Graph<std::string>::node* prv){std::cout<<"   ~> "<<dst->nodeind<<" : "<<*(dst->dataptr)<<"\n";};
+
+	std::cout<<"Alphabet Size: "<<alphabet.size()<<std::endl;
 	std::cout<<"Alphabet: ";
 	for (int i=0; i<alphabet.size(); ++i) {
 		std::cout<<alphabet[i]<<" ";
@@ -781,8 +799,12 @@ DFA::~DFA() {
 
 DFA_EVAL::DFA_EVAL(const DFA* dfaptr_) : dfaptr(dfaptr_), accepting(false) {
 	// Set the current node to be the initial state
-	std::cout<<"hello"<<std::endl;
 	curr_node = dfaptr->getInitState();
+}
+
+template<class T>
+const std::vector<std::string>* DFA_EVAL::getAlphabetEVAL() const {
+	return dfaptr->getAlphabet();
 }
 
 bool DFA_EVAL::eval(const std::string& letter) {
@@ -805,13 +827,18 @@ bool DFA_EVAL::eval(const std::string& letter) {
 		curr_node = curr_node_g;
 		return true;
 	} else {
-		std::cout<<"Error: Action ("<<letter<<") not found at state: "<<curr_node<<std::endl;
+		std::cout<<"Error: Letter ("<<letter<<") not found at state: "<<curr_node<<std::endl;
 		return false;
 	}
 }
 
-int DFA_EVAL::getCurrNode() {
+int DFA_EVAL::getCurrNode() const {
 	return curr_node;
+}
+
+void DFA_EVAL::set(int set_node) {
+	curr_node = set_node;
+	accepting = dfaptr->isAccepting(set_node);
 }
 
 void DFA_EVAL::reset() {
