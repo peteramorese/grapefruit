@@ -51,7 +51,7 @@ class TS_EVAL {
 		std::unordered_map<int, std::vector<std::string>> state_to_label_map;
 	public:
 		TS_EVAL(const TransitionSystem<T>* tsptr_, int init_node);
-		void mapStatesToLabels(const std::vector<std::vector<std::string>*>& alphabet);
+		void mapStatesToLabels(const std::vector<const std::vector<std::string>*>& alphabet);
 		bool eval(const std::string& action);
 		int getCurrNode() const;
 		void getConnectedDataEVAL(std::vector<WL*>& con_data);

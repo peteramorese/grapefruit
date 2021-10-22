@@ -300,7 +300,7 @@ TS_EVAL<T>::TS_EVAL(const TransitionSystem<T>* tsptr_, int init_node) : tsptr(ts
 }
 
 template <class T>
-bool TS_EVAL<T>::mapStatesToLabels(const std::vector<std::vector<std::string>*>& alphabet) {
+void TS_EVAL<T>::mapStatesToLabels(const std::vector<const std::vector<std::string>*>& alphabet) {
 	std::cout<<"Info: Mapping states to labels...\n";
 	for (int si=0; si<tsptr->state_map.size(); ++si) {
 		std::vector<std::string> temp_labels;
@@ -316,7 +316,7 @@ bool TS_EVAL<T>::mapStatesToLabels(const std::vector<std::vector<std::string>*>&
 					}
 				}
 				if (!found) {
-					if (parseLabelAndEval(&alphabet[i]->operator[](ii), state)) {
+					if (parseLabelAndEval(&alphabet[i]->operator[](ii), tsptr->state_map[si])) {
 						temp_labels.push_back(alphabet[i]->operator[](ii));
 					}
 				}
@@ -329,7 +329,7 @@ bool TS_EVAL<T>::mapStatesToLabels(const std::vector<std::vector<std::string>*>&
 
 template <class T>
 const std::vector<std::string>* TS_EVAL<T>::returnStateLabels(int state_ind) {
-	if (state_ind > state_map.size()-1) {
+	if (state_ind > tsptr->state_map.size()-1) {
 		std::cout<<"Error: State ind map out of bounds\n";
 	} else {
 		return &state_to_label_map[state_ind];
@@ -340,9 +340,9 @@ const std::vector<std::string>* TS_EVAL<T>::returnStateLabels(int state_ind) {
 template <class T>
 bool TS_EVAL<T>::eval(const std::string& action) {
 	int curr_node_g = curr_node;
-	auto evalLAM = [&curr_node_g, &action, &ret_weight](Graph<WL>::node* dst, Graph<WL>::node* prv){
+	auto evalLAM = [&curr_node_g, &action](Graph<WL>::node* dst, Graph<WL>::node* prv){
 	//auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
-		if (*(dst->dataptr) == action) {
+		if (dst->dataptr->label == action) {
 			curr_node_g = dst->nodeind;
 			//ret_weight = dst->dataptr->weight;
 			return true;

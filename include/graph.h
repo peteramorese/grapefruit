@@ -3,6 +3,7 @@
 #include<vector>
 #include<iostream>
 #include<functional>
+#include "lexSet.h"
 
 // Declare some struct list types for different graphs:
 
@@ -21,6 +22,14 @@ struct WIV {
 	float weight;
 	int i;
 	std::vector<int> v;
+};
+
+struct IVFlexLexS {
+	IVFlexLexS(float mu, unsigned int S) : v(S), lex_set(mu, S) {}
+	IVFlexLexS(float mu, float fill_val, unsigned int S) : v(S), lex_set(mu, fill_val, S) {}
+	int i;
+	std::vector<int> v;
+	FlexLexSetS lex_set;
 };
 
 template<class T>
@@ -44,6 +53,7 @@ class Graph {
 		bool isOrdered() const;
 		bool isEmpty(node* head) const; 
 		int size() const; 
+		T* getNodeDataptr(unsigned int ind_) const;
 		void getConnectedNodes(unsigned int ind_, std::vector<int>& node_list);
 		void getConnectedData(unsigned int ind_, std::vector<T*>& data_list);
 		const std::vector<node*>* getHeads() const; // DO NOT USE UNLESS YOU NEED RAW ACCESS

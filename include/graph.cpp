@@ -205,6 +205,11 @@ void Graph<T>::remove(unsigned int ind_) {
 }
 
 template<class T>
+T* Graph<T>::getNodeDataptr(unsigned int ind_) const {
+	return heads[ind_]->dataptr;
+}
+
+template<class T>
 void Graph<T>::getConnectedNodes(unsigned int ind, std::vector<int>& node_list) {
 	node_list.clear();
 	auto fillNodesLAM = [&node_list](Graph<T>::node* dst, Graph<T>::node* prv){node_list.push_back(dst->nodeind);};
@@ -361,6 +366,7 @@ template class Graph<std::string>;
 template class Graph<WL>;
 template class Graph<WLI>;
 template class Graph<WIV>;
+template class Graph<IVFlexLexS>;
 template class Graph<std::vector<unsigned int>>;
 template class Graph<State>;
 template class Graph<BlockingState>;
@@ -802,7 +808,6 @@ DFA_EVAL::DFA_EVAL(const DFA* dfaptr_) : dfaptr(dfaptr_), accepting(false) {
 	curr_node = dfaptr->getInitState();
 }
 
-template<class T>
 const std::vector<std::string>* DFA_EVAL::getAlphabetEVAL() const {
 	return dfaptr->getAlphabet();
 }
