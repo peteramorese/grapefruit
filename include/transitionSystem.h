@@ -21,14 +21,18 @@ class TransitionSystem {
 		//unsigned int q_i;
 		void safeAddState(int q_i, T* add_state, int add_state_ind, Condition* cond);
 	protected:
+		std::unordered_map<std::string, SimpleCondition*> propositions;
 		Graph<WL>* graph_TS;
 		std::vector<T*> state_map;
 		std::vector<WL*> node_container;
 		bool generated;
+		bool parseLabelAndEval(const std::string* label, const T* state);
 	public:
 		TransitionSystem(Graph<WL>* graph_TS_);
 		void addCondition(Condition* condition_);
 		void setConditions(const std::vector<Condition*>& conditions_);
+		void addProposition(SimpleCondition* proposition_);
+		void setPropositions(const std::vector<SimpleCondition*>& propositions_);
 		void setInitState(T* init_state_);
 		T* getState(int node_index);
 		void generate();
@@ -42,7 +46,6 @@ template <class T>
 class ProductSystem : public TransitionSystem<T> {
 	private:
 		//std::vector<SimpleCondition*> propositions;
-		std::unordered_map<std::string, SimpleCondition*> propositions;
 		bool automaton_init, plan_found;
 		DFA* graph_DFA;
 		Graph<WL>* graph_product;
@@ -61,12 +64,9 @@ class ProductSystem : public TransitionSystem<T> {
 		void safeAddProdState(int p_i, T* add_state, int add_state_ind, float weight, const std::string& action);
 	public:
 		ProductSystem(Graph<WL>* graph_TS_, DFA* graph_DFA_, Graph<WL>* graph_product_);
-		void addProposition(SimpleCondition* proposition_);
-		void setPropositions(const std::vector<SimpleCondition*>& propositions_);
 		void setAutomatonInitStateIndex(int init_state_DFA_ind_);
 		void setAutomatonAcceptingStateIndices(const std::vector<int>& accepting_DFA_states_);
 		void addAutomatonAcceptingStateIndex(int accepting_DFA_state_);
-		bool parseLabelAndEval(const std::string* label, const T* state);
 		void compose();
 		bool plan(std::vector<int>& plan);
 		bool plan();

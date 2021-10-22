@@ -17,6 +17,91 @@ TransitionSystem<T>::TransitionSystem (Graph<WL>* graph_TS_) : has_conditions(fa
 	conditions.clear();
 }
 
+// This is part of the "Labeling Function"
+template <class T>
+bool TransitionSystem<T>::parseLabelAndEval(const std::string* label, const T* state) {
+	bool negate_next = false;
+	bool is_first = true;
+	bool arg;
+	//bool arg_conj;
+	//std::vector<bool> propositions;
+	int prop_i = -1;
+	std::string temp_name;
+	char prev_operator;
+	for (int i=0; i<label->size(); ++i) {
+		char character = (*label)[i];
+		bool sub_eval;
+		switch (character) {
+			case '!':
+				negate_next = !negate_next;
+				break;
+			case '&':
+				sub_eval = TransitionSystem<T>::propositions[temp_name]->evaluate(state);	
+				if (negate_next) {
+					sub_eval = !sub_eval;
+				}
+				temp_name.clear();
+				negate_next = false;
+				prev_operator = '&';
+				if (is_first) {
+					arg = sub_eval;
+					is_first = false;
+				} else {
+					arg = arg && sub_eval;
+				}
+				break;
+			case '|':
+				sub_eval = TransitionSystem<T>::propositions[temp_name]->evaluate(state);	
+				
+				if (negate_next) {
+					sub_eval = !sub_eval;
+				}
+				temp_name.clear();
+				negate_next = false;
+				prev_operator = '|';
+				if (is_first) {
+					arg = sub_eval;
+					is_first = false;
+				} else {
+					arg = arg || sub_eval;
+				}
+				break;
+			case ' ':
+				break;
+			default:
+				temp_name.push_back(character);
+				if (i == label->size()-1) {
+					sub_eval = TransitionSystem<T>::propositions[temp_name]->evaluate(state);	
+					if (negate_next) {
+						sub_eval = !sub_eval;
+					}
+					switch (prev_operator) {
+						//case '&':	
+						case '|':	
+							arg = arg || sub_eval;
+							break;
+						default:
+							// Defaults to conjunction because
+							// arg is initialized to 'true'
+							if (is_first) {
+								arg = sub_eval;
+								is_first = false;
+							} else {
+								arg = arg && sub_eval;
+							}
+					}
+				}
+		}
+		/*
+		if (!arg) {
+			break;
+		}
+		*/
+	}
+	return arg;
+	
+}
+
 template <class T>
 void TransitionSystem<T>::addCondition(Condition* condition_){
 	conditions.push_back(condition_);
@@ -29,6 +114,25 @@ void TransitionSystem<T>::setConditions(const std::vector<Condition*>& condition
 	has_conditions = true;
 }
 
+template <class T>
+void TransitionSystem<T>::addProposition(SimpleCondition* proposition_) {
+	if (proposition_->getLabel() != Condition::FILLER) {
+		propositions[proposition_->getLabel()] = proposition_;
+	} else {
+		std::cout<<"Error: Must name proposition before including in Product System\n";
+	}
+}
+
+template <class T>
+void TransitionSystem<T>::setPropositions(const std::vector<SimpleCondition*>& propositions_) {
+	for (int i=0; i<propositions_.size(); ++i) {
+		if (propositions_[i]->getLabel() != Condition::FILLER) {
+			propositions[propositions_[i]->getLabel()] = propositions_[i];
+		} else {
+			std::cout<<"Error: Must name all propositions before including in Product System\n";
+		}
+	}
+}
 template <class T>
 void TransitionSystem<T>::setInitState(T* init_state_) {
 	init_state = init_state_;
@@ -196,25 +300,7 @@ ProductSystem<T>::ProductSystem(Graph<WL>* graph_TS_, DFA* graph_DFA_, Graph<WL>
 		
 	}
 
-template <class T>
-void ProductSystem<T>::addProposition(SimpleCondition* proposition_) {
-	if (proposition_->getLabel() != Condition::FILLER) {
-		propositions[proposition_->getLabel()] = proposition_;
-	} else {
-		std::cout<<"Error: Must name proposition before including in Product System\n";
-	}
-}
 
-template <class T>
-void ProductSystem<T>::setPropositions(const std::vector<SimpleCondition*>& propositions_) {
-	for (int i=0; i<propositions_.size(); ++i) {
-		if (propositions_[i]->getLabel() != Condition::FILLER) {
-			propositions[propositions_[i]->getLabel()] = propositions_[i];
-		} else {
-			std::cout<<"Error: Must name all propositions before including in Product System\n";
-		}
-	}
-}
 
 //template <class T>
 //void ProductSystem<T>::setAutomatonInitStateIndex(int init_state_DFA_ind_) {
@@ -250,89 +336,7 @@ void ProductSystem<T>::setPropositions(const std::vector<SimpleCondition*>& prop
 //}
 
 
-template <class T>
-bool ProductSystem<T>::parseLabelAndEval(const std::string* label, const T* state) {
-	bool negate_next = false;
-	bool is_first = true;
-	bool arg;
-	//bool arg_conj;
-	//std::vector<bool> propositions;
-	int prop_i = -1;
-	std::string temp_name;
-	char prev_operator;
-	for (int i=0; i<label->size(); ++i) {
-		char character = (*label)[i];
-		bool sub_eval;
-		switch (character) {
-			case '!':
-				negate_next = !negate_next;
-				break;
-			case '&':
-				sub_eval = propositions[temp_name]->evaluate(state);	
-				if (negate_next) {
-					sub_eval = !sub_eval;
-				}
-				temp_name.clear();
-				negate_next = false;
-				prev_operator = '&';
-				if (is_first) {
-					arg = sub_eval;
-					is_first = false;
-				} else {
-					arg = arg && sub_eval;
-				}
-				break;
-			case '|':
-				sub_eval = propositions[temp_name]->evaluate(state);	
-				
-				if (negate_next) {
-					sub_eval = !sub_eval;
-				}
-				temp_name.clear();
-				negate_next = false;
-				prev_operator = '|';
-				if (is_first) {
-					arg = sub_eval;
-					is_first = false;
-				} else {
-					arg = arg || sub_eval;
-				}
-				break;
-			case ' ':
-				break;
-			default:
-				temp_name.push_back(character);
-				if (i == label->size()-1) {
-					sub_eval = propositions[temp_name]->evaluate(state);	
-					if (negate_next) {
-						sub_eval = !sub_eval;
-					}
-					switch (prev_operator) {
-						//case '&':	
-						case '|':	
-							arg = arg || sub_eval;
-							break;
-						default:
-							// Defaults to conjunction because
-							// arg is initialized to 'true'
-							if (is_first) {
-								arg = sub_eval;
-								is_first = false;
-							} else {
-								arg = arg && sub_eval;
-							}
-					}
-				}
-		}
-		/*
-		if (!arg) {
-			break;
-		}
-		*/
-	}
-	return arg;
-	
-}
+
 
 template <class T>
 void ProductSystem<T>::safeAddProdState(int p_i, T* add_state, int add_state_ind, float weight, const std::string& action){
@@ -434,7 +438,7 @@ void ProductSystem<T>::compose() {
 					// product graph
 					T* add_state = TransitionSystem<T>::state_map[to_state_ind];
 					
-					connecting = parseLabelAndEval(currptr_DFA->dataptr, add_state);
+					connecting = TransitionSystem<T>::parseLabelAndEval(currptr_DFA->dataptr, add_state);
 					if (connecting) {
 						// Use the edge labels in the TS because 
 						// those represent actions. Also use the 

@@ -124,6 +124,30 @@ bool Graph<T>::hop(unsigned int ind, LAM lambda) {
 	return true;
 }
 
+// This hop function is used for searching with a break statement
+//template<typename LAM>
+//bool Graph<T>::hopS(unsigned int ind, LAM lambda) {
+template<class T> 
+bool Graph<T>::hopS(unsigned int ind, std::function<bool(node*, node*)> lambda) const {
+	node* prevptr = heads[ind];
+	//std::cout<<"prevptr: "<<prevptr<<std::endl;
+	node* currptr = heads[ind]->adjptr; 
+	//std::cout<<"currptr: "<<currptr<<std::endl;
+	bool breakout;
+	while (currptr!=nullptr) {
+		node* nextptr = currptr->adjptr;
+		//std::cout<<"   currptr going in: "<<currptr<<", prevptr going in: "<<prevptr<<std::endl;
+		breakout = lambda(currptr, prevptr);
+		//std::cout<<"   currptr coming out: "<<currptr<<", prevptr coming out: "<<prevptr<<std::endl;
+		if (breakout) {
+			return true;
+		}
+		prevptr = currptr;
+		currptr = nextptr;
+	}
+	return false;
+}
+
 template<class T>
 bool Graph<T>::hopF(unsigned int ind, std::function<bool(node*, node*)> lambda) {
 	node* prevptr = heads[ind];
@@ -359,14 +383,22 @@ void Automaton<T>::addWord(const std::string& word) {
 
 template<class T>
 void Automaton<T>::addAcceptingState(unsigned int accepting_state) {
+	std::cout<<"accepting_state: "<<accepting_state<<std::endl;
+	std::cout<<"graph size: "<<Graph<T>::size()<<std::endl;
 	if (accepting_state > max_accepting_state_index) {
 		max_accepting_state_index = accepting_state;	
 	}
+	if (Graph<T>::size() >= max_accepting_state_index && max_accepting_state_index > is_accepting.size()) {
+		is_accepting.resize(Graph<T>::size());
+	} else if (Graph<T>::size() <= max_accepting_state_index && max_accepting_state_index > is_accepting.size()) {
+		is_accepting.resize(max_accepting_state_index);
+	}
+	is_accepting[accepting_state] = true;
 
 }
 
 template<class T>
-Automaton<T>::Automaton() : Graph<T>(true), max_accepting_state_index(0), max_init_state_index(0)
+Automaton<T>::Automaton() : Graph<T>(true), max_accepting_state_index(0), max_init_state_index(0), is_accepting(0, false)
 {
 	//node_data_list = new std::vector<T>;	
 }
@@ -408,12 +440,29 @@ template<class T>
 void Automaton<T>::setAcceptingStates(const std::vector<unsigned int>& accepting_states_){
 	// Determine the max accepting state index to easily verify that all
 	// accepting states exist in the graph
+
+	//is_accepting.resize(Graph<T>::size());
 	accepting_states = accepting_states_;
 	for (int i=0; i<accepting_states.size(); ++i) {
 		if (accepting_states[i] > max_accepting_state_index) {
 			max_accepting_state_index = accepting_states[i];	
 		}
 	}	
+	is_accepting.resize(max_accepting_state_index);
+	for (int i=0; i<accepting_states.size(); ++i) {
+		is_accepting[accepting_states[i]] = true;
+	}
+}
+
+template<class T>
+bool Automaton<T>::isAccepting(unsigned int ind) const {
+	// This function is only called once the graph has been constructed,
+	// resize when this function is first called after constructing the 
+	// graph to make sure all graph inds have an index in is_accepting
+	if (is_accepting.size() < ind + 1) {
+		return false;
+	}
+	return is_accepting[ind];
 }
 
 template<class T>
@@ -462,7 +511,7 @@ void DFA::toggleCheckDeterminism(bool check_det_) {
 	check_det = check_det_;
 }
 
-int DFA::getInitState() {
+int DFA::getInitState() const {
 	//Assume only a single init state:
 	return init_states[0];
 }
@@ -576,6 +625,7 @@ bool DFA::readFileSingle(const std::string& filename) {
 					seen_entry_mode = false;	
 				}
 			}
+			//std::cout<<"b4 currmode"<<std::endl;
 			switch (curr_mode) {
 				case -1: 
 					std::cout<<"Error: No field specified\n";
@@ -670,8 +720,9 @@ bool DFA::readFileSingle(const std::string& filename) {
 						addAcceptingState(accepting_state);
 					}
 			}
-
-		}	
+				//std::cout<<"af currmode"<<std::endl;
+			}	
+			//std::cout<<"made it out of while"<<std::endl;
 		dfa_file.close();
 		return true;
 	} else {
@@ -687,10 +738,8 @@ void DFA::print() {
 	for (int i=0; i<alphabet.size(); ++i) {
 		std::cout<<alphabet[i]<<" ";
 	}
-	std::cout<<"\nInitial States: ";
-	for (int i=0; i<init_states.size(); ++i) {
-		std::cout<<init_states[i]<<" ";
-	}
+	std::cout<<"\nInitial State: ";
+	std::cout<<init_states[0];
 	std::cout<<"\nAccepting States: ";
 	for (int i=0; i<accepting_states.size(); ++i) {
 		std::cout<<accepting_states[i]<<" ";
@@ -717,6 +766,65 @@ DFA::~DFA() {
 		delete node_data_list[i];
 	}
 }
+
+
+
+
+
+
+
+		////////////////////////
+		/* GRAPH EVAL CLASSES */
+		////////////////////////
+
+
+
+DFA_EVAL::DFA_EVAL(const DFA* dfaptr_) : dfaptr(dfaptr_), accepting(false) {
+	// Set the current node to be the initial state
+	std::cout<<"hello"<<std::endl;
+	curr_node = dfaptr->getInitState();
+}
+
+bool DFA_EVAL::eval(const std::string& letter) {
+	int curr_node_g = curr_node;
+	auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
+	//auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
+		if (*(dst->dataptr) == letter || *(dst->dataptr) == "1") {
+			curr_node_g = dst->nodeind;
+			return true;
+		} else {
+			return false;
+		}
+	};
+	//Graph<std::string>* grphptr = &dfaptr;
+	if (dfaptr->hopS(curr_node, evalLAM)) {
+		//std::cout<<"new curr_node:"<<curr_node<<std::endl;
+		if (dfaptr->isAccepting(curr_node_g)) {
+			accepting = true;
+		}
+		curr_node = curr_node_g;
+		return true;
+	} else {
+		std::cout<<"Error: Action ("<<letter<<") not found at state: "<<curr_node<<std::endl;
+		return false;
+	}
+}
+
+int DFA_EVAL::getCurrNode() {
+	return curr_node;
+}
+
+void DFA_EVAL::reset() {
+	curr_node = dfaptr->getInitState();
+	accepting = false;
+}
+
+bool DFA_EVAL::isCurrAccepting() const {
+	return dfaptr->isAccepting(curr_node);
+}
+
+
+
 //bool DFA::syncProduct(const DFA* dfa1, const DFA* dfa2, DFA* product) {
 //	if (!dfa1->checkAlphabet(dfa2)) {
 //		std::cout<<"Warning: Alphabet of dfa1 does not match that of dfa2\n";

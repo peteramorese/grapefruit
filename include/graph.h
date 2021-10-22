@@ -23,12 +23,13 @@ class Graph {
 		//std::vector<T> node_list;
 		bool ordered;
 		bool isEmpty(); 
-	protected:
+	public:
 		struct node {
 			int nodeind; // Node index or name
 			node* adjptr; // Pointer to connected element
 			T* dataptr;
 		};
+	protected:
 		std::vector<node*> tails;
 		std::vector<node*> heads;
 		template<typename pLAM> void print(pLAM printLambda);
@@ -44,6 +45,8 @@ class Graph {
 		virtual bool connect(unsigned int src_ind, const std::pair<unsigned int, T*>& dst);
 		
 		template<typename LAM> bool hop(unsigned int ind, LAM lambda);
+		//template<typename LAM> bool hopS(unsigned int ind, LAM lambda);
+		bool hopS(unsigned int ind, std::function<bool(node*, node*)> lambda) const;
 		bool hopF(unsigned int ind, std::function<bool(node*, node*)> lambda);
 		virtual void remove(unsigned int ind_);
 		virtual void print();
@@ -63,6 +66,7 @@ class Automaton : public Graph<T> {
 		unsigned int max_init_state_index;
 	protected:
 		//std::vector<T> node_data_list;
+		std::vector<bool> is_accepting;
 		std::vector<unsigned int> accepting_states;
 		std::vector<unsigned int> init_states;
 		std::vector<std::string> alphabet;
@@ -76,6 +80,7 @@ class Automaton : public Graph<T> {
 	public:
 		Automaton();
 		void setAcceptingStates(const std::vector<unsigned int>& accepting_states_);
+		bool isAccepting(unsigned int ind) const;
 		const std::vector<unsigned int>* getAcceptingStates() const;
 		void setInitStates(const std::vector<unsigned int>& init_states_);
 		const std::vector<unsigned int>* getInitStates() const;
@@ -93,7 +98,7 @@ class DFA : public Automaton<std::string> {
 	public:
 		DFA();
 		void toggleCheckDeterminism(bool check_det_);
-		int getInitState();
+		int getInitState() const;
 		bool connectDFA(unsigned int ind_from, unsigned int ind_to, const std::string& label_);
 		bool readFileSingle(const std::string& filename);
 		void print();
@@ -101,4 +106,20 @@ class DFA : public Automaton<std::string> {
 		//static bool syncProduct( const DFA* arg_dfa, const DFA* arg_dfa2, DFA* product);
 		//static bool readFileMultiple(const std::string& filename, std::array<DFA, int>& dfa_arr);
 		~DFA();
+};
+
+class DFA_EVAL {
+	private:
+		const DFA* dfaptr;
+		//Graph<std::string>::node* curr_node;
+		int curr_node;
+		bool init, accepting;
+		friend class DFA;
+		//friend class Graph<std::string>;
+	public:
+		DFA_EVAL(const DFA* dfaptr_);
+		bool eval(const std::string& letter);
+		int getCurrNode();
+		void reset();
+		bool isCurrAccepting() const;
 };

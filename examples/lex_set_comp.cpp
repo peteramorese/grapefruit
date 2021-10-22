@@ -17,6 +17,14 @@ int main() {
 	std::string gt = (C2 > C1) ? "is" : "is not";
 	std::cout<<"C2 "<<gt<<" greater than C1 ( !(C2 > C1))\n"<<std::endl;
 
+	LexSet InfSet(3);
+	InfSet.setInf();
+	std::cout<<"InfSet:"<<std::endl;
+	InfSet.print();
+
+	gt = (C2 > InfSet) ? "is" : "is not";
+	std::cout<<"C2 "<<gt<<" greater than InfSet ( !(C2 > InfSet))\n"<<std::endl;
+
 
 	FlexLexSetS F1(2.0, 3);
 	F1 = set_set_1;
@@ -30,6 +38,7 @@ int main() {
 
 	gt = (F2 > F1) ? "is" : "is not";
 	std::cout<<"F2 "<<gt<<" greater than F1 ( !(F2 > F1))"<<std::endl;
+
 
 	return 0;
 }
