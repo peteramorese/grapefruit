@@ -1,2 +1,2 @@
-F(a & Fb)
-F(green) & F(blue U green)
+F(facing_down & F(powered_on))
+F(facing_forward) & F(facing_up U powered_off)

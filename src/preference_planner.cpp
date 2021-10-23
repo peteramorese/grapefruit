@@ -1,11 +1,20 @@
+#include<iostream>
 #include "graph.h"
 #include "condition.h"
 #include "transitionSystem.h"
-#include "astar.h"
 #include "stateSpace.h"
 #include "state.h"
+#include "symbSearch.h"
 
 int main() {
+
+
+	/////////////////////////////////////////////////
+	/* Create the Transition System for the Camera */
+	/////////////////////////////////////////////////
+	
+
+
 	/* CREATE ENVIRONMENT FOR CAMERA */
 	StateSpace SS_CAMERA;
 
@@ -49,6 +58,7 @@ int main() {
 	conds_c[0].addCondition(Condition::POST, Condition::LABEL, "power", Condition::EQUALS, Condition::VAR, "on");
 	conds_c[0].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
 	conds_c[0].setActionLabel("power_on");
+	conds_c[0].setActionCost(50);
 
 	// Turn Off
 	conds_c[1].addCondition(Condition::PRE, Condition::LABEL, "power", Condition::EQUALS, Condition::VAR, "on");
@@ -56,7 +66,8 @@ int main() {
 
 	conds_c[1].addCondition(Condition::POST, Condition::LABEL, "power", Condition::EQUALS, Condition::VAR, "off");
 	conds_c[1].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
-	conds_c[1].setActionLabel("power_on");
+	conds_c[1].setActionLabel("power_off");
+	conds_c[1].setActionCost(5);
 
 	// Pan Center 
 	conds_c[2].addCondition(Condition::PRE, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "center", Condition::NEGATE, "not_center");
@@ -64,6 +75,7 @@ int main() {
 	conds_c[2].addCondition(Condition::POST, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "center", Condition::TRUE, "center");
 	conds_c[2].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
 	conds_c[2].setActionLabel("pan_center");
+	conds_c[2].setActionCost(25);
 	
 	// Pan Off Center 
 	conds_c[3].addCondition(Condition::PRE, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "center", Condition::TRUE, "center");
@@ -71,6 +83,7 @@ int main() {
 	conds_c[3].addCondition(Condition::POST, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "center", Condition::NEGATE, "not_center");
 	conds_c[3].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
 	conds_c[3].setActionLabel("pan_off_center");
+	conds_c[3].setActionCost(25);
 
 	// Tilt Center 
 	conds_c[4].addCondition(Condition::PRE, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "center", Condition::NEGATE, "not_center");
@@ -78,6 +91,7 @@ int main() {
 	conds_c[4].addCondition(Condition::POST, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "center", Condition::TRUE, "center");
 	conds_c[4].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
 	conds_c[4].setActionLabel("tilt_center");
+	conds_c[4].setActionCost(25);
 	
 	// Tilt Off Center 
 	conds_c[5].addCondition(Condition::PRE, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "center", Condition::TRUE, "center");
@@ -85,6 +99,7 @@ int main() {
 	conds_c[5].addCondition(Condition::POST, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "center", Condition::NEGATE, "not_center");
 	conds_c[5].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
 	conds_c[5].setActionLabel("tilt_off_center");
+	conds_c[5].setActionCost(25);
 
 	
 	for (int i=0; i<conds_c.size(); ++i){
@@ -93,65 +108,117 @@ int main() {
 
 
 	/* Propositions */
-	SimpleCondition p_p;
-	p_p.addCondition(Condition::SIMPLE, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "left");
-	p_p.setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
-	p_p.setLabel("p_p");
+	int N_APs = 9;
+	std::vector<SimpleCondition> APs(N_APs);
+	APs[0].addCondition(Condition::SIMPLE, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "left");
+	APs[0].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
+	APs[0].setLabel("facing_left");
 
 	/* Propositions */
-	SimpleCondition p_t;
-	p_t.addCondition(Condition::SIMPLE, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "down");
-	p_t.setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
-	p_t.setLabel("p_t");
+	APs[1].addCondition(Condition::SIMPLE, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "right");
+	APs[1].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
+	APs[1].setLabel("facing_right");
+
+	/* Propositions */
+	APs[2].addCondition(Condition::SIMPLE, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "center");
+	APs[2].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
+	APs[2].setLabel("facing_middle");
+
+	/* Propositions */
+	APs[3].addCondition(Condition::SIMPLE, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "down");
+	APs[3].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
+	APs[3].setLabel("facing_down");
 	
 	/* Propositions */
-	SimpleCondition p_on;
-	p_on.addCondition(Condition::SIMPLE, Condition::LABEL, "power", Condition::EQUALS, Condition::VAR, "on");
-	p_on.setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
-	p_on.setLabel("p_on");
+	APs[4].addCondition(Condition::SIMPLE, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "up");
+	APs[4].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
+	APs[4].setLabel("facing_up");
+
+	/* Propositions */
+	APs[5].addCondition(Condition::SIMPLE, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "center");
+	APs[5].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
+	APs[5].setLabel("facing_forward");
+
+	/* Propositions */
+	APs[6].addCondition(Condition::SIMPLE, Condition::LABEL, "power", Condition::EQUALS, Condition::VAR, "on");
+	APs[6].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
+	APs[6].setLabel("powered_on");
+
+	/* Propositions */
+	APs[7].addCondition(Condition::SIMPLE, Condition::LABEL, "power", Condition::EQUALS, Condition::VAR, "off");
+	APs[7].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
+	APs[7].setLabel("powered_off");
+
+	std::vector<SimpleCondition*> AP_ptrs_c(N_APs);
+	for (int i=0; i<AP_ptrs_c.size(); ++i){
+		AP_ptrs_c[i] = &APs[i];
+	}
 
 
-
-	/* DFA_m & Graph Instantiations */
-	//Edge DFA_c(true);
-	//Edge PS_c(true);
-	
-	//bool didwork = conds_m[3].evaluate(&init_state, &test_state);
-	//std::cout<<"is true??: "<<didwork<<std::endl;
-
-	// Hard-code DFA_m automaton:
-	//DFA_c.connect(1, 0, 1.0, "p_on & p_p & p_t");
-	//DFA_c.connect(1, 1, 1.0, "!p_on | !p_p | !p_t");
-	/*
-	DFA_c.connect(2, 1, 1.0, "p_a & !p_r");
-	DFA_c.connect(2, 3, 1.0, "!p_a & p_r");
-	DFA_c.connect(1, 1, 1.0, "!p_r");
-	DFA_c.connect(1, 0, 1.0, "p_r");
-	DFA_c.connect(3, 3, 1.0, "!p_a");
-	DFA_c.connect(3, 0, 1.0, "p_a");
-	*/
-	//DFA_c.print();
-
-	//TransitionSystem<State> TS(&TS_c);
-	//TransitionSystem<State> test(&TS_c);
-	//PRODSYS_c.setConditions(cond_ptrs_c);
-	//PRODSYS_c.setInitState(&init_state_c);
-	//PRODSYS_c.generate();
-
-	Graph<WL> TS_c(true);
-	TransitionSystem<State> ts(&TS_c);
-	ts.setConditions(cond_ptrs_c);
-	ts.setInitState(&init_state_c);
-	ts.generate();
-	ts.printTS();
+	// Create the transition system:
+	Graph<WL> ts_graph_c(true);
+	TS_EVAL<State> ts_eval(&ts_graph_c, 0); // by default, the init node for the ts is 0
+	ts_eval.setConditions(cond_ptrs_c);
+	ts_eval.setPropositions(AP_ptrs_c);
+	ts_eval.setInitState(&init_state_c);
+	ts_eval.generate();
+	std::cout<<"\n\n Printing the Transition System: \n\n"<<std::endl;
+	ts_eval.printTS();
 
 	
-	//PRODSYS_c.addProposition(&p_p);
-	//PRODSYS_c.addProposition(&p_t);
-	//PRODSYS_c.addProposition(&p_on);
-	//PRODSYS_c.setAutomatonInitStateIndex(1);
-	//PRODSYS_c.addAutomatonAcceptingStateIndex(0);
-	//PRODSYS_c.compose();
-	//PRODSYS_c.print();
+
+	/////////////////////////////////////////////////
+	/*       Read in the DFA's from the files      */
+	/////////////////////////////////////////////////
+	
+	DFA A;
+	int N_DFAs;
+	
+	// Get input from user for how many formulas to read in:
+	std::cout<<"Enter number of formulas: "<<std::endl;
+	std::cin >> N_DFAs;
+
+	std::vector<DFA> dfa_arr(N_DFAs);
+	std::vector<std::string> filenames(N_DFAs);
+	for (int i=0; i<N_DFAs; ++i) {
+		filenames[i] = "../spot_automaton_file_dump/dfas/dfa_" + std::to_string(i) +".txt";
+	}
+	for (int i=0; i<N_DFAs; ++i) {
+		dfa_arr[i].readFileSingle(filenames[i]);
+	}
+	std::cout<<"\n\nPrinting all DFA's (read into an array)...\n\n"<<std::endl;
+	for (int i=0; i<N_DFAs; ++i) {
+		dfa_arr[i].print();
+		std::cout<<"\n"<<std::endl;
+	}
+
+
+
+	/////////////////////////////////////////////////
+	/*        Construct the Symbolic Search        */
+	/////////////////////////////////////////////////
+	
+	// First construct the graph evaluation objects:
+	//TS_EVAL<State> ts_eval(&ts, 0); 
+	//std::vector<DFA_EVAL> dfa_eval_vec;
+	std::vector<DFA_EVAL*> dfa_eval_ptrs;
+	for (int i=0; i<N_DFAs; ++i) {
+		DFA_EVAL* temp_dfa_eval_ptr = new DFA_EVAL(&dfa_arr[i]);
+		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
+	}
+	
+	SymbSearch search_obj;
+	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
+	search_obj.setTransitionSystem(&ts_eval);
+	search_obj.setFlexibilityParam(75.0f);
+	bool success = search_obj.search();
+	std::cout<<"Found plan? "<<success<<std::endl;
+
+	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {
+		delete dfa_eval_ptrs[i];
+	}
+
+
+
 
 }

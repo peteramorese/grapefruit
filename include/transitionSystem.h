@@ -34,7 +34,7 @@ class TransitionSystem {
 		void addProposition(SimpleCondition* proposition_);
 		void setPropositions(const std::vector<SimpleCondition*>& propositions_);
 		void setInitState(T* init_state_);
-		T* getState(int node_index);
+		const T* getState(int node_index) const;
 		void generate();
 		//T compose(const T* mult_TS) const;
 		void clearTS();
@@ -43,22 +43,25 @@ class TransitionSystem {
 };
 
 template <class T>
-class TS_EVAL {
+class TS_EVAL : public TransitionSystem<T> {
 	private:
-		const TransitionSystem<T>* tsptr;
+		//template <class T2>
+		//friend class TransitionSystem<T>;
+
+		//const TransitionSystem<T>* tsptr;
 		int curr_node;
-		friend class TransitionSystem<T>;
 		std::unordered_map<int, std::vector<std::string>> state_to_label_map;
 	public:
-		TS_EVAL(const TransitionSystem<T>* tsptr_, int init_node);
+		//TS_EVAL(const TransitionSystem<T>* tsptr_, int init_node);
+		TS_EVAL(Graph<WL>* graph_TS_, int init_node);
 		void mapStatesToLabels(const std::vector<const std::vector<std::string>*>& alphabet);
-		bool eval(const std::string& action);
+		bool eval(const std::string& action, bool evolve);
 		int getCurrNode() const;
 		void getConnectedDataEVAL(std::vector<WL*>& con_data);
 		const std::vector<std::string>* returnStateLabels(int state_ind);
 		void set(int set_node);
 		void reset(int init_node);
-		T* getCurrState() const;
+		const T* getCurrState() const;
 };
 
 template <class T>

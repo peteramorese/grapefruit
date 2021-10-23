@@ -18,11 +18,11 @@ int main() {
 
 	DFA_EVAL A_EVAL(&A);
 	std::cout<<"Curr node: "<<A_EVAL.getCurrNode()<<", is accepting: "<<A_EVAL.isCurrAccepting()<<std::endl;
-	A_EVAL.eval("a&!b");
+	A_EVAL.eval("a&!b", true);
 	std::cout<<"Curr node: "<<A_EVAL.getCurrNode()<<", is accepting: "<<A_EVAL.isCurrAccepting()<<std::endl;
-	A_EVAL.eval("b");
+	A_EVAL.eval("b", true);
 	std::cout<<"Curr node: "<<A_EVAL.getCurrNode()<<", is accepting: "<<A_EVAL.isCurrAccepting()<<std::endl;
-	A_EVAL.eval("!b");
+	A_EVAL.eval("!b", true);
 	std::cout<<"Curr node: "<<A_EVAL.getCurrNode()<<", is accepting: "<<A_EVAL.isCurrAccepting()<<std::endl;
 
 

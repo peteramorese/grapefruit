@@ -45,7 +45,18 @@ target_link_libraries(create_transition_system
 
 # Preference Planning Examples:
 add_executable(lex_set_comp examples/lex_set_comp.cpp)
-target_include_directories(lex_set_comp PUBLIC include pref_include)
+target_include_directories(lex_set_comp PUBLIC include) #pref_include
 target_link_libraries(lex_set_comp 
 	LexSetClass
+	)
+
+add_executable(preference_planner src/preference_planner.cpp)
+target_include_directories(preference_planner PUBLIC include) #pref_include
+target_link_libraries(preference_planner 
+	LexSetClass
+	GraphClass
+	ConditionClass
+	StateSpaceClass
+	StateClass
+	SymbSearchClass
 	)

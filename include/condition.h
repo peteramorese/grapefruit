@@ -27,6 +27,7 @@ class Condition {
 		std::pair<bool, std::string> arg_V_i;
 		void sub_print(const std::vector<sub_condition>& p_c) const;
 		std::string action_label;
+		float action_cost;
 		std::string label;
 	public:	
 		static const bool TRUE;
@@ -60,6 +61,8 @@ class Condition {
 		//void setPostCondJunctType(int LOGICAL_OPERATOR);
 		void setActionLabel(const std::string& action_label_);
 		std::string getActionLabel();
+		void setActionCost(float action_cost_);
+		float getActionCost();
 		void setLabel(const std::string& label_);
 		std::string getLabel();
 		bool subEvaluate(const State* state, const sub_condition& cond);

@@ -139,6 +139,14 @@ std::string Condition::getActionLabel() {
 	return action_label;
 }
 
+void Condition::setActionCost(float action_cost_) {
+	action_cost = action_cost_;
+}
+
+float Condition::getActionCost() {
+	return action_cost;
+}
+
 void Condition::setLabel(const std::string& label_) {
 	label = label_;
 }

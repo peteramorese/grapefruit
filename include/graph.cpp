@@ -399,17 +399,29 @@ void Automaton<T>::addWord(const std::string& word) {
 
 template<class T>
 void Automaton<T>::addAcceptingState(unsigned int accepting_state) {
-	std::cout<<"accepting_state: "<<accepting_state<<std::endl;
-	std::cout<<"graph size: "<<Graph<T>::size()<<std::endl;
+	//std::cout<<"accepting_state: "<<accepting_state<<std::endl;
+	//std::cout<<"graph size: "<<Graph<T>::size()<<std::endl;
 	if (accepting_state > max_accepting_state_index) {
 		max_accepting_state_index = accepting_state;	
 	}
-	if (Graph<T>::size() >= max_accepting_state_index && max_accepting_state_index > is_accepting.size()) {
+	//std::cout<<"b4 is_accepting resize"<<std::endl;
+	//std::cout<<" graph size: "<<Graph<T>::size()<<" max accepting state ind: "<<max_accepting_state_index<<std::endl;
+	//std::cout<<"first condition: "<<(Graph<T>::size()-1 <= max_accepting_state_index)<<std::endl;
+	//std::cout<<"second condition: "<<(max_accepting_state_index > (is_accepting.size()-1))<<std::endl;
+	//std::cout<<"is accepting size"<<is_accepting.size()-1<<std::endl;
+	if (Graph<T>::size() > (max_accepting_state_index + 1) && (max_accepting_state_index + 1) > is_accepting.size()) {
 		is_accepting.resize(Graph<T>::size());
-	} else if (Graph<T>::size() <= max_accepting_state_index && max_accepting_state_index > is_accepting.size()) {
-		is_accepting.resize(max_accepting_state_index);
+	} else if (Graph<T>::size() <= (max_accepting_state_index + 1) && (max_accepting_state_index + 1) > is_accepting.size()) {
+		is_accepting.resize(max_accepting_state_index + 1);
 	}
+	//std::cout<<"af is_accepting resize, size:"<<is_accepting.size()<<" accepting_state: "<<accepting_state<<std::endl;
+	//std::cout<<"found accepting state: "<<accepting_state<<std::endl;
 	is_accepting[accepting_state] = true;
+	//std::cout<<"PRINTING IS ACCEPTING IN addAccept:"<<std::endl;
+	//for (int i=0; i<is_accepting.size(); ++i) {
+	//	std::cout<<"i: "<<i<<", is_accepting[i]: "<<is_accepting[i]<<std::endl;
+	//}
+	//std::cout<<"af is_accepting index"<<std::endl;
 
 }
 
@@ -475,9 +487,16 @@ bool Automaton<T>::isAccepting(unsigned int ind) const {
 	// This function is only called once the graph has been constructed,
 	// resize when this function is first called after constructing the 
 	// graph to make sure all graph inds have an index in is_accepting
+	
+	//std::cout<<"isAccepting input: "<<ind<<std::endl;
 	if (is_accepting.size() < ind + 1) {
 		return false;
 	}
+	//std::cout<<"PRINTING IS ACCEPTING:"<<std::endl;
+	//for (int i=0; i<is_accepting.size(); ++i) {
+	//	std::cout<<"i: "<<i<<", is_accepting[i]: "<<is_accepting[i]<<std::endl;
+	//}
+	//std::cout<<"isAccepting output: "<<is_accepting[ind]<<std::endl;
 	return is_accepting[ind];
 }
 
@@ -490,8 +509,11 @@ template<class T>
 void Automaton<T>::setInitStates(const std::vector<unsigned int>& init_states_){
 	// Determine the max init state index to easily verify that all
 	// init states exist in the graph
+	//std::cout<<"b4 vec eq and size:"<<init_states.size()<<std::endl;
 	init_states = init_states_;
+	//std::cout<<"input init states size: "<<init_states.size()<<std::endl;
 	for (int i=0; i<init_states.size(); ++i) {
+		//init_states[i] = init_states_[i];
 		if (init_states[i] > max_init_state_index) {
 			max_init_state_index = init_states[i];	
 		}
@@ -580,7 +602,7 @@ bool DFA::readFileSingle(const std::string& filename) {
 		bool seen_entry_mode = false;
 		int entry_num = 0;
 		while (std::getline(dfa_file, line)) {
-			std::cout<<line<<"\n";	
+			//std::cout<<line<<"\n";	
 			// Get the current data type:
 			std::string temp_word;
 			std::string line_dec; // Line deconstructed into words
@@ -646,7 +668,7 @@ bool DFA::readFileSingle(const std::string& filename) {
 					seen_entry_mode = false;	
 				}
 			}
-			//std::cout<<"b4 currmode"<<std::endl;
+			std::cout<<"currmode: "<<curr_mode<<std::endl;
 			switch (curr_mode) {
 				case -1: 
 					std::cout<<"Error: No field specified\n";
@@ -681,7 +703,9 @@ bool DFA::readFileSingle(const std::string& filename) {
 						// Only include functionality for 1 initial state
 						std::vector<unsigned int> init_states(1);
 						init_states[0] = init_state;
+						//std::cout<<"b4 setinitstates init_state value: "<<init_states[0]<<std::endl;
 						setInitStates(init_states);
+						//std::cout<<"af setinitstates"<<std::endl;
 					}
 					break;
 				case 2: // GRAPH
@@ -726,6 +750,7 @@ bool DFA::readFileSingle(const std::string& filename) {
 					}
 					break;
 				case 3: // ACCEPTING STATES
+					std::cout<<"in accepting states"<<std::endl;
 					for (int i=0; i<line.size(); ++i) {
 						switch (line[i]) {
 							case '-':
@@ -739,6 +764,7 @@ bool DFA::readFileSingle(const std::string& filename) {
 					{
 						std::string::size_type sz;
 						int accepting_state = std::stoi(temp_word_2,&sz);
+						std::cout<<"b4 add accept state: "<<accepting_state<<std::endl;
 						addAcceptingState(accepting_state);
 					}
 			}
@@ -764,9 +790,13 @@ void DFA::print() {
 	}
 	std::cout<<"\nInitial State: ";
 	std::cout<<init_states[0];
+	//std::cout<<"Accepting states Size: "<<accepting_states.size()<<std::endl;
 	std::cout<<"\nAccepting States: ";
-	for (int i=0; i<accepting_states.size(); ++i) {
-		std::cout<<accepting_states[i]<<" ";
+	for (int i=0; i<is_accepting.size(); ++i) {
+		//std::cout<<"i: "<<i<<std::endl;
+		if (is_accepting[i]) {
+			std::cout<<i<<" ";
+		}
 	}
 	std::cout<<"\n";
 	Graph<std::string>::print(printLAM);
@@ -812,7 +842,7 @@ const std::vector<std::string>* DFA_EVAL::getAlphabetEVAL() const {
 	return dfaptr->getAlphabet();
 }
 
-bool DFA_EVAL::eval(const std::string& letter) {
+bool DFA_EVAL::eval(const std::string& letter, bool evolve) {
 	int curr_node_g = curr_node;
 	auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
 	//auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
@@ -829,10 +859,12 @@ bool DFA_EVAL::eval(const std::string& letter) {
 		if (dfaptr->isAccepting(curr_node_g)) {
 			accepting = true;
 		}
-		curr_node = curr_node_g;
+		if (evolve) {
+			curr_node = curr_node_g;
+		}
 		return true;
 	} else {
-		std::cout<<"Error: Letter ("<<letter<<") not found at state: "<<curr_node<<std::endl;
+		//std::cout<<"Error: Letter ("<<letter<<") not found at state: "<<curr_node<<std::endl;
 		return false;
 	}
 }
@@ -852,6 +884,7 @@ void DFA_EVAL::reset() {
 }
 
 bool DFA_EVAL::isCurrAccepting() const {
+	//dfaptr->print();
 	return dfaptr->isAccepting(curr_node);
 }
 

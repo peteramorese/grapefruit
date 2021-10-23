@@ -136,7 +136,7 @@ class DFA_EVAL {
 	public:
 		DFA_EVAL(const DFA* dfaptr_);
 		const std::vector<std::string>* getAlphabetEVAL() const;
-		bool eval(const std::string& letter);
+		bool eval(const std::string& letter, bool evolve);
 		int getCurrNode() const;
 		void set(int set_node);
 		void reset();

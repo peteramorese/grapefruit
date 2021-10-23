@@ -23,7 +23,7 @@ IVFlexLexS* SymbSearch::newNode() {
 }
 
 bool SymbSearch::search() {	
-	std::vector<const std::vector<std::string>*> total_alphabet;
+	std::vector<const std::vector<std::string>*> total_alphabet(node_size);
 	for (int i=0; i<node_size; ++i) {
 		total_alphabet[i] = dfa_list_ordered->operator[](i)->getAlphabetEVAL();
 	}
@@ -53,38 +53,61 @@ bool SymbSearch::search() {
 	std::pair<bool, std::vector<int>> accepting;
 	int tree_end_node = 0;
 	while (!finished) {
+		int pause;
+		std::cin >> pause;
 		curr_leaf = pq.top();
 		pq.pop();
 		int curr_leaf_ind = curr_leaf.first;
+		//std::cout<<" ------ CURRENT LEAF: "<<curr_leaf_ind<<std::endl;
 		FlexLexSetS* curr_leaf_weight = curr_leaf.second;
 		if (tree_end_node != 0) { // Use temp_nodeptr from outside the loop (init) when no nodes are in tree (=0)
 			temp_nodeptr = tree.getNodeDataptr(curr_leaf_ind);
 		}
 		// SET:
 		TS->set(node_list[curr_leaf_ind]->i);
+		std::cout<<" SET NODE: "<<node_list[curr_leaf_ind]->i;
 		for (int i=0; i<node_size; ++i) {
+			std::cout<<", "<<node_list[curr_leaf_ind]->v[i];
 			dfa_list_ordered->operator[](i)->set(node_list[curr_leaf_ind]->v[i]);
 		}
+		std::cout<<" ---\n";
+		con_data.clear();
 		TS->getConnectedDataEVAL(con_data);
 		std::pair<unsigned int, IVFlexLexS*> src;
 		src.first = curr_leaf_ind;
 		src.second = temp_nodeptr;
-		for (auto con_data_ptr : con_data) {
-			std::string temp_str = con_data_ptr->label;
-			float temp_weight = con_data_ptr->weight;
+		//for (auto con_data_ptr : con_data) {
+		for (int j=0; j<con_data.size(); ++j) {
+			TS->set(node_list[curr_leaf_ind]->i);
+			for (int i=0; i<node_size; ++i) {
+				//std::cout<<", "<<node_list[curr_leaf_ind]->v[i];
+				dfa_list_ordered->operator[](i)->set(node_list[curr_leaf_ind]->v[i]);
+			}
+			//std::string temp_str = con_data_ptr->label;
+			//float temp_weight = con_data_ptr->weight;
+			std::string temp_str = con_data[j]->label;
+			float temp_weight = con_data[j]->weight;
+			std::cout<<"temp label: "<<temp_str<<std::endl;
+			std::cout<<"temp weight: "<<temp_weight<<std::endl;
 			bool found_connection = true;
 
 			for (int i=0; i<node_size + 1; ++i) {
 				if (i == 0) { // eval TS first!!! (so that getCurrNode spits out the adjacent node, not the current node)
-					found_connection = TS->eval(temp_str);
+					found_connection = TS->eval(temp_str, true); // second arg tells wether or not to evolve on graph
+					if (!found_connection) {
+						std::cout<<"Error: Did not find connectivity in TS. Current node: "<<TS->getCurrNode()<<", Action: "<<temp_str<<std::endl;
+					}
 				} else { // eval DFAi
 					// There could be multiple logical statements the correspond to the same
 					// underlying label, therefore we must test all of the statements until
 					// one is found. Only one is needed due to determinism.
 					const std::vector<std::string>* lbls = TS->returnStateLabels(TS->getCurrNode());
 					found_connection = false;
+					std::cout<<"\n before eval"<<std::endl;
 					for (int ii=0; ii<lbls->size(); ++ii) {
-						if (dfa_list_ordered->operator[](i-1)->eval(lbls->operator[](ii))) {
+						//std::cout<<"DFA--- "<<lbls->operator[](ii);
+						//std::cout<<"DFA::: "<<(i-1)<<" curr node; "<<(dfa_list_ordered->operator[](i-1)->getCurrNode())<<std::endl;
+						if (dfa_list_ordered->operator[](i-1)->eval(lbls->operator[](ii), true)) {
 							found_connection = true;
 							break;
 						}
@@ -105,7 +128,9 @@ bool SymbSearch::search() {
 
 				// If the dfa is accepting at the evolved ind, append no cost, otherwise append
 				// the cost of taking the action:
+				std::cout<<"DFA: "<<i<<", curr becore accepting: "<<dfa_list_ordered->operator[](i)->getCurrNode()<<std::endl;
 				if (dfa_list_ordered->operator[](i)->isCurrAccepting()) {
+					std::cout<<"is accepting"<<std::endl;
 					temp_lex_set_fill[i] = 0;
 				} else {
 					all_accepting = false;
@@ -113,7 +138,7 @@ bool SymbSearch::search() {
 				}
 			}
 			new_temp_nodeptr->lex_set += temp_lex_set_fill;
-			std::cout<<"printing flex set: \n";
+			//std::cout<<"printing flex set: \n";
 			new_temp_nodeptr->lex_set.print();
 
 			// BUILD CONNECTION:
@@ -144,6 +169,12 @@ bool SymbSearch::search() {
 		return true;
 	} else {
 		return false;
+	}
+}
+
+SymbSearch::~SymbSearch() {
+	for (int i=0; i<node_list.size(); ++i) {
+		delete node_list[i];
 	}
 }
 
