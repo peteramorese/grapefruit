@@ -1,22 +1,14 @@
 Alphabet: 
-- facing_forward
-- powered_off
+- aL2
+- rL0
 Initial States: 
-- 2
+- 1
 Graph:
 - 0
    - 0 -> 0 : 1
 - 1
-   - 1 -> 0 : powered_off
-   - 1 -> 1 : !powered_off
-- 2
-   - 2 -> 0 : facing_forward & powered_off
-   - 2 -> 1 : facing_forward & !powered_off
-   - 2 -> 2 : !facing_forward & !powered_off
-   - 2 -> 3 : !facing_forward & powered_off
-- 3
-   - 3 -> 0 : facing_forward
-   - 3 -> 3 : !facing_forward
+   - 1 -> 0 : aL2 & rL0
+   - 1 -> 1 : !aL2 | !rL0
 Accepting States:
 - 0
 

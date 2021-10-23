@@ -9,171 +9,145 @@
 int main() {
 
 
-	/////////////////////////////////////////////////
-	/* Create the Transition System for the Camera */
-	/////////////////////////////////////////////////
-	
+	//////////////////////////////////////////////////////
+	/* Create the Transition System for the Manipualtor */
+	//////////////////////////////////////////////////////
 
+	/* CREATE ENVIRONMENT FOR MANIPULATOR */
+	StateSpace SS_MANIPULATOR;
 
-	/* CREATE ENVIRONMENT FOR CAMERA */
-	StateSpace SS_CAMERA;
+	std::vector<std::string> loc_labels = {"L0", "L1", "L2", "L3", "L4"};	
+	std::vector<std::string> ee_labels = loc_labels;
+	ee_labels.push_back("stow");
+	std::vector<std::string> obj_labels = loc_labels;
+	obj_labels.push_back("ee");
+	std::vector<std::string> grip_labels = {"true","false"};
 
-	std::vector<std::string> pan_labels = {"left","center","right"};
-	std::vector<std::string> tilt_labels = {"up","center","down"};
-	std::vector<std::string> power_labels = {"on","off"};
-	
 	// Create state space:
-	SS_CAMERA.setStateDimension(pan_labels, 0); // pan
-	SS_CAMERA.setStateDimension(tilt_labels, 1); // tilt
-	SS_CAMERA.setStateDimension(power_labels, 2); // power
+	SS_MANIPULATOR.setStateDimension(ee_labels, 0); // eef
+	SS_MANIPULATOR.setStateDimension(obj_labels, 1); // rock
+	SS_MANIPULATOR.setStateDimension(obj_labels, 2); // alien
+	SS_MANIPULATOR.setStateDimension(grip_labels, 3); // eef engaged
 
 	// Label state space:
-	SS_CAMERA.setStateDimensionLabel(0, "pan");
-	SS_CAMERA.setStateDimensionLabel(1, "tilt");
-	SS_CAMERA.setStateDimensionLabel(2, "power");
+	SS_MANIPULATOR.setStateDimensionLabel(0, "eeLoc");
+	SS_MANIPULATOR.setStateDimensionLabel(1, "rock");
+	SS_MANIPULATOR.setStateDimensionLabel(2, "alien");
+	SS_MANIPULATOR.setStateDimensionLabel(3, "holding");
 
 	// Create object location group:
-	std::vector<std::string> point_group = {"pan", "tilt"};
-	SS_CAMERA.setLabelGroup("pointing locations", point_group);
+	std::vector<std::string> obj_group = {"rock", "alien"};
+	SS_MANIPULATOR.setLabelGroup("object locations", obj_group);
 
 	// Set the initial state:
-	std::vector<std::string> set_state_c = {"center", "center", "off"};
-	State init_state_c(&SS_CAMERA);	
-	init_state_c.setState(set_state_c);
+	std::vector<std::string> set_state = {"stow", "L0", "L1", "false"};
+	//std::vector<std::string> test_set_state = {"L1", "L1", "L2", "false"};
+	State init_state(&SS_MANIPULATOR);	
+	init_state.setState(set_state);
 
 	//State test_state(&SS_MANIPULATOR);	
 	//test_state.setState(test_set_state);
 
 	/* SET CONDITIONS */
 	// Pickup domain conditions:
-	std::vector<Condition> conds_c;
-	std::vector<Condition*> cond_ptrs_c;
-	conds_c.resize(6);
-	cond_ptrs_c.resize(6);
+	std::vector<Condition> conds_m;
+	std::vector<Condition*> cond_ptrs_m;
+	conds_m.resize(4);
+	cond_ptrs_m.resize(4);
 
-	// Turn On
-	conds_c[0].addCondition(Condition::PRE, Condition::LABEL, "power", Condition::EQUALS, Condition::VAR, "off");
-	conds_c[0].setCondJunctType(Condition::PRE, Condition::CONJUNCTION);
+	// Grasp 
+	conds_m[0].addCondition(Condition::PRE, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "false");
+	conds_m[0].addCondition(Condition::PRE, Condition::GROUP, "object locations", Condition::ARG_FIND, Condition::LABEL, "eeLoc",Condition::TRUE, "arg");
+	conds_m[0].setCondJunctType(Condition::PRE, Condition::CONJUNCTION);
 
-	conds_c[0].addCondition(Condition::POST, Condition::LABEL, "power", Condition::EQUALS, Condition::VAR, "on");
-	conds_c[0].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
-	conds_c[0].setActionLabel("power_on");
-	conds_c[0].setActionCost(50);
+	conds_m[0].addCondition(Condition::POST, Condition::ARG_L, Condition::FILLER, Condition::ARG_EQUALS, Condition::VAR, "ee",Condition::TRUE, "arg");
+	conds_m[0].addCondition(Condition::POST, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "true");
+	conds_m[0].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
+	conds_m[0].setActionLabel("grasp");
+	conds_m[0].setActionCost(0);
 
-	// Turn Off
-	conds_c[1].addCondition(Condition::PRE, Condition::LABEL, "power", Condition::EQUALS, Condition::VAR, "on");
-	conds_c[1].setCondJunctType(Condition::PRE, Condition::CONJUNCTION);
+	// Transport 
+	conds_m[1].addCondition(Condition::PRE, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "true");
+	conds_m[1].addCondition(Condition::PRE, Condition::GROUP, "object locations", Condition::ARG_FIND, Condition::LABEL, "eeLoc", Condition::NEGATE, "arg1");
+	conds_m[1].addCondition(Condition::PRE, Condition::LABEL, "eeLoc", Condition::ARG_FIND, Condition::NONE, Condition::FILLER, Condition::TRUE, "arg2");
+	conds_m[1].setCondJunctType(Condition::PRE, Condition::CONJUNCTION); // Used to store eeLoc pre-state variable
+	conds_m[1].addCondition(Condition::POST, Condition::ARG_V, Condition::FILLER, Condition::ARG_EQUALS, Condition::LABEL, "eeLoc", Condition::NEGATE, "arg2"); // Stored eeLoc pre-state variable is not the same as post-state eeLoc (eeLoc has moved)
+	conds_m[1].addCondition(Condition::POST, Condition::GROUP, "object locations", Condition::ARG_FIND, Condition::LABEL, "eeLoc", Condition::NEGATE,"na");
+	conds_m[1].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
+	conds_m[1].setActionLabel("transport");
+	conds_m[1].setActionCost(5);
+	//conds_m[1].print();
 
-	conds_c[1].addCondition(Condition::POST, Condition::LABEL, "power", Condition::EQUALS, Condition::VAR, "off");
-	conds_c[1].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
-	conds_c[1].setActionLabel("power_off");
-	conds_c[1].setActionCost(5);
+	// Release 
+	conds_m[2].addCondition(Condition::PRE, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "true");
+	conds_m[2].addCondition(Condition::PRE, Condition::GROUP, "object locations", Condition::ARG_FIND, Condition::LABEL, "eeLoc", Condition::NEGATE, "arg1");
+	conds_m[2].addCondition(Condition::PRE, Condition::GROUP, "object locations", Condition::ARG_FIND, Condition::VAR, "ee",Condition::TRUE, "arg2");
+	conds_m[2].setCondJunctType(Condition::PRE, Condition::CONJUNCTION);
 
-	// Pan Center 
-	conds_c[2].addCondition(Condition::PRE, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "center", Condition::NEGATE, "not_center");
-	conds_c[2].setCondJunctType(Condition::PRE, Condition::CONJUNCTION); // Used to store eeLoc pre-state variable
-	conds_c[2].addCondition(Condition::POST, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "center", Condition::TRUE, "center");
-	conds_c[2].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
-	conds_c[2].setActionLabel("pan_center");
-	conds_c[2].setActionCost(25);
-	
-	// Pan Off Center 
-	conds_c[3].addCondition(Condition::PRE, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "center", Condition::TRUE, "center");
-	conds_c[3].setCondJunctType(Condition::PRE, Condition::CONJUNCTION); // Used to store eeLoc pre-state variable
-	conds_c[3].addCondition(Condition::POST, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "center", Condition::NEGATE, "not_center");
-	conds_c[3].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
-	conds_c[3].setActionLabel("pan_off_center");
-	conds_c[3].setActionCost(25);
+	conds_m[2].addCondition(Condition::POST, Condition::ARG_L, Condition::FILLER, Condition::ARG_EQUALS, Condition::LABEL, "eeLoc", Condition::TRUE, "arg2");
+	conds_m[2].addCondition(Condition::POST, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "false");
+	conds_m[2].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
+	conds_m[2].setActionLabel("release");
+	conds_m[2].setActionCost(0);
+	//conds_m[2].print();
 
-	// Tilt Center 
-	conds_c[4].addCondition(Condition::PRE, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "center", Condition::NEGATE, "not_center");
-	conds_c[4].setCondJunctType(Condition::PRE, Condition::CONJUNCTION); // Used to store eeLoc pre-state variable
-	conds_c[4].addCondition(Condition::POST, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "center", Condition::TRUE, "center");
-	conds_c[4].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
-	conds_c[4].setActionLabel("tilt_center");
-	conds_c[4].setActionCost(25);
-	
-	// Tilt Off Center 
-	conds_c[5].addCondition(Condition::PRE, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "center", Condition::TRUE, "center");
-	conds_c[5].setCondJunctType(Condition::PRE, Condition::CONJUNCTION); // Used to store eeLoc pre-state variable
-	conds_c[5].addCondition(Condition::POST, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "center", Condition::NEGATE, "not_center");
-	conds_c[5].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
-	conds_c[5].setActionLabel("tilt_off_center");
-	conds_c[5].setActionCost(25);
 
-	
-	for (int i=0; i<conds_c.size(); ++i){
-		cond_ptrs_c[i] = &conds_c[i];
+	// Transit
+	conds_m[3].addCondition(Condition::PRE, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "false");
+	conds_m[3].addCondition(Condition::PRE, Condition::LABEL, "eeLoc", Condition::ARG_FIND, Condition::NONE, Condition::FILLER, Condition::TRUE, "arg");
+	conds_m[3].setCondJunctType(Condition::PRE, Condition::CONJUNCTION);
+
+	conds_m[3].addCondition(Condition::POST, Condition::ARG_V, Condition::FILLER, Condition::ARG_EQUALS, Condition::LABEL, "eeLoc", Condition::NEGATE,"arg");
+	conds_m[3].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
+	conds_m[3].setActionLabel("transit");
+	conds_m[3].setActionCost(0);
+	//conds_m[3].print();
+
+
+	for (int i=0; i<conds_m.size(); ++i){
+		cond_ptrs_m[i] = &conds_m[i];
 	}
 
 
 	/* Propositions */
-	int N_APs = 9;
-	std::vector<SimpleCondition> APs(N_APs);
-	APs[0].addCondition(Condition::SIMPLE, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "left");
-	APs[0].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
-	APs[0].setLabel("facing_left");
+	std::cout<<"Setting Atomic Propositions... "<<std::endl;
+	std::vector<SimpleCondition> AP_m(loc_labels.size()*2);
+	std::vector<SimpleCondition*> AP_ptrs_m(loc_labels.size()*2);
+	for (int i=0; i<loc_labels.size(); ++i) {
+		AP_m[2*i].addCondition(Condition::SIMPLE, Condition::LABEL, "rock", Condition::EQUALS, Condition::VAR, loc_labels[i]);
+		AP_m[2*i].addCondition(Condition::SIMPLE, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "false");
+		AP_m[2*i].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
+		AP_m[2*i].setLabel("r" + loc_labels[i]);
 
-	/* Propositions */
-	APs[1].addCondition(Condition::SIMPLE, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "right");
-	APs[1].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
-	APs[1].setLabel("facing_right");
-
-	/* Propositions */
-	APs[2].addCondition(Condition::SIMPLE, Condition::LABEL, "pan", Condition::EQUALS, Condition::VAR, "center");
-	APs[2].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
-	APs[2].setLabel("facing_middle");
-
-	/* Propositions */
-	APs[3].addCondition(Condition::SIMPLE, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "down");
-	APs[3].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
-	APs[3].setLabel("facing_down");
-	
-	/* Propositions */
-	APs[4].addCondition(Condition::SIMPLE, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "up");
-	APs[4].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
-	APs[4].setLabel("facing_up");
-
-	/* Propositions */
-	APs[5].addCondition(Condition::SIMPLE, Condition::LABEL, "tilt", Condition::EQUALS, Condition::VAR, "center");
-	APs[5].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
-	APs[5].setLabel("facing_forward");
-
-	/* Propositions */
-	APs[6].addCondition(Condition::SIMPLE, Condition::LABEL, "power", Condition::EQUALS, Condition::VAR, "on");
-	APs[6].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
-	APs[6].setLabel("powered_on");
-
-	/* Propositions */
-	APs[7].addCondition(Condition::SIMPLE, Condition::LABEL, "power", Condition::EQUALS, Condition::VAR, "off");
-	APs[7].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
-	APs[7].setLabel("powered_off");
-
-	std::vector<SimpleCondition*> AP_ptrs_c(N_APs);
-	for (int i=0; i<AP_ptrs_c.size(); ++i){
-		AP_ptrs_c[i] = &APs[i];
+		AP_m[2*i + 1].addCondition(Condition::SIMPLE, Condition::LABEL, "alien", Condition::EQUALS, Condition::VAR, loc_labels[i]);
+		AP_m[2*i + 1].addCondition(Condition::SIMPLE, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "false");
+		AP_m[2*i + 1].setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
+		AP_m[2*i + 1].setLabel("a" + loc_labels[i]);
+	}
+	for (int i=0; i<AP_m.size(); ++i) {
+		AP_ptrs_m[i] = &AP_m[i];
 	}
 
 
 	// Create the transition system:
-	Graph<WL> ts_graph_c(true);
-	TS_EVAL<State> ts_eval(&ts_graph_c, 0); // by default, the init node for the ts is 0
-	ts_eval.setConditions(cond_ptrs_c);
-	ts_eval.setPropositions(AP_ptrs_c);
-	ts_eval.setInitState(&init_state_c);
+	Graph<WL> ts_graph_m(true);
+	TS_EVAL<State> ts_eval(&ts_graph_m, 0); // by default, the init node for the ts is 0
+	ts_eval.setConditions(cond_ptrs_m);
+	ts_eval.setPropositions(AP_ptrs_m);
+	ts_eval.setInitState(&init_state);
 	ts_eval.generate();
 	std::cout<<"\n\n Printing the Transition System: \n\n"<<std::endl;
 	ts_eval.printTS();
 
-	
+
 
 	/////////////////////////////////////////////////
 	/*       Read in the DFA's from the files      */
 	/////////////////////////////////////////////////
-	
+
 	DFA A;
 	int N_DFAs;
-	
+
 	// Get input from user for how many formulas to read in:
 	std::cout<<"Enter number of formulas: "<<std::endl;
 	std::cin >> N_DFAs;
@@ -197,7 +171,7 @@ int main() {
 	/////////////////////////////////////////////////
 	/*        Construct the Symbolic Search        */
 	/////////////////////////////////////////////////
-	
+
 	// First construct the graph evaluation objects:
 	//TS_EVAL<State> ts_eval(&ts, 0); 
 	//std::vector<DFA_EVAL> dfa_eval_vec;
@@ -206,18 +180,20 @@ int main() {
 		DFA_EVAL* temp_dfa_eval_ptr = new DFA_EVAL(&dfa_arr[i]);
 		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
 	}
-	
+
 	SymbSearch search_obj;
 	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	search_obj.setTransitionSystem(&ts_eval);
-	search_obj.setFlexibilityParam(75.0f);
+	search_obj.setFlexibilityParam(1000.0f);
+	//search_obj.setFlexibilityParam(0.0f);
 	bool success = search_obj.search();
-	std::cout<<"Found plan? "<<success<<std::endl;
+	//std::cout<<"Found plan? "<<success<<std::endl;
 
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {
 		delete dfa_eval_ptrs[i];
 	}
 
+	return 0;
 
 
 

@@ -1,16 +1,16 @@
 Alphabet: 
-- facing_down
-- powered_on
+- rL3
+- rL4
 Initial States: 
 - 1
 Graph:
 - 0
-   - 0 -> 0 : !powered_on
-   - 0 -> 2 : powered_on
+   - 0 -> 0 : !rL4
+   - 0 -> 2 : rL4
 - 1
-   - 1 -> 0 : facing_down & !powered_on
-   - 1 -> 1 : !facing_down
-   - 1 -> 2 : facing_down & powered_on
+   - 1 -> 0 : rL3 & !rL4
+   - 1 -> 1 : !rL3
+   - 1 -> 2 : rL3 & rL4
 - 2
    - 2 -> 2 : 1
 Accepting States:

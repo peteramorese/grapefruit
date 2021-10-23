@@ -1,2 +1,2 @@
-F(facing_down & F(powered_on))
-F(facing_forward) & F(facing_up U powered_off)
+F(rL3 & F(rL4))
+F(aL2 & rL0) 

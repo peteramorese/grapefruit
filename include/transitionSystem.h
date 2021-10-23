@@ -15,6 +15,7 @@ class TransitionSystem {
 		bool has_conditions;
 		bool is_blocking;
 		bool has_init_state;
+		bool DETERMINISTIC;
 		T* init_state;
 		std::vector<T> all_states;
 		std::vector<bool> state_added;
@@ -29,6 +30,7 @@ class TransitionSystem {
 		bool parseLabelAndEval(const std::string* label, const T* state);
 	public:
 		TransitionSystem(Graph<WL>* graph_TS_);
+		TransitionSystem(Graph<WL>* graph_TS_, bool DETERMINISTIC_);
 		void addCondition(Condition* condition_);
 		void setConditions(const std::vector<Condition*>& conditions_);
 		void addProposition(SimpleCondition* proposition_);
@@ -49,7 +51,7 @@ class TS_EVAL : public TransitionSystem<T> {
 		//friend class TransitionSystem<T>;
 
 		//const TransitionSystem<T>* tsptr;
-		int curr_node;
+		int curr_node, init_node;
 		std::unordered_map<int, std::vector<std::string>> state_to_label_map;
 	public:
 		//TS_EVAL(const TransitionSystem<T>* tsptr_, int init_node);
@@ -58,9 +60,10 @@ class TS_EVAL : public TransitionSystem<T> {
 		bool eval(const std::string& action, bool evolve);
 		int getCurrNode() const;
 		void getConnectedDataEVAL(std::vector<WL*>& con_data);
+		void getConnectedNodesEVAL(std::vector<int>& con_nodes);
 		const std::vector<std::string>* returnStateLabels(int state_ind);
 		void set(int set_node);
-		void reset(int init_node);
+		void reset();
 		const T* getCurrState() const;
 };
 

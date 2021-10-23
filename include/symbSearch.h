@@ -10,9 +10,15 @@ class SymbSearch {
 		const std::vector<DFA_EVAL*>* dfa_list_ordered;
 		int node_size;
 		TS_EVAL<State>* TS;
-		float mu;
+		float mu, pathlength;
 		std::vector<IVFlexLexS*> node_list;
 		IVFlexLexS* newNode();
+		template<typename T>
+		void printQueue(T queue);
+		bool plan_found;
+		std::vector<std::string> TS_action_sequence;
+		std::vector<int> TS_state_sequence;
+		void extractPath(const std::vector<int>& parents, int accepting_state);
 	public:
 		SymbSearch();
 		void setAutomataPrefs(const std::vector<DFA_EVAL*>* dfa_list_ordered_);

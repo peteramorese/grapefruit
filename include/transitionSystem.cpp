@@ -5,7 +5,20 @@
 #include "transitionSystem.h"
 
 template <class T>
-TransitionSystem<T>::TransitionSystem (Graph<WL>* graph_TS_) : has_conditions(false), generated(false) {
+TransitionSystem<T>::TransitionSystem (Graph<WL>* graph_TS_) : DETERMINISTIC(true), has_conditions(false), generated(false) {
+	// Transition system uses WL structure: 
+	// W: edge weight (action cost)
+	// L: action
+	if (graph_TS_->isOrdered()) {
+		graph_TS = graph_TS_;	
+	} else {
+		std::cout<<"Error: Transition System must take in an ordered graph\n";
+	}
+	conditions.clear();
+}
+
+template <class T>
+TransitionSystem<T>::TransitionSystem (Graph<WL>* graph_TS_, bool DETERMINISTIC_) : DETERMINISTIC(DETERMINISTIC_), has_conditions(false), generated(false) {
 	// Transition system uses WL structure: 
 	// W: edge weight (action cost)
 	// L: action
@@ -131,6 +144,7 @@ template <class T>
 void TransitionSystem<T>::setPropositions(const std::vector<SimpleCondition*>& propositions_) {
 	for (int i=0; i<propositions_.size(); ++i) {
 		if (propositions_[i]->getLabel() != Condition::FILLER) {
+			std::cout<<"Info: Found proposition: "<<propositions_[i]->getLabel()<<std::endl;
 			propositions[propositions_[i]->getLabel()] = propositions_[i];
 		} else {
 			std::cout<<"Error: Must name all propositions before including in Product System\n";
@@ -163,7 +177,12 @@ void TransitionSystem<T>::safeAddState(int q_i, T* add_state, int add_state_ind,
 		WL* wl_struct = new WL;
 		node_container.push_back(wl_struct);
 		wl_struct->weight = action_cost;
-		wl_struct->label = action;
+		//wl_struct->label = action;
+		if (DETERMINISTIC) {
+			wl_struct->label = action + "_" + std::to_string(q_i) + "_" + std::to_string(new_ind);
+		} else {
+			wl_struct->label = action;
+		}
 		graph_TS->Graph<WL>::connect(q_i, {new_ind, wl_struct});
 	} else {
 		for (int i=0; i<state_map.size(); ++i) {
@@ -172,8 +191,12 @@ void TransitionSystem<T>::safeAddState(int q_i, T* add_state, int add_state_ind,
 				WL* wl_struct = new WL;
 				node_container.push_back(wl_struct);
 				wl_struct->weight = action_cost;
-				std::cout<<"action_cost: "<<action_cost<<std::endl;
-				wl_struct->label = action;
+				//std::cout<<"action_cost: "<<action_cost<<std::endl;
+				if (DETERMINISTIC) {
+					wl_struct->label = action + "_" + std::to_string(q_i) + "_" + std::to_string(i);
+				} else {
+					wl_struct->label = action;
+				}
 				graph_TS->Graph<WL>::connect(q_i, {i, wl_struct});
 
 				//graph_TS->Edge::connect(q_i, i, 1.0f, action);				
@@ -303,7 +326,7 @@ template class TransitionSystem<BlockingState>;
 
 
 template <class T>
-TS_EVAL<T>::TS_EVAL(Graph<WL>* graph_TS_, int init_node) : TransitionSystem<T>(graph_TS_) {
+TS_EVAL<T>::TS_EVAL(Graph<WL>* graph_TS_, int init_node_) : TransitionSystem<T>(graph_TS_), init_node(init_node_) {
 	curr_node = init_node; //ts is generated around 0 being init state
 }
 
@@ -327,6 +350,7 @@ void TS_EVAL<T>::mapStatesToLabels(const std::vector<const std::vector<std::stri
 				//std::cout<<"af check, b4 plneval"<<std::endl;
 				if (!found) {
 					if (TransitionSystem<T>::parseLabelAndEval(&alphabet[i]->operator[](ii), TransitionSystem<T>::state_map[si])) {
+						//std::cout<<"state: "<<si<<" satisfies letter: "<<alphabet[i]->operator[](ii)<<std::endl;
 						temp_labels.push_back(alphabet[i]->operator[](ii));
 					}
 				}
@@ -391,12 +415,17 @@ void TS_EVAL<T>::getConnectedDataEVAL(std::vector<WL*>& con_data) {
 }
 
 template <class T>
+void TS_EVAL<T>::getConnectedNodesEVAL(std::vector<int>& con_nodes) {
+	TransitionSystem<T>::graph_TS->getConnectedNodes(curr_node, con_nodes);
+}
+
+template <class T>
 void TS_EVAL<T>::set(int set_node) {
 	curr_node = set_node;
 }
 
 template <class T>
-void TS_EVAL<T>::reset(int init_node) {
+void TS_EVAL<T>::reset() {
 	curr_node = init_node;
 }
 

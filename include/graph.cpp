@@ -668,7 +668,7 @@ bool DFA::readFileSingle(const std::string& filename) {
 					seen_entry_mode = false;	
 				}
 			}
-			std::cout<<"currmode: "<<curr_mode<<std::endl;
+			//std::cout<<"currmode: "<<curr_mode<<std::endl;
 			switch (curr_mode) {
 				case -1: 
 					std::cout<<"Error: No field specified\n";
@@ -750,7 +750,7 @@ bool DFA::readFileSingle(const std::string& filename) {
 					}
 					break;
 				case 3: // ACCEPTING STATES
-					std::cout<<"in accepting states"<<std::endl;
+					//std::cout<<"in accepting states"<<std::endl;
 					for (int i=0; i<line.size(); ++i) {
 						switch (line[i]) {
 							case '-':
@@ -764,7 +764,7 @@ bool DFA::readFileSingle(const std::string& filename) {
 					{
 						std::string::size_type sz;
 						int accepting_state = std::stoi(temp_word_2,&sz);
-						std::cout<<"b4 add accept state: "<<accepting_state<<std::endl;
+						//std::cout<<"b4 add accept state: "<<accepting_state<<std::endl;
 						addAcceptingState(accepting_state);
 					}
 			}
