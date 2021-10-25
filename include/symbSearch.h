@@ -25,5 +25,6 @@ class SymbSearch {
 		void setTransitionSystem(TS_EVAL<State>* TS_);
 		void setFlexibilityParam(float mu_);
 		bool search();
+		void writePlanToFile(std::string filename);
 		~SymbSearch();
 };

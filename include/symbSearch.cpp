@@ -1,4 +1,5 @@
 #include "symbSearch.h"
+#include<fstream>
 
 SymbSearch::SymbSearch() {}
 
@@ -322,6 +323,16 @@ void SymbSearch::extractPath(const std::vector<int>& parents, int accepting_stat
 		//std::cout<<"af search"<<std::endl;
 	}
 	std::cout<<"Info: Number of actions: "<<TS_action_sequence.size()<<", pathlength: "<<pathlength<<"\n";
+}
+
+void SymbSearch::writePlanToFile(std::string filename) {
+	std::string line;
+	std::ofstream plan_file;
+	plan_file.open(filename);
+	for (int i=0; i<TS_action_sequence.size(); ++i) {
+			plan_file <<TS_action_sequence[i]<<"\n";
+	}
+	plan_file.close();
 }
 
 SymbSearch::~SymbSearch() {

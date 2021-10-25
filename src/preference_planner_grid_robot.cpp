@@ -215,6 +215,9 @@ int main() {
 	//search_obj.setFlexibilityParam(0.0f);
 	bool success = search_obj.search();
 	//std::cout<<"Found plan? "<<success<<std::endl;
+	if (success) {
+		search_obj.writePlanToFile("/Users/Peter/Documents/MATLAB/preference_planning_demos/plan.txt");
+	}
 
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {
 		delete dfa_eval_ptrs[i];
