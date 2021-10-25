@@ -38,10 +38,10 @@ int main() {
 	// Create state space:
 	SS_GRID_ROBOT.setStateDimension(x_labels, 0); // x
 	SS_GRID_ROBOT.setStateDimension(y_labels, 1); // y
-		std::cout<<"y labels:";
-	for (int i=0; i<y_labels.size(); ++i) {
-		std::cout<<y_labels[i]<<", "<<std::endl;
-	}
+	//	std::cout<<"y labels:";
+	//for (int i=0; i<y_labels.size(); ++i) {
+	//	std::cout<<y_labels[i]<<", "<<std::endl;
+	//}
 	//return 0;
 
 	// Label state space:
@@ -152,8 +152,8 @@ int main() {
 			temp_AP.addCondition(Condition::SIMPLE, Condition::LABEL, "x_coord", Condition::EQUALS, Condition::VAR, x_labels[i]);
 			temp_AP.addCondition(Condition::SIMPLE, Condition::LABEL, "y_coord", Condition::EQUALS, Condition::VAR, y_labels[ii]);
 			temp_AP.setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
-			temp_AP.setLabel("p_" + x_labels[i] + "_" + y_labels[ii]);
-			std::cout<<"made ap: "<<"p_" + x_labels[i] + "_" + y_labels[ii]<<std::endl;
+			temp_AP.setLabel("ap_" + x_labels[i] + "_" + y_labels[ii]);
+			//std::cout<<"made ap: "<<"ap_" + x_labels[i] + "_" + y_labels[ii]<<std::endl;
 			APs.push_back(temp_AP);
 		}
 	}
@@ -163,8 +163,8 @@ int main() {
 	}
 
 	ts_eval.setPropositions(AP_ptrs);
-	std::cout<<"\n\n Printing the Transition System: \n\n"<<std::endl;
-	ts_eval.printTS();
+	//std::cout<<"\n\n Printing the Transition System: \n\n"<<std::endl;
+	//ts_eval.printTS();
 
 
 
@@ -176,8 +176,10 @@ int main() {
 	int N_DFAs;
 
 	// Get input from user for how many formulas to read in:
-	std::cout<<"Enter number of formulas: "<<std::endl;
+	std::cout<<"\n------------------------------\n";
+	std::cout<<"Enter number of formulas: ";
 	std::cin >> N_DFAs;
+	std::cout<<"\n";
 
 	std::vector<DFA> dfa_arr(N_DFAs);
 	std::vector<std::string> filenames(N_DFAs);
@@ -211,12 +213,25 @@ int main() {
 	SymbSearch search_obj;
 	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	search_obj.setTransitionSystem(&ts_eval);
-	search_obj.setFlexibilityParam(75.0f);
+	float mu;
+	std::cout<<"\n------------------------------\n";
+	std::cout<<"Enter flexibility parameter: ";
+	std::cout<<"\n";
+	std::cin >> mu;
+	search_obj.setFlexibilityParam(mu);
 	//search_obj.setFlexibilityParam(0.0f);
 	bool success = search_obj.search();
 	//std::cout<<"Found plan? "<<success<<std::endl;
 	if (success) {
-		search_obj.writePlanToFile("/Users/Peter/Documents/MATLAB/preference_planning_demos/plan.txt");
+		std::vector<std::string> xtra_info;
+		for (int i=0; i<dfa_arr.size(); ++i) {
+			const std::vector<std::string>* ap_ptr = dfa_arr[i].getAP();
+			for (int ii=0; ii<ap_ptr->size(); ++ii) {
+				xtra_info.push_back(ap_ptr->operator[](ii));
+				xtra_info.back() = xtra_info.back() + "_prio" + std::to_string(i);
+			}
+		}
+		search_obj.writePlanToFile("/Users/Peter/Documents/MATLAB/preference_planning_demos/plan.txt", xtra_info);
 	}
 
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {

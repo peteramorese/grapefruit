@@ -398,6 +398,24 @@ void Automaton<T>::addWord(const std::string& word) {
 }
 
 template<class T>
+void Automaton<T>::addAP(const std::string& ap) {
+	if (!ap.empty()){
+		bool not_found = true;
+		for (auto test_ap : AP) {
+			if (ap == test_ap) {
+				not_found = false;
+				break;
+			}
+		}
+		std::cout<<"did i find? "<<not_found<<std::endl;
+		if (not_found) {
+			AP.push_back(ap);
+		}
+	}
+}
+
+
+template<class T>
 void Automaton<T>::addAcceptingState(unsigned int accepting_state) {
 	//std::cout<<"accepting_state: "<<accepting_state<<std::endl;
 	//std::cout<<"graph size: "<<Graph<T>::size()<<std::endl;
@@ -534,6 +552,17 @@ template<class T>
 const std::vector<std::string>* Automaton<T>::getAlphabet() const {
 	return &alphabet;
 }
+
+template<class T>
+void Automaton<T>::setAP(const std::vector<std::string>& aps) {
+	AP = aps;
+}
+
+template<class T>
+const std::vector<std::string>* Automaton<T>::getAP() const {
+	return &AP;
+}
+
 
 template class Automaton<int>;
 template class Automaton<unsigned int>;
@@ -674,17 +703,18 @@ bool DFA::readFileSingle(const std::string& filename) {
 					std::cout<<"Error: No field specified\n";
 					break;
 				case 0: // ALPHABET
-					//for (int i=0; i<line.size(); ++i) {
-					//	switch (line.at(i)) {
-					//		case '-':
-					//			break;
-					//		case ' ':
-					//			break;
-					//		default:
-					//			temp_word_2.push_back(line[i]);
-					//	}
-					//}
-					//addWord(temp_word);
+					for (int i=0; i<line.size(); ++i) {
+						switch (line.at(i)) {
+							case '-':
+								break;
+							case ' ':
+								break;
+							default:
+								temp_word_2.push_back(line[i]);
+						}
+					}
+					std::cout<<"adding temp word: "<<temp_word_2<<std::endl;
+					addAP(temp_word_2);
 					break;
 				case 1: // INIT STATES
 					for (int i=0; i<line.size(); ++i) {
@@ -783,8 +813,12 @@ void DFA::print() {
 	
 	auto printLAM = [](Graph<std::string>::node* dst, Graph<std::string>::node* prv){std::cout<<"   ~> "<<dst->nodeind<<" : "<<*(dst->dataptr)<<"\n";};
 
-	std::cout<<"Alphabet Size: "<<alphabet.size()<<std::endl;
-	std::cout<<"Alphabet: ";
+	//std::cout<<"Alphabet Size: "<<alphabet.size()<<std::endl;
+	std::cout<<"Atomic Propositions: ";
+	for (int i=0; i<AP.size(); ++i) {
+		std::cout<<AP[i]<<" ";
+	}
+	std::cout<<"\nAlphabet: ";
 	for (int i=0; i<alphabet.size(); ++i) {
 		std::cout<<alphabet[i]<<" ";
 	}

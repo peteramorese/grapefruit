@@ -86,7 +86,9 @@ class Automaton : public Graph<T> {
 		std::vector<unsigned int> accepting_states;
 		std::vector<unsigned int> init_states;
 		std::vector<std::string> alphabet;
+		std::vector<std::string> AP;
 		void addWord(const std::string&);
+		void addAP(const std::string&);
 		void addAcceptingState(unsigned int accepting_state);
 		bool isAutomatonValid();
 		bool inAlphabet(std::string);
@@ -102,6 +104,8 @@ class Automaton : public Graph<T> {
 		const std::vector<unsigned int>* getInitStates() const;
 		void setAlphabet(const std::vector<std::string>& alphabet_);
 		const std::vector<std::string>* getAlphabet() const;
+		void setAP(const std::vector<std::string>& aps);
+		const std::vector<std::string>* getAP() const;
 };
 
 class NFA : public Automaton<std::string> {

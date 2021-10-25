@@ -144,7 +144,7 @@ template <class T>
 void TransitionSystem<T>::setPropositions(const std::vector<SimpleCondition*>& propositions_) {
 	for (int i=0; i<propositions_.size(); ++i) {
 		if (propositions_[i]->getLabel() != Condition::FILLER) {
-			std::cout<<"Info: Found proposition: "<<propositions_[i]->getLabel()<<std::endl;
+			//std::cout<<"Info: Found proposition: "<<propositions_[i]->getLabel()<<std::endl;
 			propositions[propositions_[i]->getLabel()] = propositions_[i];
 		} else {
 			std::cout<<"Error: Must name all propositions before including in Product System\n";

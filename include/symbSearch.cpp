@@ -279,11 +279,11 @@ void SymbSearch::extractPath(const std::vector<int>& parents, int accepting_stat
 	std::vector<int> reverse_TS_state_sequence;
 	//std::cout<<" given accepting state: "<<accepting_state<<std::endl;
 	//reverse_TS_state_sequence.push_back(node_list[accepting_state);
-	std::cout<<"reverse plan: "<<std::endl;
+	//std::cout<<"reverse plan: "<<std::endl;
 	while (curr_node != 0) {
 		//std::cout<<"node: "<<node_list[curr_node]->i<<", ";
 		//std::cout<<"lexset: ";
-		node_list[curr_node]->lex_set.print();
+		//node_list[curr_node]->lex_set.print();
 		reverse_TS_state_sequence.push_back(node_list[curr_node]->i);
 		curr_node = parents[curr_node];
 	}
@@ -325,12 +325,15 @@ void SymbSearch::extractPath(const std::vector<int>& parents, int accepting_stat
 	std::cout<<"Info: Number of actions: "<<TS_action_sequence.size()<<", pathlength: "<<pathlength<<"\n";
 }
 
-void SymbSearch::writePlanToFile(std::string filename) {
+void SymbSearch::writePlanToFile(std::string filename, const std::vector<std::string>& xtra_info) {
 	std::string line;
 	std::ofstream plan_file;
 	plan_file.open(filename);
 	for (int i=0; i<TS_action_sequence.size(); ++i) {
 			plan_file <<TS_action_sequence[i]<<"\n";
+	}
+	for (int i=0; i<xtra_info.size(); ++i) {
+			plan_file <<xtra_info[i]<<"\n";
 	}
 	plan_file.close();
 }
