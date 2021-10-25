@@ -73,6 +73,7 @@ with open(READ_FILE_NAME, "r") as formula_file:
 F_arr = list()
 for line in lines:
     F_i = line.replace("\n","")
-    print("Found formula:     ",F_i)
-    F_arr.append(F_i)
+    if not F_i[0]=="#":
+        print("Found formula:     ",F_i)
+        F_arr.append(F_i)
 create_file(F_arr, WRITE_FILE_NAME_PREFIX)

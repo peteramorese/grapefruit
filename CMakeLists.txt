@@ -50,9 +50,19 @@ target_link_libraries(lex_set_comp
 	LexSetClass
 	)
 
-add_executable(preference_planner src/preference_planner.cpp)
-target_include_directories(preference_planner PUBLIC include) #pref_include
-target_link_libraries(preference_planner 
+add_executable(preference_planner_manipulator src/preference_planner_manipulator.cpp)
+target_include_directories(preference_planner_manipulator PUBLIC include) #pref_include
+target_link_libraries(preference_planner_manipulator 
+	LexSetClass
+	GraphClass
+	ConditionClass
+	StateSpaceClass
+	StateClass
+	SymbSearchClass
+	)
+add_executable(preference_planner_grid_robot src/preference_planner_grid_robot.cpp)
+target_include_directories(preference_planner_grid_robot PUBLIC include) #pref_include
+target_link_libraries(preference_planner_grid_robot 
 	LexSetClass
 	GraphClass
 	ConditionClass

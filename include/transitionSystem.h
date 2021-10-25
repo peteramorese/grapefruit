@@ -15,7 +15,8 @@ class TransitionSystem {
 		bool has_conditions;
 		bool is_blocking;
 		bool has_init_state;
-		bool DETERMINISTIC;
+		const bool DETERMINISTIC;
+		const bool manual;
 		T* init_state;
 		std::vector<T> all_states;
 		std::vector<bool> state_added;
@@ -30,7 +31,9 @@ class TransitionSystem {
 		bool parseLabelAndEval(const std::string* label, const T* state);
 	public:
 		TransitionSystem(Graph<WL>* graph_TS_);
-		TransitionSystem(Graph<WL>* graph_TS_, bool DETERMINISTIC_);
+		TransitionSystem(Graph<WL>* graph_TS_, bool DETERMINISTIC_, bool manual_);
+		bool connect(T* src, T* dst, float weight, const std::string& action);
+		void finishConnecting();
 		void addCondition(Condition* condition_);
 		void setConditions(const std::vector<Condition*>& conditions_);
 		void addProposition(SimpleCondition* proposition_);
@@ -56,6 +59,7 @@ class TS_EVAL : public TransitionSystem<T> {
 	public:
 		//TS_EVAL(const TransitionSystem<T>* tsptr_, int init_node);
 		TS_EVAL(Graph<WL>* graph_TS_, int init_node);
+		TS_EVAL(Graph<WL>* graph_TS_, bool DETERMINISTIC_, bool manual_, int init_node);
 		void mapStatesToLabels(const std::vector<const std::vector<std::string>*>& alphabet);
 		bool eval(const std::string& action, bool evolve);
 		int getCurrNode() const;

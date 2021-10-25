@@ -1,14 +1,13 @@
 Alphabet: 
-- aL2
-- rL0
+- p_x2_y1
 Initial States: 
 - 1
 Graph:
 - 0
    - 0 -> 0 : 1
 - 1
-   - 1 -> 0 : aL2 & rL0
-   - 1 -> 1 : !aL2 | !rL0
+   - 1 -> 0 : p_x2_y1
+   - 1 -> 1 : !p_x2_y1
 Accepting States:
 - 0
 

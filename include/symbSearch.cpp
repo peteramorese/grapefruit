@@ -75,9 +75,9 @@ bool SymbSearch::search() {
 		//int pause;
 		//std::cin >> pause;
 		curr_leaf = pq.top();
-		std::cout<<"Ind: "<<pq.top().first<<std::endl;
-		std::cout<<"LexSet: ";
-		pq.top().second->print();
+		//std::cout<<"Ind: "<<pq.top().first<<std::endl;
+		//std::cout<<"LexSet: ";
+		//pq.top().second->print();
 
 		pq.pop();
 		int curr_leaf_ind = curr_leaf.first;
@@ -147,7 +147,7 @@ bool SymbSearch::search() {
 					found_connection = false;
 					//std::cout<<"\n before eval"<<std::endl;
 					for (int ii=0; ii<lbls->size(); ++ii) {
-						//std::cout<<"DFA--- "<<lbls->operator[](ii);
+						//std::cout<<"       labels: --- "<<lbls->operator[](ii)<<std::endl;
 						//std::cout<<"DFA::: "<<(i-1)<<" curr node; "<<(dfa_list_ordered->operator[](i-1)->getCurrNode())<<std::endl;
 						if (dfa_list_ordered->operator[](i-1)->eval(lbls->operator[](ii), true)) {
 							found_connection = true;
@@ -218,8 +218,8 @@ bool SymbSearch::search() {
 
 				// If the dfa is accepting at the evolved ind, append no cost, otherwise append
 				// the cost of taking the action:
-				//std::cout<<"DFA: "<<i<<", curr becore accepting: "<<dfa_list_ordered->operator[](i)->getCurrNode()<<std::endl;
-				//std::cout<<"DFA: ";
+				//std::cout<<"-DFA: "<<i<<", curr becore accepting: "<<dfa_list_ordered->operator[](i)->getCurrNode()<<std::endl;
+				//std::cout<<" ->DFA: ";
 				if (dfa_list_ordered->operator[](i)->isCurrAccepting()) {
 					//std::cout<<i<<" is accepting";
 					temp_lex_set_fill[i] = 0;
@@ -286,6 +286,7 @@ void SymbSearch::extractPath(const std::vector<int>& parents, int accepting_stat
 		reverse_TS_state_sequence.push_back(node_list[curr_node]->i);
 		curr_node = parents[curr_node];
 	}
+	reverse_TS_state_sequence.push_back(node_list[0]->i); // finally add the init state
 	std::cout<<"Info: Successfully extracted plan!\n";
 	TS_state_sequence.resize(reverse_TS_state_sequence.size());
 	TS_action_sequence.resize(reverse_TS_state_sequence.size()-1);

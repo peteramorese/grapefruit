@@ -5,7 +5,7 @@
 #include "transitionSystem.h"
 
 template <class T>
-TransitionSystem<T>::TransitionSystem (Graph<WL>* graph_TS_) : DETERMINISTIC(true), has_conditions(false), generated(false) {
+TransitionSystem<T>::TransitionSystem (Graph<WL>* graph_TS_) : DETERMINISTIC(true), manual(false), has_conditions(false), generated(false) {
 	// Transition system uses WL structure: 
 	// W: edge weight (action cost)
 	// L: action
@@ -18,7 +18,7 @@ TransitionSystem<T>::TransitionSystem (Graph<WL>* graph_TS_) : DETERMINISTIC(tru
 }
 
 template <class T>
-TransitionSystem<T>::TransitionSystem (Graph<WL>* graph_TS_, bool DETERMINISTIC_) : DETERMINISTIC(DETERMINISTIC_), has_conditions(false), generated(false) {
+TransitionSystem<T>::TransitionSystem (Graph<WL>* graph_TS_, bool DETERMINISTIC_, bool manual_) : DETERMINISTIC(DETERMINISTIC_), manual(manual_), has_conditions(false), generated(false) {
 	// Transition system uses WL structure: 
 	// W: edge weight (action cost)
 	// L: action
@@ -156,10 +156,15 @@ void TransitionSystem<T>::setInitState(T* init_state_) {
 	init_state = init_state_;
 	has_init_state = true;
 	all_states.clear();
-	init_state->generateAllPossibleStates(all_states);
-	state_added.resize(all_states.size());
-	for (int i=0; i<state_added.size(); ++i) {
-		state_added[i] = false;
+	if (manual) {
+		all_states.push_back(*init_state);
+		state_map.push_back(init_state);
+	} else {
+		init_state->generateAllPossibleStates(all_states);
+		state_added.resize(all_states.size());
+		for (int i=0; i<state_added.size(); ++i) {
+			state_added[i] = false;
+		}
 	}
 }
 
@@ -204,6 +209,74 @@ void TransitionSystem<T>::safeAddState(int q_i, T* add_state, int add_state_ind,
 		}
 	}
 }
+
+template <class T>
+bool TransitionSystem<T>::connect(T* src, T* dst, float action_cost, const std::string& action) {
+	if (manual) {
+		if (state_map.size() != 0) {
+			state_map.clear();
+		}
+		bool src_found, dst_found;
+		int src_ind, dst_ind;
+		src_found = false;
+		dst_found = false;
+		for (int i=0; i<all_states.size(); ++i) {
+			//std::cout<<"printing state map element i: "<<i<<std::endl;
+			//all_states[i]->print();
+			if (*src == all_states[i]) {
+				src_found = true;
+				src_ind = i;
+			}
+			if (*dst == all_states[i]) {
+				dst_found = true;
+				dst_ind = i;
+			}
+			if (src_found && dst_found) {
+				break;
+			}
+		}
+		//std::pair<int, WL*> src_node;
+		std::pair<int, WL*> dst_node;
+		if (!src_found) {
+			all_states.push_back(*src);
+			//state_map.push_back(&all_states.back());
+			src_ind = all_states.size() -1;
+		}
+		if (!dst_found) {
+			all_states.push_back(*dst);
+			//state_map.push_back(&all_states.back());
+			dst_ind = all_states.size() -1;
+		}
+		WL* wl_struct = new WL;
+		node_container.push_back(wl_struct);
+		wl_struct->weight = action_cost;
+		//std::cout<<"action_cost: "<<action_cost<<std::endl;
+		if (DETERMINISTIC) {
+			wl_struct->label = action + "_" + std::to_string(src_ind) + "_" + std::to_string(dst_ind);
+		} else {
+			wl_struct->label = action;
+		}
+		dst_node.first = dst_ind;
+		dst_node.second = wl_struct;
+		//std::cout<<"connecting: "<<src_ind<<" to: "<<dst_node.first<<std::endl;
+		graph_TS->Graph<WL>::connect(src_ind, dst_node);
+		generated = true;
+		return true;
+	} else {
+		std::cout<<"Error: Cannot use connect() when not in manual mode\n";
+		return false;
+	}
+}
+
+template <class T> // Get rid of this method someday by removing 'state_map'
+void TransitionSystem<T>::finishConnecting() {
+	state_map.clear();
+	state_map.resize(all_states.size());
+	for (int i=0; i<all_states.size(); ++i) {
+		state_map[i] = &all_states[i];
+	}
+}
+
 
 template <class T>
 const T* TransitionSystem<T>::getState(int node_index) const {
@@ -271,6 +344,7 @@ void TransitionSystem<T>::clearTS() {
 
 template <class T>
 void TransitionSystem<T>::printTS() const {
+	//graph_TS->print();
 	if (state_map.size() > 1) {
 		for (int i=0; i<state_map.size(); ++i) {
 			std::vector<WL*> con_data; 
@@ -327,6 +401,11 @@ template class TransitionSystem<BlockingState>;
 
 template <class T>
 TS_EVAL<T>::TS_EVAL(Graph<WL>* graph_TS_, int init_node_) : TransitionSystem<T>(graph_TS_), init_node(init_node_) {
+	curr_node = init_node; //ts is generated around 0 being init state
+}
+
+template <class T>
+TS_EVAL<T>::TS_EVAL(Graph<WL>* graph_TS_, bool DETERMINISTIC_, bool manual_, int init_node_) : TransitionSystem<T>(graph_TS_, DETERMINISTIC_, manual_), init_node(init_node_) {
 	curr_node = init_node; //ts is generated around 0 being init state
 }
 

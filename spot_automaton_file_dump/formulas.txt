@@ -1,2 +1,7 @@
-F(rL3 & F(rL4))
-F(aL2 & rL0) 
+# Formulas for manipulator:
+#F(rL3 & F(rL4))
+#F(aL2 & rL0) 
+# Formulas for grid_robot:
+F(p_x1_y8)
+F(p_x2_y1)
+F(p_x2_y8)

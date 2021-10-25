@@ -265,6 +265,7 @@ void StateSpace::setState_(const std::string& set_state_var, unsigned int dim, s
 	} else {
 		//std::cout<<"   DIM = "<<dim<<" num_vars[dim] = "<<num
 		for (int i=0; i<num_vars[dim]; i++){
+			//std::cout<<"state_space_named: "<<state_space_named[dim][i]<<" set state var: "<<set_state_var<<std::endl;
 			if (state_space_named[dim][i] == set_state_var) {
 				name_found = true;
 				state_space[dim] = i;
@@ -272,7 +273,7 @@ void StateSpace::setState_(const std::string& set_state_var, unsigned int dim, s
 		}
 	}
 	if (!name_found) {
-		std::cout<<"Error: Unrecognized label in set stat\n";
+		std::cout<<"Error: Unrecognized label in set state\n";
 	}
 }
 
