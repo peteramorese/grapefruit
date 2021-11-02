@@ -32,6 +32,7 @@ class TransitionSystem {
 	public:
 		TransitionSystem(Graph<WL>* graph_TS_);
 		TransitionSystem(Graph<WL>* graph_TS_, bool DETERMINISTIC_, bool manual_);
+		unsigned int size() const;
 		bool connect(T* src, T* dst, float weight, const std::string& action);
 		void finishConnecting();
 		void addCondition(Condition* condition_);
@@ -62,9 +63,13 @@ class TS_EVAL : public TransitionSystem<T> {
 		TS_EVAL(Graph<WL>* graph_TS_, bool DETERMINISTIC_, bool manual_, int init_node);
 		void mapStatesToLabels(const std::vector<const std::vector<std::string>*>& alphabet);
 		bool eval(const std::string& action, bool evolve);
+		bool evalReverse(const std::string& action, bool evolve);
+		bool isReversible() const;
 		int getCurrNode() const;
 		void getConnectedDataEVAL(std::vector<WL*>& con_data);
 		void getConnectedNodesEVAL(std::vector<int>& con_nodes);
+		void getParentDataEVAL(std::vector<WL*>& con_data);
+		void getParentNodesEVAL(std::vector<int>& con_nodes);
 		const std::vector<std::string>* returnStateLabels(int state_ind);
 		void set(int set_node);
 		void reset();

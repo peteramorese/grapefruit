@@ -10,7 +10,7 @@
 //const static auto typename printLAM = [](Graph<T>::node* dst){std::cout<<dst->nodeind;};
 
 template<class T>
-Graph<T>::Graph(bool ordered_) : ordered(ordered_), heads(0, nullptr), tails(0, nullptr){
+Graph<T>::Graph(bool ordered_, bool reversible_) : ordered(ordered_), STORE_PARENTS(reversible_), heads(0, nullptr), tails(0, nullptr){
 	tails.clear();
 	heads.clear();
 }
@@ -21,13 +21,13 @@ bool Graph<T>::isOrdered() const {
 }
 
 template<class T>
+bool Graph<T>::isReversible() const {
+	return STORE_PARENTS;
+}
+
+template<class T>
 bool Graph<T>::isEmpty(Graph<T>::node* head_) const {
 	return (head_ == nullptr) ? true : false;
-	//if (head_==nullptr) {
-	//	return true;
-	//} else {
-	//	return false;
-	//}
 }
 
 template<class T>
@@ -36,8 +36,11 @@ bool Graph<T>::connect(const std::pair<unsigned int, T*>& src, const std::pair<u
 	if (max_ind >= heads.size()) {
 		heads.resize(max_ind + 1);
 		tails.resize(max_ind + 1);
+		if (STORE_PARENTS) {
+			parent_heads.resize(max_ind + 1);
+			parent_tails.resize(max_ind + 1);
+		}
 	}
-
 	if (isEmpty(heads[src.first])) {
 		Graph<T>::node* new_node_e = new Graph<T>::node;
 		//std::cout<<"PTR ADDED: "<<new_node_e<<std::endl;
@@ -47,6 +50,15 @@ bool Graph<T>::connect(const std::pair<unsigned int, T*>& src, const std::pair<u
 		heads[src.first] = new_node_e;
 		tails[src.first] = new_node_e;
 	} 
+	if (isEmpty(parent_heads[dst.first]) && STORE_PARENTS) { // the source for parents is the destination
+		Graph<T>::node* new_node_e_par = new Graph<T>::node;
+		//std::cout<<"PTR ADDED: "<<new_node_e<<std::endl;
+		new_node_e_par->nodeind = dst.first;
+		new_node_e_par->dataptr = nullptr; // root head stores node info, no need to store that in parent graph
+		new_node_e_par->adjptr = nullptr;
+		parent_heads[dst.first] = new_node_e_par;
+		parent_tails[dst.first] = new_node_e_par;
+	}
 	if (isEmpty(heads[dst.first])) {
 		Graph<T>::node* new_node_e = new Graph<T>::node;
 		//std::cout<<"PTR ADDED: "<<new_node_e<<std::endl;
@@ -56,7 +68,15 @@ bool Graph<T>::connect(const std::pair<unsigned int, T*>& src, const std::pair<u
 		heads[dst.first] = new_node_e;
 		tails[dst.first] = new_node_e;
 	}
-
+	if (isEmpty(parent_heads[src.first]) && STORE_PARENTS) { // the destination for parents is the source 
+		Graph<T>::node* new_node_e_par = new Graph<T>::node;
+		//std::cout<<"PTR ADDED: "<<new_node_e<<std::endl;
+		new_node_e_par->nodeind = src.first;
+		new_node_e_par->dataptr = nullptr;
+		new_node_e_par->adjptr = nullptr;
+		parent_heads[src.first] = new_node_e_par;
+		parent_tails[src.first] = new_node_e_par;
+	}
 	Graph<T>::node* new_node = new Graph<T>::node;
 	//std::cout<<"PTR ADDED: "<<new_node<<std::endl;
 	new_node->nodeind = dst.first;
@@ -65,6 +85,16 @@ bool Graph<T>::connect(const std::pair<unsigned int, T*>& src, const std::pair<u
 	// Update the tail pointer to the appended element:
 	tails[src.first]->adjptr = new_node;
 	tails[src.first] = new_node;
+	if (STORE_PARENTS) {
+		Graph<T>::node* new_node_par = new Graph<T>::node;
+		//std::cout<<"PTR ADDED: "<<new_node<<std::endl;
+		new_node_par->nodeind = src.first;
+		new_node_par->dataptr = dst.second;
+		new_node_par->adjptr = nullptr;	
+		// Update the tail pointer to the appended element:
+		parent_tails[dst.first]->adjptr = new_node_par;
+		parent_tails[dst.first] = new_node_par;
+	}
 	return true;
 }
 
@@ -85,16 +115,33 @@ bool Graph<T>::connect(unsigned int src_ind, const std::pair<unsigned int, T*>& 
 		heads[src_ind] = new_node_e;
 		tails[src_ind] = new_node_e;
 	} 
+	if (isEmpty(parent_heads[dst.first]) && STORE_PARENTS) { // the source for parents is the destination
+		Graph<T>::node* new_node_e_par = new Graph<T>::node;
+		//std::cout<<"PTR ADDED: "<<new_node_e<<std::endl;
+		new_node_e_par->nodeind = dst.first;
+		new_node_e_par->dataptr = nullptr;
+		new_node_e_par->adjptr = nullptr;
+		parent_heads[dst.first] = new_node_e_par;
+		parent_tails[dst.first] = new_node_e_par;
+	}
 	if (isEmpty(heads[dst.first])) {
 		Graph<T>::node* new_node_e = new Graph<T>::node;
 		//std::cout<<"PTR ADDED: "<<new_node_e<<std::endl;
 		new_node_e->nodeind = dst.first;
-		new_node_e->dataptr = dst.second;
+		new_node_e->dataptr = nullptr;
 		new_node_e->adjptr = nullptr;
 		heads[dst.first] = new_node_e;
 		tails[dst.first] = new_node_e;
 	}
-
+	if (isEmpty(parent_heads[src_ind]) && STORE_PARENTS) { // the destination for parents is the source 
+		Graph<T>::node* new_node_e_par = new Graph<T>::node;
+		//std::cout<<"PTR ADDED: "<<new_node_e<<std::endl;
+		new_node_e_par->nodeind = src_ind;
+		new_node_e_par->dataptr = nullptr;
+		new_node_e_par->adjptr = nullptr;
+		parent_heads[src_ind] = new_node_e_par;
+		parent_tails[src_ind] = new_node_e_par;
+	}
 	Graph<T>::node* new_node = new Graph<T>::node;
 	//std::cout<<"PTR ADDED: "<<new_node<<std::endl;
 	new_node->nodeind = dst.first;
@@ -103,6 +150,16 @@ bool Graph<T>::connect(unsigned int src_ind, const std::pair<unsigned int, T*>& 
 	// Update the tail pointer to the appended element:
 	tails[src_ind]->adjptr = new_node;
 	tails[src_ind] = new_node;
+	if (STORE_PARENTS) {
+		Graph<T>::node* new_node_par = new Graph<T>::node;
+		//std::cout<<"PTR ADDED: "<<new_node<<std::endl;
+		new_node_par->nodeind = src_ind;
+		new_node_par->dataptr = dst.second;
+		new_node_par->adjptr = nullptr;	
+		// Update the tail pointer to the appended element:
+		parent_tails[dst.first]->adjptr = new_node_par;
+		parent_tails[dst.first] = new_node_par;
+	}
 	return true;
 }
 
@@ -112,6 +169,24 @@ bool Graph<T>::hop(unsigned int ind, LAM lambda) {
 	node* prevptr = heads[ind];
 	//std::cout<<"prevptr: "<<prevptr<<std::endl;
 	node* currptr = heads[ind]->adjptr; 
+	//std::cout<<"currptr: "<<currptr<<std::endl;
+	while (currptr!=nullptr) {
+		node* nextptr = currptr->adjptr;
+		//std::cout<<"   currptr going in: "<<currptr<<", prevptr going in: "<<prevptr<<std::endl;
+		lambda(currptr, prevptr);
+		//std::cout<<"   currptr coming out: "<<currptr<<", prevptr coming out: "<<prevptr<<std::endl;
+		prevptr = currptr;
+		currptr = nextptr;
+	}
+	return true;
+}
+
+template<class T> 
+template<typename LAM>
+bool Graph<T>::parentHop(unsigned int ind, LAM lambda) {
+	node* prevptr = parent_heads[ind];
+	//std::cout<<"prevptr: "<<prevptr<<std::endl;
+	node* currptr = parent_heads[ind]->adjptr; 
 	//std::cout<<"currptr: "<<currptr<<std::endl;
 	while (currptr!=nullptr) {
 		node* nextptr = currptr->adjptr;
@@ -148,6 +223,28 @@ bool Graph<T>::hopS(unsigned int ind, std::function<bool(node*, node*)> lambda) 
 	return false;
 }
 
+template<class T> 
+bool Graph<T>::parentHopS(unsigned int ind, std::function<bool(node*, node*)> lambda) const {
+	node* prevptr = parent_heads[ind];
+	//std::cout<<"prevptr: "<<prevptr<<std::endl;
+	node* currptr = parent_heads[ind]->adjptr; 
+	//std::cout<<"currptr: "<<currptr<<std::endl;
+	bool breakout;
+	while (currptr!=nullptr) {
+		node* nextptr = currptr->adjptr;
+		//std::cout<<"   currptr going in: "<<currptr<<", prevptr going in: "<<prevptr<<std::endl;
+		breakout = lambda(currptr, prevptr);
+		//std::cout<<"   currptr coming out: "<<currptr<<", prevptr coming out: "<<prevptr<<std::endl;
+		if (breakout) {
+			return true;
+		}
+		prevptr = currptr;
+		currptr = nextptr;
+	}
+	return false;
+}
+
+// Use for regular hop outside of class, apparently better runtime performance
 template<class T>
 bool Graph<T>::hopF(unsigned int ind, std::function<bool(node*, node*)> lambda) {
 	node* prevptr = heads[ind];
@@ -173,6 +270,7 @@ int Graph<T>::size() const {
 
 template<class T>
 void Graph<T>::remove(unsigned int ind_) {
+	if (!STORE_PARENTS) {
 	auto rmLAM = [&](Graph<T>::node*& dst, Graph<T>::node*& prv){
 		//std::cout<<"       dst->nodeind: "<<dst->nodeind<<", ind: "<<ind_<<std::endl;
 		if (dst->nodeind == ind_) {
@@ -202,6 +300,9 @@ void Graph<T>::remove(unsigned int ind_) {
 			}
 		}
 	}
+	} else {
+		std::cout<<"Error: Graph with stored parents does not currently have working functionality with remove()\n";
+	}
 }
 
 template<class T>
@@ -221,6 +322,28 @@ void Graph<T>::getConnectedData(unsigned int ind, std::vector<T*>& data_list) {
 	data_list.clear();
 	auto fillDataLAM = [&data_list](Graph<T>::node* dst, Graph<T>::node* prv){data_list.push_back(dst->dataptr);};
 	hop(ind, fillDataLAM);
+}
+
+template<class T>
+void Graph<T>::getParentNodes(unsigned int ind, std::vector<int>& node_list) {
+	if (STORE_PARENTS) {
+		node_list.clear();
+		auto fillNodesLAM = [&node_list](Graph<T>::node* dst, Graph<T>::node* prv){node_list.push_back(dst->nodeind);};
+		parentHop(ind, fillNodesLAM);
+	} else {
+		std::cout<<"Error: Cannot retrieve parent nodes, graph does not store parent info\n";
+	}
+}
+
+template<class T>
+void Graph<T>::getParentData(unsigned int ind, std::vector<T*>& data_list) {
+	if (STORE_PARENTS) {
+		data_list.clear();
+		auto fillDataLAM = [&data_list](Graph<T>::node* dst, Graph<T>::node* prv){data_list.push_back(dst->dataptr);};
+		parentHop(ind, fillDataLAM);
+	} else {
+		std::cout<<"Error: Cannot retrieve parent data, graph does not store parent info\n";
+	}
 }
 
 template<class T>
@@ -256,6 +379,25 @@ void Graph<T>::print() {
 				std::cout<<"Node: "<<i<<" has no outgoing transitions.\n";
 			}
 		}
+	}
+}
+
+template<class T>
+void Graph<T>::printReverse() {
+	if (STORE_PARENTS) {
+		auto printLAM = [](Graph<T>::node* dst, Graph<T>::node* prv){std::cout<<"   ~> "<<dst->nodeind<<"\n";};
+		for (int i=0; i<parent_heads.size(); i++) {
+			if (!isEmpty(parent_heads[i])) {
+				if (!isEmpty(parent_heads[i]->adjptr)) {
+					std::cout<<"Node: "<<i<<" has parents to:\n";
+					parentHop(i, printLAM);
+				} else {
+					std::cout<<"Node: "<<i<<" has no parents.\n";
+				}
+			}
+		}
+	} else {
+		std::cout<<"Error: Cannot print reverse graph, graph is not reversible\n";
 	}
 }
 
@@ -334,6 +476,10 @@ void Graph<T>::clear() {
 			//std::cout<<"deleting: "<<heads[i]<<std::endl;
 			delete heads[i];
 		}
+		if (!isEmpty(parent_heads[i]) && STORE_PARENTS) {
+			parentHop(i, deleteLAM);
+			delete parent_heads[i];
+		}
 	}
 	heads.clear();
 	tails.clear();
@@ -355,6 +501,10 @@ Graph<T>::~Graph() {
 			//std::cout<<"deleting: "<<heads[i]<<std::endl;
 			delete heads[i];
 		}
+		if (!isEmpty(parent_heads[i]) && STORE_PARENTS) {
+			parentHop(i, deleteLAM);
+			delete parent_heads[i];
+		}
 	}
 }
 
@@ -366,7 +516,9 @@ template class Graph<std::string>;
 template class Graph<WL>;
 template class Graph<WLI>;
 template class Graph<WIV>;
-template class Graph<IVFlexLexS>;
+template class Graph<IVFlexLex<LexSet>>;
+template class Graph<IVFlexLex<FlexLexSetS>>;
+template class Graph<IVFlexLex<REQLex>>;
 template class Graph<std::vector<unsigned int>>;
 template class Graph<State>;
 template class Graph<BlockingState>;
@@ -872,6 +1024,10 @@ DFA_EVAL::DFA_EVAL(const DFA* dfaptr_) : dfaptr(dfaptr_), accepting(false) {
 	curr_node = dfaptr->getInitState();
 }
 
+const DFA* DFA_EVAL::getDFA() const {
+	return dfaptr;
+}
+
 const std::vector<std::string>* DFA_EVAL::getAlphabetEVAL() const {
 	return dfaptr->getAlphabet();
 }
@@ -889,6 +1045,33 @@ bool DFA_EVAL::eval(const std::string& letter, bool evolve) {
 	};
 	//Graph<std::string>* grphptr = &dfaptr;
 	if (dfaptr->hopS(curr_node, evalLAM)) {
+		//std::cout<<"new curr_node:"<<curr_node<<std::endl;
+		if (dfaptr->isAccepting(curr_node_g)) {
+			accepting = true;
+		}
+		if (evolve) {
+			curr_node = curr_node_g;
+		}
+		return true;
+	} else {
+		//std::cout<<"Error: Letter ("<<letter<<") not found at state: "<<curr_node<<std::endl;
+		return false;
+	}
+}
+
+bool DFA_EVAL::evalReverse(const std::string& letter, bool evolve) {
+	int curr_node_g = curr_node;
+	auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
+	//auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
+		if (*(dst->dataptr) == letter || *(dst->dataptr) == "1") {
+			curr_node_g = dst->nodeind;
+			return true;
+		} else {
+			return false;
+		}
+	};
+	//Graph<std::string>* grphptr = &dfaptr;
+	if (dfaptr->parentHopS(curr_node, evalLAM)) {
 		//std::cout<<"new curr_node:"<<curr_node<<std::endl;
 		if (dfaptr->isAccepting(curr_node_g)) {
 			accepting = true;

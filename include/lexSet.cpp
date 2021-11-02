@@ -162,7 +162,7 @@ bool LexSet::operator>=(const LexSet& arg_set) {
 	}
 }
 
-void LexSet::print() {
+void LexSet::print() const {
 	std::cout<<"{";
 	if (inf_set) {
 		std::cout<<"inf}\n";
@@ -178,6 +178,10 @@ void LexSet::print() {
 	}
 }
 
+
+		/////////////////////////
+		/* FlexLexSetS CLASSES */
+		/////////////////////////
 
 
 
@@ -242,5 +246,195 @@ void FlexLexSetS::operator=(const std::vector<float>& arg_vec) {
 		overflow();
 	} else {
 		std::cout<<"Error: Cannot operate on sets of different size.\n";
+	}
+}
+
+
+
+		////////////////////////
+		/*   REQLex CLASSES   */
+		////////////////////////
+
+
+REQLex::REQLex(float mu_, unsigned int S_) : mu(mu_), LexSet(S_) {}
+
+REQLex::REQLex(float mu_, float fill_val, unsigned int S_) : mu(mu_), LexSet(fill_val, S_)  {}
+
+REQLex::REQLex(float mu_, const std::vector<float>* fill_set, unsigned int S_) : mu(mu_), LexSet(fill_set, S_) {}
+
+void REQLex::operator=(const REQLex& arg_set) {
+	if (arg_set.size() == S) {
+		if (arg_set.inf_set) {
+			inf_set = true;	
+		} else {
+			inf_set = false;
+			lex_set = arg_set.lex_set;
+		}
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
+	}
+}
+
+bool REQLex::operator==(const REQLex& arg_set) {
+	if (arg_set.size() == lex_set.size()) {
+		if (inf_set || arg_set.inf_set) {
+			return (inf_set && arg_set.inf_set);
+		}
+		return lex_set == arg_set.lex_set;
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		return false;
+	}
+}
+
+void REQLex::operator=(const std::vector<float>& arg_vec) {
+	if (arg_vec.size() == S) {
+		inf_set = false;
+		lex_set = arg_vec;
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
+	}
+}
+
+bool REQLex::operator<(const REQLex& arg_set) {
+	if (arg_set.size() == lex_set.size()) {
+		if (arg_set.inf_set) {
+			// Infinite set is not less than infinite set
+			return (inf_set) ? false : true;
+		} else if (inf_set) {
+			// Nothing is greater than infinite set
+			return false;
+		}
+		float total_val = 0;
+		float arg_total_val = 0;
+		for (int i=0; i<arg_set.size(); ++i) {
+			if (lex_set[i] < (arg_set.lex_set[i] - mu)) {
+				return true;
+			} else if (lex_set[i] > arg_set.lex_set[i] + mu) {
+				return false;
+			}
+			total_val += lex_set[i];
+			arg_total_val += arg_set.lex_set[i];
+			//if (lex_set[i] > total_val) {
+			//	total_val = lex_set[i];
+			//}
+			//if (arg_set.lex_set[i] > arg_total_val) {
+			//	arg_total_val = arg_set.lex_set[i];
+			//}
+		}
+		return (total_val < arg_total_val) ? true : false;
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		return false;
+	}
+}
+
+bool REQLex::operator<=(const REQLex& arg_set) {
+	if (arg_set.size() == lex_set.size()) {
+		if (arg_set.inf_set) {
+			// Any set is less than or equal to an infinite set
+			return true;
+		} else if (inf_set) {
+			// If set is inf, only thing geq is another infinite set
+			return (arg_set.inf_set) ? true : false;
+		}
+		if (this->operator==(arg_set)) {
+			return true;
+		}
+		float total_val = 0;
+		float arg_total_val = 0;
+		for (int i=0; i<arg_set.size(); ++i) {
+			if (lex_set[i] <= (arg_set.lex_set[i] - mu)) {
+				return true;
+			} else if (lex_set[i] >= (arg_set.lex_set[i] + mu)) {
+				return false;
+			}
+			if (lex_set[i] > total_val) {
+				total_val = lex_set[i];
+			}
+			if (arg_set.lex_set[i] > arg_total_val) {
+				arg_total_val = arg_set.lex_set[i];
+			}
+		}
+		return (total_val <= arg_total_val) ? true : false;
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		return false;
+	}
+}
+
+bool REQLex::operator>(const REQLex& arg_set) {
+	//std::cout<<"COMPARING this: ";
+	//LexSet::print();
+	//std::cout<<"TO ARG: ";
+	//arg_set.print();
+	if (arg_set.size() == lex_set.size()) {
+		if (arg_set.inf_set) {
+			// Any set is less than or equal to an infinite set
+			return false;
+		} else if (inf_set) {
+			// Infinite set is not greater
+			return (arg_set.inf_set) ? false : true;
+		}
+		float total_val = 0;
+		float arg_total_val = 0;
+		for (int i=0; i<arg_set.size(); ++i) {
+			if (lex_set[i] >= arg_set.lex_set[i] + mu) {
+				//std::cout<<"we in bigger than"<<std::endl;
+				return true;
+			} else if (lex_set[i] <= arg_set.lex_set[i] - mu) {
+				//std::cout<<"we in smaller than"<<std::endl;
+				return false;
+			}
+			total_val = total_val + lex_set[i];
+			arg_total_val = arg_total_val + arg_set.lex_set[i];
+			//if (lex_set[i] > total_val) {
+			//	total_val = lex_set[i];
+			//}
+			//if (arg_set.lex_set[i] > arg_total_val) {
+			//	arg_total_val = arg_set.lex_set[i];
+			//}
+		}
+		//std::cout<<"total_val: "<<total_val<<" arg_total_val: "<<arg_total_val<<" returning: "<<(total_val > arg_total_val)<<std::endl;
+		return (total_val > arg_total_val) ? true : false;
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		return false;
+	}
+}
+
+bool REQLex::operator>=(const REQLex& arg_set) {
+	if (arg_set.size() == lex_set.size()) {
+		if (inf_set) {
+			// Any set is less than or equal to an infinite set
+			return true;
+		} else if (arg_set.inf_set) {
+			// If set is inf, only thing geq is another infinite set
+			return (inf_set) ? true : false;
+		}
+		if (this->operator==(arg_set)) {
+			return true;
+		}
+		float total_val = 0;
+		float arg_total_val = 0;
+		for (int i=0; i<arg_set.size(); ++i) {
+			if (lex_set[i] > arg_set.lex_set[i] + mu) {
+				return true;
+			} else if (lex_set[i] < arg_set.lex_set[i] - mu) {
+				return false;
+			}
+			total_val = total_val + lex_set[i];
+			arg_total_val = arg_total_val + arg_set.lex_set[i];
+			//if (lex_set[i] > total_val) {
+			//	total_val = lex_set[i];
+			//}
+			//if (arg_set.lex_set[i] > arg_total_val) {
+			//	arg_total_val = arg_set.lex_set[i];
+			//}
+		}
+		return (total_val >= arg_total_val) ? true : false;
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		return false;
 	}
 }

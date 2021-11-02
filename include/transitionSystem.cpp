@@ -30,6 +30,11 @@ TransitionSystem<T>::TransitionSystem (Graph<WL>* graph_TS_, bool DETERMINISTIC_
 	conditions.clear();
 }
 
+template <class T>
+unsigned int TransitionSystem<T>::size() const {
+	return graph_TS->size();
+}
+
 // This is part of the "Labeling Function"
 template <class T>
 bool TransitionSystem<T>::parseLabelAndEval(const std::string* label, const T* state) {
@@ -151,6 +156,7 @@ void TransitionSystem<T>::setPropositions(const std::vector<SimpleCondition*>& p
 		}
 	}
 }
+
 template <class T>
 void TransitionSystem<T>::setInitState(T* init_state_) {
 	init_state = init_state_;
@@ -411,6 +417,7 @@ TS_EVAL<T>::TS_EVAL(Graph<WL>* graph_TS_, bool DETERMINISTIC_, bool manual_, int
 
 template <class T>
 void TS_EVAL<T>::mapStatesToLabels(const std::vector<const std::vector<std::string>*>& alphabet) {
+	state_to_label_map.clear();
 	std::cout<<"Info: Mapping states to labels...\n";
 	for (int si=0; si<TransitionSystem<T>::state_map.size(); ++si) {
 		std::vector<std::string> temp_labels;
@@ -484,6 +491,37 @@ bool TS_EVAL<T>::eval(const std::string& action, bool evolve) {
 }
 
 template <class T>
+bool TS_EVAL<T>::evalReverse(const std::string& action, bool evolve) {
+	int curr_node_g = curr_node;
+	auto evalLAM = [&curr_node_g, &action](Graph<WL>::node* dst, Graph<WL>::node* prv){
+	//auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
+		if (dst->dataptr->label == action) {
+			curr_node_g = dst->nodeind;
+			//ret_weight = dst->dataptr->weight;
+			return true;
+		} else {
+			return false;
+		}
+	};
+	if (TransitionSystem<T>::graph_TS->parentHopS(curr_node, evalLAM)) {
+		//std::cout<<"new curr_node:"<<curr_node<<std::endl;
+		if (evolve) {
+			curr_node = curr_node_g;
+		}
+		return true;
+	} else {
+		std::cout<<"Error: Action ("<<action<<") not found at state: "<<curr_node<<std::endl;
+		return false;
+	}
+}
+
+
+template <class T>
+bool TS_EVAL<T>::isReversible() const {
+	return graph_TS->isReversible();
+}
+
+template <class T>
 int TS_EVAL<T>::getCurrNode() const {
 	return curr_node;
 }
@@ -496,6 +534,16 @@ void TS_EVAL<T>::getConnectedDataEVAL(std::vector<WL*>& con_data) {
 template <class T>
 void TS_EVAL<T>::getConnectedNodesEVAL(std::vector<int>& con_nodes) {
 	TransitionSystem<T>::graph_TS->getConnectedNodes(curr_node, con_nodes);
+}
+
+template <class T>
+void TS_EVAL<T>::getParentDataEVAL(std::vector<WL*>& con_data) {
+	TransitionSystem<T>::graph_TS->getParentData(curr_node, con_data);
+}
+
+template <class T>
+void TS_EVAL<T>::getParentNodesEVAL(std::vector<int>& con_nodes) {
+	TransitionSystem<T>::graph_TS->getParentNodes(curr_node, con_nodes);
 }
 
 template <class T>

@@ -24,19 +24,21 @@ struct WIV {
 	std::vector<int> v;
 };
 
-struct IVFlexLexS {
-	IVFlexLexS(float mu, unsigned int S) : v(S), lex_set(mu, S) {}
-	IVFlexLexS(float mu, float fill_val, unsigned int S) : v(S), lex_set(mu, fill_val, S) {}
+template<class T>
+struct IVFlexLex {
+	IVFlexLex(float mu, unsigned int S) : v(S), lex_set(mu, S) {}
+	IVFlexLex(float mu, float fill_val, unsigned int S) : v(S), lex_set(mu, fill_val, S) {}
 	int i;
 	std::vector<int> v;
-	FlexLexSetS lex_set;
+	T lex_set;
 };
 
 template<class T>
 class Graph {
 	private:
 		//std::vector<T> node_list;
-		bool ordered;
+		const bool ordered;
+		const bool STORE_PARENTS;
 		bool isEmpty(); 
 	public:
 		struct node {
@@ -47,25 +49,32 @@ class Graph {
 	protected:
 		std::vector<node*> tails;
 		std::vector<node*> heads;
+		std::vector<node*> parent_tails;
+		std::vector<node*> parent_heads;
 		template<typename pLAM> void print(pLAM printLambda);
 	public:
-		Graph(bool ordered = true); 
+		Graph(bool ordered_ = true, bool reversible_ = false); 
 		bool isOrdered() const;
+		bool isReversible() const;
 		bool isEmpty(node* head) const; 
 		int size() const; 
 		T* getNodeDataptr(unsigned int ind_) const;
 		void getConnectedNodes(unsigned int ind_, std::vector<int>& node_list);
 		void getConnectedData(unsigned int ind_, std::vector<T*>& data_list);
+		void getParentNodes(unsigned int ind_, std::vector<int>& node_list);
+		void getParentData(unsigned int ind_, std::vector<T*>& data_list);
 		const std::vector<node*>* getHeads() const; // DO NOT USE UNLESS YOU NEED RAW ACCESS
 		virtual bool connect(const std::pair<unsigned int, T*>& src, const std::pair<unsigned int, T*>& dst);
 		virtual bool connect(unsigned int src_ind, const std::pair<unsigned int, T*>& dst);
 		
 		template<typename LAM> bool hop(unsigned int ind, LAM lambda);
-		//template<typename LAM> bool hopS(unsigned int ind, LAM lambda);
+		template<typename LAM> bool parentHop(unsigned int ind, LAM lambda);
 		bool hopS(unsigned int ind, std::function<bool(node*, node*)> lambda) const;
+		bool parentHopS(unsigned int ind, std::function<bool(node*, node*)> lambda) const;
 		bool hopF(unsigned int ind, std::function<bool(node*, node*)> lambda);
 		virtual void remove(unsigned int ind_);
 		virtual void print();
+		virtual void printReverse();
 		void updateData(unsigned int ind_from, unsigned int ind_to, T* dataptr_);
 		static int augmentedStateFunc(int i, int j, int n, int m);
 		static void augmentedStateMap(unsigned int ind_product, int n, int m, std::pair<unsigned int, unsigned int>& ret_indices);
@@ -139,6 +148,7 @@ class DFA_EVAL {
 		//friend class Graph<std::string>;
 	public:
 		DFA_EVAL(const DFA* dfaptr_);
+		const DFA* getDFA() const;
 		const std::vector<std::string>* getAlphabetEVAL() const;
 		bool eval(const std::string& letter, bool evolve);
 		int getCurrNode() const;

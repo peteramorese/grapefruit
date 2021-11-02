@@ -1,12 +1,15 @@
 #!/usr/bin/env python
-import spot
+import spot, os, glob
 
-def create_file(F_arr, filename_prefix):
+def create_file(F_arr, dirname_prefix):
 
-
+    # Remove all dfa files in directory:
+    for file in os.scandir(dirname_prefix):
+        os.remove(file.path)
+        #print(file.path)
     i = 0
     for F in F_arr: 
-        filename = filename_prefix + "_{}".format(i) + ".txt"
+        filename = dirname_prefix + "dfa_{}".format(i) + ".txt"
         #filename_list[i] = filename
         i = i + 1;
         lines_list = list()
@@ -65,7 +68,7 @@ def print_automaton(A):
 
 
 READ_FILE_NAME = "formulas.txt"
-WRITE_FILE_NAME_PREFIX = "dfas/dfa"
+WRITE_FILE_DIR_NAME_PREFIX = "dfas/"
 
 with open(READ_FILE_NAME, "r") as formula_file:
     lines = formula_file.readlines()
@@ -73,7 +76,10 @@ with open(READ_FILE_NAME, "r") as formula_file:
 F_arr = list()
 for line in lines:
     F_i = line.replace("\n","")
-    if not F_i[0]=="#":
-        print("Found formula:     ",F_i)
-        F_arr.append(F_i)
-create_file(F_arr, WRITE_FILE_NAME_PREFIX)
+    if not line == "\n": 
+        if not F_i[0]=="#":
+            print("Found formula:     ",F_i)
+            F_arr.append(F_i)
+
+print("Number of formulas: ", len(F_arr))
+create_file(F_arr, WRITE_FILE_DIR_NAME_PREFIX)

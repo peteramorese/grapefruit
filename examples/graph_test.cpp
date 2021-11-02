@@ -2,7 +2,7 @@
 #include "graph.h"
 
 int main() {
-	Graph<int> g(true);
+	Graph<int> g(true, true);
 	//Graph<std::string> g_s(true);
 	std::vector<int> data(3);
 	data[0] = 33;
@@ -30,6 +30,12 @@ int main() {
 	std::vector<int*> data_list;
 	g.getConnectedNodes(0, node_list);
 	g.getConnectedData(0, data_list);
+	for (int i=0; i<node_list.size(); ++i) {
+		std::cout<<"connected node: "<<node_list[i]<<std::endl;	
+		std::cout<<"connected data: "<<*data_list[i]<<std::endl;	
+	}
+	g.getParentNodes(0, node_list);
+	g.getParentData(0, data_list);
 	for (int i=0; i<node_list.size(); ++i) {
 		std::cout<<"connected node: "<<node_list[i]<<std::endl;	
 		std::cout<<"connected data: "<<*data_list[i]<<std::endl;	
