@@ -1,5 +1,6 @@
 # Ignore build directory
 build/
 include/copies/
+spot_automaton_file_dump/dfas/
 *.swp
 *~
