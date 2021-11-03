@@ -57,7 +57,7 @@ int main() {
 	State init_state(&SS_GRID_ROBOT);	
 	init_state.setState(set_state);
 
-	Graph<WL> ts_graph_m(true);
+	Graph<WL> ts_graph_m(true, true);
 	TS_EVAL<State> ts_eval(&ts_graph_m, true, true, 0); // by default, the init node for the ts is 0
 	ts_eval.setInitState(&init_state);
 
@@ -139,6 +139,7 @@ int main() {
 			}
 		}
 	}
+	std::cout<<"af make ts"<<std::endl;
 	ts_eval.finishConnecting();
 
 
@@ -163,8 +164,8 @@ int main() {
 	}
 
 	ts_eval.setPropositions(AP_ptrs);
-	//std::cout<<"\n\n Printing the Transition System: \n\n"<<std::endl;
-	//ts_eval.printTS();
+	std::cout<<"\n\n Printing the Transition System: \n\n"<<std::endl;
+	ts_eval.printTS();
 
 
 
@@ -210,7 +211,7 @@ int main() {
 		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
 	}
 
-	SymbSearch<REQLex> search_obj;
+	SymbSearch<FlexLexSetS> search_obj;
 	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	search_obj.setTransitionSystem(&ts_eval);
 	float mu;
@@ -220,7 +221,7 @@ int main() {
 	std::cin >> mu;
 	search_obj.setFlexibilityParam(mu);
 	//search_obj.setFlexibilityParam(0.0f);
-	bool success = search_obj.search();
+	bool success = search_obj.search(true);
 	//std::cout<<"Found plan? "<<success<<std::endl;
 	if (success) {
 		std::vector<std::string> xtra_info;

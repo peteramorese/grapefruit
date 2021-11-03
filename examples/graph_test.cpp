@@ -28,14 +28,15 @@ int main() {
 	
 	std::vector<int> node_list;
 	std::vector<int*> data_list;
-	g.getConnectedNodes(0, node_list);
-	g.getConnectedData(0, data_list);
+	g.getConnectedNodes(1, node_list);
+	g.getConnectedData(1, data_list);
 	for (int i=0; i<node_list.size(); ++i) {
 		std::cout<<"connected node: "<<node_list[i]<<std::endl;	
 		std::cout<<"connected data: "<<*data_list[i]<<std::endl;	
 	}
-	g.getParentNodes(0, node_list);
-	g.getParentData(0, data_list);
+	std::cout<<"Printing parent nodes and data of node 2"<<std::endl;
+	g.getParentNodes(2, node_list);
+	g.getParentData(2, data_list);
 	for (int i=0; i<node_list.size(); ++i) {
 		std::cout<<"connected node: "<<node_list[i]<<std::endl;	
 		std::cout<<"connected data: "<<*data_list[i]<<std::endl;	

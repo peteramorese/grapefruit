@@ -443,6 +443,10 @@ void TS_EVAL<T>::mapStatesToLabels(const std::vector<const std::vector<std::stri
 				//std::cout<<"af plneval"<<std::endl;
 			}
 		}
+		//std::cout<<"mapping state: "<<si<<" to: "<<std::endl;
+		//for (int i=0; i<temp_labels.size(); ++i) {
+		//	std::cout<<"  label: "<<temp_labels[i]<<std::endl;
+		//}
 		state_to_label_map[si] = temp_labels;
 	}
 	std::cout<<"Info: Done mapping states to labels.\n";
@@ -456,6 +460,11 @@ const std::vector<std::string>* TS_EVAL<T>::returnStateLabels(int state_ind) {
 	//for (int i=0; i<state_to_label_map[state_ind].size(); ++i) {
 	//	std::cout<<state_to_label_map[state_ind][i]<<std::endl;
 	//}
+	//std::cout<<"RETURN STATE LABELS ind: "<<state_ind<<" size: "<<state_to_label_map[state_ind].size()<<std::endl;
+
+	//	for (int i=0; i<state_to_label_map[state_ind].size(); ++i) {
+	//		std::cout<<"  label: "<<state_to_label_map[state_ind][i]<<std::endl;
+	//	}
 	if (state_ind > TransitionSystem<T>::state_map.size()-1) {
 		std::cout<<"Error: State ind map out of bounds\n";
 		return nullptr;
@@ -518,7 +527,7 @@ bool TS_EVAL<T>::evalReverse(const std::string& action, bool evolve) {
 
 template <class T>
 bool TS_EVAL<T>::isReversible() const {
-	return graph_TS->isReversible();
+	return TransitionSystem<T>::graph_TS->isReversible();
 }
 
 template <class T>

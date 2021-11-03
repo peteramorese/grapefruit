@@ -7,16 +7,20 @@
 
 ### GRID ROBOT: ###
 
+# simple 5 x 5 test case
+#F(ap_x1_y3)
+#F(ap_x2_y2)
+
 # equal optimal paths, zero flexibility:
-F(ap_x1_y8)
-
-F(ap_x1_y3)
-#F(ap_x2_y3)
-
-F(ap_x6_y6)
-
-#F(ap_x2_y8)
-#F(ap_x2_y9)
+#F(ap_x1_y8)
+#
+#F(ap_x1_y3)
+##F(ap_x2_y3)
+#
+#F(ap_x6_y6)
+#
+##F(ap_x2_y8)
+##F(ap_x2_y9)
 
 # push this baby to the limits 30x30
 #F(ap_x2_y8 & F(ap_x8_y1) & F(ap_x7_y28))
@@ -24,15 +28,15 @@ F(ap_x6_y6)
 #F(ap_x6_y6 & F(ap_x1_y8) & F(ap_x9_y14))
 
 # zig zag:
-#F(ap_x1_y9)
-#F(ap_x2_y0)
-#F(ap_x3_y9)
-#F(ap_x4_y0)
-#F(ap_x5_y9)
-#F(ap_x6_y0)
-#F(ap_x7_y9)
-#F(ap_x8_y0)
-#F(ap_x9_y9)
+F(ap_x1_y9)
+F(ap_x2_y0)
+F(ap_x3_y9)
+F(ap_x4_y0)
+F(ap_x5_y9)
+F(ap_x6_y0)
+F(ap_x7_y9)
+F(ap_x8_y0)
+F(ap_x9_y9)
 
 
 # massive grid:

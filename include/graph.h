@@ -105,7 +105,7 @@ class Automaton : public Graph<T> {
 		//template<typename pLAM> void print(pLAM printLambda);
 		std::vector<T*> node_data_list;
 	public:
-		Automaton();
+		Automaton(bool reversible = false);
 		void setAcceptingStates(const std::vector<unsigned int>& accepting_states_);
 		bool isAccepting(unsigned int ind) const;
 		const std::vector<unsigned int>* getAcceptingStates() const;
@@ -126,7 +126,7 @@ class DFA : public Automaton<std::string> {
 	private:
 		bool check_det;
 	public:
-		DFA();
+		DFA(bool reversible = true);
 		void toggleCheckDeterminism(bool check_det_);
 		int getInitState() const;
 		bool connectDFA(unsigned int ind_from, unsigned int ind_to, const std::string& label_);
@@ -140,17 +140,20 @@ class DFA : public Automaton<std::string> {
 
 class DFA_EVAL {
 	private:
-		const DFA* dfaptr;
+		DFA* dfaptr;
+		//const DFA* dfaptr;
 		//Graph<std::string>::node* curr_node;
 		int curr_node;
 		bool init, accepting;
 		friend class DFA;
 		//friend class Graph<std::string>;
 	public:
-		DFA_EVAL(const DFA* dfaptr_);
+		DFA_EVAL(DFA* dfaptr_);
+		//DFA_EVAL(const DFA* dfaptr_);
 		const DFA* getDFA() const;
 		const std::vector<std::string>* getAlphabetEVAL() const;
 		bool eval(const std::string& letter, bool evolve);
+		bool evalReverse(const std::string& letter, bool evolve);
 		int getCurrNode() const;
 		void set(int set_node);
 		void reset();
