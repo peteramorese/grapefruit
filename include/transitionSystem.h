@@ -45,7 +45,7 @@ class TransitionSystem {
 		//T compose(const T* mult_TS) const;
 		void clearTS();
 		void printTS() const;
-		~TransitionSystem();
+		virtual ~TransitionSystem();
 };
 
 template <class T>
@@ -74,6 +74,7 @@ class TS_EVAL : public TransitionSystem<T> {
 		void set(int set_node);
 		void reset();
 		const T* getCurrState() const;
+		void debugprint();
 };
 
 template <class T>
