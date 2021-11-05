@@ -86,9 +86,9 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, space
 	//std::chrono::time_point<std::chrono::system_clock> end_time;
 	//std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
 	std::vector<const std::vector<std::string>*> total_alphabet(1);
-	for (int i=0; i<node_size; ++i) {
-		total_alphabet[i] = dfa_sps->getAlphabetEVAL();
-	}
+	total_alphabet[0] = dfa_sps->getAlphabetEVAL();
+	//for (int i=0; i<node_size; ++i) {
+	//}
 	std::cout<<"beep"<<std::endl;
 	//TS->mapStatesToLabels(total_alphabet); // This is in efficient with diverse/large alphabet
 	auto compare = [](std::pair<int, float> pair1, std::pair<int, float> pair2) {
@@ -164,8 +164,10 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, space
 		std::pair<bool, std::vector<int>> accepting;
 		float min_accepting_cost = -1;
 		//int tree_end_node = 0;
-		int prev_leaf_ind, prod_solution_ind;
-		while (((round == 0) || (pqR.size() > 0)) && !found_target_state) {
+
+		int prev_leaf_ind = -1;
+		int prod_solution_ind;
+		while ((pq.size() > 0) && !found_target_state) {
 			//pq.top();
 			//std::cout<<"\nprior queue size(): "<<pq.size()<<std::endl;
 			//printQueue(pq);
@@ -616,7 +618,8 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 	std::pair<bool, std::vector<int>> accepting;
 	int tree_end_node = 0;
 	int iterations = 0;
-	int prev_leaf_ind, solution_ind;
+	int prev_leaf_ind = -1;
+	int solution_ind;
 	bool finished = false;
 	while (!finished) {
 		iterations++;
@@ -807,11 +810,12 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 					if (dfa_list_ordered->operator[](i)->isCurrAccepting()) {
 						fill_set[i] = 0;
 					} else {
+						std::cout<<"dfa curr node: "<<dfa_list_ordered->operator[](i)->getCurrNode()<<" is it accepting? "<<dfa_list_ordered->operator[](i)->isCurrAccepting()<<std::endl;
 						fill_set[i] = pullStateWeight(TS->getCurrNode(), dfa_list_ordered->operator[](i)->getCurrNode(), i, reachable);
-					}
-					if (!reachable) {
-						std::cout<<"Error: Attempted to find heuristic distance for unreachable product state (ts: "<<TS->getCurrNode()<<" dfa "<<i<<": "<<dfa_list_ordered->operator[](i)->getCurrNode()<<")\n";
-						return false;
+						if (!reachable) {
+							std::cout<<"Error: Attempted to find heuristic distance for unreachable product state (ts: "<<TS->getCurrNode()<<" dfa "<<i<<": "<<dfa_list_ordered->operator[](i)->getCurrNode()<<")\n";
+							return false;
+						}
 					}
 					//std::cout<<"fill set ["<<i<<"] = "<<fill_set[i]<<std::endl;
 				}
