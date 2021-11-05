@@ -18,7 +18,7 @@ int main() {
 
 	std::vector<std::string> x_labels;
 	std::vector<std::string> y_labels;
-	const int grid_size = 5;
+	const int grid_size = 10;
 	for (int i=0; i<grid_size; ++i) {
 		std::string temp_string;
 		temp_string = "x" + std::to_string(i);
@@ -173,7 +173,7 @@ int main() {
 	/*       Read in the DFA's from the files      */
 	/////////////////////////////////////////////////
 
-	//DFA A;
+	DFA A;
 	int N_DFAs;
 
 	// Get input from user for how many formulas to read in:
@@ -182,20 +182,17 @@ int main() {
 	std::cin >> N_DFAs;
 	std::cout<<"\n";
 
-	//std::vector<DFA> dfa_arr(N_DFAs);
+	std::vector<DFA> dfa_arr(N_DFAs);
 	std::vector<std::string> filenames(N_DFAs);
-	std::vector<DFA*> dfa_arr_ptrs(N_DFAs);
 	for (int i=0; i<N_DFAs; ++i) {
 		filenames[i] = "../spot_automaton_file_dump/dfas/dfa_" + std::to_string(i) +".txt";
 	}
 	for (int i=0; i<N_DFAs; ++i) {
-		DFA* temp_dfa_ptr = new DFA(true);
-		dfa_arr_ptrs[i] = temp_dfa_ptr;
-		dfa_arr_ptrs[i]->readFileSingle(filenames[i]);
+		dfa_arr[i].readFileSingle(filenames[i]);
 	}
 	std::cout<<"\n\nPrinting all DFA's (read into an array)...\n\n"<<std::endl;
 	for (int i=0; i<N_DFAs; ++i) {
-		dfa_arr_ptrs[i]->print();
+		dfa_arr[i].print();
 		std::cout<<"\n"<<std::endl;
 	}
 
@@ -210,7 +207,7 @@ int main() {
 	//std::vector<DFA_EVAL> dfa_eval_vec;
 	std::vector<DFA_EVAL*> dfa_eval_ptrs;
 	for (int i=0; i<N_DFAs; ++i) {
-		DFA_EVAL* temp_dfa_eval_ptr = new DFA_EVAL(dfa_arr_ptrs[i]);
+		DFA_EVAL* temp_dfa_eval_ptr = new DFA_EVAL(&dfa_arr[i]);
 		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
 	}
 
@@ -228,8 +225,8 @@ int main() {
 	//std::cout<<"Found plan? "<<success<<std::endl;
 	if (success) {
 		std::vector<std::string> xtra_info;
-		for (int i=0; i<dfa_arr_ptrs.size(); ++i) {
-			const std::vector<std::string>* ap_ptr = dfa_arr_ptrs[i]->getAP();
+		for (int i=0; i<dfa_arr.size(); ++i) {
+			const std::vector<std::string>* ap_ptr = dfa_arr[i].getAP();
 			for (int ii=0; ii<ap_ptr->size(); ++ii) {
 				xtra_info.push_back(ap_ptr->operator[](ii));
 				xtra_info.back() = xtra_info.back() + "_prio" + std::to_string(i);
@@ -238,12 +235,9 @@ int main() {
 		search_obj.writePlanToFile("/Users/Peter/Documents/MATLAB/preference_planning_demos/plan.txt", xtra_info);
 	}
 
-	std::cout<<"Entering script dtor"<<std::endl;
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {
 		delete dfa_eval_ptrs[i];
-		delete dfa_arr_ptrs[i];
 	}
-	std::cout<<"exiting script dtor"<<std::endl;
 
 	return 0;
 

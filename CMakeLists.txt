@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
 
+
 add_subdirectory(include)
 #add_subdirectory(pref_include)
 #add_subdirectory(examples)
