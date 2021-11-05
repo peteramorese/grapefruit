@@ -49,7 +49,7 @@ bool TransitionSystem<T>::parseLabelAndEval(const std::string* label, const T* s
 	//std::vector<bool> propositions;
 	int prop_i = -1;
 	std::string temp_name;
-	char prev_operator;
+	char prev_operator = '\0';
 	for (int i=0; i<label->size(); ++i) {
 		char character = (*label)[i];
 		bool sub_eval;
