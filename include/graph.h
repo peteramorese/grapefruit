@@ -103,8 +103,8 @@ class Automaton : public Graph<T> {
 		bool inAlphabet(std::string);
 		bool checkAlphabet(const Automaton* arg_dfa);
 		//template<typename pLAM> void print(pLAM printLambda);
+		std::vector<T*> node_data_list;
 	public:
-		std::vector<T*> node_data_list; // THIS SHOULD BE PRIVATE!!
 		Automaton(bool reversible = false);
 		void setAcceptingStates(const std::vector<unsigned int>& accepting_states_);
 		bool isAccepting(unsigned int ind) const;
@@ -126,8 +126,7 @@ class DFA : public Automaton<std::string> {
 	private:
 		bool check_det;
 	public:
-		DFA();
-		DFA(bool reversible);
+		DFA(bool reversible = true);
 		void toggleCheckDeterminism(bool check_det_);
 		int getInitState() const;
 		bool connectDFA(unsigned int ind_from, unsigned int ind_to, const std::string& label_);
@@ -147,7 +146,6 @@ class DFA_EVAL {
 		int curr_node;
 		bool init, accepting;
 		friend class DFA;
-		//friend class Automaton<std::string>;
 		//friend class Graph<std::string>;
 	public:
 		DFA_EVAL(DFA* dfaptr_);

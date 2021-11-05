@@ -10,11 +10,9 @@
 //const static auto typename printLAM = [](Graph<T>::node* dst){std::cout<<dst->nodeind;};
 
 template<class T>
-Graph<T>::Graph(bool ordered_, bool reversible_) : ordered(ordered_), STORE_PARENTS(reversible_), heads(0, nullptr), tails(0, nullptr), parent_heads(0, nullptr), parent_tails(0, nullptr){
+Graph<T>::Graph(bool ordered_, bool reversible_) : ordered(ordered_), STORE_PARENTS(reversible_), heads(0, nullptr), tails(0, nullptr){
 	tails.clear();
 	heads.clear();
-	parent_tails.clear();
-	parent_heads.clear();
 }
 
 template<class T>
@@ -102,8 +100,8 @@ bool Graph<T>::connect(const std::pair<unsigned int, T*>& src, const std::pair<u
 		new_node_par->adjptr = nullptr;	
 		// Update the tail pointer to the appended element:
 		parent_tails[dst.first]->adjptr = new_node_par;
+		std::cout<<"connecting node: "<<dst.first<< " to node: "<<new_node_par->nodeind<<std::endl;
 		parent_tails[dst.first] = new_node_par;
-		//std::cout<<"connecting node: "<<dst.first<< " to node: "<<new_node_par->nodeind<<std::endl;
 	}
 	return true;
 }
@@ -190,15 +188,7 @@ bool Graph<T>::hop(unsigned int ind, LAM lambda) {
 	while (currptr!=nullptr) {
 		node* nextptr = currptr->adjptr;
 		//std::cout<<"   currptr going in: "<<currptr<<", prevptr going in: "<<prevptr<<std::endl;
-		node* TEST_CURRPTR = currptr;
-		node* TEST_PREVPTR = prevptr;
 		lambda(currptr, prevptr);
-		if (currptr != TEST_CURRPTR) {
-			std::cout<<"\n            ERROR!!!: CURR POINTER WAS CHANGED!!\n\n";
-		}
-		if (prevptr != TEST_PREVPTR) {
-			std::cout<<"\n            ERROR!!!: PREV POINTER WAS CHANGED!!\n\n";
-		}
 		//std::cout<<"   currptr coming out: "<<currptr<<", prevptr coming out: "<<prevptr<<std::endl;
 		prevptr = currptr;
 		currptr = nextptr;
@@ -216,15 +206,7 @@ bool Graph<T>::parentHop(unsigned int ind, LAM lambda) {
 	while (currptr!=nullptr) {
 		node* nextptr = currptr->adjptr;
 		//std::cout<<"   currptr going in: "<<currptr<<", prevptr going in: "<<prevptr<<std::endl;
-		node* TEST_CURRPTR = currptr;
-		node* TEST_PREVPTR = prevptr;
 		lambda(currptr, prevptr);
-		if (currptr != TEST_CURRPTR) {
-			std::cout<<"\n            ERROR!!!: CURR POINTER WAS CHANGED!!\n\n";
-		}
-		if (prevptr != TEST_PREVPTR) {
-			std::cout<<"\n            ERROR!!!: PREV POINTER WAS CHANGED!!\n\n";
-		}
 		//std::cout<<"   currptr coming out: "<<currptr<<", prevptr coming out: "<<prevptr<<std::endl;
 		prevptr = currptr;
 		currptr = nextptr;
@@ -245,15 +227,7 @@ bool Graph<T>::hopS(unsigned int ind, std::function<bool(node*, node*)> lambda) 
 	while (currptr!=nullptr) {
 		node* nextptr = currptr->adjptr;
 		//std::cout<<"   currptr going in: "<<currptr<<", prevptr going in: "<<prevptr<<std::endl;
-		node* TEST_CURRPTR = currptr;
-		node* TEST_PREVPTR = prevptr;
 		breakout = lambda(currptr, prevptr);
-		if (currptr != TEST_CURRPTR) {
-			std::cout<<"\n            ERROR!!!: CURR POINTER WAS CHANGED!!\n\n";
-		}
-		if (prevptr != TEST_PREVPTR) {
-			std::cout<<"\n            ERROR!!!: PREV POINTER WAS CHANGED!!\n\n";
-		}
 		//std::cout<<"   currptr coming out: "<<currptr<<", prevptr coming out: "<<prevptr<<std::endl;
 		if (breakout) {
 			return true;
@@ -274,15 +248,7 @@ bool Graph<T>::parentHopS(unsigned int ind, std::function<bool(node*, node*)> la
 	while (currptr!=nullptr) {
 		node* nextptr = currptr->adjptr;
 		//std::cout<<"   currptr going in: "<<currptr<<", prevptr going in: "<<prevptr<<std::endl;
-		node* TEST_CURRPTR = currptr;
-		node* TEST_PREVPTR = prevptr;
 		breakout = lambda(currptr, prevptr);
-		if (currptr != TEST_CURRPTR) {
-			std::cout<<"\n            ERROR!!!: CURR POINTER WAS CHANGED!!\n\n";
-		}
-		if (prevptr != TEST_PREVPTR) {
-			std::cout<<"\n            ERROR!!!: PREV POINTER WAS CHANGED!!\n\n";
-		}
 		//std::cout<<"   currptr coming out: "<<currptr<<", prevptr coming out: "<<prevptr<<std::endl;
 		if (breakout) {
 			return true;
@@ -304,15 +270,7 @@ bool Graph<T>::hopF(unsigned int ind, std::function<bool(node*, node*)> lambda) 
 	while (currptr!=nullptr) {
 		node* nextptr = currptr->adjptr;
 		//std::cout<<"   currptr going in: "<<currptr<<", prevptr going in: "<<prevptr<<std::endl;
-		node* TEST_CURRPTR = currptr;
-		node* TEST_PREVPTR = prevptr;
 		ret = lambda(currptr, prevptr);
-		if (currptr != TEST_CURRPTR) {
-			std::cout<<"\n            ERROR!!!: CURR POINTER WAS CHANGED!!\n\n";
-		}
-		if (prevptr != TEST_PREVPTR) {
-			std::cout<<"\n            ERROR!!!: PREV POINTER WAS CHANGED!!\n\n";
-		}
 		//std::cout<<"   currptr coming out: "<<currptr<<", prevptr coming out: "<<prevptr<<std::endl;
 		prevptr = currptr;
 		currptr = nextptr;
@@ -344,10 +302,10 @@ void Graph<T>::remove(unsigned int ind_) {
 		if (!isEmpty(heads[i])){
 			//std::cout<<"CURRENT NODE IND: "<<i<<std::endl;
 			if (i == ind_) {
-				std::cout<<"DELETING ENTIRE LIST (removing)"<<std::endl;
+				//std::cout<<"DELETING ENTIRE LIST"<<std::endl;
 				hop(i, deleteLAM);	
 				if (!isEmpty(heads[i])) {
-					std::cout<<"Deleting (removing): "<<heads[i]<<std::endl;
+					//std::cout<<"Deleting: "<<heads[i]<<std::endl;
 					delete heads[i];
 					heads[i] = nullptr;
 				}
@@ -368,24 +326,24 @@ T* Graph<T>::getNodeDataptr(unsigned int ind_) const {
 }
 
 template<class T>
-void Graph<T>::getConnectedNodes(unsigned int ind, std::vector<int>& ret_node_list) {
-	ret_node_list.clear();
-	auto fillNodesLAM = [&ret_node_list](Graph<T>::node* dst, Graph<T>::node* prv){ret_node_list.push_back(dst->nodeind);};
+void Graph<T>::getConnectedNodes(unsigned int ind, std::vector<int>& node_list) {
+	node_list.clear();
+	auto fillNodesLAM = [&node_list](Graph<T>::node* dst, Graph<T>::node* prv){node_list.push_back(dst->nodeind);};
 	hop(ind, fillNodesLAM);
 }
 
 template<class T>
-void Graph<T>::getConnectedData(unsigned int ind, std::vector<T*>& ret_data_list) {
-	ret_data_list.clear();
-	auto fillDataLAM = [&ret_data_list](Graph<T>::node* dst, Graph<T>::node* prv){ret_data_list.push_back(dst->dataptr);};
+void Graph<T>::getConnectedData(unsigned int ind, std::vector<T*>& data_list) {
+	data_list.clear();
+	auto fillDataLAM = [&data_list](Graph<T>::node* dst, Graph<T>::node* prv){data_list.push_back(dst->dataptr);};
 	hop(ind, fillDataLAM);
 }
 
 template<class T>
-void Graph<T>::getParentNodes(unsigned int ind, std::vector<int>& ret_node_list) {
+void Graph<T>::getParentNodes(unsigned int ind, std::vector<int>& node_list) {
 	if (STORE_PARENTS) {
-		ret_node_list.clear();
-		auto fillNodesLAM = [&ret_node_list](Graph<T>::node* dst, Graph<T>::node* prv){ret_node_list.push_back(dst->nodeind);};
+		node_list.clear();
+		auto fillNodesLAM = [&node_list](Graph<T>::node* dst, Graph<T>::node* prv){node_list.push_back(dst->nodeind);};
 		parentHop(ind, fillNodesLAM);
 	} else {
 		std::cout<<"Error: Cannot retrieve parent nodes, graph does not store parent info\n";
@@ -393,10 +351,10 @@ void Graph<T>::getParentNodes(unsigned int ind, std::vector<int>& ret_node_list)
 }
 
 template<class T>
-void Graph<T>::getParentData(unsigned int ind, std::vector<T*>& ret_data_list) {
+void Graph<T>::getParentData(unsigned int ind, std::vector<T*>& data_list) {
 	if (STORE_PARENTS) {
-		ret_data_list.clear();
-		auto fillDataLAM = [&ret_data_list](Graph<T>::node* dst, Graph<T>::node* prv){ret_data_list.push_back(dst->dataptr);};
+		data_list.clear();
+		auto fillDataLAM = [&data_list](Graph<T>::node* dst, Graph<T>::node* prv){data_list.push_back(dst->dataptr);};
 		parentHop(ind, fillDataLAM);
 	} else {
 		std::cout<<"Error: Cannot retrieve parent data, graph does not store parent info\n";
@@ -511,25 +469,16 @@ template<class T>
 void Graph<T>::augmentedStateMap(unsigned int ind_product, int n, int m, std::pair<unsigned int, unsigned int>& ret_indices) {
 	unsigned int i = 0;
 	unsigned int j;
-	//while (m*(i+1)<(ind_product+1)){
-	//	i++; 
-	//}
-	//if (ind_product == 0) {
-	//	i = 0;
-	//} else {
-	//}
-	i = std::floor(ind_product/m);
-	//std::cout<<"ind_prod = "<<ind_product<<std::endl;
-	//std::cout<<"m = "<<m<<std::endl;
+	while (m*(i+1)<(ind_product+1)){
+		i++; 
+	}
 	j = ind_product % m; 	
-	//std::cout<<"j = "<<j<<std::endl;
 	ret_indices.first = i;
 	ret_indices.second = j;
 }
 
 template<class T>
 void Graph<T>::clear() {
-	std::cout<<"entering graph clear"<<std::endl;
 	auto deleteLAM = [](Graph<T>::node* dst, Graph<T>::node* prv){
 		//std::cout<<"deleting: "<<dst<<std::endl; 
 		delete dst;
@@ -549,37 +498,32 @@ void Graph<T>::clear() {
 	}
 	heads.clear();
 	tails.clear();
-	std::cout<<"made it out of graph clear"<<std::endl;
 }
 
 
 
 template<class T>
 Graph<T>::~Graph() {
-	std::cout<<"entering graph destructor"<<std::endl;
 	auto deleteLAM = [](Graph<T>::node* dst, Graph<T>::node* prv){
-		//std::cout<<"deleting node: "<<std::endl; 
+		//std::cout<<"deleting: "<<dst<<std::endl; 
 		delete dst;
 	};
 	std::cout<< "Deconstructing " << heads.size() << " lists...\n";
 	for (int i=0; i<heads.size(); i++) {
 		//std::cout<<"CURRENT LIST: "<<i<<std::endl;
 		if (!isEmpty(heads[i])) {
-		//std::cout<<"deleting head: "<<i<<std::endl;
 			hop(i, deleteLAM);
+			//std::cout<<"deleting: "<<heads[i]<<std::endl;
 			delete heads[i];
-			//std::cout<<"done deleting head"<<std::endl;
 		}
 		if (STORE_PARENTS) {
 			if (!isEmpty(parent_heads[i])) {
-		//std::cout<<"deleting parent head: "<<i<<std::endl;
 				parentHop(i, deleteLAM);
 				delete parent_heads[i];
-			//std::cout<<"done deleting parent head"<<std::endl;
 			}
 		}
 	}
-	std::cout<<"made it out of graph destructor"<<std::endl;
+	std::cout<<"made it out of destructor"<<std::endl;
 }
 
 template class Graph<int>;
@@ -672,7 +616,6 @@ void Automaton<T>::addAcceptingState(unsigned int accepting_state) {
 template<class T>
 Automaton<T>::Automaton(bool reversible) : Graph<T>(true, reversible), max_accepting_state_index(0), max_init_state_index(0), is_accepting(0, false)
 {
-	std::cout<<"IM IN DA CTOR (automaton)"<<std::endl;
 	//node_data_list = new std::vector<T>;	
 }
 
@@ -803,14 +746,8 @@ template class Automaton<BlockingState>;
 
 
 
-DFA::DFA() : check_det(true), Automaton(true) {
-	std::cout<<"IM IN DA DF CTOR"<<std::endl;
-	node_data_list.clear();
-}
 
-DFA::DFA(bool reversible) : check_det(true), Automaton(reversible) {
-	node_data_list.clear();
-}
+DFA::DFA(bool reversible) : check_det(true), Automaton(reversible) {}
 
 void DFA::toggleCheckDeterminism(bool check_det_) {
 	check_det = check_det_;
@@ -823,14 +760,7 @@ int DFA::getInitState() const {
 
 bool DFA::connectDFA(unsigned int ind_from, unsigned int ind_to, const std::string& label_) {
 	//Allocate the memory on the heap
-	std::string* temp_dataptr = new std::string;
-	temp_dataptr->operator=(label_);
-	std::cout<<" ADDING DFA DATA PTR: "<<temp_dataptr<<std::endl;
-	node_data_list.push_back(temp_dataptr);
-	std::cout<<"     printing node data list: "<<std::endl;
-	for (int i=0; i<node_data_list.size(); ++i) {
-		std::cout<<"        ind: "<<i<<" ptr: "<<node_data_list[i]<<std::endl;
-	}
+	node_data_list.push_back(new std::string(label_));
 	if (check_det){
 		bool new_state_from, new_state_to;
 		new_state_from = (ind_from > size()) ? true : false;
@@ -856,11 +786,7 @@ bool DFA::connectDFA(unsigned int ind_from, unsigned int ind_to, const std::stri
 	//}
 	//std::cout<<"connecting: "<<ind_from<<" to: "<<ind_to<<" with ptr: "<<&(node_data_list->back())<<std::endl;
 	//std::cout<<"yo b4"<<std::endl;
-	std::cout<<"IN CONNECT DFA: "<<std::endl;
-	std::cout<<"ind from: "<<ind_from<<std::endl;
-	std::cout<<"ind to: "<<ind_to<<std::endl;
-	std::cout<<"label: "<<*temp_dataptr<<std::endl;
-	Graph::connect(ind_from,  {ind_to, temp_dataptr});
+	Graph::connect({ind_from, nullptr}, {ind_to, node_data_list.back()});
 	return true;
 }
 
@@ -1050,10 +976,6 @@ bool DFA::readFileSingle(const std::string& filename) {
 			//std::cout<<"made it out of while"<<std::endl;
 		dfa_file.close();
 		return true;
-	std::cout<<"     printing node data list (af read in): "<<std::endl;
-	for (int i=0; i<node_data_list.size(); ++i) {
-		std::cout<<"        ind: "<<i<<" ptr: "<<node_data_list[i]<<std::endl;
-	}
 	} else {
 		std::cout<<"Cannot open file: "<<filename<<"\n";
 		return false;
@@ -1096,25 +1018,14 @@ void DFA::print() {
 	//		}
 	//	}
 	//}
-	std::cout<<"     printing node data list (print): "<<std::endl;
-	for (int i=0; i<node_data_list.size(); ++i) {
-		std::cout<<"        ind: "<<i<<" ptr: "<<node_data_list[i]<<std::endl;
-	}
 }
 
 DFA::~DFA() {
-	std::cout<<"Entering DFA dtor Deleting node data...\n";
-	for (int i=0; i<node_data_list.size(); ++i) {
-		std::cout<<"node data list ptr: "<<node_data_list[i]<<std::endl;
-	}
+	std::cout<<"Deleting node data...\n";
 	for (int i=0; i<node_data_list.size(); ++i) {
 		//std::cout<<"DELETING: "<<node_data_list[i]<<std::endl;
-		//std::cout<<"b4 delete dfa";
-		std::cout<<"DELETING DFA DATA PTR: "<<node_data_list[i]<<std::endl;
 		delete node_data_list[i];
-		std::cout<<" af delete dfa"<<std::endl;
 	}
-	std::cout<<"exiting DFA dtor"<<std::endl;
 }
 
 
@@ -1163,17 +1074,9 @@ bool DFA_EVAL::eval(const std::string& letter, bool evolve) {
 		if (evolve) {
 			curr_node = curr_node_g;
 		}
-	std::cout<<"     printing node data list (eval): "<<std::endl;
-	for (int i=0; i<dfaptr->node_data_list.size(); ++i) {
-		std::cout<<"        ind: "<<i<<" ptr: "<<dfaptr->node_data_list[i]<<std::endl;
-	}
 		return true;
 	} else {
 		//std::cout<<"Error: Letter ("<<letter<<") not found at state: "<<curr_node<<std::endl;
-	std::cout<<"     printing node data list (eval): "<<std::endl;
-	for (int i=0; i<dfaptr->node_data_list.size(); ++i) {
-		std::cout<<"        ind: "<<i<<" ptr: "<<dfaptr->node_data_list[i]<<std::endl;
-	}
 		return false;
 	}
 }
