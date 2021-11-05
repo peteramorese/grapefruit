@@ -6,7 +6,7 @@
 #include "transitionSystem.h"
 
 int main() {
-	Edge top_automaton(true);
+	Edge top_automaton<float>(true);
 
 	// Hard-code DFA_m automaton:
 	//top_automaton.connect(2, 0, 1.0, "p_a & p_r");
@@ -165,9 +165,9 @@ int main() {
 
 
 	/* DFA_m & Graph Instantiations */
-	Edge TS_m(true);
-	Edge DFA_m(true);
-	Edge PS_m(true);
+	Edge TS_m<float>(true);
+	Edge DFA_m<float>(true);
+	Edge PS_m<float>(true);
 	
 	//bool didwork = conds_m[3].evaluate(&init_state, &test_state);
 	//std::cout<<"is true??: "<<didwork<<std::endl;
@@ -310,9 +310,9 @@ int main() {
 
 
 	/* DFA_m & Graph Instantiations */
-	Edge TS_c(true);
-	Edge DFA_c(true);
-	Edge PS_c(true);
+	Edge TS_c<float>(true);
+	Edge DFA_c<float>(true);
+	Edge PS_c<float>(true);
 	
 	//bool didwork = conds_m[3].evaluate(&init_state, &test_state);
 	//std::cout<<"is true??: "<<didwork<<std::endl;

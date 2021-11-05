@@ -9,7 +9,7 @@
 #include "astar.h"
 
 template <class T>
-TransitionSystem<T>::TransitionSystem (Edge* graph_TS_) : has_conditions(false), generated(false) {
+TransitionSystem<T>::TransitionSystem (Edge<float>* graph_TS_) : has_conditions(false), generated(false) {
 	if (graph_TS_->isOrdered()) {
 		graph_TS = graph_TS_;	
 	} else {
@@ -50,11 +50,11 @@ void TransitionSystem<T>::safeAddState(T* add_state, int add_state_ind, Conditio
 		state_map.push_back(add_state);
 		state_added[add_state_ind] = true;
 		unsigned int new_ind = state_map.size()-1;
-		graph_TS->Edge::connect(q_i, new_ind, 1.0f, action);
+		graph_TS->Edge<float>::connect(q_i, new_ind, 1.0f, action);
 	} else {
 		for (int i=0; i<state_map.size(); ++i) {
 			if (add_state == state_map[i]) {
-				graph_TS->Edge::connect(q_i, i, 1.0f, action);				
+				graph_TS->Edge<float>::connect(q_i, i, 1.0f, action);				
 			}
 		}
 	}
@@ -156,7 +156,7 @@ template class TransitionSystem<State>;
 template class TransitionSystem<BlockingState>;
 
 template <class T>
-ProductSystem<T>::ProductSystem(Edge* graph_TS_, Edge* graph_DA_, Edge* graph_product_) : 
+ProductSystem<T>::ProductSystem(Edge<float>* graph_TS_, Edge<float>* graph_DA_, Edge<float>* graph_product_) : 
 	TransitionSystem<T>(graph_TS_) {
 		if (graph_product_->isOrdered()) {
 			graph_product = graph_product_;
@@ -330,11 +330,11 @@ void ProductSystem<T>::safeAddProdState(T* add_state, int add_state_ind, float w
 		} else {
 			is_accepting.push_back(false);
 		}
-		graph_product->Edge::connect(p_i, new_ind, weight, action);
+		graph_product->Edge<float>::connect(p_i, new_ind, weight, action);
 	} else {
 		for (int i=0; i<prod_state_map.size(); ++i) {
 			if (add_state == prod_state_map[i]) {
-				graph_product->Edge::connect(p_i, i, weight, action);				
+				graph_product->Edge<float>::connect(p_i, i, weight, action);				
 			}
 		}
 	}
@@ -362,7 +362,7 @@ void ProductSystem<T>::compose() {
 		prod_DA_index_map.push_back(init_state_DA_ind);
 		// Init state cannot be accepting or else the solution is trivial
 		is_accepting.push_back(false);
-		prod_state_added[Edge::augmentedStateFunc(0, init_state_DA_ind, n, m)] = true;
+		prod_state_added[Edge<float>::augmentedStateFunc(0, init_state_DA_ind, n, m)] = true;
 		p_i = 0; // State index for current state
 		while (p_i<prod_state_map.size()) {
 			int TS_i = prod_TS_index_map[p_i];
@@ -373,8 +373,8 @@ void ProductSystem<T>::compose() {
 				auto currptr_DA = heads_DA[DA_i]->adjptr;	
 				while (currptr_DA!=nullptr){
 					DA_f = currptr_DA->nodeind;
-					//ind_from = Edge::augmentedStateFunc(i, j, n, m);
-					int add_state_ind = Edge::augmentedStateFunc(TS_f, DA_f, n, m);
+					//ind_from = Edge<float>::augmentedStateFunc(i, j, n, m);
+					int add_state_ind = Edge<float>::augmentedStateFunc(TS_f, DA_f, n, m);
 
 					int to_state_ind = currptr_TS->nodeind;
 					bool connecting;

@@ -5,7 +5,8 @@
 #include<map>
 
 
-Edge::Edge(bool ordered_) : ordered(ordered_) {
+template <class T>
+Edge<T>::Edge(bool ordered_) : ordered(ordered_) {
 	ind = 0;
 	ind_checkout = 0;
 	head = nullptr;
@@ -16,11 +17,13 @@ Edge::Edge(bool ordered_) : ordered(ordered_) {
 
 }
 
-bool Edge::isOrdered() const {
+template <class T>
+bool Edge<T>::isOrdered() const {
 	return ordered;
 }
 
-bool Edge::isEmpty() {
+template <class T>
+bool Edge<T>::isEmpty() {
 	if (head==nullptr) {
 		return true;
 	} else {
@@ -28,7 +31,8 @@ bool Edge::isEmpty() {
 	}
 }
 
-bool Edge::isListEmpty(Edge::edgelist* head_) const {
+template <class T>
+bool Edge<T>::isListEmpty(Edge<T>::edgelist* head_) const {
 	if (head_==nullptr) {
 		return true;
 	} else {
@@ -36,9 +40,10 @@ bool Edge::isListEmpty(Edge::edgelist* head_) const {
 	}
 }
 
-void Edge::append(unsigned int nodeind_, float weight_, std::string label_) {
+template <class T>
+void Edge<T>::append(unsigned int nodeind_, float weight_, const std::string& label_) {
 	if (isEmpty()) {
-		Edge::edgelist* newNode = new Edge::edgelist;
+		Edge<T>::edgelist* newNode = new Edge<T>::edgelist;
 		//std::cout<<"PTR: "<<newNode<<std::endl;
 		newNode->nodeind = nodeind_;
 		newNode->weight = 0; 
@@ -50,7 +55,7 @@ void Edge::append(unsigned int nodeind_, float weight_, std::string label_) {
 		prevs[ind_checkout] = prev;
 		newNode->adjptr = nullptr;
 	} else {
-		Edge::edgelist* newNode = new Edge::edgelist;
+		Edge<T>::edgelist* newNode = new Edge<T>::edgelist;
 		//std::cout<<"PTR: "<<newNode<<std::endl;
 		newNode->nodeind = nodeind_;
 		newNode->weight = weight_;
@@ -63,7 +68,8 @@ void Edge::append(unsigned int nodeind_, float weight_, std::string label_) {
 	}
 }
 
-void Edge::checkout(int ind_checkout_) {
+template <class T>
+void Edge<T>::checkout(int ind_checkout_) {
 	if (ind_checkout_<=heads.size()){
 		/*
 		if (isEmpty()) {
@@ -95,7 +101,8 @@ void Edge::checkout(int ind_checkout_) {
 
 }
 
-void Edge::newlist(){
+template <class T>
+void Edge<T>::newlist(){
 	if (checking) {
 		//std::cout<< "checking head:"<<heads[ind_checkout]<< ", reset head:"<<head<<std::endl;
 		if (heads[ind_checkout] == head) {
@@ -110,6 +117,7 @@ void Edge::newlist(){
 	} else {
 		heads.push_back(head);
 		prevs.push_back(prev);
+		node_map.push_back(nullptr);
 		ind = heads.size()-1;
 		ind_checkout = ind;
 		head = nullptr;
@@ -119,7 +127,8 @@ void Edge::newlist(){
 } 
 
 
-int Edge::returnListCount() const {
+template <class T>
+int Edge<T>::returnListCount() const {
 	if (ind+1 == heads.size()){
 		return ind+1;
 	} else if (heads.size() == 0) {
@@ -130,13 +139,15 @@ int Edge::returnListCount() const {
 	}
 }
 
-const std::vector<Edge::edgelist*> Edge::getHeads() const {
-	const std::vector<Edge::edgelist*> heads_out = heads;
+template <class T>
+const std::vector<Edge<T>::edgelist*>& Edge<T>::getHeads() const {
+	const std::vector<Edge<T>::edgelist*> heads_out = heads;
 	return heads_out;
 
 }
 
-void Edge::connect(unsigned int ind_from, unsigned int ind_to, float weight_, std::string label_){
+template <class T>
+void Edge<T>::connect(unsigned int ind_from, unsigned int ind_to, float weight_, std::string label_){
 	// Add lists until ind_from and ind_to are included in the graph
 	while (ind_from > ind){
 		newlist();	
@@ -144,19 +155,9 @@ void Edge::connect(unsigned int ind_from, unsigned int ind_to, float weight_, st
 	while (ind_to > ind){
 		newlist();
 	}
-	/*
-	for (int i=0; i<heads.size(); i++) {
-		std::cout<<"  head "<<i<<": "<<heads[i]<<std::endl;
-	}
-	*/
 
 	checkout(ind_from);
-	//std::cout<<"checking out: "<<ind_from<<" with prev ptr: "<<prev<<" head ptr: "<<head<<std::endl;
-	/*
-	if (isEmpty()){
-		append(ind_from, 0, "none");
-	}
-	*/
+	
 	append(ind_to, weight_, label_);
 	if (!ordered){
 		checkout(ind_to);
@@ -169,7 +170,24 @@ void Edge::connect(unsigned int ind_from, unsigned int ind_to, float weight_, st
 	}
 }
 
-void Edge::returnListNodes(unsigned int ind_, std::vector<int>& node_list) const {
+template <class T>
+void Edge<T>::setNode(unsigned int ind_, T* node) {
+	while (ind_ > heads.size) {
+		newlist();	
+	}
+	node_map[ind_] = node;
+}
+
+template <class T>
+T* Edge<T>::getNode(unsigned int ind_) const {
+	if (ind_ > heads.size) {
+		newlist();	
+	}
+	node_map[ind_] = node;
+}
+
+template <class T>
+void Edge<T>::returnListNodes(unsigned int ind_, std::vector<int>& node_list) const {
 	auto currptr = heads[ind_];
 	node_list.clear();
 	node_list.resize(0);
@@ -183,7 +201,8 @@ void Edge::returnListNodes(unsigned int ind_, std::vector<int>& node_list) const
 	}
 }
 
-void Edge::returnListLabels(unsigned int ind_, std::vector<std::string>& label_list) const {
+template <class T>
+void Edge<T>::returnListLabels(unsigned int ind_, std::vector<std::string>& label_list) const {
 	auto currptr = heads[ind_];
 	label_list.clear();
 	label_list.resize(0);
@@ -197,7 +216,8 @@ void Edge::returnListLabels(unsigned int ind_, std::vector<std::string>& label_l
 	}
 }
 
-void Edge::returnListWeights(unsigned int ind_, std::vector<float>& weights_list) const {
+template <class T>
+void Edge<T>::returnListWeights(unsigned int ind_, std::vector<float>& weights_list) const {
 	auto currptr = heads[ind_];
 	weights_list.clear();
 	if (!isListEmpty(currptr)) {
@@ -210,7 +230,8 @@ void Edge::returnListWeights(unsigned int ind_, std::vector<float>& weights_list
 	}
 }
 
-void Edge::print() const {
+template <class T>
+void Edge<T>::print() const {
 	for (int i=0; i<heads.size(); i++) {
 		auto currptr = heads[i];
 		std::cout<<"Node: "<<currptr->nodeind<<" "<<currptr<<" connects to:\n";
@@ -225,7 +246,8 @@ void Edge::print() const {
 
 }
 
-float Edge::getWeight(unsigned int ind_from, unsigned int ind_to) const {
+template <class T>
+float Edge<T>::getWeight(unsigned int ind_from, unsigned int ind_to) const {
 	if (ind_from < heads.size()) {
 		auto currptr = heads[ind_from]->adjptr;
 		//std::cout<<"Node: "<<currptr->nodeind<<" "<<currptr<<" connects to:\n";
@@ -253,7 +275,8 @@ float Edge::getWeight(unsigned int ind_from, unsigned int ind_to) const {
 	}
 }
 
-void Edge::updateWeight(unsigned int ind_from, unsigned int ind_to, float weight_) {
+template <class T>
+void Edge<T>::updateWeight(unsigned int ind_from, unsigned int ind_to, float weight_) {
 	if (ind_from < heads.size()) {
 		auto currptr = heads[ind_from]->adjptr;
 		//std::cout<<"Node: "<<currptr->nodeind<<" "<<currptr<<" connects to:\n";
@@ -277,7 +300,8 @@ void Edge::updateWeight(unsigned int ind_from, unsigned int ind_to, float weight
 	}
 }
 
-int Edge::augmentedStateFunc(int i, int j, int n, int m) {
+template <class T>
+int Edge<T>::augmentedStateFunc(int i, int j, int n, int m) {
 	int ret_int;
 	ret_int = m*i+j;
 	if (ret_int<=n*m){
@@ -287,7 +311,8 @@ int Edge::augmentedStateFunc(int i, int j, int n, int m) {
 	}
 }
 
-void Edge::compose(const Edge &mult_graph, Edge& product_graph){
+template <class T>
+void Edge<T>::compose(const Edge &mult_graph, Edge& product_graph){
 	int n = heads.size();
 	int m = mult_graph.returnListCount();
 	auto mult_heads = mult_graph.getHeads();
@@ -323,7 +348,8 @@ void Edge::compose(const Edge &mult_graph, Edge& product_graph){
 }
 
 
-void Edge::augmentedStateMap(unsigned int ind_product, int n, int m, std::pair<unsigned int, unsigned int>& ret_indices) {
+template <class T>
+void Edge<T>::augmentedStateMap(unsigned int ind_product, int n, int m, std::pair<unsigned int, unsigned int>& ret_indices) {
 	unsigned int i = 0;
 	unsigned int j;
 	while (m*(i+1)<(ind_product+1)){
@@ -334,7 +360,8 @@ void Edge::augmentedStateMap(unsigned int ind_product, int n, int m, std::pair<u
 	ret_indices.second = j;
 }
 
-void Edge::clear() {
+template <class T>
+void Edge<T>::clear() {
 	std::cout<< "Clearing " << heads.size() << " lists...\n";
 
 	for (int i=0; i<heads.size(); i++) {
@@ -355,7 +382,8 @@ void Edge::clear() {
 	checking = false;
 }
 
-Edge::~Edge() {
+template <class T>
+Edge<T>::~Edge() {
 	std::cout<< "Deconstructing " << heads.size() << " lists...\n";
 
 	for (int i=0; i<heads.size(); i++) {
