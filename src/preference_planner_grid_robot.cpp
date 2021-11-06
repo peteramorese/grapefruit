@@ -18,7 +18,7 @@ int main() {
 
 	std::vector<std::string> x_labels;
 	std::vector<std::string> y_labels;
-	const int grid_size = 10;
+	const int grid_size = 100;
 	for (int i=0; i<grid_size; ++i) {
 		std::string temp_string;
 		temp_string = "x" + std::to_string(i);
@@ -215,13 +215,19 @@ int main() {
 	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	search_obj.setTransitionSystem(&ts_eval);
 	float mu;
+	char use_h;
 	std::cout<<"\n------------------------------\n";
 	std::cout<<"Enter flexibility parameter: ";
 	std::cout<<"\n";
 	std::cin >> mu;
+	std::cout<<"\n------------------------------\n";
+	std::cout<<"Use heuristic? [y/n]: ";
+	std::cout<<"\n";
+	std::cin >> use_h;
 	search_obj.setFlexibilityParam(mu);
 	//search_obj.setFlexibilityParam(0.0f);
-	bool success = search_obj.search(true);
+	bool use_h_flag = (use_h == 'y') ? true : false;
+	bool success = search_obj.search(use_h_flag);
 	//std::cout<<"Found plan? "<<success<<std::endl;
 	if (success) {
 		std::vector<std::string> xtra_info;

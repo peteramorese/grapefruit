@@ -531,6 +531,7 @@ template class Graph<unsigned int>;
 template class Graph<float>;
 template class Graph<double>;
 template class Graph<std::string>;
+template class Graph<WI>;
 template class Graph<WL>;
 template class Graph<WLI>;
 template class Graph<WIV>;
@@ -1044,6 +1045,9 @@ DFA_EVAL::DFA_EVAL(DFA* dfaptr_) : dfaptr(dfaptr_), accepting(false) {
 //DFA_EVAL::DFA_EVAL(const DFA* dfaptr_) : dfaptr(dfaptr_), accepting(false) {
 	// Set the current node to be the initial state
 	curr_node = dfaptr->getInitState();
+	std::cout<<"FOUND INIT STATE:"<<curr_node<<std::endl;
+	std::cout<<"printing reverse:"<<std::endl;
+	dfaptr->printReverse();
 }
 
 const DFA* DFA_EVAL::getDFA() const {
@@ -1084,14 +1088,14 @@ bool DFA_EVAL::eval(const std::string& letter, bool evolve) {
 bool DFA_EVAL::evalReverse(const std::string& letter, bool evolve) {
 	int curr_node_g = curr_node;
 	bool found_true = false;
-	//std::cout<<"INPUT curr_node:"<<curr_node<<" WITH LABEL: "<<letter<<std::endl;
+	std::cout<<"INPUT curr_node:"<<curr_node<<" WITH LABEL: "<<letter<<std::endl;
 	auto evalLAM = [&curr_node_g, &letter, &found_true](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
 	//auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
 		//std::cout<<" hopping parent node: "<<dst->nodeind<<std::endl;
-		//std::cout<<" hopping parent label: "<<*(dst->dataptr)<<std::endl;
+		std::cout<<" hopping parent label: "<<*(dst->dataptr)<<std::endl;
 		if (*(dst->dataptr) == letter) {
 			curr_node_g = dst->nodeind;
-			//std::cout<<"returning true"<<std::endl;
+			std::cout<<"reverse eval found connected ind: "<<curr_node_g<<std::endl;
 			return true;
 		} else if (*(dst->dataptr) == "1") {
 			found_true = true;
@@ -1127,6 +1131,27 @@ bool DFA_EVAL::evalReverse(const std::string& letter, bool evolve) {
 	}
 }
 
+bool DFA_EVAL::getParentNodesWithLabels(const std::vector<std::string>* lbls, std::vector<int>& parent_node_list) {
+	parent_node_list.clear();
+	std::vector<int> par_nodes;
+	std::vector<std::string*> par_lbls;
+	dfaptr->getParentNodes(curr_node, par_nodes);
+	dfaptr->getParentData(curr_node, par_lbls);
+	for (int i=0; i<par_lbls.size(); ++i) {
+		if (*(par_lbls[i]) != "1") {
+			//std::cout<<"par_lbl: "<<*(par_lbls[i])<<std::endl;
+			for (int ii=0; ii<lbls->size(); ++ii) {
+				//std::cout<<"state lbl: "<<lbls->operator[](ii)<<std::endl;
+				if (*(par_lbls[i]) == lbls->operator[](ii)){
+					parent_node_list.push_back(par_nodes[i]);
+					break;
+				}
+			}
+		}
+	}
+	return (parent_node_list.size() > 0) ? true : false;
+}
+
 int DFA_EVAL::getCurrNode() const {
 	return curr_node;
 }
@@ -1138,6 +1163,7 @@ void DFA_EVAL::set(int set_node) {
 
 void DFA_EVAL::reset() {
 	curr_node = dfaptr->getInitState();
+	std::cout<<"RESET TO INIT STATE: "<<curr_node<<std::endl;
 	accepting = false;
 }
 

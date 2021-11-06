@@ -7,6 +7,11 @@
 
 // Declare some struct list types for different graphs:
 
+struct WI {
+	float weight;
+	int i;
+};
+
 struct WL {
 	float weight;
 	std::string label;
@@ -154,6 +159,8 @@ class DFA_EVAL {
 		const std::vector<std::string>* getAlphabetEVAL() const;
 		bool eval(const std::string& letter, bool evolve);
 		bool evalReverse(const std::string& letter, bool evolve);
+		bool getParentNodesWithLabels(const std::vector<std::string>* lbls, std::vector<int>& parent_node_list);
+
 		int getCurrNode() const;
 		void set(int set_node);
 		void reset();
