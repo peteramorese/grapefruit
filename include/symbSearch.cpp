@@ -858,7 +858,8 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 					}
 				}
 				T* new_temp_setptr = newSet();
-				new_temp_setptr->operator=(fill_set);
+				new_temp_setptr->operator=(*curr_leaf_weight);
+				new_temp_setptr->operator+=(fill_set);
 				new_leaf = {tree_end_node, new_temp_setptr};
 			} else {
 				new_leaf = {tree_end_node, &(new_temp_nodeptr->lex_set)};

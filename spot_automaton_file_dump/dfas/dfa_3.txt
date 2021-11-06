@@ -1,29 +1,13 @@
 Alphabet: 
-- ap_x6_y21
-- ap_x12_y8
-- ap_x26_y19
+- ap_x4_y0
 Initial States: 
 - 1
 Graph:
 - 0
-   - 0 -> 0 : !ap_x12_y8 & !ap_x26_y19
-   - 0 -> 2 : ap_x12_y8 & ap_x26_y19
-   - 0 -> 3 : ap_x12_y8 & !ap_x26_y19
-   - 0 -> 4 : !ap_x12_y8 & ap_x26_y19
+   - 0 -> 0 : 1
 - 1
-   - 1 -> 0 : ap_x6_y21 & !ap_x12_y8 & !ap_x26_y19
-   - 1 -> 1 : !ap_x6_y21
-   - 1 -> 2 : ap_x6_y21 & ap_x12_y8 & ap_x26_y19
-   - 1 -> 3 : ap_x6_y21 & ap_x12_y8 & !ap_x26_y19
-   - 1 -> 4 : ap_x6_y21 & !ap_x12_y8 & ap_x26_y19
-- 2
-   - 2 -> 2 : 1
-- 3
-   - 3 -> 2 : ap_x26_y19
-   - 3 -> 3 : !ap_x26_y19
-- 4
-   - 4 -> 2 : ap_x12_y8
-   - 4 -> 4 : !ap_x12_y8
+   - 1 -> 0 : ap_x4_y0
+   - 1 -> 1 : !ap_x4_y0
 Accepting States:
-- 2
+- 0
 
