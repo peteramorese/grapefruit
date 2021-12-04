@@ -455,14 +455,63 @@ void Graph<T>::updateData(unsigned int ind_from, unsigned int ind_to, T* dataptr
 
 template<class T>
 int Graph<T>::augmentedStateFunc(int i, int j, int n, int m) {
-	int ret_int;
-	ret_int = m*i+j;
-	if (ret_int<=n*m){
-		return ret_int;
+	int ret_ind;
+	ret_ind = m*i+j;
+	if (ret_ind<=n*m){
+		return ret_ind;
 	} else {
 		std::cout<<"Error: augmentedStateFunc mapping out of bounds\n";
 		return -1;
 	}
+}
+
+template<class T>
+int Graph<T>::augmentedStateImage(const std::vector<int>& inds, const std::vector<int>& graph_sizes) {
+	int ret_ind = 0;
+	int prod_size = 1;
+	if (inds.size() != graph_sizes.size()) {
+		std::cout<<"Error: augmentedStateImage parameters need to have same number of elements\n";
+		return -1;
+	}
+	for (int i=0; i<inds.size(); ++i) {
+		int temp = 1;
+		for (int j=0; j<i; ++j) {
+			temp *= graph_sizes[j];	
+		}
+		ret_ind += temp*inds[i];
+		prod_size *= graph_sizes[i];
+	}
+	if (ret_ind < prod_size) {
+		return ret_ind;
+	} else {
+		std::cout<<"Error: Indices are out of bounds\n";
+		return -1;
+	}
+}
+
+template<class T>
+void Graph<T>::augmentedStatePreImage(const std::vector<int>& graph_sizes, int ind_prod, std::vector<int>& ret_inds) {
+	if (ind_prod >= 0) {
+		ret_inds.clear();
+		ret_inds.resize(graph_sizes.size());
+		int prod_size = 1;
+		int temp_mod = ind_prod;
+		for (int i=0; i<graph_sizes.size(); ++i) {
+			prod_size *= graph_sizes[i];
+			int temp = 1;
+			for (int j=0; j<(graph_sizes.size() - i - 1); ++j) {
+				temp *= graph_sizes[j];
+			}
+			ret_inds[graph_sizes.size() - i - 1] = (temp_mod - ind_prod % temp)/temp;
+			temp_mod = ind_prod % temp;
+		}
+		if (ind_prod >= prod_size) {
+			std::cout<<"Error: Prod index out of bounds\n";
+		}
+	} else {
+		std::cout<<"Error: Prod index must be geq to 0\n";
+	}
+
 }
 
 template<class T>

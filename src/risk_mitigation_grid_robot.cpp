@@ -174,13 +174,13 @@ int main() {
 	/////////////////////////////////////////////////
 
 	DFA A;
-	int N_DFAs;
+	int N_DFAs = 2;
 
-	// Get input from user for how many formulas to read in:
-	std::cout<<"\n------------------------------\n";
-	std::cout<<"Enter number of formulas: ";
-	std::cin >> N_DFAs;
-	std::cout<<"\n";
+	//// Get input from user for how many formulas to read in:
+	//std::cout<<"\n------------------------------\n";
+	//std::cout<<"Enter number of formulas: ";
+	//std::cin >> N_DFAs;
+	//std::cout<<"\n";
 
 	std::vector<DFA> dfa_arr(N_DFAs);
 	std::vector<std::string> filenames(N_DFAs);
@@ -190,8 +190,14 @@ int main() {
 	for (int i=0; i<N_DFAs; ++i) {
 		dfa_arr[i].readFileSingle(filenames[i]);
 	}
-	std::cout<<"\n\nPrinting all DFA's (read into an array)...\n\n"<<std::endl;
+	//std::cout<<"\n\nPrinting all DFA's (read into an array)...\n\n"<<std::endl;
+	bool two_formulas = true;
 	for (int i=0; i<N_DFAs; ++i) {
+		if (i == 0) {
+			std::cout<<"\n\n  Printing negation of Safety DFA:\n";
+		} else if (i == 1) {
+			std::cout<<"\n\n  Printing Liveness DFA:\n";
+		} 
 		dfa_arr[i].print();
 		std::cout<<"\n"<<std::endl;
 	}
@@ -212,42 +218,51 @@ int main() {
 	}
 
 	SymbSearch<FlexLexSetS> search_obj;
-	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
+	//search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	search_obj.setTransitionSystem(&ts_eval);
-	float mu;
-	char use_h;
-	char use_dfs;
-	std::cout<<"\n------------------------------\n";
-	std::cout<<"Enter flexibility parameter: ";
-	std::cout<<"\n";
-	std::cin >> mu;
-	search_obj.setFlexibilityParam(mu);
+	//float mu;
+	//char use_h;
+	//char use_dfs;
+	//std::cout<<"\n------------------------------\n";
+	//std::cout<<"Enter flexibility parameter: ";
+	//std::cout<<"\n";
+	//std::cin >> mu;
+	//search_obj.setFlexibilityParam(mu);
 
-	std::cout<<"\n------------------------------\n";
-	std::cout<<"Use heuristic? [y/n]: ";
-	std::cout<<"\n";
-	std::cin >> use_h;
-	bool use_h_flag = (use_h == 'y') ? true : false;
+	//std::cout<<"\n------------------------------\n";
+	//std::cout<<"Use heuristic? [y/n]: ";
+	//std::cout<<"\n";
+	//std::cin >> use_h;
+	//bool use_h_flag = (use_h == 'y') ? true : false;
 
-	std::cout<<"\n------------------------------\n";
-	std::cout<<"Use iterative DFS? [y/n]: ";
-	std::cout<<"\n";
-	std::cin >> use_dfs;
-	bool use_dfs_flag = (use_dfs == 'y') ? true : false;
+	//std::cout<<"\n------------------------------\n";
+	//std::cout<<"Use iterative DFS? [y/n]: ";
+	//std::cout<<"\n";
+	//std::cin >> use_dfs;
+	//bool use_dfs_flag = (use_dfs == 'y') ? true : false;
 	//search_obj.setFlexibilityParam(0.0f);
-	bool success = search_obj.search(use_h_flag, use_dfs_flag);
-	//std::cout<<"Found plan? "<<success<<std::endl;
-	if (success) {
-		std::vector<std::string> xtra_info;
-		for (int i=0; i<dfa_arr.size(); ++i) {
-			const std::vector<std::string>* ap_ptr = dfa_arr[i].getAP();
-			for (int ii=0; ii<ap_ptr->size(); ++ii) {
-				xtra_info.push_back(ap_ptr->operator[](ii));
-				xtra_info.back() = xtra_info.back() + "_prio" + std::to_string(i);
-			}
-		}
-		search_obj.writePlanToFile("/Users/Peter/Documents/MATLAB/preference_planning_demos/plan.txt", xtra_info);
+	auto cFunc = [](unsigned int d){
+		//std::cout<<"received: "<<d<<std::endl;
+		//std::cout<<"   ret: "<<1.0/static_cast<float>(d)<<std::endl;
+		return 1/static_cast<float>(d);
+	};
+	SymbSearch<FlexLexSetS>::Strategy S;
+	bool success = search_obj.generateRiskStrategy(dfa_eval_ptrs[0], dfa_eval_ptrs[1], cFunc, S, true);
+	std::cout<<"\n   Found strategy? "<<success<<" action_map size: "<<S.action_map.size()<<std::endl;
+	for (int i=0; i<S.action_map.size(); ++i) {
+		std::cout<<"Prod ind: "<<i<<"  --> action: "<<S.action_map[i]<<std::endl;
 	}
+	//if (success) {
+	//	std::vector<std::string> xtra_info;
+	//	for (int i=0; i<dfa_arr.size(); ++i) {
+	//		const std::vector<std::string>* ap_ptr = dfa_arr[i].getAP();
+	//		for (int ii=0; ii<ap_ptr->size(); ++ii) {
+	//			xtra_info.push_back(ap_ptr->operator[](ii));
+	//			xtra_info.back() = xtra_info.back() + "_prio" + std::to_string(i);
+	//		}
+	//	}
+	//	search_obj.writePlanToFile("/Users/Peter/Documents/MATLAB/preference_planning_demos/plan.txt", xtra_info);
+	//}
 
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {
 		delete dfa_eval_ptrs[i];
