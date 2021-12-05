@@ -484,7 +484,7 @@ int Graph<T>::augmentedStateImage(const std::vector<int>& inds, const std::vecto
 	if (ret_ind < prod_size) {
 		return ret_ind;
 	} else {
-		std::cout<<"Error: Indices are out of bounds\n";
+		std::cout<<"Error: Indices are out of bounds (ret_ind: "<<ret_ind<<" prod_size: "<<prod_size<<")\n";
 		return -1;
 	}
 }
@@ -1108,9 +1108,13 @@ const std::vector<std::string>* DFA_EVAL::getAlphabetEVAL() const {
 }
 
 bool DFA_EVAL::eval(const std::string& letter, bool evolve) {
+	
+	//std::cout<<"in eval: curr node: "<<curr_node<<" input letter: "<<letter<<std::endl;
 	int curr_node_g = curr_node;
 	auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
-	//auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
+		//if (*(dst->dataptr) == "1") {
+		//	std::cout<<"in lam: found 1"<<std::endl;
+		//}
 		if (*(dst->dataptr) == letter || *(dst->dataptr) == "1") {
 			curr_node_g = dst->nodeind;
 			return true;
@@ -1181,6 +1185,7 @@ bool DFA_EVAL::evalReverse(const std::string& letter, bool evolve) {
 }
 
 bool DFA_EVAL::getParentNodesWithLabels(const std::vector<std::string>* lbls, std::vector<int>& parent_node_list) {
+	//std::cout<<"par lbl CURRNODE: "<<curr_node<<std::endl;
 	parent_node_list.clear();
 	std::vector<int> par_nodes;
 	std::vector<std::string*> par_lbls;

@@ -737,7 +737,7 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 				const std::vector<std::string>* lbls;
 				if (round == 0){
 					//std::cout<<"\nts node b4 return state labels: "<<TS->getCurrNode()<<std::endl;
-					std::cout<<"ts curr node (4 lblsl) : "<<TS->getCurrNode()<<std::endl;
+					//std::cout<<"ts curr node (4 lblsl) : "<<TS->getCurrNode()<<std::endl;
 					lbls = TS->returnStateLabels(TS->getCurrNode());
 				} else {
 					//std::cout<<"\nts node b4 return state labels: "<<prev_ts_ind<<std::endl;
@@ -750,11 +750,12 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 				//std::cout<<"LBLS SIZE::::: "<<lbls->size()<<std::endl;
 				if (round == 0) {
 					for (int ii=0; ii<lbls->size(); ++ii) {
-						std::cout<<" testing, lbl: "<<lbls->operator[](ii)<<std::endl;
+						//std::cout<<" INPUT, lbl: "<<lbls->operator[](ii)<<std::endl;
 						//std::cout<<"       label: --- "<<lbls->operator[](ii)<<std::endl;
 						//std::cout<<"DFA::: "<<(i-1)<<" curr node; "<<(dfa_list_ordered->operator[](i-1)->getCurrNode())<<std::endl;
 						//if (round == 0) {
 						if (dfa_sps->eval(lbls->operator[](ii), true)) {
+							//std::cout<<" OUTPUT EVAL TRUE"<<std::endl;
 							found_connection = true;
 							break;
 						} //else {
@@ -1017,7 +1018,7 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 }
 
 template<class T>
-bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_dfa, std::function<float(unsigned int)> cFunc, Strategy strat, bool use_cost) {
+bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_dfa, std::function<float(unsigned int)> cFunc, Strategy& strat, bool use_cost) {
 	if (!TS->isReversible() || !cosafe_dfa->getDFA()->isReversible() || !live_dfa->getDFA()->isReversible()) {
 		std::cout<<"Error: Cannot perform space search on irreversible graphs\n";
 		return false;
@@ -1050,8 +1051,9 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 
 	std::vector<float> first_search_weights(p_space_size, -1.0f); 
 	std::vector<float> second_search_weights(p_space_size, -1);
-	//spw.state_weights.resize(p_space_size);
-	//spw.reachability.resize(p_space_size, false);
+	std::cout<<" P SPACE SIZE: "<<p_space_size<<std::endl;
+	strat.action_map.resize(p_space_size);
+	strat.reachability.resize(p_space_size, false);
 	
 	// Search: 
 
@@ -1067,7 +1069,7 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 	std::pair<bool, std::vector<int>> accepting;
 	std::vector<int> graph_sizes = {n, m, l};
 	for (int round=0; round<2; ++round) {
-		std::cout<<"STARTING ROUND: "<<round<<std::endl;
+		std::cout<<"\n generateRiskStrategy: STARTING ROUND: "<<round<<std::endl;
 		std::string search_type = (round == 0) ? "forward" : "reverse";
 		std::priority_queue<std::pair<int, float>, std::vector<std::pair<int, float>>, decltype(compare)> pq(compare);
 		//pq.clear();
@@ -1084,6 +1086,7 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 			TS->reset();
 			cosafe_dfa->reset();
 			live_dfa->reset();
+			//std::cout<<" \n\n WE RESET: "<<live_dfa->getCurrNode()<<std::endl;
 			int init_node_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), cosafe_dfa->getCurrNode(), live_dfa->getCurrNode()}, graph_sizes);
 			//std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_ind<<std::endl;
 			first_search_weights[init_node_ind] = -1.0f;
@@ -1095,9 +1098,11 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 			// Add the accepting states to the prio queue with weight zero, and add them to the tree so
 			int ROOT_STATE = n*m*l; // this is the root state ind, guaranteed to be larger than any prod state ind
 			for (auto acc_prod_state : accepting.second) {
+				//std::cout<<"in the accepting states... acc prod state: "<<acc_prod_state<<std::endl;
 				included[acc_prod_state] = true;
 				//spw.state_weights[acc_prod_state] = 0.0f;
 				strat.reachability[acc_prod_state] = true;
+				strat.action_map[acc_prod_state] = "ACCEPTING";
 				//std::vector<int> sol_inds;
 				//Graph<float>::augmentedStateMap(acc_prod_state, n, m, sol_inds);
 				curr_leaf.first = acc_prod_state;
@@ -1105,6 +1110,7 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 				pq.push(curr_leaf);
 				tree.connect(ROOT_STATE, {acc_prod_state, nullptr}); // the root state is the merged accepting state
 			}
+			//std::cout<<"out of the accepting states"<<std::endl;
 		}
 
 		float min_accepting_cost = -1;
@@ -1232,37 +1238,49 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 				const std::vector<std::string>* lbls;
 				if (round == 0){
 					//std::cout<<"\nts node b4 return state labels: "<<TS->getCurrNode()<<std::endl;
-					std::cout<<"ts curr node: "<<TS->getCurrNode()<<std::endl;
+					//std::cout<<"ts curr node: "<<TS->getCurrNode()<<std::endl;
 					lbls = TS->returnStateLabels(TS->getCurrNode());
+					//std::cout<<"lbls size: "<<lbls->size()<<std::endl;
 				} else {
 					//std::cout<<"\nts node b4 return state labels: "<<prev_ts_ind<<std::endl;
 					lbls = TS->returnStateLabels(prev_ts_ind);
 				}
-				found_connection = true;
+				found_connection = false;
 				//std::cout<<"\n before eval"<<std::endl;
 				bool found_true = true;
 				std::vector<int> parent_node_list_cosafe;
 				std::vector<int> parent_node_list_live;
 				if (round == 0) {
 					for (int ii=0; ii<lbls->size(); ++ii) {
-						if (!cosafe_dfa->eval(lbls->operator[](ii), true)) {
-							found_connection = false;
+						if (cosafe_dfa->eval(lbls->operator[](ii), true)) {
+							found_connection = true;
 							break;
 						}
+					}
+					if (!found_connection) {
+						std::cout<<" DID NOT FIND CONNECTION IN COSAFE DFA "<<std::endl;
 					}
 					for (int ii=0; ii<lbls->size(); ++ii) {
-						std::cout<<" testing lbl (live): "<<lbls->operator[](ii)<<std::endl;
-						if (!live_dfa->eval(lbls->operator[](ii), true)) {
-							found_connection = false;
+						//std::cout<<" testing lbl: "<<lbls->operator[](ii)<<std::endl;
+						if (live_dfa->eval(lbls->operator[](ii), true)) {
+							found_connection = found_connection && true;
 							break;
 						}
 					}
-
+					if (!found_connection) {
+						std::cout<<" DID NOT FIND CONNECTION IN LIVE DFA "<<std::endl;
+					}
 				} else {
 					found_connection = cosafe_dfa->getParentNodesWithLabels(lbls, parent_node_list_cosafe);
+					//if (!found_connection) {
+					//	std::cout<<"Error: Did not find parent connection for cosafe DFA\n";
+					//}
+					//std::cout<<"\n HERE"<<std::endl;
 					found_connection = live_dfa->getParentNodesWithLabels(lbls, parent_node_list_live);
+					//if (!found_connection) {
+					//	std::cout<<"Error: Did not find parent connection for liveness DFA\n";
+					//}
 					//std::cout<<"found connection? : "<<found_connection<<" parent_node_list size: "<<parent_node_list.size()<<std::endl;
-
 				}
 
 				bool unique = true;
@@ -1349,11 +1367,11 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 				//bool all_accepting = true;
 				//std::cout<<"printing temp lex set fill: "<<std::endl;
 				if (round == 0) {
-					std::cout<<"live node:"<<live_dfa->getCurrNode()<<std::endl;
+					//std::cout<<"live node:"<<live_dfa->getCurrNode()<<std::endl;
 					if (live_dfa->isCurrAccepting()) {
-						std::cout<<"found accepting node: "<<std::endl;
-						std::cout<<" ts node: "<<TS->getCurrNode()<<std::endl;
-						std::cout<<" liveness node: "<<live_dfa->getCurrNode()<<std::endl;
+						//std::cout<<"found accepting node: "<<std::endl;
+						//std::cout<<" ts node: "<<TS->getCurrNode()<<std::endl;
+						//std::cout<<" liveness node: "<<live_dfa->getCurrNode()<<std::endl;
 						accepting.first = true;
 						accepting.second.push_back(connected_node_ind);
 					}
@@ -1395,7 +1413,7 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 						//spw.state_weights[unique_con_node] = temp_weight;
 						std::vector<int> ret_inds;
 						Graph<float>::augmentedStatePreImage(graph_sizes, unique_con_node, ret_inds);
-						int spw_ind = Graph<float>::augmentedStateImage({n, m}, {ret_inds[0], ret_inds[1]});
+						int spw_ind = Graph<float>::augmentedStateImage({ret_inds[0], ret_inds[1]}, {n, m});
 						
 						// Add the model cost to the 'risk' cost:
 						float spw_cost = spw_rsk.state_weights[spw_ind];

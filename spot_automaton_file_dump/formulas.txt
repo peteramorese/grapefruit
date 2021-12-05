@@ -1,15 +1,30 @@
-### MANIPULATOR: ###
+####	MANIPULATOR: 
 
 # Ex. 1:
 #F(rL3 & F(rL4))
 #F(aL2 & rL0) 
 
 
-### GRID ROBOT: ###
+####	GRID ROBOT: 
+
+
+## Risk Mitigation: 
+
+# simple 4 x 4 test case (risk mitigation)
+#F(ap_x1_y3)
+#F(ap_x2_y2)
 
 # simple 5 x 5 test case
 #F(ap_x1_y3)
 #F(ap_x2_y2)
+
+# 10 x 10 test case
+# Safety:
+F(ap_x1_y5)
+# Liveness: 
+F(ap_x9_y9)
+
+## Preference Planning: 
 
 # equal optimal paths, zero flexibility:
 #F(ap_x1_y8)
@@ -40,19 +55,19 @@
 #F(ap_x8_y14 & F(ap_x15_y28) & F(ap_x12_y9))
 
 # zig zag:
-F(ap_x1_y9)
-F(ap_x2_y0)
-F(ap_x3_y9)
-F(ap_x4_y0)
-F(ap_x5_y9)
-F(ap_x6_y0)
-F(ap_x7_y9)
-F(ap_x8_y0)
-F(ap_x9_y9)
-F(ap_x5_y3)
-F(ap_x3_y1)
-F(ap_x2_y5)
-F(ap_x4_y5)
+#F(ap_x1_y9)
+#F(ap_x2_y0)
+#F(ap_x3_y9)
+#F(ap_x4_y0)
+#F(ap_x5_y9)
+#F(ap_x6_y0)
+#F(ap_x7_y9)
+#F(ap_x8_y0)
+#F(ap_x9_y9)
+#F(ap_x5_y3)
+#F(ap_x3_y1)
+#F(ap_x2_y5)
+#F(ap_x4_y5)
 
 
 # massive grid:

@@ -1,4 +1,5 @@
 #include<iostream>
+#include<fstream>
 #include "graph.h"
 #include "condition.h"
 #include "transitionSystem.h"
@@ -6,14 +7,125 @@
 #include "state.h"
 #include "symbSearch.h"
 
+/* HEADER */
+class StrategyRTEVAL {
+	private:
+		TS_EVAL<State>* TS;
+		DFA_EVAL* cosafe_dfa;
+		DFA_EVAL* live_dfa;
+		const std::string NAME = " [StrategyRTEVAL] ";
+		const SymbSearch<FlexLexSetS>::Strategy* strat;
+		std::vector<int> graph_sizes;
+		//void environmentAction(const std::string& action);
+		bool executeAction(const std::string& action); // returns acceptance on live dfa
+		void reset();
+	public:
+		StrategyRTEVAL(TS_EVAL<State>* TS_, DFA_EVAL* cosafe_dfa_, DFA_EVAL* live_dfa_);
+		void setStrategy(const SymbSearch<FlexLexSetS>::Strategy* strat_);
+		bool run();
+		//void writeToFile();
+};
+
+/* CLASS DEFINITION */
+StrategyRTEVAL::StrategyRTEVAL(TS_EVAL<State>* TS_, DFA_EVAL* cosafe_dfa_, DFA_EVAL* live_dfa_) : TS(TS_), cosafe_dfa(cosafe_dfa_), live_dfa(live_dfa_) {
+	std::cout<<NAME<<"Setting up Strategy Realtime EVAL...\n";
+	graph_sizes.resize(3);
+	graph_sizes[0] = TS->size();
+	graph_sizes[1] = cosafe_dfa->getDFA()->size();
+	graph_sizes[2] = live_dfa->getDFA()->size();
+}
+
+//void StrategyRTEVAL::environmentAction(const std::string& action) {
+//	TS->eval(action, true);	
+//	cosafe_dfa->eval(action, true);	
+//	live_dfa->eval(action, true);	
+//}
+
+bool StrategyRTEVAL::executeAction(const std::string& action) {
+	TS->eval(action, true);	
+	cosafe_dfa->eval(action, true);	
+	live_dfa->eval(action, true);	
+	return (live_dfa->isCurrAccepting()) ? true : false;
+}
+
+void StrategyRTEVAL::reset() {
+	TS->reset();
+	cosafe_dfa->reset();
+	live_dfa->reset();
+	
+}
+
+void StrategyRTEVAL::setStrategy(const SymbSearch<FlexLexSetS>::Strategy* strat_) {
+	strat = strat_;
+}
+
+bool StrategyRTEVAL::run() {
+	std::cout<<NAME<<"Running... (Quit: 'q', Reset: 'r')\n";
+	bool finished = false;
+	bool found = true;
+	reset();
+	while (!finished) {
+		if (found) {
+			std::cout<<NAME<<"\nCurrent State ("<<TS->getCurrNode()<<"): \n";
+			//TS->getState(TS->getCurrNode());
+			std::cout<<NAME<<"--System's turn--\n";
+			int prod_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), cosafe_dfa->getCurrNode(), live_dfa->getCurrNode()}, graph_sizes);
+			std::string act;
+			if (strat->reachability[prod_ind]) {
+				act = strat->action_map[prod_ind];
+				if (act == "") {
+					std::cout<<NAME<<"Error: Empty action in strategy\n";
+				} else {
+					std::cout<<NAME<<"Found and executed action in strategy: "<<act<<std::endl;
+					finished = executeAction(act);
+				}
+			} else {
+				std::cout<<NAME<<"Error: Prod state unreachable. TS: "<<TS->getCurrNode()<<" CoSafe: "<<cosafe_dfa->getCurrNode()<<" Live: "<<live_dfa->getCurrNode()<<std::endl;
+			}
+		}
+		std::cout<<NAME<<"\nCurrent State ("<<TS->getCurrNode()<<"): \n";
+		//TS->getState(TS->getCurrNode());
+		std::cout<<NAME<<"--Environment's turn--\n";
+		std::vector<WL*> con_data;
+		TS->getConnectedDataEVAL(con_data);
+		for (int i=0; i<con_data.size(); ++i) {
+			std::cout<<NAME<<" Opt "<<i<<": "<<con_data[i]->label<<std::endl;
+		}
+		std::string input;
+		std::cin >> input;
+		found = false;
+		if (input == "q") {
+			return false;
+		} else if (input == "r") {
+			found = true;
+			reset();
+		} else {
+			std::string::size_type sz;
+			int opt = std::stoi(input, &sz);
+			if (opt >= 0 && opt<con_data.size()) {
+				found = true;
+				finished = executeAction(con_data[opt]->label);
+				std::cout<<NAME<<"Action taken: "<<con_data[opt]->label<<std::endl;
+			} else {
+				std::cout<<NAME<<"Invalid option. Try again\n";
+			}
+		}
+	}
+	return finished;
+}
+
+//void StrategyRTEVAL::writeToFile();
+
+/* MAIN */
+
 int main() {
 
 
 	//////////////////////////////////////////////////////
-	/* Create the Transition System for the Manipualtor */
+	/* Create the Transition System for the Grid Robot  */
 	//////////////////////////////////////////////////////
 
-	/* CREATE ENVIRONMENT FOR MANIPULATOR */
+	/* CREATE ENVIRONMENT FOR GRID ROBOT */
 	StateSpace SS_GRID_ROBOT;
 
 	std::vector<std::string> x_labels;
@@ -29,20 +141,10 @@ int main() {
 		temp_string = "y" + std::to_string(i);
 		y_labels.push_back(temp_string);
 	}
-	//std::vector<std::string> ee_labels = loc_labels;
-	//ee_labels.push_back("stow");
-	//std::vector<std::string> obj_labels = loc_labels;
-	//obj_labels.push_back("ee");
-	//std::vector<std::string> grip_labels = {"true","false"};
 
 	// Create state space:
 	SS_GRID_ROBOT.setStateDimension(x_labels, 0); // x
 	SS_GRID_ROBOT.setStateDimension(y_labels, 1); // y
-	//	std::cout<<"y labels:";
-	//for (int i=0; i<y_labels.size(); ++i) {
-	//	std::cout<<y_labels[i]<<", "<<std::endl;
-	//}
-	//return 0;
 
 	// Label state space:
 	SS_GRID_ROBOT.setStateDimensionLabel(0, "x_coord");
@@ -244,13 +346,15 @@ int main() {
 	auto cFunc = [](unsigned int d){
 		//std::cout<<"received: "<<d<<std::endl;
 		//std::cout<<"   ret: "<<1.0/static_cast<float>(d)<<std::endl;
-		return 1/static_cast<float>(d);
+		return 10/static_cast<float>(d);
 	};
 	SymbSearch<FlexLexSetS>::Strategy S;
 	bool success = search_obj.generateRiskStrategy(dfa_eval_ptrs[0], dfa_eval_ptrs[1], cFunc, S, true);
 	std::cout<<"\n   Found strategy? "<<success<<" action_map size: "<<S.action_map.size()<<std::endl;
 	for (int i=0; i<S.action_map.size(); ++i) {
-		std::cout<<"Prod ind: "<<i<<"  --> action: "<<S.action_map[i]<<std::endl;
+		std::vector<int> ret_inds;
+		Graph<float>::augmentedStatePreImage({static_cast<int>(ts_eval.size()),dfa_eval_ptrs[0]->getDFA()->size(),dfa_eval_ptrs[0]->getDFA()->size()}, i, ret_inds);
+		std::cout<<"Prod ind: "<<i<<" TS ind: "<<ret_inds[0]<<" CoSafe: "<<ret_inds[1]<<" Liveness: "<<ret_inds[2]<<"  --> action: "<<S.action_map[i]<<std::endl;
 	}
 	//if (success) {
 	//	std::vector<std::string> xtra_info;
@@ -263,6 +367,12 @@ int main() {
 	//	}
 	//	search_obj.writePlanToFile("/Users/Peter/Documents/MATLAB/preference_planning_demos/plan.txt", xtra_info);
 	//}
+	
+
+	StrategyRTEVAL rt_eval(&ts_eval, dfa_eval_ptrs[0], dfa_eval_ptrs[1]);
+	rt_eval.setStrategy(&S);
+	rt_eval.run();
+
 
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {
 		delete dfa_eval_ptrs[i];

@@ -1,13 +1,13 @@
 Alphabet: 
-- ap_x1_y9
+- ap_x1_y5
 Initial States: 
 - 1
 Graph:
 - 0
    - 0 -> 0 : 1
 - 1
-   - 1 -> 0 : ap_x1_y9
-   - 1 -> 1 : !ap_x1_y9
+   - 1 -> 0 : ap_x1_y5
+   - 1 -> 1 : !ap_x1_y5
 Accepting States:
 - 0
 
