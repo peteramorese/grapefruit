@@ -66,7 +66,7 @@ bool StrategyRTEVAL::run() {
 	reset();
 	while (!finished) {
 		if (found) {
-			std::cout<<NAME<<"\nCurrent State ("<<TS->getCurrNode()<<"): \n";
+			std::cout<<"\n"<<NAME<<"Current State ("<<TS->getCurrNode()<<"): \n";
 			//TS->getState(TS->getCurrNode());
 			std::cout<<NAME<<"--System's turn--\n";
 			int prod_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), cosafe_dfa->getCurrNode(), live_dfa->getCurrNode()}, graph_sizes);
@@ -83,13 +83,14 @@ bool StrategyRTEVAL::run() {
 				std::cout<<NAME<<"Error: Prod state unreachable. TS: "<<TS->getCurrNode()<<" CoSafe: "<<cosafe_dfa->getCurrNode()<<" Live: "<<live_dfa->getCurrNode()<<std::endl;
 			}
 		}
-		std::cout<<NAME<<"\nCurrent State ("<<TS->getCurrNode()<<"): \n";
+		std::cout<<"\n"<<NAME<<"Current State ("<<TS->getCurrNode()<<"): \n";
 		//TS->getState(TS->getCurrNode());
 		std::cout<<NAME<<"--Environment's turn--\n";
 		std::vector<WL*> con_data;
 		TS->getConnectedDataEVAL(con_data);
+		std::cout<<NAME<<" Opt 0: No Intervention"<<std::endl;
 		for (int i=0; i<con_data.size(); ++i) {
-			std::cout<<NAME<<" Opt "<<i<<": "<<con_data[i]->label<<std::endl;
+			std::cout<<NAME<<" Opt "<<i+1<<": "<<con_data[i]->label<<std::endl;
 		}
 		std::string input;
 		std::cin >> input;
@@ -101,8 +102,11 @@ bool StrategyRTEVAL::run() {
 			reset();
 		} else {
 			std::string::size_type sz;
-			int opt = std::stoi(input, &sz);
-			if (opt >= 0 && opt<con_data.size()) {
+			int opt = std::stoi(input, &sz) - 1;
+			if (opt == -1) {
+				std::cout<<NAME<<"No action taken." <<std::endl;
+				found = true;
+			} else if (opt >= 0 && opt<con_data.size()) {
 				found = true;
 				finished = executeAction(con_data[opt]->label);
 				std::cout<<NAME<<"Action taken: "<<con_data[opt]->label<<std::endl;
@@ -346,10 +350,10 @@ int main() {
 	auto cFunc = [](unsigned int d){
 		//std::cout<<"received: "<<d<<std::endl;
 		//std::cout<<"   ret: "<<1.0/static_cast<float>(d)<<std::endl;
-		return 10/static_cast<float>(d);
+		return 1/static_cast<float>(d);
 	};
 	SymbSearch<FlexLexSetS>::Strategy S;
-	bool success = search_obj.generateRiskStrategy(dfa_eval_ptrs[0], dfa_eval_ptrs[1], cFunc, S, true);
+	bool success = search_obj.generateRiskStrategy(dfa_eval_ptrs[0], dfa_eval_ptrs[1], cFunc, S, false);
 	std::cout<<"\n   Found strategy? "<<success<<" action_map size: "<<S.action_map.size()<<std::endl;
 	for (int i=0; i<S.action_map.size(); ++i) {
 		std::vector<int> ret_inds;

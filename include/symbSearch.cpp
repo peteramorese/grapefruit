@@ -545,6 +545,7 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 	int n = TS_sps->size();
 	int m = dfa_sps->getDFA()->size();
 	int p_space_size = n * m;
+	std::vector<int> graph_sizes = {n, m};
 
 	// These indices are determined after the first search round:
 	//int TS_accepting_state = -1;
@@ -587,7 +588,7 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 			//std::cout<<"b4 reset"<<std::endl;
 			TS_sps->reset();
 			dfa_sps->reset();
-			int init_node_ind = Graph<float>::augmentedStateFunc(TS_sps->getCurrNode(), dfa_sps->getCurrNode(), n, m);
+			int init_node_ind = Graph<float>::augmentedStateImage({TS_sps->getCurrNode(), dfa_sps->getCurrNode()}, graph_sizes);
 			std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_ind<<std::endl;
 			first_search_weights[init_node_ind] = -1;
 			included[init_node_ind] = true;
@@ -603,9 +604,9 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 				spw.state_weights[acc_prod_state] = -1.0f;
 				spw.is_inf[acc_prod_state] = true;
 				spw.reachability[acc_prod_state] = true;
-				std::pair<unsigned int, unsigned int> sol_inds;
-				Graph<float>::augmentedStateMap(acc_prod_state, n, m, sol_inds);
-				std::cout<<" ---- Found (TS): "<< sol_inds.first<<std::endl;
+				std::vector<int> sol_inds;
+				Graph<float>::augmentedStatePreImage(graph_sizes, acc_prod_state, sol_inds);
+				std::cout<<" ---- Found (TS): "<< sol_inds[0]<<std::endl;
 				curr_leaf.first = acc_prod_state;
 				curr_leaf.second = 0.0f;
 				pq.push(curr_leaf);
@@ -626,8 +627,8 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 
 			pq.pop();
 			int curr_leaf_ind = curr_leaf.first;
-			std::pair<unsigned int, unsigned int> ret_inds;
-			Graph<float>::augmentedStateMap(curr_leaf_ind, n, m, ret_inds);
+			std::vector<int> ret_inds;
+			Graph<float>::augmentedStatePreImage(graph_sizes, curr_leaf_ind, ret_inds);
 
 			if (curr_leaf_ind == prev_leaf_ind) {
 				std::cout<<"no sol"<<std::endl;
@@ -646,8 +647,8 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 			//}
 
 			// SET:
-			TS_sps->set(ret_inds.first);
-			dfa_sps->set(ret_inds.second);
+			TS_sps->set(ret_inds[0]);
+			dfa_sps->set(ret_inds[1]);
 
 			//std::cout<<" SET NODE: "<<node_list[curr_leaf_ind]->i;
 			//for (int i=0; i<node_size; ++i) {
@@ -697,8 +698,8 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 			//for (auto con_data_ptr : con_data) {
 			for (int j=0; j<con_data.size(); ++j) {
 				// Reset after checking connected nodes
-				TS_sps->set(ret_inds.first);
-				dfa_sps->set(ret_inds.second);
+				TS_sps->set(ret_inds[0]);
+				dfa_sps->set(ret_inds[1]);
 
 				//for (int i=0; i<node_size; ++i) {
 				//	//std::cout<<", "<<node_list[curr_leaf_ind]->v[i];
@@ -820,7 +821,7 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 				std::vector<int> unique_dfa_parent_set;
 				if (round == 0) {
 					//std::cout<<"Checking acceptance: TS: "<<TS_sps->getCurrNode()<<" DFA: "<<dfa_sps->getCurrNode()<<std::endl;
-					connected_node_ind = Graph<float>::augmentedStateFunc(TS_sps->getCurrNode(), dfa_sps->getCurrNode(), n, m);
+					connected_node_ind = Graph<float>::augmentedStateImage({TS_sps->getCurrNode(), dfa_sps->getCurrNode()}, graph_sizes);
 					if (included[connected_node_ind]) {
 						continue;
 					} else {
@@ -837,7 +838,7 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 				} else {
 					int temp_connected_node_ind = -1;
 					for (auto par_node : parent_node_list) {
-						temp_connected_node_ind = Graph<float>::augmentedStateFunc(TS_sps->getCurrNode(), par_node, n, m);
+						temp_connected_node_ind = Graph<float>::augmentedStateImage({TS_sps->getCurrNode(), par_node}, graph_sizes);
 						if (!included[temp_connected_node_ind]) {
 							included[temp_connected_node_ind] = true; // prevent node from being searched again in loop
 							spw.reachability[temp_connected_node_ind] = true; // mark the new new as reachable
@@ -901,6 +902,7 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 						//std::cout<<" ts node: "<<TS_sps->getCurrNode()<<std::endl;
 						//std::cout<<" ts node: "<<dfa_sps->getCurrNode()<<std::endl;
 						accepting.first = true;
+						std::cout<<"Pushing node to accepting set: "<<connected_node_ind<<std::endl;
 						accepting.second.push_back(connected_node_ind);
 					}
 				}
@@ -991,10 +993,10 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 			for (int i=0; i<spw.reachability.size(); ++i) {
 				if (!spw.reachability[i]) {
 					std::cout<<"Warning: Not all states were searched (round 2). Failed prod state ind: "<<i<<std::endl;
-					std::pair<unsigned int, unsigned int> temp_inds;
-					Graph<float>::augmentedStateMap(i, n, m, temp_inds);
-					std::cout<<"   TS ind: "<<temp_inds.first<<std::endl;
-					std::cout<<"   DFA ind: "<<temp_inds.second<<std::endl;
+					std::vector<int> temp_inds;
+					Graph<float>::augmentedStatePreImage(graph_sizes, i, temp_inds);
+					std::cout<<"   TS ind: "<<temp_inds[0]<<std::endl;
+					std::cout<<"   DFA ind: "<<temp_inds[1]<<std::endl;
 				}
 			}
 		}
@@ -1027,6 +1029,7 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 	int m = cosafe_dfa->getDFA()->size();
 	int l = live_dfa->getDFA()->size();
 	int p_space_size = n * m * l;
+	std::vector<int> graph_sizes = {n, m, l};
 
 	std::vector<const std::vector<std::string>*> total_alphabet(2);
 	total_alphabet[0] = cosafe_dfa->getAlphabetEVAL();
@@ -1039,15 +1042,17 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 		std::cout<<"Error: Risk state weighting failed\n";
 		return false;
 	}
-	//for (int i=0; i<spw_rsk.reachability.size(); ++i) {
-	//	if (spw_rsk.reachability[i]) {
-	//		if (spw_rsk.is_inf[i]) {
-	//			std::cout<<"spw_rsk: State: "<<i<<" is reachable with weight: INF"<<std::endl;
-	//		} else {
-	//			std::cout<<"spw_rsk: State: "<<i<<" is reachable with weight: "<<spw_rsk.state_weights[i]<<std::endl;
-	//		}
-	//	}
-	//}
+	for (int i=0; i<spw_rsk.reachability.size(); ++i) {
+		if (spw_rsk.reachability[i]) {
+			std::vector<int> ret_inds;
+			Graph<float>::augmentedStatePreImage({n, m}, i, ret_inds);
+			if (spw_rsk.is_inf[i]) {
+				std::cout<<"spw_rsk: P:"<<i<<" TS State: "<<ret_inds[0]<<" (cosafe: "<<ret_inds[1]<<") is reachable with weight: INF"<<std::endl;
+			} else {
+				std::cout<<"spw_rsk: P:"<<i<<" TS State: "<<ret_inds[0]<<"(cosafe: "<<ret_inds[1]<<") is reachable with weight: "<<spw_rsk.state_weights[i]<<std::endl;
+			}
+		}
+	}
 
 	std::vector<float> first_search_weights(p_space_size, -1.0f); 
 	std::vector<float> second_search_weights(p_space_size, -1);
@@ -1062,12 +1067,17 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 	
 	// Priority queue lambda
 	auto compare = [](std::pair<int, int> pair1, std::pair<int, int> pair2) {
-		return pair1.second > pair2.second;
+		if (pair1.second == -1.0) {
+			return true; // pair1 is infinite
+		} else if (pair2.second == -1.0) {
+			return false;
+		} else {
+			return pair1.second > pair2.second;
+		}
 	};
 
 	bool exit_failure = false;
 	std::pair<bool, std::vector<int>> accepting;
-	std::vector<int> graph_sizes = {n, m, l};
 	for (int round=0; round<2; ++round) {
 		std::cout<<"\n generateRiskStrategy: STARTING ROUND: "<<round<<std::endl;
 		std::string search_type = (round == 0) ? "forward" : "reverse";
@@ -1411,22 +1421,28 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 				} else {
 					for (auto unique_con_node : unique_dfa_parent_set) {
 						//spw.state_weights[unique_con_node] = temp_weight;
+						
+						// Convert from triple product to double product:
 						std::vector<int> ret_inds;
 						Graph<float>::augmentedStatePreImage(graph_sizes, unique_con_node, ret_inds);
 						int spw_ind = Graph<float>::augmentedStateImage({ret_inds[0], ret_inds[1]}, {n, m});
 						
 						// Add the model cost to the 'risk' cost:
-						float spw_cost = spw_rsk.state_weights[spw_ind];
 						float cost;
-						if (use_cost) {
-							float model_cost = curr_leaf_weight + temp_weight;
-							cost = spw_cost + model_cost;
+						if (spw_rsk.is_inf[spw_ind]) {
+							cost = -1.0; // Infinity
 						} else {
-							cost = spw_cost;
+							float spw_cost = spw_rsk.state_weights[spw_ind];
+							if (use_cost) {
+								float model_cost = curr_leaf_weight + temp_weight;
+								cost = spw_cost + model_cost;
+							} else {
+								cost = spw_cost;
+							}
 						}
 
 						second_search_weights[unique_con_node] = cost;
-						std::pair<int, int> new_leaf = {unique_con_node, cost};
+						std::pair<int, float> new_leaf = {unique_con_node, cost};
 						pq.push(new_leaf); // add to prio queue
 						tree.connect(src, {unique_con_node, &second_search_weights[unique_con_node]});
 						strat.action_map[unique_con_node] = temp_str; // Set the optimal action

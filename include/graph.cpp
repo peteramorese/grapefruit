@@ -1141,11 +1141,11 @@ bool DFA_EVAL::eval(const std::string& letter, bool evolve) {
 bool DFA_EVAL::evalReverse(const std::string& letter, bool evolve) {
 	int curr_node_g = curr_node;
 	bool found_true = false;
-	std::cout<<"INPUT curr_node:"<<curr_node<<" WITH LABEL: "<<letter<<std::endl;
+	//std::cout<<"INPUT curr_node:"<<curr_node<<" WITH LABEL: "<<letter<<std::endl;
 	auto evalLAM = [&curr_node_g, &letter, &found_true](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
 	//auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
 		//std::cout<<" hopping parent node: "<<dst->nodeind<<std::endl;
-		std::cout<<" hopping parent label: "<<*(dst->dataptr)<<std::endl;
+		//std::cout<<" hopping parent label: "<<*(dst->dataptr)<<std::endl;
 		if (*(dst->dataptr) == letter) {
 			curr_node_g = dst->nodeind;
 			std::cout<<"reverse eval found connected ind: "<<curr_node_g<<std::endl;
@@ -1217,7 +1217,7 @@ void DFA_EVAL::set(int set_node) {
 
 void DFA_EVAL::reset() {
 	curr_node = dfaptr->getInitState();
-	std::cout<<"RESET TO INIT STATE: "<<curr_node<<std::endl;
+	//std::cout<<"RESET TO INIT STATE: "<<curr_node<<std::endl;
 	accepting = false;
 }
 
