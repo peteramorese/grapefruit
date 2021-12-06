@@ -1042,17 +1042,17 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 		std::cout<<"Error: Risk state weighting failed\n";
 		return false;
 	}
-	for (int i=0; i<spw_rsk.reachability.size(); ++i) {
-		if (spw_rsk.reachability[i]) {
-			std::vector<int> ret_inds;
-			Graph<float>::augmentedStatePreImage({n, m}, i, ret_inds);
-			if (spw_rsk.is_inf[i]) {
-				std::cout<<"spw_rsk: P:"<<i<<" TS State: "<<ret_inds[0]<<" (cosafe: "<<ret_inds[1]<<") is reachable with weight: INF"<<std::endl;
-			} else {
-				std::cout<<"spw_rsk: P:"<<i<<" TS State: "<<ret_inds[0]<<"(cosafe: "<<ret_inds[1]<<") is reachable with weight: "<<spw_rsk.state_weights[i]<<std::endl;
-			}
-		}
-	}
+	//for (int i=0; i<spw_rsk.reachability.size(); ++i) {
+	//	if (spw_rsk.reachability[i]) {
+	//		std::vector<int> ret_inds;
+	//		Graph<float>::augmentedStatePreImage({n, m}, i, ret_inds);
+	//		if (spw_rsk.is_inf[i]) {
+	//			std::cout<<"spw_rsk: P:"<<i<<" TS State: "<<ret_inds[0]<<" (cosafe: "<<ret_inds[1]<<") is reachable with weight: INF"<<std::endl;
+	//		} else {
+	//			std::cout<<"spw_rsk: P:"<<i<<" TS State: "<<ret_inds[0]<<"(cosafe: "<<ret_inds[1]<<") is reachable with weight: "<<spw_rsk.state_weights[i]<<std::endl;
+	//		}
+	//	}
+	//}
 
 	std::vector<float> first_search_weights(p_space_size, -1.0f); 
 	std::vector<float> second_search_weights(p_space_size, -1);

@@ -16,14 +16,15 @@ class StrategyRTEVAL {
 		const std::string NAME = " [StrategyRTEVAL] ";
 		const SymbSearch<FlexLexSetS>::Strategy* strat;
 		std::vector<int> graph_sizes;
+		std::vector<std::string> action_seq;
 		//void environmentAction(const std::string& action);
-		bool executeAction(const std::string& action); // returns acceptance on live dfa
+		bool executeAction(const std::string& action, bool system_action); // returns acceptance on live dfa
 		void reset();
 	public:
 		StrategyRTEVAL(TS_EVAL<State>* TS_, DFA_EVAL* cosafe_dfa_, DFA_EVAL* live_dfa_);
 		void setStrategy(const SymbSearch<FlexLexSetS>::Strategy* strat_);
 		bool run();
-		//void writeToFile();
+		void writeToFile(const std::string& filename, const std::vector<std::string>& xtra_info);
 };
 
 /* CLASS DEFINITION */
@@ -33,6 +34,7 @@ StrategyRTEVAL::StrategyRTEVAL(TS_EVAL<State>* TS_, DFA_EVAL* cosafe_dfa_, DFA_E
 	graph_sizes[0] = TS->size();
 	graph_sizes[1] = cosafe_dfa->getDFA()->size();
 	graph_sizes[2] = live_dfa->getDFA()->size();
+	action_seq.clear();
 }
 
 //void StrategyRTEVAL::environmentAction(const std::string& action) {
@@ -41,10 +43,36 @@ StrategyRTEVAL::StrategyRTEVAL(TS_EVAL<State>* TS_, DFA_EVAL* cosafe_dfa_, DFA_E
 //	live_dfa->eval(action, true);	
 //}
 
-bool StrategyRTEVAL::executeAction(const std::string& action) {
+bool StrategyRTEVAL::executeAction(const std::string& action, bool system_action) {
 	TS->eval(action, true);	
-	cosafe_dfa->eval(action, true);	
-	live_dfa->eval(action, true);	
+	const std::vector<std::string>* lbls = TS->returnStateLabels(TS->getCurrNode());
+	bool found_connection = false;
+	for (int i=0; i<lbls->size(); ++i) {
+		if (cosafe_dfa->eval(lbls->operator[](i), true)) {
+			found_connection = true;
+		}
+	}
+	if (!found_connection) {
+		std::cout<<NAME<<"Error: Did not find connectivity in cosafe dfa\n";
+	}
+	found_connection = false;
+	for (int i=0; i<lbls->size(); ++i) {
+		if (live_dfa->eval(lbls->operator[](i), true)) {
+			found_connection = true;
+		}
+	}
+	if (!found_connection) {
+		std::cout<<NAME<<"Error: Did not find connectivity in liveness dfa\n";
+	}
+	
+	//live_dfa->eval(action, true);	
+	std::string action_lbl = action;
+	if (system_action) {
+		action_lbl = action_lbl + "_SYS";
+	} else {
+		action_lbl = action_lbl + "_ENV";
+	}
+	action_seq.push_back(action_lbl);
 	return (live_dfa->isCurrAccepting()) ? true : false;
 }
 
@@ -52,6 +80,7 @@ void StrategyRTEVAL::reset() {
 	TS->reset();
 	cosafe_dfa->reset();
 	live_dfa->reset();
+	action_seq.clear();
 	
 }
 
@@ -77,7 +106,7 @@ bool StrategyRTEVAL::run() {
 					std::cout<<NAME<<"Error: Empty action in strategy\n";
 				} else {
 					std::cout<<NAME<<"Found and executed action in strategy: "<<act<<std::endl;
-					finished = executeAction(act);
+					finished = executeAction(act, true);
 				}
 			} else {
 				std::cout<<NAME<<"Error: Prod state unreachable. TS: "<<TS->getCurrNode()<<" CoSafe: "<<cosafe_dfa->getCurrNode()<<" Live: "<<live_dfa->getCurrNode()<<std::endl;
@@ -108,7 +137,7 @@ bool StrategyRTEVAL::run() {
 				found = true;
 			} else if (opt >= 0 && opt<con_data.size()) {
 				found = true;
-				finished = executeAction(con_data[opt]->label);
+				finished = executeAction(con_data[opt]->label, false);
 				std::cout<<NAME<<"Action taken: "<<con_data[opt]->label<<std::endl;
 			} else {
 				std::cout<<NAME<<"Invalid option. Try again\n";
@@ -118,7 +147,18 @@ bool StrategyRTEVAL::run() {
 	return finished;
 }
 
-//void StrategyRTEVAL::writeToFile();
+void StrategyRTEVAL::writeToFile(const std::string& filename, const std::vector<std::string>& xtra_info) {
+	std::string line;
+	std::ofstream plan_file;
+	plan_file.open(filename);
+	for (int i=0; i<action_seq.size(); ++i) {
+			plan_file <<action_seq[i]<<"\n";
+	}
+	for (int i=0; i<xtra_info.size(); ++i) {
+			plan_file <<xtra_info[i]<<"\n";
+	}
+	plan_file.close();
+}
 
 /* MAIN */
 
@@ -347,10 +387,17 @@ int main() {
 	//std::cin >> use_dfs;
 	//bool use_dfs_flag = (use_dfs == 'y') ? true : false;
 	//search_obj.setFlexibilityParam(0.0f);
-	auto cFunc = [](unsigned int d){
+	
+	float risk_param;
+	std::cout<<"\n------------------------------\n";
+	std::cout<<"Enter risk parameter: ";
+	//std::cout<<"\n";
+	std::cin >> risk_param;
+	
+	auto cFunc = [&risk_param](unsigned int d){
 		//std::cout<<"received: "<<d<<std::endl;
 		//std::cout<<"   ret: "<<1.0/static_cast<float>(d)<<std::endl;
-		return 1/static_cast<float>(d);
+		return risk_param/static_cast<float>(d);
 	};
 	SymbSearch<FlexLexSetS>::Strategy S;
 	bool success = search_obj.generateRiskStrategy(dfa_eval_ptrs[0], dfa_eval_ptrs[1], cFunc, S, false);
@@ -375,7 +422,22 @@ int main() {
 
 	StrategyRTEVAL rt_eval(&ts_eval, dfa_eval_ptrs[0], dfa_eval_ptrs[1]);
 	rt_eval.setStrategy(&S);
-	rt_eval.run();
+	bool finished = rt_eval.run();
+	finished = true;
+
+	if (finished) {
+		std::vector<std::string> xtra_info;
+		for (int i=0; i<dfa_arr.size(); ++i) {
+			const std::vector<std::string>* ap_ptr = dfa_arr[i].getAP();
+			std::string tag = (i == 0) ? "_safety" : "_liveness";
+			for (int ii=0; ii<ap_ptr->size(); ++ii) {
+				xtra_info.push_back(ap_ptr->operator[](ii));
+				xtra_info.back() = xtra_info.back() + tag;
+			}
+		}
+		xtra_info.push_back("GRID_SIZE_" + std::to_string(grid_size));
+		rt_eval.writeToFile("/Users/Peter/Documents/MATLAB/preference_planning_demos/strat_traj_execution.txt", xtra_info);
+	}
 
 
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {
