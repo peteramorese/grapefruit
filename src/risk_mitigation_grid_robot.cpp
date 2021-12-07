@@ -20,6 +20,7 @@ class StrategyRTEVAL {
 		//void environmentAction(const std::string& action);
 		bool executeAction(const std::string& action, bool system_action); // returns acceptance on live dfa
 		void reset();
+		bool violating;
 	public:
 		StrategyRTEVAL(TS_EVAL<State>* TS_, DFA_EVAL* cosafe_dfa_, DFA_EVAL* live_dfa_);
 		void setStrategy(const SymbSearch<FlexLexSetS>::Strategy* strat_);
@@ -34,6 +35,7 @@ StrategyRTEVAL::StrategyRTEVAL(TS_EVAL<State>* TS_, DFA_EVAL* cosafe_dfa_, DFA_E
 	graph_sizes[0] = TS->size();
 	graph_sizes[1] = cosafe_dfa->getDFA()->size();
 	graph_sizes[2] = live_dfa->getDFA()->size();
+	violating = false;
 	action_seq.clear();
 }
 
@@ -73,6 +75,7 @@ bool StrategyRTEVAL::executeAction(const std::string& action, bool system_action
 		action_lbl = action_lbl + "_ENV";
 	}
 	action_seq.push_back(action_lbl);
+	violating = (cosafe_dfa->isCurrAccepting()) ? true : false;
 	return (live_dfa->isCurrAccepting()) ? true : false;
 }
 
@@ -81,7 +84,7 @@ void StrategyRTEVAL::reset() {
 	cosafe_dfa->reset();
 	live_dfa->reset();
 	action_seq.clear();
-	
+	violating = false;
 }
 
 void StrategyRTEVAL::setStrategy(const SymbSearch<FlexLexSetS>::Strategy* strat_) {
@@ -94,6 +97,10 @@ bool StrategyRTEVAL::run() {
 	bool found = true;
 	reset();
 	while (!finished) {
+		if (violating) {
+			std::cout<<NAME<<"Violated safety specification!"<<std::endl;
+			return false;
+		}
 		if (found) {
 			std::cout<<"\n"<<NAME<<"Current State ("<<TS->getCurrNode()<<"): \n";
 			//TS->getState(TS->getCurrNode());
