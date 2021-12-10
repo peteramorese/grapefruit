@@ -19,6 +19,20 @@ class SymbSearch {
 			std::vector<float> state_weights;
 			std::vector<bool> is_inf;
 		};	
+		struct minWeight {
+			std::vector<bool> is_inf;
+			std::vector<float> min_weight;
+			minWeight(int size) {
+				is_inf.resize(size, true);
+				min_weight.resize(size, 0.0f);
+			}
+			void reset() {
+				for (int i=0; i<is_inf.size(); ++i) {
+					is_inf[i] = true;
+					min_weight[i] = 0.0f;
+				}
+			}
+		};
 		const std::vector<DFA_EVAL*>* dfa_list_ordered;
 		int node_size;
 		TS_EVAL<State>* TS;
