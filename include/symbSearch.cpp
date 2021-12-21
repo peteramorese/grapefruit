@@ -817,11 +817,13 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 		}
 	}
 
-	std::vector<float> first_search_weights(p_space_size, -1.0f); 
-	std::vector<float> second_search_weights(p_space_size, -1);
-	std::cout<<" P SPACE SIZE: "<<p_space_size<<std::endl;
+	//std::vector<float> first_search_weights(p_space_size, -1.0f); 
+	//std::vector<float> second_search_weights(p_space_size, -1);
+	//std::cout<<" P SPACE SIZE: "<<p_space_size<<std::endl;
 	strat.action_map.resize(p_space_size);
 	strat.reachability.resize(p_space_size, false);
+	
+	minWeight min_w(p_space_size);
 	
 	// Search: 
 
@@ -861,8 +863,10 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 			live_dfa->reset();
 			//std::cout<<" \n\n WE RESET: "<<live_dfa->getCurrNode()<<std::endl;
 			int init_node_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), cosafe_dfa->getCurrNode(), live_dfa->getCurrNode()}, graph_sizes);
-			//std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_ind<<std::endl;
-			first_search_weights[init_node_ind] = -1.0f;
+			std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_ind<<std::endl;
+			//first_search_weights[init_node_ind] = -1.0f;
+			min_w.is_inf[init_node_ind] = false;
+			min_w.min_weight[init_node_ind] = 0;
 			included[init_node_ind] = true;
 			curr_leaf.first = init_node_ind;
 			curr_leaf.second = 0.0f;
@@ -870,8 +874,12 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 		} else {
 			// Add the accepting states to the prio queue with weight zero, and add them to the tree so
 			int ROOT_STATE = n*m*l; // this is the root state ind, guaranteed to be larger than any prod state ind
+			min_w.reset();
+			std::cout<<"num acc states rnd 2: "<<accepting.second.size()<<std::endl;
 			for (auto acc_prod_state : accepting.second) {
 				//std::cout<<"in the accepting states... acc prod state: "<<acc_prod_state<<std::endl;
+				min_w.is_inf[acc_prod_state] = false;
+				min_w.min_weight[acc_prod_state] = 0;
 				included[acc_prod_state] = true;
 				//spw.state_weights[acc_prod_state] = 0.0f;
 				strat.reachability[acc_prod_state] = true;
@@ -899,16 +907,22 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 
 			pq.pop();
 			int curr_leaf_ind = curr_leaf.first;
+			float curr_leaf_weight = curr_leaf.second;
+			if (min_w.is_inf[curr_leaf_ind]) {
+				if (curr_leaf_weight > min_w.min_weight[curr_leaf_ind]) {
+					continue;
+				}
+			}
 			std::vector<int> ret_inds;
 			Graph<float>::augmentedStatePreImage(graph_sizes, curr_leaf_ind, ret_inds);
 
-			if (curr_leaf_ind == prev_leaf_ind) {
-				std::cout<<"no sol"<<std::endl;
-				exit_failure = true;
-				break;
-			}
+			//if (curr_leaf_ind == prev_leaf_ind) {
+			//	std::cout<<"no sol"<<std::endl;
+			//	exit_failure = true;
+			//	break;
+			//}
+
 			//std::cout<<" ------ CURRENT LEAF: "<<curr_leaf_ind<<std::endl;
-			float curr_leaf_weight = curr_leaf.second;
 			//std::cout<<" CURR LEAF WEIGHT: "<<curr_leaf_weight<<std::endl;
 			//curr_leaf.second->setInf();
 			//pq.push(curr_leaf);
@@ -965,9 +979,9 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 			//int pause;
 			//std::cin >> pause;
 			//}
-			std::pair<int, float*> src;
-			src.first = curr_leaf_ind;
-			src.second = nullptr;
+			//std::pair<int, float*> src;
+			//src.first = curr_leaf_ind;
+			//src.second = nullptr;
 			//for (auto con_data_ptr : con_data) {
 			for (int j=0; j<con_data.size(); ++j) {
 				// Reset after checking connected nodes
@@ -994,7 +1008,10 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 
 				if (round == 0) {
 					//std::cout<<"forward ts eval"<<std::endl;
+					std::cout<<"ACTION: "<<temp_str<<std::endl;
+					std::cout<<"pre ts ind: "<<TS->getCurrNode()<<std::endl;
 					found_connection = TS->eval(temp_str, true); // second arg tells wether or not to evolve on graph
+					std::cout<<"post ts ind: "<<TS->getCurrNode()<<std::endl;
 				} else {
 					//std::cout<<"reverse ts eval"<<std::endl;
 					prev_ts_ind = TS->getCurrNode();
@@ -1025,8 +1042,10 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 				std::vector<int> parent_node_list_live;
 				if (round == 0) {
 					for (int ii=0; ii<lbls->size(); ++ii) {
+						//std::cout<<"pre cosafe ind: "<<cosafe_dfa->getCurrNode()<<std::endl;
 						if (cosafe_dfa->eval(lbls->operator[](ii), true)) {
 							found_connection = true;
+							//std::cout<<"post cosafe ind: "<<cosafe_dfa->getCurrNode()<<std::endl;
 							break;
 						}
 					}
@@ -1059,202 +1078,84 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 				bool unique = true;
 				int connected_node_ind = -1;
 				std::vector<int> unique_dfa_parent_set;
+				float weight;
+				bool all_included = true;
 				if (round == 0) {
+					weight = curr_leaf_weight + temp_weight;
 					//connected_node_ind = Graph<float>::augmentedStateFunc(TS_sps->getCurrNode(), dfa_sps->getCurrNode(), n, m);
 					connected_node_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), cosafe_dfa->getCurrNode(), live_dfa->getCurrNode()}, graph_sizes);
 					if (included[connected_node_ind]) {
-						std::cout<<"curr weight: "<<first_search_weights[connected_node_ind]<<" found weight: "<<curr_leaf_weight + temp_weight<<std::endl;
-						if (first_search_weights[connected_node_ind] > curr_leaf_weight + temp_weight) {
-							std::cout<<"\n\n     ISSUE!!!\n\n"<<std::endl;
-						}
+						std::cout<<"included??? con node ind: "<<connected_node_ind<<std::endl;
 						continue;
-					} else {
-						included[connected_node_ind] = true;
-						if (round == 1) {
-							//std::cout<<" -----------> found new state"<<std::endl;
-							//std::cout<<"              ts ind: "<<TS_sps->getCurrNode()<<std::endl;
-							//std::cout<<"              dfa ind: "<<dfa_sps->getCurrNode()<<std::endl;
-							//int pause;
-							//std::cin >> pause;
-							strat.reachability[connected_node_ind] = true;
-						}
+					} 
+					if (!min_w.is_inf[connected_node_ind]) {
+						if (min_w.min_weight[connected_node_ind] > weight) {
+							min_w.min_weight[connected_node_ind] = weight;
+						} else if (min_w.min_weight[connected_node_ind] < weight) {
+							continue;
+						} 
+					}else {
+						min_w.is_inf[connected_node_ind] = false;
+						min_w.min_weight[connected_node_ind] = weight;
 					}
+					//first_search_weights[connected_node_ind] = curr_leaf_weight + temp_weight;
+					std::pair<int, float> new_leaf = {connected_node_ind, weight};
+					pq.push(new_leaf); // add to prio queue
+					tree.connect(curr_leaf_ind, {connected_node_ind, &min_w.min_weight[connected_node_ind]});
+					included[connected_node_ind] = true;
 				} else {
+					
 					int temp_connected_node_ind = -1;
 					for (auto par_node_cosafe : parent_node_list_cosafe) {
 						for (auto par_node_live : parent_node_list_live) {
-							//temp_connected_node_ind = Graph<float>::augmentedStateFunc(TS_sps->getCurrNode(), par_node, n, m);
-							temp_connected_node_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), par_node_cosafe, par_node_live}, graph_sizes);
-							if (!included[temp_connected_node_ind]) {
-								included[temp_connected_node_ind] = true; // prevent node from being searched again in loop
-								strat.reachability[temp_connected_node_ind] = true; // mark the new new as reachable
-								unique_dfa_parent_set.push_back(temp_connected_node_ind); // add the prod ind to the set of nodes to add
+							// Convert from triple product to double product:
+							int spw_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), par_node_cosafe}, {n, m});
+							if (spw_rsk.is_inf[spw_ind]) {
+								weight = -1.0; // Infinity
 							} else {
-								int spw_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), par_node_cosafe}, {n, m});
-								std::cout<<"currweight: " << second_search_weights[temp_connected_node_ind]<< " found weight: "<< spw_rsk.state_weights[spw_ind]<<std::endl; 
-								if (second_search_weights[temp_connected_node_ind] > spw_rsk.state_weights[spw_ind]) {
-									std::cout<<"\n\n     ISSUE!!!\n\n"<<std::endl;
+								float spw_cost = spw_rsk.state_weights[spw_ind];
+								if (use_cost) {
+									float model_cost = curr_leaf_weight + temp_weight;
+									weight = spw_cost + model_cost;
+								} else {
+									weight = spw_cost;
 								}
 							}
+								//temp_connected_node_ind = Graph<float>::augmentedStateFunc(TS_sps->getCurrNode(), par_node, n, m);
+							temp_connected_node_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), par_node_cosafe, par_node_live}, graph_sizes);
+							if (included[temp_connected_node_ind]) {
+								continue;
+							} else {
+								all_included = false;
+							}
+							if (!min_w.is_inf[temp_connected_node_ind]) {
+								if (min_w.min_weight[temp_connected_node_ind] > weight) {
+									min_w.min_weight[temp_connected_node_ind] = weight;
+								} else if (min_w.min_weight[temp_connected_node_ind] < weight) {
+									continue;
+								}
+							} else {
+								min_w.is_inf[temp_connected_node_ind] = false;
+								min_w.min_weight[temp_connected_node_ind] = weight;
+								strat.reachability[temp_connected_node_ind] = true; // mark the new new as reachable
+							}
+							//second_search_weights[unique_con_node] = cost;
+							std::pair<int, float> new_leaf = {temp_connected_node_ind, weight};
+							pq.push(new_leaf); // add to prio queue
+							tree.connect(curr_leaf_ind, {temp_connected_node_ind, &min_w.min_weight[temp_connected_node_ind]});
+							strat.action_map[temp_connected_node_ind] = temp_str; // Set the optimal action
+							included[temp_connected_node_ind] = true; // prevent node from being searched again in loop
 						}
 					}
 				}
-
-				//for (int i=0; i<node_list.size(); ++i) {
-				//	//std::cout<<"i: "<<i<<std::endl;
-
-				//	//std::cout<<"Check node: "<<TS->getCurrNode();
-				//	//for (int ii=0; ii<node_size; ++ii) {
-				//	//	std::cout<<", "<<dfa_list_ordered->operator[](ii)->getCurrNode();
-				//	//	
-				//	//}
-				//	//std::cout<<"\n";
-				//	//std::cout<<"--Nodelist node: "<<node_list[i]->i;
-				//	//for (int ii=0; ii<node_size; ++ii) {
-				//	//	std::cout<<", "<<node_list[i]->v[ii];
-				//	//	
-				//	//}
-				//	//std::cout<<"\n";
-				//	for (int ii=0; ii<node_size + 1; ++ii) {
-				//		unique = false;
-				//		//std::cout<<"Check node: ";
-				//		if (ii==0) {
-				//			//std::cout<<TS->getCurrNode();
-				//			if (TS->getCurrNode() != node_list[i]->i) {
-				//				//std::cout<<"\n";
-				//				unique = true;
-				//				break;
-				//			}
-				//		} else {
-				//			//std::cout<<", "<<dfa_list_ordered->operator[](ii)->getCurrNode();
-				//			if (dfa_list_ordered->operator[](ii-1)->getCurrNode() != node_list[i]->v[ii-1]) {
-				//				unique = true;
-				//				break;
-				//			}
-				//		}
-				//	}
-				//	if (!unique) {
-				//		//std::cout<<"   -NOT UNIQUE"<<std::endl;
-				//		break;
-				//	}
-				//}
-				//if (!unique) {
-				//	continue;
-				//}
-
-				// Made it through connectivity check, therefore we can append the state to the tree:
-				// GET:
-				//IVFlexLex<T>* new_temp_nodeptr = newNode();
-				//parents.push_back(src.first);
-				//new_temp_nodeptr->i = TS->getCurrNode();
-				//bool all_accepting = true;
-				//std::cout<<"printing temp lex set fill: "<<std::endl;
 				if (round == 0) {
-					//std::cout<<"live node:"<<live_dfa->getCurrNode()<<std::endl;
+					std::cout<<"curr live node: "<<live_dfa->getCurrNode()<<std::endl;
 					if (live_dfa->isCurrAccepting()) {
-						//std::cout<<"found accepting node: "<<std::endl;
-						//std::cout<<" ts node: "<<TS->getCurrNode()<<std::endl;
-						//std::cout<<" liveness node: "<<live_dfa->getCurrNode()<<std::endl;
 						accepting.first = true;
 						accepting.second.push_back(connected_node_ind);
 					}
 				}
-				//for (int i=0; i<node_size; ++i) {
-				//	new_temp_nodeptr->v[i] = dfa_list_ordered->operator[](i)->getCurrNode();
-
-				//	// If the dfa is accepting at the evolved ind, append no cost, otherwise append
-				//	// the cost of taking the action:
-				//	//std::cout<<"-DFA: "<<i<<", curr becore accepting: "<<dfa_list_ordered->operator[](i)->getCurrNode()<<std::endl;
-				//	//std::cout<<" ->DFA: ";
-				//	if (dfa_list_ordered->operator[](i)->isCurrAccepting()) {
-				//		//std::cout<<i<<" is accepting";
-				//		temp_lex_set_fill[i] = 0;
-				//	} else {
-				//		all_accepting = false;
-				//		temp_lex_set_fill[i] = temp_weight;
-				//	}
-				//	//std::cout<<"\n";
-				//	//std::cout<<temp_lex_set_fill[i]<<std::endl;
-				//}
-				//new_temp_nodeptr->lex_set = *(curr_leaf_weight);
-				//std::cout<<"before: ";
-				//new_temp_nodeptr->lex_set.print();
-				//new_temp_nodeptr->lex_set += temp_lex_set_fill;
-				//std::cout<<"printing flex set: \n";
-				//new_temp_nodeptr->lex_set.print();
-
-				// BUILD CONNECTION:
-				//tree_end_node++;
-				//std::cout<<"tree_end_node: "<<tree_end_node<<"node_list size(): "<<node_list.size()<<std::endl;
-				if (round == 0) {
-					first_search_weights[connected_node_ind] = curr_leaf_weight + temp_weight;
-					std::pair<int, float> new_leaf = {connected_node_ind, (curr_leaf_weight + temp_weight)};
-					pq.push(new_leaf); // add to prio queue
-					tree.connect(src, {connected_node_ind, &first_search_weights[connected_node_ind]});
-				} else {
-					for (auto unique_con_node : unique_dfa_parent_set) {
-						//spw.state_weights[unique_con_node] = temp_weight;
-						
-						// Convert from triple product to double product:
-						std::vector<int> ret_inds;
-						Graph<float>::augmentedStatePreImage(graph_sizes, unique_con_node, ret_inds);
-						int spw_ind = Graph<float>::augmentedStateImage({ret_inds[0], ret_inds[1]}, {n, m});
-						
-						// Add the model cost to the 'risk' cost:
-						float cost;
-						if (spw_rsk.is_inf[spw_ind]) {
-							cost = -1.0; // Infinity
-						} else {
-							float spw_cost = spw_rsk.state_weights[spw_ind];
-							if (use_cost) {
-								float model_cost = curr_leaf_weight + temp_weight;
-								cost = spw_cost + model_cost;
-							} else {
-								cost = spw_cost;
-							}
-						}
-
-						second_search_weights[unique_con_node] = cost;
-						std::pair<int, float> new_leaf = {unique_con_node, cost};
-						pq.push(new_leaf); // add to prio queue
-						tree.connect(src, {unique_con_node, &second_search_weights[unique_con_node]});
-						strat.action_map[unique_con_node] = temp_str; // Set the optimal action
-					}
-				}
-				//std::cout<<"pushing to queue: ind: "<<connected_node_ind<<" weight: "<<curr_leaf_weight + temp_weight<<std::endl;
-				//if (new_leaf.first == 66) {
-				//	std::cout<<"ADDING NODE 66!!!!!!!!!!!! "; 
-				//	new_leaf.second->print();
-				//}
-				//if (round == 0) {
-				//} else {
-				//}
-				//if (all_accepting) {
-				//	accepting.first = true;
-				//	accepting.second.push_back(tree_end_node);
-				//}
 			}
-
-			// If accepting node is found, check if it is the smallest cost candidate on the next iteration.
-			// If so, then the algorithm is finished because all other candidate nodes have a longer path.
-			//if (accepting.first && round == 0) {
-			//	int top_node = pq.top().first;
-			//	for (int i=0; i<accepting.second.size(); ++i) {
-			//		if (top_node == accepting.second[i]) {
-			//			found_target_state = true;
-			//			std::cout<<"top node: "<<std::endl;
-			//			prod_solution_ind = top_node;
-			//			std::pair<unsigned int, unsigned int> sol_inds;
-			//			Graph<float>::augmentedStateMap(prod_solution_ind, n, m, sol_inds);
-			//			TS_accepting_state = sol_inds.first;
-			//			best_dfa_accepting_state = sol_inds.second;
-			//			std::cout<<"Found a target node! (Round 1)"<<std::endl;
-			//			std::cout<<"   TS  ind: "<<TS_accepting_state<<std::endl;
-			//			std::cout<<"   DFA ind: "<<best_dfa_accepting_state<<std::endl;
-			//			break;
-			//		}
-			//	}
-			//}
 			prev_leaf_ind = curr_leaf_ind;
 		}
 		std::cout<<"made it out"<<std::endl;
