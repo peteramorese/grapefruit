@@ -33,8 +33,22 @@ class SymbSearch {
 				}
 			}
 		};
+		struct minLS {
+			std::vector<bool> is_inf;
+			std::unordered_map<int, int> prod2node_list;
+			minLS(int size) {
+				is_inf.resize(size, true);
+				prod2node_list.clear();
+			}
+			void reset() {
+				for (int i=0; i<is_inf.size(); ++i) {
+					is_inf[i] = true;
+				}
+				prod2node_list.clear();
+			}
+		};
 		const std::vector<DFA_EVAL*>* dfa_list_ordered;
-		int node_size;
+		int num_dfas;
 		TS_EVAL<State>* TS;
 		float mu, pathlength;
 		std::vector<IVFlexLex<T>*> node_list;
@@ -59,7 +73,7 @@ class SymbSearch {
 		void setAutomataPrefs(const std::vector<DFA_EVAL*>* dfa_list_ordered_);
 		void setTransitionSystem(TS_EVAL<State>* TS_);
 		void setFlexibilityParam(float mu_);
-		bool search(bool use_heuristic = true, bool ITERATE = false);
+		bool search(bool use_heuristic = true);
 		bool generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_dfa, std::function<float(unsigned int)> cFunc, Strategy& strat, bool use_cost);
 
 		void writePlanToFile(std::string filename, const std::vector<std::string>& xtra_info);

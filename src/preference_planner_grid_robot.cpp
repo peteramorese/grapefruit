@@ -229,13 +229,14 @@ int main() {
 	std::cin >> use_h;
 	bool use_h_flag = (use_h == 'y') ? true : false;
 
-	std::cout<<"\n------------------------------\n";
-	std::cout<<"Use iterative DFS? [y/n]: ";
-	std::cout<<"\n";
-	std::cin >> use_dfs;
-	bool use_dfs_flag = (use_dfs == 'y') ? true : false;
+	//std::cout<<"\n------------------------------\n";
+	//std::cout<<"Use iterative DFS? [y/n]: ";
+	//std::cout<<"\n";
+	//std::cin >> use_dfs;
+	//bool use_dfs_flag = (use_dfs == 'y') ? true : false;
 	//search_obj.setFlexibilityParam(0.0f);
-	bool success = search_obj.search(use_h_flag, use_dfs_flag);
+	//bool success = search_obj.search(use_h_flag, use_dfs_flag);
+	bool success = search_obj.search(use_h_flag);
 	//std::cout<<"Found plan? "<<success<<std::endl;
 	if (success) {
 		std::vector<std::string> xtra_info;
