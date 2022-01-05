@@ -70,16 +70,26 @@ void SymbSearch<T>::printQueueFloat(Q_f queue) {
 }
 
 template<class T>
-bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceWeight& spw) {
+bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa_list_sps, spaceWeight& spw) {
 	if (!TS_sps->isReversible() || !dfa_sps->getDFA()->isReversible()) {
 		std::cout<<"Error: Cannot perform space search on irreversible graphs\n";
 		return false;
 	}
-	std::cout<<"beep"<<std::endl;
-	int n = TS_sps->size();
-	int m = dfa_sps->getDFA()->size();
-	int p_space_size = n * m;
-	std::vector<int> graph_sizes = {n, m};
+
+	std::vector<const std::vector<std::string>*> total_alphabet(dfa_list_sps.size());
+	//total_alphabet[0] = dfa_sps->getAlphabetEVAL();
+
+	int p_space_size = TS_sps->size();
+	for (int i=0; i<dfa_list_sps.size(); ++i) {
+		total_alphabet[i] = dfa_list_sps->operator[](i)->getAlphabetEVAL();
+		graph_sizes.push_back(dfa_list_sps->operator[](i)->getDFA()->size());
+		p_space_size *= dfa_list_sps->operator[](i)->getDFA()->size();
+	}
+
+	//int n = TS_sps->size();
+	//int m = dfa_sps->getDFA()->size();
+	//int p_space_size = n * m;
+	//std::vector<int> graph_sizes = {n, m};
 
 	// These indices are determined after the first search round:
 	//int TS_accepting_state = -1;
@@ -97,8 +107,6 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, space
 
 	//std::chrono::time_point<std::chrono::system_clock> end_time;
 	//std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
-	std::vector<const std::vector<std::string>*> total_alphabet(1);
-	total_alphabet[0] = dfa_sps->getAlphabetEVAL();
 	//for (int i=0; i<num_dfas; ++i) {
 	//}
 	//TS->mapStatesToLabels(total_alphabet); // This is in efficient with diverse/large alphabet
@@ -116,7 +124,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, space
 
 		// Tree to keep history as well as parent node list:
 		bool found_target_state = false;
-		std::vector<bool> included(p_space_size, false);
+		std::vector<bool> visited(p_space_size, false);
 		Graph<float> tree;
 		//std::vector<int> parents;
 
@@ -126,17 +134,21 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, space
 		if (round == 0) {
 			TS_sps->reset();
 			dfa_sps->reset();
-			int init_node_ind = Graph<float>::augmentedStateImage({TS_sps->getCurrNode(), dfa_sps->getCurrNode()}, graph_sizes);
-			std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_ind<<std::endl;
-			min_w.is_inf[init_node_ind] = false;
-			min_w.min_weight[init_node_ind] = 0;
-			included[init_node_ind] = true;
-			curr_leaf.first = init_node_ind;
+			std::vector<int> init_node_inds(dfa_list_sps.size());
+			for (int i=0; i<dfa_list_sps.size(); ++i) {
+				init_node_inds[i+1] = dfa_list_ordered->operator[](i)->getCurrNode();
+			}
+			int init_node_prod_ind = Graph<float>::augmentedStateImage(init_node_inds, graph_sizes);
+			std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_prod_ind<<std::endl;
+			min_w.is_inf[init_node_prod_ind] = false;
+			min_w.min_weight[init_node_prod_ind] = 0;
+			included[init_node_prod_ind] = true;
+			curr_leaf.first = init_node_prod_ind;
 			curr_leaf.second = 0.0f;
 			pq.push(curr_leaf);
 		} else {
 			// Add the accepting states to the prio queue with weight zero, and add them to the tree so
-			int ROOT_STATE = n * m; // this is the root state ind, guaranteed to be larger than any prod state ind
+			int ROOT_STATE = p_space_size; // this is the root state ind, guaranteed to be larger than any prod state ind
 			min_w.reset();
 			for (auto acc_prod_state : accepting.second) {
 				min_w.is_inf[acc_prod_state] = false;
@@ -183,6 +195,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, space
 					continue;
 				}
 			}
+			visited[curr_leaf_ind] = true;
 			std::vector<int> ret_inds;
 			Graph<float>::augmentedStatePreImage(graph_sizes, curr_leaf_ind, ret_inds);
 
@@ -204,7 +217,9 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, space
 
 			// SET:
 			TS_sps->set(ret_inds[0]);
-			dfa_sps->set(ret_inds[1]);
+			for (int i=0; i<dfa_list_sps.size(); ++i) {
+				dfa_sps->set(ret_inds[i]);
+			}
 
 			//std::cout<<" SET NODE: "<<node_list[curr_leaf_ind]->i;
 			//for (int i=0; i<num_dfas; ++i) {
@@ -256,7 +271,10 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, space
 			for (int j=0; j<con_data.size(); ++j) {
 				// Reset after checking connected nodes
 				TS->set(ret_inds[0]);
-				dfa_sps->set(ret_inds[1]);
+				//dfa_sps->set(ret_inds[1]);
+				for (int i=0; i<dfa_list_sps.size(); ++i) {
+					dfa_sps->set(ret_inds[i]);
+				}
 
 				//for (int i=0; i<num_dfas; ++i) {
 				//	//std::cout<<", "<<node_list[curr_leaf_ind]->v[i];
@@ -300,20 +318,22 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, space
 				//std::cout<<"\n before eval"<<std::endl;
 				bool found_true = true;
 				std::vector<int> parent_node_list;
-				if (round == 0) {
-					for (int ii=0; ii<lbls->size(); ++ii) {
-						//std::cout<<"       label: --- "<<lbls->operator[](ii)<<std::endl;
-						//std::cout<<"DFA::: "<<(i-1)<<" curr node; "<<(dfa_list_ordered->operator[](i-1)->getCurrNode())<<std::endl;
-						//if (round == 0) {
-						if (dfa_sps->eval(lbls->operator[](ii), true)) {
-							found_connection = true;
-							break;
+				for (int i=0; i<dfa_list_sps.size(); ++i) {
+					if (round == 0) {
+						for (int ii=0; ii<lbls->size(); ++ii) {
+							//std::cout<<"       label: --- "<<lbls->operator[](ii)<<std::endl;
+							//std::cout<<"DFA::: "<<(i-1)<<" curr node; "<<(dfa_list_ordered->operator[](i-1)->getCurrNode())<<std::endl;
+							//if (round == 0) {
+							if (dfa_sps->eval(lbls->operator[](ii), true)) {
+								found_connection = true;
+								break;
+							}
 						}
-					}
-				} else {
-					found_connection = dfa_sps->getParentNodesWithLabels(lbls, parent_node_list);
-					//std::cout<<"found connection? : "<<found_connection<<" parent_node_list size: "<<parent_node_list.size()<<std::endl;
+					} else {
+						found_connection = dfa_sps->getParentNodesWithLabels(lbls, parent_node_list);
+						//std::cout<<"found connection? : "<<found_connection<<" parent_node_list size: "<<parent_node_list.size()<<std::endl;
 
+					}
 				}
 
 				bool unique = true;
@@ -1241,6 +1261,10 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 	}
 	//std::vector<bool> included(p_space_size, false); // Check if a node has been seen
 	
+	// ATTENTION: "pq" is indicies are in the product space
+	
+	// ATTENTION: Tree is indicies are indexed by tree size
+	
 	// ATTENTION: "visited" is indexed in the product space
 	std::vector<bool> visited(p_space_size, false);
 	
@@ -1321,10 +1345,11 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 		// Weights are zero for the root node:
 		temp_lex_set_fill[i] = 0;
 	}
-	int init_node_ind = Graph<float>::augmentedStateImage(init_node_inds, graph_sizes);
-	min_w.prod2node_list[init_node_ind] = node_list.size() - 1; //map the prod node ind to the node in node list
-	visited[init_node_ind] = true;
-	min_w.is_inf[init_node_ind] = false;
+	int init_node_prod_ind = Graph<float>::augmentedStateImage(init_node_inds, graph_sizes);
+	std::cout<<"  MAPPING: "<<init_node_prod_ind<<" TO: "<<node_list.size() - 1;
+	min_w.prod2node_list[init_node_prod_ind] = node_list.size() - 1; //map the prod node ind to the node in node list
+	visited[init_node_prod_ind] = true;
+	min_w.is_inf[init_node_prod_ind] = false;
 	temp_nodeptr->lex_set = temp_lex_set_fill;
 
 	//std::cout<<"tmep node ptr: "<<temp_nodeptr<<std::endl;
@@ -1333,7 +1358,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 	//std::pair<int, T*> curr_leaf = {0, &(temp_nodeptr->lex_set)};
 	std::pair<int, T*> curr_leaf;
 	//std::cout<<"tmep node ptr: "<<temp_nodeptr<<std::endl;
-	curr_leaf.first = 0;
+	curr_leaf.first = init_node_prod_ind;
 	//std::cout<<"tmep node ptr: "<<temp_nodeptr<<std::endl;
 	curr_leaf.second = &(temp_nodeptr->lex_set);
 	pq.push(curr_leaf);
@@ -1347,6 +1372,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 
 	std::vector<WL*> con_data;
 	std::pair<bool, std::vector<int>> accepting;
+	T min_accepting_cost(mu, num_dfas);
 	//int tree_end_node = 0;
 
 	int iterations = 0;
@@ -1355,6 +1381,10 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 	sol_found = false;
 	//std::cout<<"entering the loop"<<std::endl;
 	while (!finished) {
+		if (pq.empty()) {
+			finished = true;
+			continue;
+		}
 		iterations++;
 		std::cout<<"iter: "<<iterations<<std::endl;
 		pq.top();
@@ -1369,13 +1399,15 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 		//pq.top().second->print();
 
 		pq.pop();
-		std::cout<<"b4 get leaf"<<std::endl;
+		//std::cout<<"b4 get leaf"<<std::endl;
 		int curr_leaf_prod_ind = curr_leaf.first;
-		int curr_leaf_ind = min_w.prod2node_list[curr_leaf_prod_ind];
+		std::cout<<"looking for map at key: "<<curr_leaf_prod_ind<<std::endl;
+		int curr_leaf_ind = min_w.prod2node_list.at(curr_leaf_prod_ind);
 		T* curr_leaf_weight = curr_leaf.second;
 		//int con_node_prod_ind = Graph<float>::augmentedStateImage(node_inds, graph_sizes);
 		visited[curr_leaf_prod_ind] = true;
-		std::cout<<"af get leaf"<<std::endl;
+		//std::cout<<"af get leaf"<<std::endl;
+		//std::cout<<" ----- CURR LEAF PROD IND: "<<curr_leaf_prod_ind<<std::endl;
 		//std::cout<<" ----- CURR LEAF IND: "<<curr_leaf_ind<<std::endl;
 
 		//if (!min_w.is_inf[curr_leaf_ind]
@@ -1393,8 +1425,8 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 		} else {
 			init = false;
 		}
-		std::cout<<"af temp node ptr"<<std::endl;
-		std::cout<<"node list size: "<<node_list.size()<<std::endl;
+		//std::cout<<"af temp node ptr"<<std::endl;
+		//std::cout<<"node list size: "<<node_list.size()<<std::endl;
 		// SET:
 		//std::cout<<"b4 set"<<std::endl;
 		TS->set(node_list[curr_leaf_ind]->i);
@@ -1403,7 +1435,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 			//std::cout<<", "<<node_list[curr_leaf_ind]->v[i];
 			dfa_list_ordered->operator[](i)->set(node_list[curr_leaf_ind]->v[i]);
 		}
-		std::cout<<"af set"<<std::endl;
+		//std::cout<<"af set"<<std::endl;
 
 		//std::cout<<" ---\n";
 		//std::cout<<"CURRENT TS NODE: "<<TS->getCurrNode()<<std::endl;
@@ -1413,7 +1445,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 		std::vector<int> con_nodes;
 		TS->getConnectedNodesEVAL(con_nodes);
 
-		std::cout<<"af get con node data"<<std::endl;
+		//std::cout<<"af get con node data"<<std::endl;
 		//std::cout<<"af get con"<<std::endl;
 		//std::cout<<"printing con nodes and data"<<std::endl;
 		////std::cout<<"con nodes size:"<<con_nodes.size()<<std::endl;
@@ -1445,7 +1477,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 			bool found_connection = true;
 
 			//std::cout<<"b4 da eval"<<std::endl;
-			std::cout<<"b4 eval"<<std::endl;
+			//std::cout<<"b4 eval"<<std::endl;
 			for (int i=0; i<num_dfas + 1; ++i) {
 				if (i == 0) { // eval TS first!!! (so that getCurrNode spits out the adjacent node, not the current node)
 					//std::cout<<"current ts node: "<<TS->getCurrNode()<<std::endl;
@@ -1476,12 +1508,12 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 					return false;
 				}
 			}
-			std::cout<<"af eval"<<std::endl;
+			//std::cout<<"af eval"<<std::endl;
 			// Check if the node has already been seen:
 			//std::cout<<"\n Uniqueness check: \n"<<std::endl;
 			//std::cout<<"printing nodelist: "<<std::endl;
 
-			std::cout<<"b4 visited"<<std::endl;
+			//std::cout<<"b4 visited"<<std::endl;
 			std::vector<int> node_inds(num_dfas + 1);
 			node_inds[0] = TS->getCurrNode();
 			for (int i=0; i<num_dfas; ++i) {
@@ -1491,7 +1523,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 			if (visited[con_node_prod_ind]) { // Node was visited
 				continue;
 			}
-			std::cout<<"af visited"<<std::endl;
+			//std::cout<<"af visited"<<std::endl;
 
 			// Made it through connectivity check, therefore we can append the state to the tree:
 			// GET:
@@ -1513,27 +1545,35 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 				//std::cout<<"\n";
 				//std::cout<<temp_lex_set_fill[i]<<std::endl;
 			}
-			std::cout<<"b4 update"<<std::endl;
+			//std::cout<<"b4 update"<<std::endl;
 			if (!min_w.is_inf[con_node_prod_ind]) { // Node was seen before, non inf weight, but not visited
-				int temp_node_ind = min_w.prod2node_list[con_node_prod_ind]; // This value will be mapped if weve seen the node before
-				IVFlexLex<T>* temp_node = node_list[temp_node_ind];
+				int seen_node_ind = min_w.prod2node_list.at(con_node_prod_ind); // This value will be mapped if weve seen the node before
+				IVFlexLex<T>* seen_node = node_list[seen_node_ind];
 				T temp_lex_set(mu, &temp_lex_set_fill, num_dfas);
-				if (temp_node->lex_set > temp_lex_set) {
-					temp_node->lex_set = temp_lex_set;
+				temp_lex_set += *curr_leaf_weight;
+				//std::cout<<"printing seen node lex set: "<<std::endl;
+				//temp_node->lex_set.print();
+				//std::cout<<"printing temp lex set: "<<std::endl;
+				//temp_lex_set.print();
+				if (seen_node->lex_set > temp_lex_set) {
+					seen_node->lex_set = temp_lex_set;
 					// UPDATE PARENT HERE vvvvvv
-					parents[temp_node_ind] = curr_leaf_ind;
+					parents[seen_node_ind] = curr_leaf_ind;
 				}
 				continue;
 			} 
 			IVFlexLex<T>* new_temp_nodeptr = newNode();
+			std::cout<<"  MAPPING: "<<con_node_prod_ind<<" TO: "<<node_list.size() - 1;
 			min_w.prod2node_list[con_node_prod_ind] = node_list.size() - 1; // Make new node, must map the tree and prod idices
+			//std::cout<<" mapping prod node: "<<con_node_prod_ind<<" to tr node: "<<node_list.size() -1<<std::endl;
 			int con_node_ind = node_list.size() - 1;
+			//std::cout<<"   COMMITTED con_node_ind: "<<con_node_ind<<std::endl;
 			//parents.push_back(src.first);
 			new_temp_nodeptr->i = TS->getCurrNode();
 			for (int i=0; i<num_dfas; ++i) {
 				new_temp_nodeptr->v[i] = dfa_list_ordered->operator[](i)->getCurrNode();
 			}
-			std::cout<<"af update"<<std::endl;
+			//std::cout<<"af update"<<std::endl;
 
 			new_temp_nodeptr->lex_set = *(curr_leaf_weight);
 			new_temp_nodeptr->lex_set += temp_lex_set_fill;
@@ -1577,9 +1617,9 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 				//	temp_weight_set_ptr->operator=(new_temp_nodeptr->lex_set);
 				//	new_temp_setptr->operator=(fill_set);
 				//}
-				new_leaf = {con_node_ind, new_temp_setptr};
+				new_leaf = {con_node_prod_ind, new_temp_setptr};
 			} else {
-				new_leaf = {con_node_ind, &(new_temp_nodeptr->lex_set)};
+				new_leaf = {con_node_prod_ind, &(new_temp_nodeptr->lex_set)};
 			}
 			//if (ITERATE) {
 			//	//std::cout<<"adding lex set: ";
@@ -1593,52 +1633,71 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 			//		continue;
 			//	}
 			//}
-			std::cout<<"b4 connect"<<std::endl;
+			//std::cout<<"b4 connect"<<std::endl;
 			pq.push(new_leaf); // add to prio queue
 			//if (new_leaf.first == 66) {
 			//	std::cout<<"ADDING NODE 66!!!!!!!!!!!! "; 
 			//	new_leaf.second->print();
 			//}
 			tree.connect(curr_leaf_ind, {con_node_ind, new_temp_nodeptr});
-			min_w.is_inf[con_node_prod_ind] = true; // mark node as seen
+			min_w.is_inf[con_node_prod_ind] = false; // mark node as seen
 			parents[con_node_ind] = curr_leaf_ind;
-			std::cout<<"af connect"<<std::endl;
+			//std::cout<<"af connect"<<std::endl;
 			//if (ITERATE) {
 			//	path_length_map[tree_end_node] = temp_weight_set_ptr;
 			//}
 			if (all_accepting) {
 				accepting.first = true;
+				//std::cout<<"---found accepting state: "<<con_node_prod_ind<<std::endl;
+				//std::vector<int> ret_inds;
+				//Graph<float>::augmentedStatePreImage(graph_sizes, con_node_prod_ind, ret_inds);
+				//std::cout<<"   acc TS: "<<ret_inds[0]<<std::endl;
+				//for (int i=0; i<ret_inds.size() -1; ++i) {
+				//	std::cout<<"   acc dfa "<<i<<": "<<ret_inds[i+1]<<std::endl;
+				//}
 				accepting.second.push_back(con_node_prod_ind);
+				solution_ind = con_node_ind;
+				if (*(new_leaf.second) < min_accepting_cost) {
+					min_accepting_cost = *(new_leaf.second);
+				}
+			}
+			if (accepting.first) {
+				if (*(pq.top().second) > min_accepting_cost) {
+					finished = true;
+					std::cout<<"Found a solution!"<<"\n";
+					//std::cout<<"   -Iterations: "<<iterations<<"\n";
+					sol_found = true;
+				}
 			}
 		}
 
 		// If accepting node is found, check if it is the smallest cost candidate on the next iteration.
 		// If so, then the algorithm is finished because all other candidate nodes have a longer path.
-		if (accepting.first) {
-			int top_node = pq.top().first;
+		//if (accepting.first) {
+		//	int top_node = pq.top().first;
 
-			for (int i=0; i<accepting.second.size(); ++i) {
-				if (top_node == accepting.second[i]) {
-					//if (ITERATE) {
-					//	std::cout<<"printing top weight: ";
-					//	path_length_map[top_node]->print();
-					//	prev_sol_weight = *(path_length_map[top_node]);
-					//}
-					finished = true;
-					solution_ind = top_node;
-					std::cout<<"Found a solution!"<<std::endl;
-					std::cout<<" Iterations: "<<iterations<<std::endl; 
-					sol_found = true;
-					break;
-				}
-			}
-		}
+		//	for (int i=0; i<accepting.second.size(); ++i) {
+		//		if (top_node == accepting.second[i]) {
+		//			//if (ITERATE) {
+		//			//	std::cout<<"printing top weight: ";
+		//			//	path_length_map[top_node]->print();
+		//			//	prev_sol_weight = *(path_length_map[top_node]);
+		//			//}
+		//			finished = true;
+		//			solution_ind = top_node;
+		//			std::cout<<"Found a solution!"<<std::endl;
+		//			std::cout<<" Iterations: "<<iterations<<std::endl; 
+		//			sol_found = true;
+		//			break;
+		//		}
+		//	}
+		//}
 		prev_leaf_ind = curr_leaf_ind;
 	}
 	//for (int i=0; i<path_length_map_ptrs.size(); ++i) {
 	//	delete path_length_map_ptrs[i];
 	//}
-	std::cout<<"out of loop sol_found: "<<sol_found<<std::endl;
+	//std::cout<<"out of loop sol_found: "<<sol_found<<std::endl;
 	//	if (!ITERATE) {
 	if (finished) {
 		extractPath(parents, solution_ind);
@@ -1649,7 +1708,8 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 		//end_time = std::chrono::system_clock::now();
 		//double search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 		//std::cout<<"Search time (milliseconds): "<<search_time<<std::endl;
-		std::cout<<"Finished. Tree size: "<<tree.size()<<" Iterations: "<<iterations<<std::endl; //<<", Maximum product graph (no pruning) size: "<<
+		std::cout<<p_space_size<<std::endl;
+		std::cout<<"Finished. Tree size: "<<tree.size()<<" Iterations: "<<iterations<<" (P space size: "<<p_space_size<<")\n";//<<", Maximum product graph (no pruning) size: "<<
 		//std::cout<<"\n\n ...Finished with plan."<<std::endl;
 		return true;
 	} else {
