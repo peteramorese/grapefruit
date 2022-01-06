@@ -63,7 +63,7 @@ class SymbSearch {
 		template<typename Q> void printQueue(Q queue);
 		template<typename Q_f> void printQueueFloat(Q_f queue);
 		void extractPath(const std::vector<int>& parents, int accepting_state);
-		bool spaceSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceWeight& spw);
+		bool spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa_sps, spaceWeight& spw);
 		bool riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceWeight& spw, std::function<float(unsigned int)> cFunc);
 		bool generateHeuristic();
 		float pullStateWeight(unsigned ts_ind, unsigned dfa_ind, unsigned dfa_list_ind, bool& reachable) const;

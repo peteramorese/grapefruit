@@ -1186,7 +1186,9 @@ bool DFA_EVAL::evalReverse(const std::string& letter, bool evolve) {
 
 bool DFA_EVAL::getParentNodesWithLabels(const std::vector<std::string>* lbls, std::vector<int>& parent_node_list) {
 	//std::cout<<"par lbl CURRNODE: "<<curr_node<<std::endl;
+	//std::cout<<"b4 clear"<<std::endl;
 	parent_node_list.clear();
+	//std::cout<<"af clear"<<std::endl;
 	std::vector<int> par_nodes;
 	std::vector<std::string*> par_lbls;
 	dfaptr->getParentNodes(curr_node, par_nodes);
@@ -1201,6 +1203,8 @@ bool DFA_EVAL::getParentNodesWithLabels(const std::vector<std::string>* lbls, st
 					break;
 				}
 			}
+		} else {
+			parent_node_list.push_back(par_nodes[i]);
 		}
 	}
 	return (parent_node_list.size() > 0) ? true : false;
