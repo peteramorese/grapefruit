@@ -13,6 +13,7 @@ class LexSet {
 		LexSet(const std::vector<float>* fill_set, unsigned int S_);
 		unsigned int size() const;
 		void setInf();
+		float retMaxVal() const;
 		virtual void operator+=(const LexSet& arg_set);
 		virtual void operator+=(const std::vector<float>& arg_vec);
 		virtual void operator=(const LexSet& arg_set);

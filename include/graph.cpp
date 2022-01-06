@@ -455,14 +455,63 @@ void Graph<T>::updateData(unsigned int ind_from, unsigned int ind_to, T* dataptr
 
 template<class T>
 int Graph<T>::augmentedStateFunc(int i, int j, int n, int m) {
-	int ret_int;
-	ret_int = m*i+j;
-	if (ret_int<=n*m){
-		return ret_int;
+	int ret_ind;
+	ret_ind = m*i+j;
+	if (ret_ind<=n*m){
+		return ret_ind;
 	} else {
 		std::cout<<"Error: augmentedStateFunc mapping out of bounds\n";
 		return -1;
 	}
+}
+
+template<class T>
+int Graph<T>::augmentedStateImage(const std::vector<int>& inds, const std::vector<int>& graph_sizes) {
+	int ret_ind = 0;
+	int prod_size = 1;
+	if (inds.size() != graph_sizes.size()) {
+		std::cout<<"Error: augmentedStateImage parameters need to have same number of elements\n";
+		return -1;
+	}
+	for (int i=0; i<inds.size(); ++i) {
+		int temp = 1;
+		for (int j=0; j<i; ++j) {
+			temp *= graph_sizes[j];	
+		}
+		ret_ind += temp*inds[i];
+		prod_size *= graph_sizes[i];
+	}
+	if (ret_ind < prod_size) {
+		return ret_ind;
+	} else {
+		std::cout<<"Error: Indices are out of bounds (ret_ind: "<<ret_ind<<" prod_size: "<<prod_size<<")\n";
+		return -1;
+	}
+}
+
+template<class T>
+void Graph<T>::augmentedStatePreImage(const std::vector<int>& graph_sizes, int ind_prod, std::vector<int>& ret_inds) {
+	if (ind_prod >= 0) {
+		ret_inds.clear();
+		ret_inds.resize(graph_sizes.size());
+		int prod_size = 1;
+		int temp_mod = ind_prod;
+		for (int i=0; i<graph_sizes.size(); ++i) {
+			prod_size *= graph_sizes[i];
+			int temp = 1;
+			for (int j=0; j<(graph_sizes.size() - i - 1); ++j) {
+				temp *= graph_sizes[j];
+			}
+			ret_inds[graph_sizes.size() - i - 1] = (temp_mod - ind_prod % temp)/temp;
+			temp_mod = ind_prod % temp;
+		}
+		if (ind_prod >= prod_size) {
+			std::cout<<"Error: Prod index out of bounds\n";
+		}
+	} else {
+		std::cout<<"Error: Prod index must be geq to 0\n";
+	}
+
 }
 
 template<class T>
@@ -1059,9 +1108,13 @@ const std::vector<std::string>* DFA_EVAL::getAlphabetEVAL() const {
 }
 
 bool DFA_EVAL::eval(const std::string& letter, bool evolve) {
+	
+	//std::cout<<"in eval: curr node: "<<curr_node<<" input letter: "<<letter<<std::endl;
 	int curr_node_g = curr_node;
 	auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
-	//auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
+		//if (*(dst->dataptr) == "1") {
+		//	std::cout<<"in lam: found 1"<<std::endl;
+		//}
 		if (*(dst->dataptr) == letter || *(dst->dataptr) == "1") {
 			curr_node_g = dst->nodeind;
 			return true;
@@ -1088,11 +1141,11 @@ bool DFA_EVAL::eval(const std::string& letter, bool evolve) {
 bool DFA_EVAL::evalReverse(const std::string& letter, bool evolve) {
 	int curr_node_g = curr_node;
 	bool found_true = false;
-	std::cout<<"INPUT curr_node:"<<curr_node<<" WITH LABEL: "<<letter<<std::endl;
+	//std::cout<<"INPUT curr_node:"<<curr_node<<" WITH LABEL: "<<letter<<std::endl;
 	auto evalLAM = [&curr_node_g, &letter, &found_true](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
 	//auto evalLAM = [&curr_node_g, &letter](Graph<std::string>::node* dst, Graph<std::string>::node* prv){
 		//std::cout<<" hopping parent node: "<<dst->nodeind<<std::endl;
-		std::cout<<" hopping parent label: "<<*(dst->dataptr)<<std::endl;
+		//std::cout<<" hopping parent label: "<<*(dst->dataptr)<<std::endl;
 		if (*(dst->dataptr) == letter) {
 			curr_node_g = dst->nodeind;
 			std::cout<<"reverse eval found connected ind: "<<curr_node_g<<std::endl;
@@ -1132,7 +1185,10 @@ bool DFA_EVAL::evalReverse(const std::string& letter, bool evolve) {
 }
 
 bool DFA_EVAL::getParentNodesWithLabels(const std::vector<std::string>* lbls, std::vector<int>& parent_node_list) {
+	//std::cout<<"par lbl CURRNODE: "<<curr_node<<std::endl;
+	//std::cout<<"b4 clear"<<std::endl;
 	parent_node_list.clear();
+	//std::cout<<"af clear"<<std::endl;
 	std::vector<int> par_nodes;
 	std::vector<std::string*> par_lbls;
 	dfaptr->getParentNodes(curr_node, par_nodes);
@@ -1147,6 +1203,8 @@ bool DFA_EVAL::getParentNodesWithLabels(const std::vector<std::string>* lbls, st
 					break;
 				}
 			}
+		} else {
+			parent_node_list.push_back(par_nodes[i]);
 		}
 	}
 	return (parent_node_list.size() > 0) ? true : false;
@@ -1163,7 +1221,7 @@ void DFA_EVAL::set(int set_node) {
 
 void DFA_EVAL::reset() {
 	curr_node = dfaptr->getInitState();
-	std::cout<<"RESET TO INIT STATE: "<<curr_node<<std::endl;
+	//std::cout<<"RESET TO INIT STATE: "<<curr_node<<std::endl;
 	accepting = false;
 }
 

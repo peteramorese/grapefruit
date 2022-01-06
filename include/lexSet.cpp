@@ -16,6 +16,16 @@ void LexSet::setInf() {
 	inf_set = true;
 }
 
+float LexSet::retMaxVal() const {
+	float ret_val;
+	for (int i=0; i<S; ++i) {
+		if (i == 0 || lex_set[i] > ret_val) {
+			ret_val = lex_set[i];
+		}
+	}
+	return ret_val;
+}
+
 void LexSet::operator+=(const LexSet& arg_set) {
 	if (arg_set.size() == S) {
 		for (int i=0; i<S; ++i) {

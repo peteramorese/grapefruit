@@ -18,7 +18,7 @@ int main() {
 
 	std::vector<std::string> x_labels;
 	std::vector<std::string> y_labels;
-	const int grid_size = 10;
+	const int grid_size = 5;
 	for (int i=0; i<grid_size; ++i) {
 		std::string temp_string;
 		temp_string = "x" + std::to_string(i);
@@ -215,18 +215,34 @@ int main() {
 	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	search_obj.setTransitionSystem(&ts_eval);
 	float mu;
-	char use_h;
 	std::cout<<"\n------------------------------\n";
 	std::cout<<"Enter flexibility parameter: ";
 	std::cout<<"\n";
 	std::cin >> mu;
+	search_obj.setFlexibilityParam(mu);
+
+	char use_h;
 	std::cout<<"\n------------------------------\n";
 	std::cout<<"Use heuristic? [y/n]: ";
 	std::cout<<"\n";
 	std::cin >> use_h;
-	search_obj.setFlexibilityParam(mu);
-	//search_obj.setFlexibilityParam(0.0f);
 	bool use_h_flag = (use_h == 'y') ? true : false;
+
+	char write_f;
+	std::cout<<"\n------------------------------\n";
+	std::cout<<"Write to file? [y/n]: ";
+	std::cout<<"\n";
+	std::cin >> write_f;
+	bool write_file_flag = (write_f == 'y') ? true : false;
+
+	//char use_dfs;
+	//std::cout<<"\n------------------------------\n";
+	//std::cout<<"Use iterative DFS? [y/n]: ";
+	//std::cout<<"\n";
+	//std::cin >> use_dfs;
+	//bool use_dfs_flag = (use_dfs == 'y') ? true : false;
+	//search_obj.setFlexibilityParam(0.0f);
+	//bool success = search_obj.search(use_h_flag, use_dfs_flag);
 	bool success = search_obj.search(use_h_flag);
 	//std::cout<<"Found plan? "<<success<<std::endl;
 	if (success) {
@@ -238,7 +254,9 @@ int main() {
 				xtra_info.back() = xtra_info.back() + "_prio" + std::to_string(i);
 			}
 		}
-		search_obj.writePlanToFile("/Users/Peter/Documents/MATLAB/preference_planning_demos/plan.txt", xtra_info);
+		if (write_file_flag) {
+			search_obj.writePlanToFile("/Users/Peter/Documents/MATLAB/preference_planning_demos/plan.txt", xtra_info);
+		}
 	}
 
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {

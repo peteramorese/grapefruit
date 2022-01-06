@@ -44,7 +44,17 @@ int main() {
 	//std::cout<<"\n\n printing again:"<<std::endl;
 	//g.print();
 
-	std::cout<<"made it out phew"<<std::endl;
+	std::vector<int> inds = {4, 2, 3};
+	std::vector<int> graph_sizes = {5, 4, 4};
+
+	int ret_ind = Graph<int>::augmentedStateImage(inds, graph_sizes);
+	std::cout<<"Product ind: "<<ret_ind<<std::endl;
+
+	std::vector<int> ret_inds;
+	Graph<int>::augmentedStatePreImage(graph_sizes, ret_ind, ret_inds);
+	for (int i=0; i<ret_inds.size(); ++i) {
+		std::cout<<"PreImage ind: "<<ret_inds[i]<<std::endl;
+	}
 
 	return 0;
 }
