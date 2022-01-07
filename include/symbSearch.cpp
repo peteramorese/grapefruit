@@ -27,7 +27,7 @@ void SymbSearch<T>::setFlexibilityParam(float mu_) {
 template<class T>
 IVFlexLex<T>* SymbSearch<T>::newNode() {
 	IVFlexLex<T>* node_i = new IVFlexLex<T>(mu, num_dfas);
-	std::cout<<"new node: "<<node_i<<std::endl;
+	//std::cout<<"new node: "<<node_i<<std::endl;
 	//node_i->v.resize(num_dfas);
 	node_list.push_back(node_i);
 	return node_i;
@@ -1412,7 +1412,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 		temp_lex_set_fill[i] = 0;
 	}
 	int init_node_prod_ind = Graph<float>::augmentedStateImage(init_node_inds, graph_sizes);
-	std::cout<<"  MAPPING: "<<init_node_prod_ind<<" TO: "<<node_list.size() - 1;
+	//std::cout<<"  MAPPING: "<<init_node_prod_ind<<" TO: "<<node_list.size() - 1;
 	min_w.prod2node_list[init_node_prod_ind] = node_list.size() - 1; //map the prod node ind to the node in node list
 	visited[init_node_prod_ind] = true;
 	min_w.is_inf[init_node_prod_ind] = false;
@@ -1452,7 +1452,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 			continue;
 		}
 		iterations++;
-		std::cout<<"iter: "<<iterations<<std::endl;
+		//std::cout<<"iter: "<<iterations<<std::endl;
 		pq.top();
 		//std::cout<<"\nprior queue: "<<std::endl;
 		//printQueue(pq);
@@ -1467,7 +1467,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 		pq.pop();
 		//std::cout<<"b4 get leaf"<<std::endl;
 		int curr_leaf_prod_ind = curr_leaf.first;
-		std::cout<<"looking for map at key: "<<curr_leaf_prod_ind<<std::endl;
+		//std::cout<<"looking for map at key: "<<curr_leaf_prod_ind<<std::endl;
 		int curr_leaf_ind = min_w.prod2node_list.at(curr_leaf_prod_ind);
 		T* curr_leaf_weight = curr_leaf.second;
 		//int con_node_prod_ind = Graph<float>::augmentedStateImage(node_inds, graph_sizes);
@@ -1629,7 +1629,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 				continue;
 			} 
 			IVFlexLex<T>* new_temp_nodeptr = newNode();
-			std::cout<<"  MAPPING: "<<con_node_prod_ind<<" TO: "<<node_list.size() - 1<<std::endl;
+			//std::cout<<"  MAPPING: "<<con_node_prod_ind<<" TO: "<<node_list.size() - 1<<std::endl;
 			min_w.prod2node_list[con_node_prod_ind] = node_list.size() - 1; // Make new node, must map the tree and prod idices
 			//std::cout<<" mapping prod node: "<<con_node_prod_ind<<" to tr node: "<<node_list.size() -1<<std::endl;
 			int con_node_ind = node_list.size() - 1;

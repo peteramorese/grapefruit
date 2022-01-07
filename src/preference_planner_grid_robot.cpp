@@ -10,15 +10,15 @@ int main() {
 
 
 	//////////////////////////////////////////////////////
-	/* Create the Transition System for the Manipualtor */
+	/* Create the Transition System for the Grid Robot  */
 	//////////////////////////////////////////////////////
 
-	/* CREATE ENVIRONMENT FOR MANIPULATOR */
+	/* CREATE ENVIRONMENT FOR GRID ROBOT */
 	StateSpace SS_GRID_ROBOT;
 
 	std::vector<std::string> x_labels;
 	std::vector<std::string> y_labels;
-	const int grid_size = 5;
+	const int grid_size = 10;
 	for (int i=0; i<grid_size; ++i) {
 		std::string temp_string;
 		temp_string = "x" + std::to_string(i);

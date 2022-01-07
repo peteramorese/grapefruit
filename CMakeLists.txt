@@ -60,6 +60,7 @@ target_link_libraries(preference_planner_manipulator
 	StateSpaceClass
 	StateClass
 	SymbSearchClass
+	TransitionSystemClass
 	)
 add_executable(preference_planner_grid_robot src/preference_planner_grid_robot.cpp)
 target_include_directories(preference_planner_grid_robot PUBLIC include) #pref_include
@@ -70,6 +71,7 @@ target_link_libraries(preference_planner_grid_robot
 	StateSpaceClass
 	StateClass
 	SymbSearchClass
+	TransitionSystemClass
 	)
 
 # Risk Mitigation Examples:
@@ -83,6 +85,7 @@ target_link_libraries(risk_mitigation_grid_robot
 	StateSpaceClass
 	StateClass
 	SymbSearchClass
+	TransitionSystemClass
 	)
 
 add_executable(risk_mitigation_manipulator src/risk_mitigation_manipulator.cpp)
@@ -94,5 +97,6 @@ target_link_libraries(risk_mitigation_manipulator
 	StateSpaceClass
 	StateClass
 	SymbSearchClass
+	TransitionSystemClass
 	)
 
