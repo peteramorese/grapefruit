@@ -1439,6 +1439,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 	std::vector<WL*> con_data;
 	std::pair<bool, std::vector<int>> accepting;
 	T min_accepting_cost(mu, num_dfas);
+	min_accepting_cost.setInf();
 	//int tree_end_node = 0;
 
 	int iterations = 0;
@@ -1700,6 +1701,13 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 			//	}
 			//}
 			//std::cout<<"b4 connect"<<std::endl;
+
+			//std::vector<float> tmc = {245, 0, 0, 0, 0};
+			//T test_min_cost(mu, num_dfas);
+			//test_min_cost = tmc;
+			//if (*(new_leaf.second) > test_min_cost) {
+			//	std::cout<<" \nNOT ADMISSIBLE!!!!!"<<std::endl;
+			//}
 			pq.push(new_leaf); // add to prio queue
 			//if (new_leaf.first == 66) {
 			//	std::cout<<"ADDING NODE 66!!!!!!!!!!!! "; 
@@ -1731,6 +1739,8 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 				if (*(pq.top().second) > min_accepting_cost) {
 					finished = true;
 					std::cout<<"Found a solution!"<<"\n";
+					std::cout<<"Pringing MIN ACCEPTING COST: "<<std::endl;
+					min_accepting_cost.print();
 					//std::cout<<"   -Iterations: "<<iterations<<"\n";
 					sol_found = true;
 				}
