@@ -255,7 +255,7 @@ int main() {
 			}
 		}
 		if (write_file_flag) {
-			search_obj.writePlanToFile("/Users/Peter/Documents/MATLAB/preference_planning_demos/plan.txt", xtra_info);
+			search_obj.writePlanToFile("../matlab_scripts/preference_planning_demos/plan.txt", xtra_info);
 		}
 	}
 
