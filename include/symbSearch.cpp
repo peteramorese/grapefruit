@@ -1372,6 +1372,9 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 	// ATTENTION: "visited" is indexed in the product space
 	std::vector<bool> visited(p_space_size, false);
 	
+	// ATTENTION: "pruned" is indexed in the product space
+	std::vector<bool> pruned(p_space_size, false);
+	
 	// ATTENTION: "parents" is indexed by the tree size for memory space efficiency
 	std::vector<int> parents(p_space_size, -1);
 
@@ -1626,7 +1629,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 				node_inds[i+1] = dfa_list_ordered->operator[](i)->getCurrNode();
 			}
 			int con_node_prod_ind = Graph<float>::augmentedStateImage(node_inds, graph_sizes);
-			if (visited[con_node_prod_ind]) { // Node was visited
+			if (visited[con_node_prod_ind] || pruned[con_node_prod_ind]) { // Node was visited
 				continue;
 			}
 			//std::cout<<"af visited"<<std::endl;
@@ -1659,6 +1662,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 				if (pruneCriterion(temp_prune_check)) {
 					min_w.is_inf[con_node_prod_ind] = false; // mark node as seen
 					visited[con_node_prod_ind] = true;
+					pruned[con_node_prod_ind] = true;
 					continue;
 				}
 			}
@@ -1673,7 +1677,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 				//std::cout<<"printing temp lex set: "<<std::endl;
 				//temp_lex_set.print();
 				if (seen_node->lex_set > temp_lex_set) {
-					std::cout<<"UPDATING NODE: "<<seen_node_ind<<" to: "<<curr_leaf_ind<<std::endl;
+					//std::cout<<"UPDATING NODE: "<<seen_node_ind<<" to: "<<curr_leaf_ind<<std::endl;
 					seen_node->lex_set = temp_lex_set;
 					// UPDATE PARENT HERE vvvvvv
 					parents[seen_node_ind] = curr_leaf_ind;

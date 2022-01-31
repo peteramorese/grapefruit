@@ -114,7 +114,10 @@ else
     scatter(text_array{1,1}(i,1) - text_offset_x, text_array{1,1}(i,2) - text_offset_y, 80, "filled", "color",'r')
 end
 end
-
+for i=2:length(text_array{1,1}(:,1))
+    text(text_array{1,1}(i,1), text_array{1,1}(i,2), text_array{1,2}(i), "FontSize",12);
+    scatter(text_array{1,1}(i,1) - text_offset_x, text_array{1,1}(i,2) - text_offset_y, 80, "filled", "color",'r')
+end
 
 grid on
 xticks(0:GRID_SIZE)

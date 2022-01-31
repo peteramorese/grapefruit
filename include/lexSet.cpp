@@ -468,6 +468,8 @@ bool DetourLex::withinBounds(const DetourLex& arg_set) const {
 				return false;
 			}
 		}
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
 	}
 	return true;
 }
