@@ -68,12 +68,13 @@ class SymbSearch {
 		bool generateHeuristic();
 		float pullStateWeight(unsigned ts_ind, unsigned dfa_ind, unsigned dfa_list_ind, bool& reachable) const;
 		void clearNodes();
+		T BFS(std::function<bool(const std::pair<int, T*>&, const std::pair<int, T*>&)> compare,std::function<bool(const T&)> pruneCriterion, bool prune, bool extract_path, bool use_heuristic = false);
 	public:
 		SymbSearch();
 		void setAutomataPrefs(const std::vector<DFA_EVAL*>* dfa_list_ordered_);
 		void setTransitionSystem(TS_EVAL<State>* TS_);
 		void setFlexibilityParam(float mu_);
-		bool search(bool use_heuristic = true);
+		bool search(bool use_heuristic = false);
 		bool generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_dfa, std::function<float(unsigned int)> cFunc, Strategy& strat, bool use_cost);
 
 		void writePlanToFile(std::string filename, const std::vector<std::string>& xtra_info);

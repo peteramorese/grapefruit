@@ -1314,7 +1314,45 @@ float SymbSearch<T>::pullStateWeight(unsigned ts_ind, unsigned dfa_ind, unsigned
 }
 
 template<class T>
-bool SymbSearch<T>::search(bool use_heuristic) {	
+bool SymbSearch<T>::search(bool use_heuristic) {
+	auto compareLEX = [](const std::pair<int, T*>& pair1, const std::pair<int, T*>& pair2) {
+		return *(pair1.second) > *(pair2.second);
+	};
+	auto ___ = [](const T&) {return true;};
+
+	T prune_bound(mu, num_dfas);
+	prune_bound = BFS(compareLEX, ___, false, false, use_heuristic); // No pruning criteria, no need for path
+	std::cout<<"\nPRINTING PRUNE BOUND: "<<std::endl;
+	prune_bound.print();
+	std::cout<<"\n";
+	//int in;
+	//std::cin>>in;
+	auto pruneCriterionMAX = [&prune_bound](const T& arg_set) {
+
+		//std::cout<<"   in prune criterion..."<<std::endl;
+		//std::cout<<"   arg set:"<<std::endl;
+		//arg_set.print();
+		//std::cout<<"   prune bound set:"<<std::endl;
+		//prune_bound.print();
+		//int in;
+		//std::cin>>in;
+
+		return (!prune_bound.withinBounds(arg_set));
+	};
+	auto compareMAX = [](const std::pair<int, T*>& pair1, const std::pair<int, T*>& pair2) {
+		return pair1.second->getMaxVal() > pair2.second->getMaxVal();
+	};
+
+	T solution_cost(mu, num_dfas);
+	solution_cost = BFS(compareMAX, pruneCriterionMAX, true, true, use_heuristic); 
+	std::cout<<"\nPRINTING SOLUTION COST: "<<std::endl;
+	solution_cost.print();
+	std::cout<<"\n";
+	
+}
+
+template<class T>
+T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pair<int, T*>&)> compare, std::function<bool(const T&)> pruneCriterion, bool prune, bool extract_path, bool use_heuristic) {	
 	//std::chrono::time_point<std::chrono::system_clock> end_time;
 	//std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
 	std::vector<const std::vector<std::string>*> total_alphabet(num_dfas);
@@ -1344,12 +1382,14 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 
 	TS->mapStatesToLabels(total_alphabet); // This is in efficient with diverse/large alphabet
 
+	T min_accepting_cost(mu, num_dfas); // Declare here so we can have a return value
+
 	spaceWeight spw;
 	//std::cout<<"b4 space search"<<std::endl;
 	if (use_heuristic) {
 		bool h_success = generateHeuristic();
 		if (!h_success) {
-			return false;
+			return min_accepting_cost;
 		}
 	}
 	//spaceSearch(TS, dfa_list_ordered->operator[](0), spw);
@@ -1365,9 +1405,6 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 	//	std::cout<<"  Weight: "<<spw.state_weights[i]<<std::endl;
 	//}
 	
-	auto compare = [](std::pair<int, T*> pair1, std::pair<int, T*> pair2) {
-		return *(pair1.second) > *(pair2.second);
-	};
 	//T prev_sol_weight(mu, num_dfas);
 	//prev_sol_weight.setInf();
 	bool sol_found = true;
@@ -1438,7 +1475,6 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 
 	std::vector<WL*> con_data;
 	std::pair<bool, std::vector<int>> accepting;
-	T min_accepting_cost(mu, num_dfas);
 	min_accepting_cost.setInf();
 	//int tree_end_node = 0;
 
@@ -1474,8 +1510,10 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 		//int con_node_prod_ind = Graph<float>::augmentedStateImage(node_inds, graph_sizes);
 		visited[curr_leaf_prod_ind] = true;
 		//std::cout<<"af get leaf"<<std::endl;
-		//std::cout<<" ----- CURR LEAF PROD IND: "<<curr_leaf_prod_ind<<std::endl;
+		//std::cout<<"\n ----- CURR LEAF PROD IND: "<<curr_leaf_prod_ind<<std::endl;
 		//std::cout<<" ----- CURR LEAF IND: "<<curr_leaf_ind<<std::endl;
+		//std::cout<<" ----- CURR LEAF WEIGHT: "<<std::endl;
+		//curr_leaf_weight->print();
 
 		//if (!min_w.is_inf[curr_leaf_ind]
 		//if (curr_leaf_ind == prev_leaf_ind) {
@@ -1527,6 +1565,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 		//for (auto con_data_ptr : con_data) {
 		//std::cout<<"entering da loop 2"<<std::endl;
 		for (int j=0; j<con_data.size(); ++j) {
+			//std::cout<<"\n";
 			//std::cout<<"j = "<<j<<std::endl;
 			//std::cout<<"  in loop: curr_leaf_ind: "<<curr_leaf_ind<<" ts set state: "<<node_list[curr_leaf_ind]->i<<std::endl;
 			TS->set(node_list[curr_leaf_ind]->i);
@@ -1552,7 +1591,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 					//std::cout<<"ts evolved state: "<<TS->getCurrNode()<<" under action: "<<temp_str<<std::endl;
 					if (!found_connection) {
 						std::cout<<"Error: Did not find connectivity in TS. Current node: "<<TS->getCurrNode()<<", Action: "<<temp_str<<std::endl;
-						return false;
+						return min_accepting_cost;
 					}
 				} else { // eval DFAi
 					// There could be multiple logical statements the correspond to the same
@@ -1572,7 +1611,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 				}
 				if (!found_connection) {
 					std::cout<<"Error: Connectivity was not found for either the TS or a DFA. \n";
-					return false;
+					return min_accepting_cost;
 				}
 			}
 			//std::cout<<"af eval"<<std::endl;
@@ -1595,7 +1634,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 			// Made it through connectivity check, therefore we can append the state to the tree:
 			// GET:
 			bool all_accepting = true;
-			//std::cout<<"printing temp lex set fill: "<<std::endl;
+			//std::cout<<"----printing temp lex set fill: ";
 			for (int i=0; i<num_dfas; ++i) {
 
 				// If the dfa is accepting at the evolved ind, append no cost, otherwise append
@@ -1609,8 +1648,19 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 					all_accepting = false;
 					temp_lex_set_fill[i] = temp_weight;
 				}
-				//std::cout<<"\n";
-				//std::cout<<temp_lex_set_fill[i]<<std::endl;
+				//std::cout<<temp_lex_set_fill[i]<<" ";
+			}
+			//std::cout<<"\n";
+
+			if (prune) {
+				T temp_prune_check(mu, num_dfas); 
+				temp_prune_check = *(curr_leaf_weight);
+				temp_prune_check += temp_lex_set_fill;
+				if (pruneCriterion(temp_prune_check)) {
+					min_w.is_inf[con_node_prod_ind] = false; // mark node as seen
+					visited[con_node_prod_ind] = true;
+					continue;
+				}
 			}
 			//std::cout<<"b4 update"<<std::endl;
 			if (!min_w.is_inf[con_node_prod_ind]) { // Node was seen before, non inf weight, but not visited
@@ -1623,6 +1673,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 				//std::cout<<"printing temp lex set: "<<std::endl;
 				//temp_lex_set.print();
 				if (seen_node->lex_set > temp_lex_set) {
+					std::cout<<"UPDATING NODE: "<<seen_node_ind<<" to: "<<curr_leaf_ind<<std::endl;
 					seen_node->lex_set = temp_lex_set;
 					// UPDATE PARENT HERE vvvvvv
 					parents[seen_node_ind] = curr_leaf_ind;
@@ -1631,9 +1682,11 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 			} 
 			IVFlexLex<T>* new_temp_nodeptr = newNode();
 			//std::cout<<"  MAPPING: "<<con_node_prod_ind<<" TO: "<<node_list.size() - 1<<std::endl;
-			min_w.prod2node_list[con_node_prod_ind] = node_list.size() - 1; // Make new node, must map the tree and prod idices
+			min_w.prod2node_list[con_node_prod_ind] = node_list.size() - 1; // Make new node, must map the tree and prod indices
 			//std::cout<<" mapping prod node: "<<con_node_prod_ind<<" to tr node: "<<node_list.size() -1<<std::endl;
 			int con_node_ind = node_list.size() - 1;
+			//std::cout<<"ADDING NODE: "<<con_node_ind<<std::endl;
+			//std::cout<<"ADDING PROD NODE: "<<con_node_prod_ind<<std::endl;
 			//std::cout<<"   COMMITTED con_node_ind: "<<con_node_ind<<std::endl;
 			//parents.push_back(src.first);
 			new_temp_nodeptr->i = TS->getCurrNode();
@@ -1645,7 +1698,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 			new_temp_nodeptr->lex_set = *(curr_leaf_weight);
 			new_temp_nodeptr->lex_set += temp_lex_set_fill;
 
-			//std::cout<<"printing flex set: \n";
+			//std::cout<<"printing add node set: \n";
 			//new_temp_nodeptr->lex_set.print();
 
 			// BUILD CONNECTION:
@@ -1671,7 +1724,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 						fill_set[i] = pullStateWeight(TS->getCurrNode(), dfa_list_ordered->operator[](i)->getCurrNode(), i, reachable);
 						if (!reachable) {
 							std::cout<<"Error: Attempted to find heuristic distance for unreachable product state (ts: "<<TS->getCurrNode()<<" dfa "<<i<<": "<<dfa_list_ordered->operator[](i)->getCurrNode()<<") \n";
-							return false;
+							return min_accepting_cost;
 						}
 					}
 				}
@@ -1709,10 +1762,6 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 			//	std::cout<<" \nNOT ADMISSIBLE!!!!!"<<std::endl;
 			//}
 			pq.push(new_leaf); // add to prio queue
-			//if (new_leaf.first == 66) {
-			//	std::cout<<"ADDING NODE 66!!!!!!!!!!!! "; 
-			//	new_leaf.second->print();
-			//}
 			tree.connect(curr_leaf_ind, {con_node_ind, new_temp_nodeptr});
 			min_w.is_inf[con_node_prod_ind] = false; // mark node as seen
 			parents[con_node_ind] = curr_leaf_ind;
@@ -1722,7 +1771,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 			//}
 			if (all_accepting) {
 				accepting.first = true;
-				//std::cout<<"---found accepting state: "<<con_node_prod_ind<<std::endl;
+				//std::cout<<">>>found accepting state: "<<con_node_prod_ind<<std::endl;
 				//std::vector<int> ret_inds;
 				//Graph<float>::augmentedStatePreImage(graph_sizes, con_node_prod_ind, ret_inds);
 				//std::cout<<"   acc TS: "<<ret_inds[0]<<std::endl;
@@ -1731,16 +1780,20 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 				//}
 				accepting.second.push_back(con_node_prod_ind);
 				solution_ind = con_node_ind;
+				//std::cout<<"min accepting cost: "<<std::endl;
+				//min_accepting_cost.print();
+				//std::cout<<"found cost: "<<std::endl;
+				//new_leaf.second->print();
 				if (*(new_leaf.second) < min_accepting_cost) {
 					min_accepting_cost = *(new_leaf.second);
 				}
 			}
 			if (accepting.first) {
-				if (*(pq.top().second) > min_accepting_cost) {
+				if (*(pq.top().second) >= min_accepting_cost) {
 					finished = true;
-					std::cout<<"Found a solution!"<<"\n";
-					std::cout<<"Pringing MIN ACCEPTING COST: "<<std::endl;
-					min_accepting_cost.print();
+					//std::cout<<"Found a solution!"<<"\n";
+					//std::cout<<"Printing MIN ACCEPTING COST: "<<std::endl;
+					//min_accepting_cost.print();
 					//std::cout<<"   -Iterations: "<<iterations<<"\n";
 					sol_found = true;
 				}
@@ -1776,21 +1829,23 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 	//std::cout<<"out of loop sol_found: "<<sol_found<<std::endl;
 	//	if (!ITERATE) {
 	if (finished) {
-		extractPath(parents, solution_ind);
-		int p_space_size = 1;
-		//p_space_size *=
-		//for 
+		if (extract_path) {
+			extractPath(parents, solution_ind);
+			int p_space_size = 1;
+			//p_space_size *=
+			//for 
 
-		//end_time = std::chrono::system_clock::now();
-		//double search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-		//std::cout<<"Search time (milliseconds): "<<search_time<<std::endl;
-		std::cout<<p_space_size<<std::endl;
-		std::cout<<"Finished. Tree size: "<<tree.size()<<" Iterations: "<<iterations<<" (P space size: "<<p_space_size<<")\n";//<<", Maximum product graph (no pruning) size: "<<
-		//std::cout<<"\n\n ...Finished with plan."<<std::endl;
-		return true;
+			//end_time = std::chrono::system_clock::now();
+			//double search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
+			//std::cout<<"Search time (milliseconds): "<<search_time<<std::endl;
+			std::cout<<p_space_size<<std::endl;
+			std::cout<<"Finished. Tree size: "<<tree.size()<<" Iterations: "<<iterations<<" (P space size: "<<p_space_size<<")\n";//<<", Maximum product graph (no pruning) size: "<<
+			//std::cout<<"\n\n ...Finished with plan."<<std::endl;
+		}
+		return min_accepting_cost;
 	} else {
 		std::cout<<"Failed (no plan)."<<std::endl;
-		return false;
+		return min_accepting_cost;
 	}
 	//	} else {
 	//		std::cout<<"in da check"<<std::endl;
@@ -1803,7 +1858,7 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 	//if (ITERATE) {
 	//	std::cout<<"Made it out of dfs in: "<<dfs_iterations<<" iterations!\n";
 	//}
-	return true;
+	//return true;
 
 }
 
@@ -1897,7 +1952,8 @@ SymbSearch<T>::~SymbSearch() {
 }
 
 //template class SymbSearch<LexSet>; CANNOT USE BECAUSE CTOR REQUIRES MU
-template class SymbSearch<FlexLexSetS>;
-template class SymbSearch<REQLex>;
+//template class SymbSearch<FlexLexSetS>;
+//template class SymbSearch<REQLex>;
+template class SymbSearch<DetourLex>;
 
 

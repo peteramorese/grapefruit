@@ -13,7 +13,7 @@ class LexSet {
 		LexSet(const std::vector<float>* fill_set, unsigned int S_);
 		unsigned int size() const;
 		void setInf();
-		float retMaxVal() const;
+		float getMaxVal() const;
 		virtual void operator+=(const LexSet& arg_set);
 		virtual void operator+=(const std::vector<float>& arg_vec);
 		virtual void operator=(const LexSet& arg_set);
@@ -55,5 +55,19 @@ class REQLex : public LexSet {
 		bool operator<=(const REQLex& arg_set);
 		bool operator>(const REQLex& arg_set);
 		bool operator>=(const REQLex& arg_set);
+};
+
+class DetourLex : public LexSet {
+	private: 
+		float mu;
+	public:
+		DetourLex(float mu_, unsigned int S_);
+		DetourLex(float mu_, float fill_val, unsigned int S_);
+		DetourLex(float mu_, const std::vector<float>* fill_set, unsigned int S_);
+		void operator+=(const DetourLex& arg_set);
+		void operator+=(const std::vector<float>& arg_vec);
+		void operator=(const DetourLex& arg_set);
+		void operator=(const std::vector<float>& arg_vec);
+		bool withinBounds(const DetourLex& arg_set) const;
 };
 

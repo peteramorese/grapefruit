@@ -16,7 +16,7 @@ void LexSet::setInf() {
 	inf_set = true;
 }
 
-float LexSet::retMaxVal() const {
+float LexSet::getMaxVal() const {
 	float ret_val;
 	for (int i=0; i<S; ++i) {
 		if (i == 0 || lex_set[i] > ret_val) {
@@ -446,5 +446,71 @@ bool REQLex::operator>=(const REQLex& arg_set) {
 	} else {
 		std::cout<<"Error: Cannot operate on sets of different size.\n";
 		return false;
+	}
+}
+
+
+		////////////////////////
+		/*  DetourLex CLASS   */
+		////////////////////////
+
+
+DetourLex::DetourLex(float mu_, unsigned int S_) : mu(mu_), LexSet(S_) {}
+
+DetourLex::DetourLex(float mu_, float fill_val, unsigned int S_) : mu(mu_), LexSet(fill_val, S_)  {}
+
+DetourLex::DetourLex(float mu_, const std::vector<float>* fill_set, unsigned int S_) : mu(mu_), LexSet(fill_set, S_) {}
+
+bool DetourLex::withinBounds(const DetourLex& arg_set) const {
+	if (arg_set.size() == S) {
+		for (int i=0; i<S; ++i) {
+			if (arg_set.lex_set[i] > lex_set[i] + mu) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void DetourLex::operator=(const DetourLex& arg_set) {
+	if (arg_set.size() == S) {
+		if (arg_set.inf_set) {
+			inf_set = true;	
+		} else {
+			inf_set = false;
+			lex_set = arg_set.lex_set;
+		}
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
+	}
+}
+
+
+void DetourLex::operator=(const std::vector<float>& arg_vec) {
+	if (arg_vec.size() == S) {
+		inf_set = false;
+		lex_set = arg_vec;
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
+	}
+}
+
+void DetourLex::operator+=(const DetourLex& arg_set) {
+	if (arg_set.size() == S) {
+		for (int i=0; i<S; ++i) {
+			lex_set[i] += arg_set.lex_set[i];
+		}
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
+	}
+}
+
+void DetourLex::operator+=(const std::vector<float>& arg_vec) {
+	if (arg_vec.size() == S) {
+		for (int i=0; i<S; ++i) {
+			lex_set[i] += arg_vec[i];
+		}
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
 	}
 }
