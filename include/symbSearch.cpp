@@ -124,7 +124,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 	bool exit_failure = false;
 	std::pair<bool, std::vector<int>> accepting;
 	for (int round=0; round<2; ++round) {
-		std::cout<<"\n -- spaceSearch: STARTING ROUND: "<<round<<std::endl;
+		//std::cout<<"\n -- spaceSearch: STARTING ROUND: "<<round<<std::endl;
 		std::string search_type = (round == 0) ? "forward" : "reverse";
 		std::priority_queue<std::pair<int, float>, std::vector<std::pair<int, float>>, decltype(compare)> pq(compare);
 		//pq.clear();
@@ -148,7 +148,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 				init_node_inds[i+1] = dfa_list_ordered->operator[](i)->getCurrNode();
 			}
 			int init_node_prod_ind = Graph<float>::augmentedStateImage(init_node_inds, graph_sizes);
-			std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_prod_ind<<std::endl;
+			//std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_prod_ind<<std::endl;
 			min_w.is_inf[init_node_prod_ind] = false;
 			min_w.min_weight[init_node_prod_ind] = 0;
 			visited[init_node_prod_ind] = true;
@@ -160,7 +160,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 			int ROOT_STATE = p_space_size; // this is the root state ind, guaranteed to be larger than any prod state ind
 			min_w.reset();
 			for (auto acc_prod_state : accepting.second) {
-				std::cout<<"Found accepting prod state: "<<acc_prod_state<<std::endl;
+				//std::cout<<"Found accepting prod state: "<<acc_prod_state<<std::endl;
 				min_w.is_inf[acc_prod_state] = false;
 				min_w.min_weight[acc_prod_state] = 0;
 				visited[acc_prod_state] = true;
@@ -358,7 +358,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 						parent_node_list_size *= temp_par_container[ii].size();
 						node_list_sizes[ii] = temp_par_container[ii].size();
 						if (!found_connection) {
-							std::cout<<"DID NOT FIND CONEC OIOI"<<std::endl;
+							//std::cout<<"DID NOT FIND CONEC OIOI"<<std::endl;
 							parent_node_list.clear();
 							break;
 						}
@@ -460,7 +460,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 			}
 			prev_leaf_ind = curr_leaf_ind;
 		}
-		std::cout<<"made it out of space search"<<std::endl;
+		//std::cout<<"made it out of space search"<<std::endl;
 		//if ((round == 0) && !found_target_state) {
 		//	std::cout<<"Error: Target state not found\n";
 		//	exit_failure = true; // currently not using this
@@ -1289,12 +1289,12 @@ bool SymbSearch<T>::generateHeuristic() {
 			return false;
 		}
 		// Print the state weights:
-		std::cout<<"\nPRINTING HEURISTIC:"<<std::endl;
-		for (int ii=0; ii<heuristic[i].state_weights.size(); ++ii) {
-			if (heuristic[i].reachability[ii]) {
-				std::cout<<"Prod ind:"<<ii<<"  Weight: "<<heuristic[i].state_weights[ii]<<std::endl;
-			}
-		}
+		//std::cout<<"\nPRINTING HEURISTIC:"<<std::endl;
+		//for (int ii=0; ii<heuristic[i].state_weights.size(); ++ii) {
+		//	if (heuristic[i].reachability[ii]) {
+		//		std::cout<<"Prod ind:"<<ii<<"  Weight: "<<heuristic[i].state_weights[ii]<<std::endl;
+		//	}
+		//}
 	}
 	return true;
 }
@@ -1718,14 +1718,14 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 			//	path_length_map_ptrs.push_back(temp_weight_set_ptr);
 			//}
 			if (use_heuristic) {
-				std::vector<float> fill_set(num_dfas);
+				std::vector<float> h_vals(num_dfas);
 				for (int i=0; i<num_dfas; ++i) {
 					bool reachable;
 					if (dfa_list_ordered->operator[](i)->isCurrAccepting()) {
-						fill_set[i] = 0;
+						h_vals[i] = 0;
 					} else {
 						//std::cout<<"dfa curr node: "<<dfa_list_ordered->operator[](i)->getCurrNode()<<" is it accepting? "<<dfa_list_ordered->operator[](i)->isCurrAccepting()<<std::endl;
-						fill_set[i] = pullStateWeight(TS->getCurrNode(), dfa_list_ordered->operator[](i)->getCurrNode(), i, reachable);
+						h_vals[i] = pullStateWeight(TS->getCurrNode(), dfa_list_ordered->operator[](i)->getCurrNode(), i, reachable);
 						if (!reachable) {
 							std::cout<<"Error: Attempted to find heuristic distance for unreachable product state (ts: "<<TS->getCurrNode()<<" dfa "<<i<<": "<<dfa_list_ordered->operator[](i)->getCurrNode()<<") \n";
 							return min_accepting_cost;
@@ -1736,7 +1736,8 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 				//if (!ITERATE) { // ITERATE determine whether or not to use A* or DFS
 				//new_temp_setptr->operator=(*curr_leaf_weight);
 				new_temp_setptr->operator=(new_temp_nodeptr->lex_set);
-				new_temp_setptr->operator+=(fill_set);
+				//new_temp_setptr->operator+=(fill_set);
+				new_temp_setptr->addHeuristic(h_vals);
 				//} else {
 				//	temp_weight_set_ptr->operator=(new_temp_nodeptr->lex_set);
 				//	new_temp_setptr->operator=(fill_set);

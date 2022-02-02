@@ -474,6 +474,25 @@ bool DetourLex::withinBounds(const DetourLex& arg_set) const {
 	return true;
 }
 
+void DetourLex::operator+=(const DetourLex& arg_set) {
+	if (arg_set.size() == S) {
+		for (int i=0; i<S; ++i) {
+			lex_set[i] += arg_set.lex_set[i];
+		}
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
+	}
+}
+
+void DetourLex::operator+=(const std::vector<float>& arg_vec) {
+	if (arg_vec.size() == S) {
+		for (int i=0; i<S; ++i) {
+			lex_set[i] += arg_vec[i];
+		}
+	} else {
+		std::cout<<"Error: Cannot operate on sets of different size.\n";
+	}
+}
 void DetourLex::operator=(const DetourLex& arg_set) {
 	if (arg_set.size() == S) {
 		if (arg_set.inf_set) {
@@ -497,22 +516,22 @@ void DetourLex::operator=(const std::vector<float>& arg_vec) {
 	}
 }
 
-void DetourLex::operator+=(const DetourLex& arg_set) {
-	if (arg_set.size() == S) {
-		for (int i=0; i<S; ++i) {
-			lex_set[i] += arg_set.lex_set[i];
+void DetourLex::addHeuristic(const std::vector<float>& h_vals) {
+	int max_val = 0;
+	int max_ind = -1;
+	for (int i=0; i<S; ++i) {
+		if ((lex_set[i] + h_vals[i]) > max_val) {
+			max_val = lex_set[i] + h_vals[i];
+			max_ind = i;
 		}
-	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+	}
+	if (max_ind >= 0 && max_val >= 0) {
+		lex_set[max_ind] = max_val;
 	}
 }
 
-void DetourLex::operator+=(const std::vector<float>& arg_vec) {
-	if (arg_vec.size() == S) {
-		for (int i=0; i<S; ++i) {
-			lex_set[i] += arg_vec[i];
-		}
-	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
-	}
-}
+
+
+
+
+

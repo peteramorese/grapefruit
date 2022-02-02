@@ -69,5 +69,6 @@ class DetourLex : public LexSet {
 		void operator=(const DetourLex& arg_set);
 		void operator=(const std::vector<float>& arg_vec);
 		bool withinBounds(const DetourLex& arg_set) const;
+		void addHeuristic(const std::vector<float>& h_vals);
 };
 
