@@ -1303,7 +1303,12 @@ template<class T>
 float SymbSearch<T>::pullStateWeight(unsigned ts_ind, unsigned dfa_ind, unsigned dfa_list_ind, bool& reachable) const {	
 	int n = TS->size();
 	int m = dfa_list_ordered->operator[](dfa_list_ind)->getDFA()->size();
-	int p_node_ind = Graph<float>::augmentedStateFunc(ts_ind, dfa_ind, n, m);
+	std::vector<int> inds(2);
+	inds[0] = ts_ind;
+	inds[1] = dfa_ind;
+	int p_node_ind = Graph<float>::augmentedStateImage(inds, {n, m});
+	//std::cout<<"hello p_node_ind: "<<p_node_ind<<std::endl;
+	//std::cout<<"reachability size: "<<heuristic[dfa_list_ind].reachability[p_node_ind] <<std::endl;
 	if (heuristic[dfa_list_ind].reachability[p_node_ind]) {
 		reachable = true;
 		return heuristic[dfa_list_ind].state_weights[p_node_ind];
