@@ -16,14 +16,30 @@ void LexSet::setInf() {
 	inf_set = true;
 }
 
+bool LexSet::isInf() const {
+	return inf_set;
+}
+
 float LexSet::getMaxVal() const {
-	float ret_val;
+	float ret_val = -1.0;
 	for (int i=0; i<S; ++i) {
 		if (i == 0 || lex_set[i] > ret_val) {
 			ret_val = lex_set[i];
 		}
 	}
 	return ret_val;
+}
+
+void LexSet::addToMax(float v) {
+	float max_val;
+	int max_ind;
+	for (int i=0; i<S; ++i) {
+		if (i == 0 || lex_set[i] > max_val) {
+			max_val = lex_set[i];
+			max_ind = i;
+		}
+	}
+	lex_set[max_ind] += v;
 }
 
 void LexSet::operator+=(const LexSet& arg_set) {
@@ -68,7 +84,7 @@ void LexSet::operator=(const std::vector<float>& arg_vec) {
 	}
 }
 
-bool LexSet::operator==(const LexSet& arg_set) {
+bool LexSet::operator==(const LexSet& arg_set) const {
 	if (arg_set.size() == lex_set.size()) {
 		if (inf_set || arg_set.inf_set) {
 			return (inf_set && arg_set.inf_set);
@@ -80,7 +96,7 @@ bool LexSet::operator==(const LexSet& arg_set) {
 	}
 }
 
-bool LexSet::operator<(const LexSet& arg_set) {
+bool LexSet::operator<(const LexSet& arg_set) const {
 	if (arg_set.size() == lex_set.size()) {
 		if (arg_set.inf_set) {
 			// Infinite set is not less than infinite set
@@ -103,7 +119,7 @@ bool LexSet::operator<(const LexSet& arg_set) {
 	}
 }
 
-bool LexSet::operator<=(const LexSet& arg_set) {
+bool LexSet::operator<=(const LexSet& arg_set) const {
 	if (arg_set.size() == lex_set.size()) {
 		if (arg_set.inf_set) {
 			// Any set is less than or equal to an infinite set
@@ -126,7 +142,7 @@ bool LexSet::operator<=(const LexSet& arg_set) {
 	}
 }
 
-bool LexSet::operator>(const LexSet& arg_set) {
+bool LexSet::operator>(const LexSet& arg_set) const {
 	if (arg_set.size() == lex_set.size()) {
 		if (arg_set.inf_set) {
 			// Any set is less than or equal to an infinite set
@@ -149,7 +165,7 @@ bool LexSet::operator>(const LexSet& arg_set) {
 	}
 }
 
-bool LexSet::operator>=(const LexSet& arg_set) {
+bool LexSet::operator>=(const LexSet& arg_set) const {
 	if (arg_set.size() == lex_set.size()) {
 		if (inf_set) {
 			// Any set is less than or equal to an infinite set

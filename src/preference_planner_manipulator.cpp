@@ -155,7 +155,7 @@ int main() {
 	std::vector<DFA> dfa_arr(N_DFAs);
 	std::vector<std::string> filenames(N_DFAs);
 	for (int i=0; i<N_DFAs; ++i) {
-		filenames[i] = "../spot_automaton_file_dump/dfas/dfa_" + std::to_string(i) +".txt";
+		filenames[i] = "../../spot_automaton_file_dump/dfas/dfa_" + std::to_string(i) +".txt";
 	}
 	for (int i=0; i<N_DFAs; ++i) {
 		dfa_arr[i].readFileSingle(filenames[i]);

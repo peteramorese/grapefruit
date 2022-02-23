@@ -13,16 +13,18 @@ class LexSet {
 		LexSet(const std::vector<float>* fill_set, unsigned int S_);
 		unsigned int size() const;
 		void setInf();
+		bool isInf() const;
 		float getMaxVal() const;
+		void addToMax(float v);
 		virtual void operator+=(const LexSet& arg_set);
 		virtual void operator+=(const std::vector<float>& arg_vec);
 		virtual void operator=(const LexSet& arg_set);
 		virtual void operator=(const std::vector<float>& arg_vec);
-		virtual bool operator==(const LexSet& arg_set);
-		virtual bool operator<(const LexSet& arg_set);
-		virtual bool operator<=(const LexSet& arg_set);
-		virtual bool operator>(const LexSet& arg_set);
-		virtual bool operator>=(const LexSet& arg_set);
+		virtual bool operator==(const LexSet& arg_set) const;
+		virtual bool operator<(const LexSet& arg_set) const;
+		virtual bool operator<=(const LexSet& arg_set) const;
+		virtual bool operator>(const LexSet& arg_set) const;
+		virtual bool operator>=(const LexSet& arg_set) const;
 		void print() const;
 };
 

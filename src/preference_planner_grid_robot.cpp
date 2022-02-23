@@ -80,7 +80,7 @@ int main() {
 							dst_state.setState(y_labels[ii], 1);
 							//std::cout<<"dst: "<<std::endl;
 							//dst_state.print();
-							ts_eval.connect(&src_state, &dst_state, 5.0f, "move_left");
+							ts_eval.connect(&src_state, &dst_state, 1.0f, "move_left");
 						} else {
 							if (!stay_put) {
 								ts_eval.connect(&src_state, &src_state, 0.0f, "stay_put");
@@ -95,7 +95,7 @@ int main() {
 							dst_state.setState(y_labels[ii], 1);
 							//std::cout<<"dst: "<<std::endl;
 							//dst_state.print();
-							ts_eval.connect(&src_state, &dst_state, 5.0f, "move_right");
+							ts_eval.connect(&src_state, &dst_state, 1.0f, "move_right");
 						} else {
 							if (!stay_put) {
 								ts_eval.connect(&src_state, &src_state, 0.0f, "stay_put");
@@ -111,7 +111,7 @@ int main() {
 							dst_state.setState(y_labels[ii-1], 1);
 							//std::cout<<"dst: "<<std::endl;
 							//dst_state.print();
-							ts_eval.connect(&src_state, &dst_state, 5.0f, "move_down");
+							ts_eval.connect(&src_state, &dst_state, 1.0f, "move_down");
 						} else {
 							if (!stay_put) {
 								ts_eval.connect(&src_state, &src_state, 0.0f, "stay_put");
@@ -127,7 +127,7 @@ int main() {
 							dst_state.setState(y_labels[ii+1], 1);
 							//std::cout<<"dst: "<<std::endl;
 							//dst_state.print();
-							ts_eval.connect(&src_state, &dst_state, 5.0f, "move_up");
+							ts_eval.connect(&src_state, &dst_state, 1.0f, "move_up");
 						} else {
 							if (!stay_put) {
 								ts_eval.connect(&src_state, &src_state, 0.0f, "stay_put");
@@ -185,7 +185,7 @@ int main() {
 	std::vector<DFA> dfa_arr(N_DFAs);
 	std::vector<std::string> filenames(N_DFAs);
 	for (int i=0; i<N_DFAs; ++i) {
-		filenames[i] = "../spot_automaton_file_dump/dfas/dfa_" + std::to_string(i) +".txt";
+		filenames[i] = "../../spot_automaton_file_dump/dfas/dfa_" + std::to_string(i) +".txt";
 	}
 	for (int i=0; i<N_DFAs; ++i) {
 		dfa_arr[i].readFileSingle(filenames[i]);
@@ -255,7 +255,7 @@ int main() {
 			}
 		}
 		if (write_file_flag) {
-			search_obj.writePlanToFile("../matlab_scripts/preference_planning_demos/plan.txt", xtra_info);
+			search_obj.writePlanToFile("../../matlab_scripts/preference_planning_demos/plan.txt", xtra_info);
 		}
 	}
 
