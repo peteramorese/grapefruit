@@ -2,6 +2,7 @@
 #include<unordered_map>
 #include<chrono>
 #include<ctime>
+#include<fstream>
 #include "graph.h"
 #include "condition.h"
 #include "transitionSystem.h"
@@ -14,6 +15,7 @@ class Benchmark {
 		using tp_t = std::chrono::time_point<std::chrono::system_clock>;
 		tp_t time_start_init;
 		std::unordered_map<std::string, tp_t> time_points_start;
+		std::vector<std::string> attributes;
 	public:
 	 	Benchmark() {
 			time_start_init = std::chrono::system_clock::now();
@@ -29,27 +31,47 @@ class Benchmark {
 			tp_t time_measure, time_start;
 			time_measure = std::chrono::system_clock::now();
 			time_measure = time_points_start.at(name);
-			return std::chrono::duration_cast<std::chrono::milliseconds>(time_measure - time_start).count();
+			double dt = std::chrono::duration_cast<std::chrono::milliseconds>(time_measure - time_start).count();
+			attributes.push_back("-" + name + " (ms): " + std::to_string(dt));
+			return dt;
 		}
 
 		double measureMilli() {
 			tp_t time_measure;
 			time_measure = std::chrono::system_clock::now();
-			return std::chrono::duration_cast<std::chrono::milliseconds>(time_measure - time_start_init).count();
+			double dt = std::chrono::duration_cast<std::chrono::milliseconds>(time_measure - time_start_init).count();
+			attributes.push_back("-init (ms): " + std::to_string(dt));
+			return dt;
 		}
 
 		double measureMicro(const std::string& name) {
 			tp_t time_measure, time_start;
 			time_measure = std::chrono::system_clock::now();
 			time_measure = time_points_start.at(name);
-			return std::chrono::duration_cast<std::chrono::microseconds>(time_measure - time_start).count();
+			double dt = std::chrono::duration_cast<std::chrono::microseconds>(time_measure - time_start).count();
+			attributes.push_back("-" + name + " (us): " + std::to_string(dt));
+			return dt;
 		}
 
 		double measureMicro() {
 			tp_t time_measure;
 			time_measure = std::chrono::system_clock::now();
-			return std::chrono::duration_cast<std::chrono::microseconds>(time_measure - time_start_init).count();
+			double dt = std::chrono::duration_cast<std::chrono::microseconds>(time_measure - time_start_init).count();
+			attributes.push_back("-init (us): " + std::to_string(dt));
+			return dt;
 		}
+
+		void pushAttributesToFile(const std::string& filename) {
+			std::ofstream F;
+			F.open(filename, std::ios::app);
+			for (auto attr : attributes) {
+				F << attr;
+			}
+			F.close();
+		}
+
+
+		void wipeAttributesFromFile(const std::string& filename) {}
 };
 
 int main(int argc, char *argv[]) {
@@ -341,6 +363,9 @@ int main(int argc, char *argv[]) {
 	benchmark.pushStartPoint("before_search");
 	bool success = search_obj.search(use_h_flag);
 	std::cout<<"search time: "<<benchmark.measureMilli("before_search")<<std::endl;
+
+
+	benchmark.pushAttributesToFile("/benchmark_data/preference_planner_bm.txt");
 
 	//std::cout<<"Found plan? "<<success<<std::endl;
 	if (success) {
