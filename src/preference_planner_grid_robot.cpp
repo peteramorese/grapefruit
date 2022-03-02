@@ -1,4 +1,7 @@
 #include<iostream>
+#include<unordered_map>
+#include<chrono>
+#include<ctime>
 #include "graph.h"
 #include "condition.h"
 #include "transitionSystem.h"
@@ -6,7 +9,93 @@
 #include "state.h"
 #include "symbSearch.h"
 
-int main() {
+class Benchmark {
+	private:
+		using tp_t = std::chrono::time_point<std::chrono::system_clock>;
+		tp_t time_start_init;
+		std::unordered_map<std::string, tp_t> time_points_start;
+	public:
+	 	Benchmark() {
+			time_start_init = std::chrono::system_clock::now();
+		};
+
+		void pushStartPoint(const std::string& name) {
+			tp_t time_pt;
+			time_pt = std::chrono::system_clock::now();
+			time_points_start[name] = time_pt;
+		}
+
+		double measureMilli(const std::string& name) {
+			tp_t time_measure, time_start;
+			time_measure = std::chrono::system_clock::now();
+			time_measure = time_points_start.at(name);
+			return std::chrono::duration_cast<std::chrono::milliseconds>(time_measure - time_start).count();
+		}
+
+		double measureMilli() {
+			tp_t time_measure;
+			time_measure = std::chrono::system_clock::now();
+			return std::chrono::duration_cast<std::chrono::milliseconds>(time_measure - time_start_init).count();
+		}
+
+		double measureMicro(const std::string& name) {
+			tp_t time_measure, time_start;
+			time_measure = std::chrono::system_clock::now();
+			time_measure = time_points_start.at(name);
+			return std::chrono::duration_cast<std::chrono::microseconds>(time_measure - time_start).count();
+		}
+
+		double measureMicro() {
+			tp_t time_measure;
+			time_measure = std::chrono::system_clock::now();
+			return std::chrono::duration_cast<std::chrono::microseconds>(time_measure - time_start_init).count();
+		}
+};
+
+int main(int argc, char *argv[]) {
+	//std::cout<<"time init: "<<time_init<<std::endl;
+	for (int i=0; i<argc; ++i) {
+		std::cout<<argv[i]<<std::endl;
+	}
+	Benchmark benchmark;
+	std::cout<<"time init: "<<benchmark.measureMicro()<<std::endl;
+	// Parse arguments:
+
+	bool manual_setup;
+	int grid_size;
+	int N_DFAs;
+	float mu;
+	bool use_h_flag, write_file_flag, verbose, use_benchmark;
+	std::string filename_path_prefix;
+	if (argc > 1) {
+		// Custom args
+		manual_setup = false;
+		std::string::size_type size_t;
+		grid_size = std::stoi(argv[1], &size_t);
+		N_DFAs = std::stoi(argv[2], &size_t);
+		mu = std::stof(argv[3], &size_t);
+		use_h_flag = (argv[4][0] == 'y') ? true : false;
+		write_file_flag = (argv[5][0] == 'y') ? true : false;
+		verbose = (argv[6][0] == 'y') ? true : false;
+		use_benchmark = (argv[7][0] == 'y') ? true : false;
+		if (argc > 8) {
+			filename_path_prefix = argv[8];
+		} else {
+			filename_path_prefix = "../../spot_automaton_file_dump/dfas/";
+		}
+		//std::cout<<"using h:"<<use_h_flag<<std::endl;
+		//std::cout<<"using wtf:"<<write_file_flag<<std::endl;
+	} else {
+		// Default args
+		manual_setup = true;
+		grid_size = 10;
+		filename_path_prefix = "../../spot_automaton_file_dump/dfas/";
+		verbose = true;
+		use_benchmark = false;
+		
+	}
+
+	//std::cout<<"PRINTING ARGS:"<<argv[1]<<std::endl;
 
 
 	//////////////////////////////////////////////////////
@@ -18,7 +107,6 @@ int main() {
 
 	std::vector<std::string> x_labels;
 	std::vector<std::string> y_labels;
-	const int grid_size = 10;
 	for (int i=0; i<grid_size; ++i) {
 		std::string temp_string;
 		temp_string = "x" + std::to_string(i);
@@ -139,12 +227,13 @@ int main() {
 			}
 		}
 	}
-	std::cout<<"af make ts"<<std::endl;
 	ts_eval.finishConnecting();
 
 
 	/* Propositions */
-	std::cout<<"Setting Atomic Propositions... "<<std::endl;
+	if (verbose) {
+		std::cout<<"Setting Atomic Propositions... "<<std::endl;
+	}
 	std::vector<SimpleCondition> APs;
 	std::vector<SimpleCondition*> AP_ptrs;
 	for (int i=0; i<grid_size; ++i) {
@@ -164,8 +253,10 @@ int main() {
 	}
 
 	ts_eval.setPropositions(AP_ptrs);
-	std::cout<<"\n\n Printing the Transition System: \n\n"<<std::endl;
-	ts_eval.printTS();
+	if (verbose) {
+		std::cout<<"\n\n Printing the Transition System: \n\n"<<std::endl;
+		ts_eval.printTS();
+	}
 
 
 
@@ -174,26 +265,29 @@ int main() {
 	/////////////////////////////////////////////////
 
 	DFA A;
-	int N_DFAs;
 
+	if (manual_setup){
+		std::cout<<"\n------------------------------\n";
+		std::cout<<"Enter number of formulas: ";
+		std::cin >> N_DFAs;
+		std::cout<<"\n";
+	}
 	// Get input from user for how many formulas to read in:
-	std::cout<<"\n------------------------------\n";
-	std::cout<<"Enter number of formulas: ";
-	std::cin >> N_DFAs;
-	std::cout<<"\n";
 
 	std::vector<DFA> dfa_arr(N_DFAs);
 	std::vector<std::string> filenames(N_DFAs);
 	for (int i=0; i<N_DFAs; ++i) {
-		filenames[i] = "../../spot_automaton_file_dump/dfas/dfa_" + std::to_string(i) +".txt";
+		filenames[i] = filename_path_prefix +"dfa_" + std::to_string(i) +".txt";
 	}
 	for (int i=0; i<N_DFAs; ++i) {
 		dfa_arr[i].readFileSingle(filenames[i]);
 	}
-	std::cout<<"\n\nPrinting all DFA's (read into an array)...\n\n"<<std::endl;
-	for (int i=0; i<N_DFAs; ++i) {
-		dfa_arr[i].print();
-		std::cout<<"\n"<<std::endl;
+	if (verbose) {
+		std::cout<<"\n\nPrinting all DFA's (read into an array)...\n\n"<<std::endl;
+		for (int i=0; i<N_DFAs; ++i) {
+			dfa_arr[i].print();
+			std::cout<<"\n"<<std::endl;
+		}
 	}
 
 
@@ -214,26 +308,27 @@ int main() {
 	SymbSearch<DetourLex> search_obj;
 	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	search_obj.setTransitionSystem(&ts_eval);
-	float mu;
-	std::cout<<"\n------------------------------\n";
-	std::cout<<"Enter flexibility parameter: ";
-	std::cout<<"\n";
-	std::cin >> mu;
-	search_obj.setFlexibilityParam(mu);
-
-	char use_h;
-	std::cout<<"\n------------------------------\n";
-	std::cout<<"Use heuristic? [y/n]: ";
-	std::cout<<"\n";
-	std::cin >> use_h;
-	bool use_h_flag = (use_h == 'y') ? true : false;
-
-	char write_f;
-	std::cout<<"\n------------------------------\n";
-	std::cout<<"Write to file? [y/n]: ";
-	std::cout<<"\n";
-	std::cin >> write_f;
-	bool write_file_flag = (write_f == 'y') ? true : false;
+	if (manual_setup) {
+		std::cout<<"\n------------------------------\n";
+		std::cout<<"Enter flexibility parameter: ";
+		std::cout<<"\n";
+		std::cin >> mu;
+		search_obj.setFlexibilityParam(mu);
+	
+		char use_h;
+		std::cout<<"\n------------------------------\n";
+		std::cout<<"Use heuristic? [y/n]: ";
+		std::cout<<"\n";
+		std::cin >> use_h;
+		use_h_flag = (use_h == 'y') ? true : false;
+	
+		char write_f;
+		std::cout<<"\n------------------------------\n";
+		std::cout<<"Write to file? [y/n]: ";
+		std::cout<<"\n";
+		std::cin >> write_f;
+		write_file_flag = (write_f == 'y') ? true : false;
+	}
 
 	//char use_dfs;
 	//std::cout<<"\n------------------------------\n";
@@ -243,7 +338,10 @@ int main() {
 	//bool use_dfs_flag = (use_dfs == 'y') ? true : false;
 	//search_obj.setFlexibilityParam(0.0f);
 	//bool success = search_obj.search(use_h_flag, use_dfs_flag);
+	benchmark.pushStartPoint("before_search");
 	bool success = search_obj.search(use_h_flag);
+	std::cout<<"search time: "<<benchmark.measureMilli("before_search")<<std::endl;
+
 	//std::cout<<"Found plan? "<<success<<std::endl;
 	if (success) {
 		std::vector<std::string> xtra_info;
