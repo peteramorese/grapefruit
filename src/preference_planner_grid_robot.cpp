@@ -21,7 +21,7 @@ class Benchmark {
 			time_start_init = std::chrono::system_clock::now();
 		};
 
-		void pushAttribute(const std::string& attr) {
+		void addAttribute(const std::string& attr) {
 			attributes.push_back(attr);
 		}
 		void pushStartPoint(const std::string& name) {
@@ -77,9 +77,7 @@ class Benchmark {
 		void finishSessionInFile(const std::string& filename) {
 			std::ofstream F;
 			F.open(filename, std::ios::app);
-			for (auto attr : attributes) {
-				F << ">--\n";
-			}
+			F << ">--\n";
 			F.close();
 		}
 
@@ -88,9 +86,9 @@ class Benchmark {
 
 int main(int argc, char *argv[]) {
 	//std::cout<<"time init: "<<time_init<<std::endl;
-	for (int i=0; i<argc; ++i) {
-		std::cout<<argv[i]<<std::endl;
-	}
+	//for (int i=0; i<argc; ++i) {
+	//	std::cout<<argv[i]<<std::endl;
+	//}
 	Benchmark benchmark;
 	//std::cout<<"time init: "<<benchmark.measureMicro()<<std::endl;
 	// Parse arguments:
@@ -129,7 +127,7 @@ int main(int argc, char *argv[]) {
 		
 	}
 	if (use_benchmark) {
-		benchmark.pushAttribute("num_dfas: " + std::to_string(N_DFAs));
+		benchmark.addAttribute("num_dfas: " + std::to_string(N_DFAs));
 	}
 
 	//std::cout<<"PRINTING ARGS:"<<argv[1]<<std::endl;
@@ -377,7 +375,8 @@ int main(int argc, char *argv[]) {
 	//bool success = search_obj.search(use_h_flag, use_dfs_flag);
 	benchmark.pushStartPoint("before_search");
 	bool success = search_obj.search(use_h_flag);
-	std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
+	//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
+	benchmark.measureMicro("before_search");
 	benchmark.pushAttributesToFile("./benchmark_data/preference_planner_bm.txt");
 	benchmark.finishSessionInFile("./benchmark_data/preference_planner_bm.txt");
 	//std::cout<<"Found plan? "<<success<<std::endl;
@@ -391,16 +390,11 @@ int main(int argc, char *argv[]) {
 			}
 		}
 		if (write_file_flag) {
-			search_obj.writePlanToFile("../../matlab_scripts/preference_planning_demos/plan.txt", xtra_info);
+			search_obj.writePlanToFile("../../matlab_scripts/preference_planning_demos/plan_files/plan.txt", xtra_info);
 		}
 	}
-
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {
 		delete dfa_eval_ptrs[i];
 	}
-
 	return 0;
-
-
-
 }

@@ -1,308 +1,117 @@
-num_dfas: 0
--before_search (us): 341.000000
->--
->--
-num_dfas: 1
--before_search (us): 1654.000000
->--
->--
-num_dfas: 0
--before_search (us): 305.000000
->--
->--
-num_dfas: 1
--before_search (us): 1848.000000
->--
->--
-num_dfas: 3
--before_search (us): 11748.000000
->--
+num_dfas: 2
+-before_search (us): 3706.000000
 >--
 num_dfas: 4
--before_search (us): 14031.000000
->--
->--
-num_dfas: 0
--before_search (us): 328.000000
->--
->--
-num_dfas: 1
--before_search (us): 3271.000000
->--
+-before_search (us): 17875.000000
 >--
 num_dfas: 2
--before_search (us): 3163.000000
+-before_search (us): 2996.000000
 >--
+num_dfas: 4
+-before_search (us): 14415.000000
+>--
+num_dfas: 3
+-before_search (us): 3987.000000
+>--
+num_dfas: 4
+-before_search (us): 10565.000000
+>--
+num_dfas: 4
+-before_search (us): 8507.000000
+>--
+num_dfas: 4
+-before_search (us): 8609.000000
+>--
+num_dfas: 2
+-before_search (us): 3339.000000
+>--
+num_dfas: 3
+-before_search (us): 5693.000000
+>--
+num_dfas: 4
+-before_search (us): 10751.000000
+>--
+num_dfas: 2
+-before_search (us): 4265.000000
+>--
+num_dfas: 3
+-before_search (us): 5084.000000
+>--
+num_dfas: 4
+-before_search (us): 5247.000000
+>--
+num_dfas: 2
+-before_search (us): 2972.000000
 >--
 num_dfas: 4
 -before_search (us): 12813.000000
 >--
+num_dfas: 3
+-before_search (us): 7270.000000
 >--
-num_dfas: 0
--before_search (us): 395.000000
->--
+num_dfas: 3
+-before_search (us): 10460.000000
 >--
 num_dfas: 2
--before_search (us): 4189.000000
->--
->--
-num_dfas: 4
--before_search (us): 20521.000000
->--
->--
-num_dfas: 0
--before_search (us): 337.000000
->--
->--
-num_dfas: 1
--before_search (us): 2107.000000
->--
+-before_search (us): 2756.000000
 >--
 num_dfas: 3
--before_search (us): 5003.000000
+-before_search (us): 7957.000000
 >--
->--
-num_dfas: 0
--before_search (us): 544.000000
->--
->--
-num_dfas: 1
--before_search (us): 1503.000000
->--
+num_dfas: 4
+-before_search (us): 16325.000000
 >--
 num_dfas: 2
--before_search (us): 5192.000000
->--
->--
-num_dfas: 3
--before_search (us): 7753.000000
->--
+-before_search (us): 3258.000000
 >--
 num_dfas: 4
--before_search (us): 10864.000000
+-before_search (us): 7838.000000
 >--
+num_dfas: 3
+-before_search (us): 12932.000000
 >--
-num_dfas: 0
--before_search (us): 462.000000
+num_dfas: 3
+-before_search (us): 5370.000000
 >--
->--
-num_dfas: 1
--before_search (us): 1374.000000
->--
+num_dfas: 4
+-before_search (us): 5909.000000
 >--
 num_dfas: 2
--before_search (us): 3160.000000
->--
+-before_search (us): 4279.000000
 >--
 num_dfas: 3
--before_search (us): 3237.000000
->--
->--
-num_dfas: 4
--before_search (us): 6212.000000
->--
->--
-num_dfas: 0
--before_search (us): 382.000000
->--
+-before_search (us): 6296.000000
 >--
 num_dfas: 2
--before_search (us): 5496.000000
->--
+-before_search (us): 2595.000000
 >--
 num_dfas: 3
--before_search (us): 8477.000000
->--
+-before_search (us): 10004.000000
 >--
 num_dfas: 4
--before_search (us): 14543.000000
->--
->--
-num_dfas: 0
--before_search (us): 435.000000
->--
->--
-num_dfas: 1
--before_search (us): 2626.000000
->--
+-before_search (us): 10927.000000
 >--
 num_dfas: 2
--before_search (us): 3148.000000
+-before_search (us): 3913.000000
 >--
->--
-num_dfas: 0
--before_search (us): 387.000000
->--
->--
-num_dfas: 1
--before_search (us): 1333.000000
->--
+num_dfas: 3
+-before_search (us): 8270.000000
 >--
 num_dfas: 2
--before_search (us): 6878.000000
->--
->--
-num_dfas: 3
--before_search (us): 11120.000000
->--
->--
-num_dfas: 4
--before_search (us): 17959.000000
->--
->--
-num_dfas: 0
--before_search (us): 409.000000
->--
->--
-num_dfas: 1
--before_search (us): 974.000000
->--
+-before_search (us): 4129.000000
 >--
 num_dfas: 3
--before_search (us): 7980.000000
->--
->--
-num_dfas: 4
--before_search (us): 5788.000000
->--
->--
-num_dfas: 0
--before_search (us): 461.000000
->--
->--
-num_dfas: 1
--before_search (us): 1097.000000
->--
->--
-num_dfas: 3
--before_search (us): 5651.000000
->--
+-before_search (us): 5250.000000
 >--
 num_dfas: 4
--before_search (us): 5694.000000
->--
->--
-num_dfas: 0
--before_search (us): 304.000000
->--
->--
-num_dfas: 1
--before_search (us): 3252.000000
->--
->--
-num_dfas: 0
--before_search (us): 428.000000
->--
+-before_search (us): 12562.000000
 >--
 num_dfas: 2
--before_search (us): 6394.000000
->--
->--
-num_dfas: 3
--before_search (us): 10687.000000
->--
->--
-num_dfas: 4
--before_search (us): 23081.000000
->--
->--
-num_dfas: 0
--before_search (us): 303.000000
->--
->--
-num_dfas: 2
--before_search (us): 6172.000000
->--
+-before_search (us): 3253.000000
 >--
 num_dfas: 3
--before_search (us): 5798.000000
->--
->--
-num_dfas: 4
--before_search (us): 7883.000000
->--
->--
-num_dfas: 0
--before_search (us): 476.000000
->--
->--
-num_dfas: 1
--before_search (us): 2045.000000
->--
->--
-num_dfas: 3
--before_search (us): 11203.000000
->--
+-before_search (us): 6120.000000
 >--
 num_dfas: 4
--before_search (us): 12957.000000
->--
->--
-num_dfas: 0
--before_search (us): 585.000000
->--
->--
-num_dfas: 1
--before_search (us): 1072.000000
->--
->--
-num_dfas: 2
--before_search (us): 3152.000000
->--
->--
-num_dfas: 3
--before_search (us): 4294.000000
->--
->--
-num_dfas: 4
--before_search (us): 8289.000000
->--
->--
-num_dfas: 0
--before_search (us): 355.000000
->--
->--
-num_dfas: 1
--before_search (us): 733.000000
->--
->--
-num_dfas: 3
--before_search (us): 7230.000000
->--
->--
-num_dfas: 4
--before_search (us): 5569.000000
->--
->--
-num_dfas: 0
--before_search (us): 663.000000
->--
->--
-num_dfas: 1
--before_search (us): 2026.000000
->--
->--
-num_dfas: 2
--before_search (us): 8959.000000
->--
->--
-num_dfas: 3
--before_search (us): 8200.000000
->--
->--
-num_dfas: 4
--before_search (us): 17274.000000
->--
->--
-num_dfas: 0
--before_search (us): 270.000000
->--
->--
-num_dfas: 1
--before_search (us): 868.000000
->--
->--
-num_dfas: 4
--before_search (us): 14102.000000
->--
+-before_search (us): 13448.000000
 >--
