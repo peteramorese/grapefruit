@@ -21,6 +21,9 @@ class Benchmark {
 			time_start_init = std::chrono::system_clock::now();
 		};
 
+		void pushAttribute(const std::string& attr) {
+			attributes.push_back(attr);
+		}
 		void pushStartPoint(const std::string& name) {
 			tp_t time_pt;
 			time_pt = std::chrono::system_clock::now();
@@ -30,7 +33,7 @@ class Benchmark {
 		double measureMilli(const std::string& name) {
 			tp_t time_measure, time_start;
 			time_measure = std::chrono::system_clock::now();
-			time_measure = time_points_start.at(name);
+			time_start = time_points_start.at(name);
 			double dt = std::chrono::duration_cast<std::chrono::milliseconds>(time_measure - time_start).count();
 			attributes.push_back("-" + name + " (ms): " + std::to_string(dt));
 			return dt;
@@ -47,7 +50,7 @@ class Benchmark {
 		double measureMicro(const std::string& name) {
 			tp_t time_measure, time_start;
 			time_measure = std::chrono::system_clock::now();
-			time_measure = time_points_start.at(name);
+			time_start = time_points_start.at(name);
 			double dt = std::chrono::duration_cast<std::chrono::microseconds>(time_measure - time_start).count();
 			attributes.push_back("-" + name + " (us): " + std::to_string(dt));
 			return dt;
@@ -65,11 +68,20 @@ class Benchmark {
 			std::ofstream F;
 			F.open(filename, std::ios::app);
 			for (auto attr : attributes) {
-				F << attr;
+
+				F << attr + "\n";
 			}
 			F.close();
 		}
 
+		void finishSessionInFile(const std::string& filename) {
+			std::ofstream F;
+			F.open(filename, std::ios::app);
+			for (auto attr : attributes) {
+				F << ">--\n";
+			}
+			F.close();
+		}
 
 		void wipeAttributesFromFile(const std::string& filename) {}
 };
@@ -80,7 +92,7 @@ int main(int argc, char *argv[]) {
 		std::cout<<argv[i]<<std::endl;
 	}
 	Benchmark benchmark;
-	std::cout<<"time init: "<<benchmark.measureMicro()<<std::endl;
+	//std::cout<<"time init: "<<benchmark.measureMicro()<<std::endl;
 	// Parse arguments:
 
 	bool manual_setup;
@@ -115,6 +127,9 @@ int main(int argc, char *argv[]) {
 		verbose = true;
 		use_benchmark = false;
 		
+	}
+	if (use_benchmark) {
+		benchmark.pushAttribute("num_dfas: " + std::to_string(N_DFAs));
 	}
 
 	//std::cout<<"PRINTING ARGS:"<<argv[1]<<std::endl;
@@ -362,11 +377,9 @@ int main(int argc, char *argv[]) {
 	//bool success = search_obj.search(use_h_flag, use_dfs_flag);
 	benchmark.pushStartPoint("before_search");
 	bool success = search_obj.search(use_h_flag);
-	std::cout<<"search time: "<<benchmark.measureMilli("before_search")<<std::endl;
-
-
-	benchmark.pushAttributesToFile("/benchmark_data/preference_planner_bm.txt");
-
+	std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
+	benchmark.pushAttributesToFile("./benchmark_data/preference_planner_bm.txt");
+	benchmark.finishSessionInFile("./benchmark_data/preference_planner_bm.txt");
 	//std::cout<<"Found plan? "<<success<<std::endl;
 	if (success) {
 		std::vector<std::string> xtra_info;

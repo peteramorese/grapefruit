@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from posixpath import dirname
-import spot, os, glob
+import spot, os, glob, random
 
 def remove_dfa_files(dirname_prefix):
     # Remove all dfa files in directory:
@@ -8,11 +8,15 @@ def remove_dfa_files(dirname_prefix):
         os.remove(file.path)
         #print(file.path)
 
-def create_file(F_arr, dirname_prefix):
+def create_file(F_arr, dirname_prefix, random_ordering):
     remove_dfa_files(dirname_prefix)
+    inds = [i for i in range(0, len(F_arr))]
+    if random_ordering:
+        random.shuffle(inds)
     i = 0
     for F in F_arr: 
-        filename = dirname_prefix + "dfa_{}".format(i) + ".txt"
+        file_ind = inds[i]
+        filename = dirname_prefix + "dfa_{}".format(file_ind) + ".txt"
         #filename_list[i] = filename
         i = i + 1
         lines_list = list()
@@ -70,7 +74,7 @@ def print_automaton(A):
             print("    accepting sets: ", s_con.acc)
 
 
-def read_write(read_file_name, write_file_dir_name_prefix):
+def read_write(read_file_name, write_file_dir_name_prefix, random_ordering):
     with open(read_file_name, "r") as formula_file:
         lines = formula_file.readlines()
 
@@ -83,7 +87,7 @@ def read_write(read_file_name, write_file_dir_name_prefix):
                 F_arr.append(F_i)
 
     print("Number of formulas: ", len(F_arr))
-    create_file(F_arr, write_file_dir_name_prefix)
+    create_file(F_arr, write_file_dir_name_prefix, random_ordering)
     return len(F_arr)
 
 if __name__ == "__main__":

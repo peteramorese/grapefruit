@@ -11,6 +11,7 @@ class SymbSearch {
 			std::vector<bool> reachability;
 			std::vector<std::string> action_map;
 		};
+		const std::string bench_mark_session;
 	private:
 		//std::unordered_map<std::string, SimpleCondition*> propositions;
 		struct spaceWeight {
@@ -72,6 +73,7 @@ class SymbSearch {
 		void clearNodesAndSets();
 	public:
 		SymbSearch();
+		SymbSearch(const std::string& bench_mark_session_);
 		void setAutomataPrefs(const std::vector<DFA_EVAL*>* dfa_list_ordered_);
 		void setTransitionSystem(TS_EVAL<State>* TS_);
 		void setFlexibilityParam(float mu_);

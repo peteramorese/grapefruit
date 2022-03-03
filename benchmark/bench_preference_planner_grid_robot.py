@@ -29,15 +29,26 @@ def exec_pref_plan_grid_robot(exec_file_name, grid_size, num_dfas, mu, use_h_fla
     print("\nFINISHED ON PYTHON SIDE")
     #pc.read()
 
+def clear_file(file_name):
+    file = open(file_name, "w")
+    file.close()
+
 if __name__ == "__main__":
     print("Starting benchmark: preference_planner_grid_robot")
 
     READ_FILE_NAME = "benchmark_formulas.txt"
     WRITE_FILE_DIR_NAME_PREFIX = "../spot_automaton_file_dump/dfas/"
     EXEC_FILE_NAME = "preference_planner_grid_robot"
-    num_dfas = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX)
+    BM_DATA_FILE_NAME = "benchmark_data/preference_planner_bm.txt"
+
+    clear_file(BM_DATA_FILE_NAME) # Clear the bm session file
+    trials = 20 #Number of random orderings
     grid_size = 10
-    exec_pref_plan_grid_robot(EXEC_FILE_NAME, grid_size, num_dfas, 10000, 'n', 'n', 'n', 'y', WRITE_FILE_DIR_NAME_PREFIX)
+    mu = 10000
+    for i in range(0, trials):
+        num_dfas = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=True)
+        for j in range(0, num_dfas):
+            exec_pref_plan_grid_robot(EXEC_FILE_NAME, grid_size, j, mu, 'n', 'n', 'n', 'y', WRITE_FILE_DIR_NAME_PREFIX)
 
 
 

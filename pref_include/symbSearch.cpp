@@ -4,7 +4,10 @@
 #include<ctime>
 
 template<class T>
-SymbSearch<T>::SymbSearch() {}
+SymbSearch<T>::SymbSearch() : bench_mark_session("none") {}
+
+template<class T>
+SymbSearch<T>::SymbSearch(const std::string& bench_mark_session_) : bench_mark_session(bench_mark_session_){}
 
 template<class T>
 void SymbSearch<T>::setAutomataPrefs(const std::vector<DFA_EVAL*>* dfa_list_ordered_) {
