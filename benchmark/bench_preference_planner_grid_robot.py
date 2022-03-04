@@ -1,4 +1,5 @@
 import os
+import struct
 import sys
 import subprocess
 print(sys.executable)
@@ -10,19 +11,26 @@ sys.path.append(os.path.join(os.path.dirname(__file__),"../spot_automaton_file_d
 
 import formula2dfa 
 
-def exec_pref_plan_grid_robot(exec_file_name, grid_size, num_dfas, mu, use_h_flag, write_file_flag, verbose, benchmark, write_file_dir_name_prefix):
+
+def exec_pref_plan_grid_robot(exec_file_name, num_dfas, mu, use_h_flag, write_file_flag, verbose, benchmark, dfas_filepath, bm_file, grid_size=None, ):
     exec_dir_name = "../build/bin/"
     exec_file_path = exec_dir_name + exec_file_name
     #print("Executable file path: ",exec_file_path)
     exec_cmd = os.path.join(os.path.dirname(__file__), exec_file_path)
-    exec_cmd += ' ' + str(grid_size) 
-    exec_cmd += ' ' + str(num_dfas) 
-    exec_cmd += ' ' + str(mu) 
-    exec_cmd += ' ' + use_h_flag
-    exec_cmd += ' ' + write_file_flag
-    exec_cmd += ' ' + verbose
-    exec_cmd += ' ' + benchmark
-    exec_cmd += ' ' + write_file_dir_name_prefix
+    exec_cmd += ' --numdfas ' + str(num_dfas) 
+    exec_cmd += ' --mu ' + str(mu) 
+    if use_h_flag:
+        exec_cmd += ' --use-h' 
+    if verbose:
+        exec_cmd += ' --verbose'
+    if benchmark:
+        exec_cmd += ' --benchmark'
+    if write_file_flag:
+        exec_cmd += ' --write-plan'
+    exec_cmd += ' --dfas-filepath ' + dfas_filepath
+    exec_cmd += ' --bm-file ' + bm_file
+    if grid_size is not None:
+        exec_cmd += ' --gridsize ' + str(grid_size) 
     print("Executable command: ", exec_cmd)
     pc = subprocess.call(exec_cmd, shell=True)
     #print("\nFINISHED ON PYTHON SIDE")
@@ -38,10 +46,12 @@ if __name__ == "__main__":
     READ_FILE_NAME = "benchmark_formulas.txt"
     WRITE_FILE_DIR_NAME_PREFIX = "../spot_automaton_file_dump/dfas/"
     EXEC_FILE_NAME = "preference_planner_grid_robot"
-    BM_DATA_FILE_NAME = "benchmark_data/preference_planner_bm.txt"
+    BM_DATA_FILE_NAME_NO_H = "benchmark_data/bm_preference_planner.txt"
+    BM_DATA_FILE_NAME_H = "benchmark_data/bm_preference_planner_heuristic.txt"
 
-    clear_file(BM_DATA_FILE_NAME) # Clear the bm session file
-    trials = 5 #Number of random orderings
+    clear_file(BM_DATA_FILE_NAME_NO_H) # Clear the bm session file
+    clear_file(BM_DATA_FILE_NAME_H) # Clear the bm session file
+    trials = 8 #Number of random orderings
     grid_size = 10
     mu = 10000
     for _ in range(0, trials):
@@ -51,7 +61,29 @@ if __name__ == "__main__":
             break
         for j in range(2, num_dfas):
             print("\n PYTHON j: ", j, "\n")
-            exec_pref_plan_grid_robot(EXEC_FILE_NAME, grid_size, j, mu, 'n', 'n', 'n', 'y', WRITE_FILE_DIR_NAME_PREFIX)
 
+            # Run without the heuristic:
+            exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
+                num_dfas=j, 
+                mu=mu, 
+                use_h_flag=False, 
+                write_file_flag=False, 
+                verbose=False, 
+                benchmark=True, 
+                dfas_filepath=WRITE_FILE_DIR_NAME_PREFIX,
+                bm_file=BM_DATA_FILE_NAME_NO_H,
+                grid_size=grid_size)
+
+            # Run with the heuristic:
+            exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
+                num_dfas=j, 
+                mu=mu, 
+                use_h_flag=True, 
+                write_file_flag=False, 
+                verbose=False, 
+                benchmark=True, 
+                dfas_filepath=WRITE_FILE_DIR_NAME_PREFIX,
+                bm_file=BM_DATA_FILE_NAME_H,
+                grid_size=grid_size)
 
 

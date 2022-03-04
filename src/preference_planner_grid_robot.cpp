@@ -91,41 +91,60 @@ int main(int argc, char *argv[]) {
 	//}
 	Benchmark benchmark;
 	//std::cout<<"time init: "<<benchmark.measureMicro()<<std::endl;
-	// Parse arguments:
+	// Set default arguments:
 
-	bool manual_setup;
-	int grid_size;
+	bool manual_setup = true;
+	int grid_size = 10;
+	bool verbose = false;
+	bool use_benchmark = false;
+	std::string bm_filename_path_prefix = "./benchmark_data/preference_planner_bm.txt";
+	std::string plan_filename_path_prefix = "../../matlab_scripts/preference_planning_demos/plan_files/plan.txt";
+	std::string dfa_filename_path_prefix = "../../spot_automaton_file_dump/dfas/";
+
+	// These will be manually set if manual_setup = true
 	int N_DFAs;
-	float mu;
-	bool use_h_flag, write_file_flag, verbose, use_benchmark;
-	std::string filename_path_prefix;
-	if (argc > 1) {
-		// Custom args
+	float mu = 0;
+	bool use_h_flag = false;
+	bool write_file_flag = false;
+
+	// Parse arguments:
+	if (argc > 1){
 		manual_setup = false;
-		std::string::size_type size_t;
-		grid_size = std::stoi(argv[1], &size_t);
-		N_DFAs = std::stoi(argv[2], &size_t);
-		mu = std::stof(argv[3], &size_t);
-		use_h_flag = (argv[4][0] == 'y') ? true : false;
-		write_file_flag = (argv[5][0] == 'y') ? true : false;
-		verbose = (argv[6][0] == 'y') ? true : false;
-		use_benchmark = (argv[7][0] == 'y') ? true : false;
-		if (argc > 8) {
-			filename_path_prefix = argv[8];
-		} else {
-			filename_path_prefix = "../../spot_automaton_file_dump/dfas/";
+		int i_arg = 1;
+		while (i_arg < argc) {
+			std::string arg = argv[i_arg];
+			if (arg == "--gridsize") {
+				std::string::size_type size_t;
+				grid_size = std::stoi(argv[i_arg + 1], &size_t);
+				i_arg++;
+			} else if (arg == "--numdfas") {
+				std::string::size_type size_t;
+				N_DFAs = std::stoi(argv[i_arg + 1], &size_t);
+
+			} else if (arg == "--mu") {
+				std::string::size_type size_t;
+				mu = std::stof(argv[i_arg + 1], &size_t);
+			} else if (arg == "--use-h") {
+				use_h_flag = true;
+			} else if (arg == "--write-plan") {
+				write_file_flag = true;
+			} else if (arg == "--verbose") {
+				verbose = true;
+			} else if (arg == "--benchmark") {
+				use_benchmark = true;
+			} else if (arg == "--plan-file") {
+				plan_filename_path_prefix = argv[i_arg + 1];
+			} else if (arg == "--dfas-filepath") {
+				dfa_filename_path_prefix = argv[i_arg + 1];
+			} else if (arg == "--bm-file") {
+				bm_filename_path_prefix = argv[i_arg + 1];
+				//std::cout<<"BM FILE NAME PREF: "<<bm_filename_path_prefix<<std::endl;
+			}
+			i_arg++;
 		}
-		//std::cout<<"using h:"<<use_h_flag<<std::endl;
-		//std::cout<<"using wtf:"<<write_file_flag<<std::endl;
-	} else {
-		// Default args
-		manual_setup = true;
-		grid_size = 10;
-		filename_path_prefix = "../../spot_automaton_file_dump/dfas/";
-		verbose = true;
-		use_benchmark = false;
-		
 	}
+
+	
 	if (use_benchmark) {
 		benchmark.addAttribute("num_dfas: " + std::to_string(N_DFAs));
 	}
@@ -312,7 +331,7 @@ int main(int argc, char *argv[]) {
 	std::vector<DFA> dfa_arr(N_DFAs);
 	std::vector<std::string> filenames(N_DFAs);
 	for (int i=0; i<N_DFAs; ++i) {
-		filenames[i] = filename_path_prefix +"dfa_" + std::to_string(i) +".txt";
+		filenames[i] = dfa_filename_path_prefix +"dfa_" + std::to_string(i) +".txt";
 	}
 	for (int i=0; i<N_DFAs; ++i) {
 		dfa_arr[i].readFileSingle(filenames[i]);
@@ -377,8 +396,8 @@ int main(int argc, char *argv[]) {
 	bool success = search_obj.search(use_h_flag);
 	//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
 	benchmark.measureMicro("before_search");
-	benchmark.pushAttributesToFile("./benchmark_data/preference_planner_bm.txt");
-	benchmark.finishSessionInFile("./benchmark_data/preference_planner_bm.txt");
+	benchmark.pushAttributesToFile(bm_filename_path_prefix);
+	benchmark.finishSessionInFile(bm_filename_path_prefix);
 	//std::cout<<"Found plan? "<<success<<std::endl;
 	if (success) {
 		std::vector<std::string> xtra_info;
@@ -390,7 +409,7 @@ int main(int argc, char *argv[]) {
 			}
 		}
 		if (write_file_flag) {
-			search_obj.writePlanToFile("../../matlab_scripts/preference_planning_demos/plan_files/plan.txt", xtra_info);
+			search_obj.writePlanToFile(plan_filename_path_prefix, xtra_info);
 		}
 	}
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {
