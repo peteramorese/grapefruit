@@ -1,0 +1,17 @@
+move_right_0_1
+move_right_1_20
+move_up_20_21
+move_up_21_22
+move_up_22_23
+move_up_23_24
+move_up_24_25
+move_up_25_26
+move_up_26_27
+move_up_27_28
+move_up_28_29
+move_right_29_39
+move_left_39_29
+move_left_29_19
+ap_x1_y9_prio0
+ap_x3_y9_prio1
+ap_x2_y0_prio2

@@ -17,6 +17,7 @@ def create_file(F_arr, dirname_prefix, random_ordering):
     for F in F_arr: 
         file_ind = inds[i]
         filename = dirname_prefix + "dfa_{}".format(file_ind) + ".txt"
+        print("Writing to: dfa_{}".format(file_ind))
         #filename_list[i] = filename
         i = i + 1
         lines_list = list()
@@ -93,4 +94,4 @@ def read_write(read_file_name, write_file_dir_name_prefix, random_ordering):
 if __name__ == "__main__":
     READ_FILE_NAME = "formulas.txt"
     WRITE_FILE_DIR_NAME_PREFIX = "dfas/"
-    read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX)
+    read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=False)

@@ -4,10 +4,10 @@
 #include<ctime>
 
 template<class T>
-SymbSearch<T>::SymbSearch() : bench_mark_session("none") {}
+SymbSearch<T>::SymbSearch() : bench_mark_session("none"), dfas_set(false), TS_set(false), mu_set(false) {}
 
 template<class T>
-SymbSearch<T>::SymbSearch(const std::string& bench_mark_session_) : bench_mark_session(bench_mark_session_){}
+SymbSearch<T>::SymbSearch(const std::string& bench_mark_session_) : bench_mark_session(bench_mark_session_), dfas_set(false), TS_set(false), mu_set(false) {}
 
 template<class T>
 void SymbSearch<T>::setAutomataPrefs(const std::vector<DFA_EVAL*>* dfa_list_ordered_) {
@@ -15,16 +15,19 @@ void SymbSearch<T>::setAutomataPrefs(const std::vector<DFA_EVAL*>* dfa_list_orde
 	set_list.clear();
 	dfa_list_ordered = dfa_list_ordered_;
 	num_dfas = dfa_list_ordered->size();
+	dfas_set = true;
 }
 
 template<class T>
 void SymbSearch<T>::setTransitionSystem(TS_EVAL<State>* TS_) {
 	TS = TS_;	
+	TS_set = true;
 }
 
 template<class T>
 void SymbSearch<T>::setFlexibilityParam(float mu_) {
 	mu = mu_;
+	mu_set = true;
 }
 
 template<class T>
@@ -827,7 +830,6 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 			}
 			prev_leaf_ind = curr_leaf_ind;
 		}
-		std::cout<<"made it out"<<std::endl;
 		//if ((round == 0) && !found_target_state) {
 		//	std::cout<<"Error: Target state not found\n";
 		//	exit_failure = true; // currently not using this
@@ -1320,6 +1322,10 @@ float SymbSearch<T>::pullStateWeight(unsigned ts_ind, unsigned dfa_ind, unsigned
 
 template<class T>
 bool SymbSearch<T>::search(bool use_heuristic) {
+	if (!TS_set || !dfas_set || !mu_set) {
+		std::cout<<"Error: Forgot to set TS, dfas, or mu\n";
+		return false;
+	}
 	auto compareLEX = [](const std::pair<int, T*>& pair1, const std::pair<int, T*>& pair2) {
 		return *(pair1.second) > *(pair2.second);
 	};
@@ -1332,14 +1338,10 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 	prune_bound = BFS(compareLEX, accCompareLEX, ___, false, false, use_heuristic); // No pruning criteria, no need for path
 	auto pruneCriterionMAX = [&prune_bound](const T& arg_set) {
 
-		//std::cout<<"   in prune criterion..."<<std::endl;
-		//std::cout<<"   arg set:"<<std::endl;
-		//arg_set.print();
 		//std::cout<<"   prune bound set:"<<std::endl;
 		//prune_bound.print();
 		//int in;
 		//std::cin>>in;
-
 		return (!prune_bound.withinBounds(arg_set));
 	};
 	auto compareMAX = [](const std::pair<int, T*>& pair1, const std::pair<int, T*>& pair2) {
@@ -1447,6 +1449,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 	//std::vector<T*> path_length_map_ptrs;
 	//prev_parents = parents;
 	//parents.clear();
+
 	clearNodes();
 
 	// Fill the root tree node (init node):
@@ -1509,9 +1512,11 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 		}
 		iterations++;
 		//std::cout<<"iter: "<<iterations<<std::endl;
-		pq.top();
+		//if (extract_path) {
 		//std::cout<<"\nprior queue: "<<std::endl;
 		//printQueue(pq);
+		//std::cout<<"- "<<std::endl;
+		//}
 
 		//int pause;
 		//std::cin >> pause;
@@ -1829,6 +1834,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 				if (!acceptanceCompare(*(pq.top().second), min_accepting_cost)) {
 					finished = true;
 					//std::cout<<"Found a solution!"<<"\n";
+					//std::cout<<"SOLUTION IND: "<<solution_ind<<std::endl;
 					//std::cout<<"   -Iterations: "<<iterations<<"\n";
 					//solution_ind = min_w.prod2node_list.at(pq.top().first);
 					//solution_ind = *(pq.top().first);
@@ -1865,7 +1871,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 	//	delete path_length_map_ptrs[i];
 	//}
 	//	if (!ITERATE) {
-	if (finished) {
+	if (finished && sol_found) {
 		if (extract_path) {
 			extractPath(parents, solution_ind);
 			int p_space_size = 1;
@@ -1901,8 +1907,10 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 
 template<class T>
 void SymbSearch<T>::extractPath(const std::vector<int>& parents, int accepting_state) {
-	int curr_node = accepting_state;
+	int curr_node = 0;
+	curr_node = accepting_state;
 	std::vector<int> reverse_TS_state_sequence;
+	reverse_TS_state_sequence.clear();
 	//std::cout<<" given accepting state: "<<accepting_state<<std::endl;
 	//reverse_TS_state_sequence.push_back(node_list[accepting_state);
 	//std::cout<<"reverse plan: "<<std::endl;
@@ -1983,9 +1991,11 @@ void SymbSearch<T>::clearNodesAndSets() {
 	for (int i=0; i<node_list.size(); ++i) {
 		delete node_list[i];
 	}
+	node_list.clear();
 	for (int i=0; i<set_list.size(); ++i) {
 		delete set_list[i];
 	}
+	set_list.clear();
 }
 
 template<class T>

@@ -56,7 +56,7 @@ class SymbSearch {
 		std::vector<T*> set_list;
 		std::vector<std::string> TS_action_sequence;
 		std::vector<int> TS_state_sequence;
-		bool plan_found;
+		bool dfas_set, TS_set, mu_set, plan_found;
 		std::vector<spaceWeight> heuristic;
 
 		IVFlexLex<T>* newNode();

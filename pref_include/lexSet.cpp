@@ -1,10 +1,10 @@
 #include "lexSet.h"
 
-LexSet::LexSet(unsigned int S_) : S(S_), lex_set(S_,0) {}
+LexSet::LexSet(unsigned int S_) : S(S_), lex_set(S_,0), inf_set(false) {}
 
-LexSet::LexSet(float fill_val, unsigned int S_) : S(S_), lex_set(S_,fill_val)  {}
+LexSet::LexSet(float fill_val, unsigned int S_) : S(S_), lex_set(S_,fill_val), inf_set(false) {}
 
-LexSet::LexSet(const std::vector<float>* fill_set, unsigned int S_) : S(S_) {
+LexSet::LexSet(const std::vector<float>* fill_set, unsigned int S_) : S(S_), inf_set(false) {
 	lex_set = *fill_set;
 }
 

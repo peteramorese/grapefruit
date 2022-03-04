@@ -23,7 +23,7 @@ def exec_pref_plan_grid_robot(exec_file_name, grid_size, num_dfas, mu, use_h_fla
     exec_cmd += ' ' + verbose
     exec_cmd += ' ' + benchmark
     exec_cmd += ' ' + write_file_dir_name_prefix
-    #print("Executable command: ", exec_cmd)
+    print("Executable command: ", exec_cmd)
     pc = subprocess.call(exec_cmd, shell=True)
     #print("\nFINISHED ON PYTHON SIDE")
     #pc.read()
@@ -41,15 +41,16 @@ if __name__ == "__main__":
     BM_DATA_FILE_NAME = "benchmark_data/preference_planner_bm.txt"
 
     clear_file(BM_DATA_FILE_NAME) # Clear the bm session file
-    trials = 20 #Number of random orderings
+    trials = 5 #Number of random orderings
     grid_size = 10
     mu = 10000
-    for i in range(0, trials):
+    for _ in range(0, trials):
         num_dfas = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=True)
-        if num_dfas < 2:
+        if num_dfas <= 2:
             print("Error: Create more than 2 BM formulas")
             break
         for j in range(2, num_dfas):
+            print("\n PYTHON j: ", j, "\n")
             exec_pref_plan_grid_robot(EXEC_FILE_NAME, grid_size, j, mu, 'n', 'n', 'n', 'y', WRITE_FILE_DIR_NAME_PREFIX)
 
 

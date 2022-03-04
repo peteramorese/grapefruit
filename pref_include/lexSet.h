@@ -61,7 +61,7 @@ class REQLex : public LexSet {
 
 class DetourLex : public LexSet {
 	private: 
-		float mu;
+		const float mu;
 	public:
 		DetourLex(float mu_, unsigned int S_);
 		DetourLex(float mu_, float fill_val, unsigned int S_);

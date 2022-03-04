@@ -1,117 +1,24 @@
 num_dfas: 2
--before_search (us): 3706.000000
+-before_search (us): 6205.000000
 >--
-num_dfas: 4
--before_search (us): 17875.000000
+num_dfas: 3
+-before_search (us): 9723.000000
 >--
 num_dfas: 2
--before_search (us): 2996.000000
->--
-num_dfas: 4
--before_search (us): 14415.000000
+-before_search (us): 4734.000000
 >--
 num_dfas: 3
--before_search (us): 3987.000000
->--
-num_dfas: 4
--before_search (us): 10565.000000
->--
-num_dfas: 4
--before_search (us): 8507.000000
->--
-num_dfas: 4
--before_search (us): 8609.000000
+-before_search (us): 4318.000000
 >--
 num_dfas: 2
--before_search (us): 3339.000000
->--
-num_dfas: 3
--before_search (us): 5693.000000
->--
-num_dfas: 4
--before_search (us): 10751.000000
+-before_search (us): 3408.000000
 >--
 num_dfas: 2
--before_search (us): 4265.000000
+-before_search (us): 4520.000000
 >--
 num_dfas: 3
--before_search (us): 5084.000000
->--
-num_dfas: 4
--before_search (us): 5247.000000
->--
-num_dfas: 2
--before_search (us): 2972.000000
->--
-num_dfas: 4
--before_search (us): 12813.000000
+-before_search (us): 8527.000000
 >--
 num_dfas: 3
--before_search (us): 7270.000000
->--
-num_dfas: 3
--before_search (us): 10460.000000
->--
-num_dfas: 2
--before_search (us): 2756.000000
->--
-num_dfas: 3
--before_search (us): 7957.000000
->--
-num_dfas: 4
--before_search (us): 16325.000000
->--
-num_dfas: 2
--before_search (us): 3258.000000
->--
-num_dfas: 4
--before_search (us): 7838.000000
->--
-num_dfas: 3
--before_search (us): 12932.000000
->--
-num_dfas: 3
--before_search (us): 5370.000000
->--
-num_dfas: 4
--before_search (us): 5909.000000
->--
-num_dfas: 2
--before_search (us): 4279.000000
->--
-num_dfas: 3
--before_search (us): 6296.000000
->--
-num_dfas: 2
--before_search (us): 2595.000000
->--
-num_dfas: 3
--before_search (us): 10004.000000
->--
-num_dfas: 4
--before_search (us): 10927.000000
->--
-num_dfas: 2
--before_search (us): 3913.000000
->--
-num_dfas: 3
--before_search (us): 8270.000000
->--
-num_dfas: 2
--before_search (us): 4129.000000
->--
-num_dfas: 3
--before_search (us): 5250.000000
->--
-num_dfas: 4
--before_search (us): 12562.000000
->--
-num_dfas: 2
--before_search (us): 3253.000000
->--
-num_dfas: 3
--before_search (us): 6120.000000
->--
-num_dfas: 4
--before_search (us): 13448.000000
+-before_search (us): 8570.000000
 >--

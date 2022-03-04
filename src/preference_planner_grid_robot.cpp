@@ -348,7 +348,6 @@ int main(int argc, char *argv[]) {
 		std::cout<<"Enter flexibility parameter: ";
 		std::cout<<"\n";
 		std::cin >> mu;
-		search_obj.setFlexibilityParam(mu);
 	
 		char use_h;
 		std::cout<<"\n------------------------------\n";
@@ -373,6 +372,7 @@ int main(int argc, char *argv[]) {
 	//bool use_dfs_flag = (use_dfs == 'y') ? true : false;
 	//search_obj.setFlexibilityParam(0.0f);
 	//bool success = search_obj.search(use_h_flag, use_dfs_flag);
+	search_obj.setFlexibilityParam(mu);
 	benchmark.pushStartPoint("before_search");
 	bool success = search_obj.search(use_h_flag);
 	//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
