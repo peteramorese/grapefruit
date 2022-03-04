@@ -3,6 +3,6 @@ build/
 include/copies/
 spot_automaton_file_dump/dfas/
 benchmark/benchmark_data/
-__pycache__/
+**/__pycache__/
 *.swp
 *~
