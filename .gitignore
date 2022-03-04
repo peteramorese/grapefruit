@@ -5,3 +5,4 @@ spot_automaton_file_dump/dfas/
 benchmark/benchmark_data/
 *.swp
 *~
+*__pycache__
