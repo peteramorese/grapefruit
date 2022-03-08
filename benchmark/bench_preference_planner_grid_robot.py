@@ -48,19 +48,21 @@ if __name__ == "__main__":
     EXEC_FILE_NAME = "preference_planner_grid_robot"
     BM_DATA_FILE_NAME_NO_H = "benchmark_data/bm_preference_planner.txt"
     BM_DATA_FILE_NAME_H = "benchmark_data/bm_preference_planner_heuristic.txt"
+    BM_DATA_FILE_NAME_FLEX_NO_H = "benchmark_data/bm_preference_planner_flex.txt"
+    BM_DATA_FILE_NAME_FLEX_H = "benchmark_data/bm_preference_planner_heuristic_flex.txt"
 
     clear_file(BM_DATA_FILE_NAME_NO_H) # Clear the bm session file
     clear_file(BM_DATA_FILE_NAME_H) # Clear the bm session file
     trials = 8 #Number of random orderings
     grid_size = 10
     mu = 10000
+    mu_disc = range(0, 100, 5)
     for _ in range(0, trials):
         num_dfas = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=True)
         if num_dfas <= 2:
             print("Error: Create more than 2 BM formulas")
             break
         for j in range(2, num_dfas):
-            print("\n PYTHON j: ", j, "\n")
 
             # Run without the heuristic:
             exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
@@ -84,6 +86,32 @@ if __name__ == "__main__":
                 benchmark=True, 
                 dfas_filepath=WRITE_FILE_DIR_NAME_PREFIX,
                 bm_file=BM_DATA_FILE_NAME_H,
+                grid_size=grid_size)
+    for _ in range(0, trials):
+        num_dfas = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=True)
+        if num_dfas <= 2:
+            print("Error: Create more than 2 BM formulas")
+            break
+        for mu_i in mu_disc:
+            exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
+                num_dfas=num_dfas, 
+                mu=mu_i, 
+                use_h_flag=False, 
+                write_file_flag=False, 
+                verbose=False, 
+                benchmark=True, 
+                dfas_filepath=WRITE_FILE_DIR_NAME_PREFIX,
+                bm_file=BM_DATA_FILE_NAME_FLEX_NO_H,
+                grid_size=grid_size)
+            exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
+                num_dfas=num_dfas, 
+                mu=mu_i, 
+                use_h_flag=True, 
+                write_file_flag=False, 
+                verbose=False, 
+                benchmark=True, 
+                dfas_filepath=WRITE_FILE_DIR_NAME_PREFIX,
+                bm_file=BM_DATA_FILE_NAME_FLEX_H,
                 grid_size=grid_size)
 
 

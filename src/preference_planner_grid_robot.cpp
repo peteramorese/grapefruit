@@ -97,8 +97,8 @@ int main(int argc, char *argv[]) {
 	int grid_size = 10;
 	bool verbose = false;
 	bool use_benchmark = false;
-	std::string bm_filename_path_prefix = "./benchmark_data/preference_planner_bm.txt";
-	std::string plan_filename_path_prefix = "../../matlab_scripts/preference_planning_demos/plan_files/plan.txt";
+	std::string bm_filename_path = "./benchmark_data/preference_planner_bm.txt";
+	std::string plan_filename_path = "../../matlab_scripts/preference_planning_demos/plan_files/plan.txt";
 	std::string dfa_filename_path_prefix = "../../spot_automaton_file_dump/dfas/";
 
 	// These will be manually set if manual_setup = true
@@ -133,12 +133,12 @@ int main(int argc, char *argv[]) {
 			} else if (arg == "--benchmark") {
 				use_benchmark = true;
 			} else if (arg == "--plan-file") {
-				plan_filename_path_prefix = argv[i_arg + 1];
+				plan_filename_path = argv[i_arg + 1];
 			} else if (arg == "--dfas-filepath") {
 				dfa_filename_path_prefix = argv[i_arg + 1];
 			} else if (arg == "--bm-file") {
-				bm_filename_path_prefix = argv[i_arg + 1];
-				//std::cout<<"BM FILE NAME PREF: "<<bm_filename_path_prefix<<std::endl;
+				bm_filename_path = argv[i_arg + 1];
+				//std::cout<<"BM FILE NAME PREF: "<<bm_filename_path<<std::endl;
 			}
 			i_arg++;
 		}
@@ -147,6 +147,7 @@ int main(int argc, char *argv[]) {
 	
 	if (use_benchmark) {
 		benchmark.addAttribute("num_dfas: " + std::to_string(N_DFAs));
+		benchmark.addAttribute("flexibility: " + std::to_string(mu));
 	}
 
 	//std::cout<<"PRINTING ARGS:"<<argv[1]<<std::endl;
@@ -395,9 +396,9 @@ int main(int argc, char *argv[]) {
 	benchmark.pushStartPoint("before_search");
 	bool success = search_obj.search(use_h_flag);
 	//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
-	benchmark.measureMicro("before_search");
-	benchmark.pushAttributesToFile(bm_filename_path_prefix);
-	benchmark.finishSessionInFile(bm_filename_path_prefix);
+	benchmark.measureMilli("before_search");
+	benchmark.pushAttributesToFile(bm_filename_path);
+	benchmark.finishSessionInFile(bm_filename_path);
 	//std::cout<<"Found plan? "<<success<<std::endl;
 	if (success) {
 		std::vector<std::string> xtra_info;
@@ -409,7 +410,7 @@ int main(int argc, char *argv[]) {
 			}
 		}
 		if (write_file_flag) {
-			search_obj.writePlanToFile(plan_filename_path_prefix, xtra_info);
+			search_obj.writePlanToFile(plan_filename_path, xtra_info);
 		}
 	}
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {

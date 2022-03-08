@@ -66,25 +66,25 @@ for j = 1:length(filepaths)
 
 
 
-    dfas_vs_total_time{j} = [];
-    dfas_vs_total_time_std{j} = [];
+    flex_vs_total_time{j} = [];
+    flex_vs_total_time_std{j} = [];
 
-    for i = min(seg_data.attr_data{1}):max(seg_data.attr_data{1})
-        temp_data = getByAttr(i, seg_data.attr_data{1}, seg_data.time_data{1});
-        dfas_vs_total_time{j} = [dfas_vs_total_time{j} mean(temp_data)];
-        dfas_vs_total_time_std{j} = [dfas_vs_total_time_std{j} std(temp_data)];
+    for i = min(seg_data.attr_data{2}):max(seg_data.attr_data{2})
+        temp_data = getByAttr(i, seg_data.attr_data{2}, seg_data.time_data{1});
+        flex_vs_total_time{j} = [flex_vs_total_time{j} mean(temp_data)];
+        flex_vs_total_time_std{j} = [flex_vs_total_time_std{j} std(temp_data)];
     end
 %     group_j{j} = min(seg_data.data{2}):max(seg_data.data{2});
 end  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% PLOT HERE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-box_lbls = min(seg_data.attr_data{1}):max(seg_data.attr_data{1});
+box_lbls = min(seg_data.attr_data{2}):max(seg_data.attr_data{2});
 boxdata = [];
 boxdata_std = [];
 % group = [];
 for j=1:length(filepaths)
-    boxdata = [boxdata; dfas_vs_total_time{j}];
-    boxdata_std = [boxdata_std; dfas_vs_total_time_std{j}];
+    boxdata = [boxdata; flex_vs_total_time{j}];
+    boxdata_std = [boxdata_std; flex_vs_total_time_std{j}];
 %     group = [group; group_j{j}];
 end
 
@@ -97,7 +97,7 @@ grid on
 % H_std.Color = 'k';
 % H_std.LineStyle = '--';
 title(figure_title)
-xlabel("Number of Formulas")
+xlabel("Flexibility (\mu)")
 ylabel("Total Search Time ("+ units + ")")
 legend(legend_entries)
 
