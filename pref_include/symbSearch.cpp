@@ -1336,6 +1336,8 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 
 	T prune_bound(mu, num_dfas);
 	prune_bound = BFS(compareLEX, accCompareLEX, ___, false, false, use_heuristic); // No pruning criteria, no need for path
+	std::cout<<"PRINTIN PRUNE BOUND: "<<std::endl;
+	prune_bound.print();
 	auto pruneCriterionMAX = [&prune_bound](const T& arg_set) {
 
 		//std::cout<<"   prune bound set:"<<std::endl;
@@ -1428,9 +1430,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 	
 	//T prev_sol_weight(mu, num_dfas);
 	//prev_sol_weight.setInf();
-	bool sol_found = true;
 	//int dfs_iterations = 0;
-	bool finished;
 	//std::vector<int> prev_parents;
 	//std::vector<int> parents;
 	int solution_ind;
@@ -1502,10 +1502,11 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 
 	int iterations = 0;
 	int prev_leaf_ind = -1;
-	finished = false;
-	sol_found = false;
+	bool finished = false;
+	bool sol_found = false;
 	//std::cout<<"entering the loop"<<std::endl;
 	while (!finished) {
+		//std::cout<<"pq size: "<<pq.size()<<std::endl;
 		if (pq.empty() || sol_found) {
 			finished = true;
 			continue;
@@ -1534,6 +1535,16 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 		//T* curr_leaf_weight = curr_leaf.second;
 		//int con_node_prod_ind = Graph<float>::augmentedStateImage(node_inds, graph_sizes);
 		visited[curr_leaf_prod_ind] = true;
+
+		bool test_print = false;
+		//std::cout<<" ck: curr_leaf_prod_ind: "<<curr_leaf_prod_ind<<std::endl;	
+		//if (pq.empty()) {
+		//	test_print = true;
+		//	std::cout<<"pq empty!"<<std::endl;	
+		//	std::cout<<"curr_leaf_prod_ind: "<<curr_leaf_prod_ind<<std::endl;	
+		//	std::cout<<"curr_leaf_ind: "<<curr_leaf_ind<<std::endl;	
+		//}
+
 		//std::cout<<"af get leaf"<<std::endl;
 		//std::cout<<"\n ----- CURR LEAF PROD IND: "<<curr_leaf_prod_ind<<std::endl;
 		//std::cout<<" ----- CURR LEAF IND: "<<curr_leaf_ind<<std::endl;
@@ -1550,11 +1561,11 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 		//curr_leaf.second->setInf();
 		//pq.push(curr_leaf);
 		//printQueue(pq);
-		if (!init) { // Use temp_nodeptr from outside the loop (init) when no nodes are in tree
-			temp_nodeptr = tree.getNodeDataptr(curr_leaf_ind);
-		} else {
-			init = false;
-		}
+		//if (!init) { // Use temp_nodeptr from outside the loop (init) when no nodes are in tree
+		//	temp_nodeptr = tree.getNodeDataptr(curr_leaf_ind);
+		//} else {
+		//	init = false;
+		//}
 		//std::cout<<"af temp node ptr"<<std::endl;
 		//std::cout<<"node list size: "<<node_list.size()<<std::endl;
 		// SET:
@@ -1573,6 +1584,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 		con_data.clear();
 		TS->getConnectedDataEVAL(con_data);
 		std::vector<int> con_nodes;
+		con_nodes.clear();
 		TS->getConnectedNodesEVAL(con_nodes);
 
 		//std::cout<<"af get con node data"<<std::endl;
@@ -1609,29 +1621,26 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 
 			//std::cout<<"b4 da eval"<<std::endl;
 			//std::cout<<"b4 eval"<<std::endl;
-			for (int i=0; i<num_dfas + 1; ++i) {
-				if (i == 0) { // eval TS first!!! (so that getCurrNode spits out the adjacent node, not the current node)
-					//std::cout<<"current ts node: "<<TS->getCurrNode()<<std::endl;
-					found_connection = TS->eval(temp_str, true); // second arg tells wether or not to evolve on graph
-					//std::cout<<"ts evolved state: "<<TS->getCurrNode()<<" under action: "<<temp_str<<std::endl;
-					if (!found_connection) {
-						std::cout<<"Error: Did not find connectivity in TS. Current node: "<<TS->getCurrNode()<<", Action: "<<temp_str<<std::endl;
-						return min_accepting_cost;
-					}
-				} else { // eval DFAi
-					// There could be multiple logical statements the correspond to the same
-					// underlying label, therefore we must test all of the statements until
-					// one is found. Only one is needed due to determinism.
-					const std::vector<std::string>* lbls = TS->returnStateLabels(TS->getCurrNode());
-					found_connection = false;
-					//std::cout<<"\n before eval"<<std::endl;
-					for (int ii=0; ii<lbls->size(); ++ii) {
-						//std::cout<<"       labels: --- "<<lbls->operator[](ii)<<std::endl;
-						//std::cout<<"DFA::: "<<(i-1)<<" curr node; "<<(dfa_list_ordered->operator[](i-1)->getCurrNode())<<std::endl;
-						if (dfa_list_ordered->operator[](i-1)->eval(lbls->operator[](ii), true)) {
-							found_connection = true;
-							break;
-						}
+			
+			// Evaluate each graph under the current action
+			found_connection = TS->eval(temp_str, true); // second arg tells wether or not to evolve on graph
+			if (!found_connection) {
+				std::cout<<"Error: Did not find connectivity in TS. Current node: "<<TS->getCurrNode()<<", Action: "<<temp_str<<std::endl;
+				return min_accepting_cost;
+			}
+			for (int i=0; i<num_dfas; ++i) {
+				// There could be multiple logical statements the correspond to the same
+				// underlying label, therefore we must test all of the statements until
+				// one is found. Only one is needed due to determinism.
+				const std::vector<std::string>* lbls = TS->returnStateLabels(TS->getCurrNode());
+				found_connection = false;
+				//std::cout<<"\n before eval"<<std::endl;
+				for (int ii=0; ii<lbls->size(); ++ii) {
+					//std::cout<<"       labels: --- "<<lbls->operator[](ii)<<std::endl;
+					//std::cout<<"DFA::: "<<(i-1)<<" curr node; "<<(dfa_list_ordered->operator[](i-1)->getCurrNode())<<std::endl;
+					if (dfa_list_ordered->operator[](i)->eval(lbls->operator[](ii), true)) {
+						found_connection = true;
+						break;
 					}
 				}
 				if (!found_connection) {
@@ -1644,22 +1653,28 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 			//std::cout<<"\n Uniqueness check: \n"<<std::endl;
 			//std::cout<<"printing nodelist: "<<std::endl;
 
-			//std::cout<<"b4 visited"<<std::endl;
+			// Collect the nodes that each graph has transitioned to to get the product state
 			std::vector<int> node_inds(num_dfas + 1);
 			node_inds[0] = TS->getCurrNode();
 			for (int i=0; i<num_dfas; ++i) {
 				node_inds[i+1] = dfa_list_ordered->operator[](i)->getCurrNode();
 			}
 			int con_node_prod_ind = Graph<float>::augmentedStateImage(node_inds, graph_sizes);
+
+			// 2028 <- 2038
+
+			//if (con_node_prod_ind == 2037) {
+			//	std::cout<<"FOUND NODE!!!!"<<std::endl;
+			//}
+
+			// Only consider unvisited connected nodes
 			if (visited[con_node_prod_ind] || pruned[con_node_prod_ind]) { // Node was visited
 				continue;
 			}
 			//std::cout<<"af visited"<<std::endl;
 
-			// Made it through connectivity check, therefore we can append the state to the tree:
-			// GET:
+			// Now check if the node is accepting, if not, append the action weight for that formula
 			bool all_accepting = true;
-			//std::cout<<"----printing temp lex set fill: ";
 			for (int i=0; i<num_dfas; ++i) {
 
 				// If the dfa is accepting at the evolved ind, append no cost, otherwise append
@@ -1667,9 +1682,10 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 				//std::cout<<"-DFA: "<<i<<", curr becore accepting: "<<dfa_list_ordered->operator[](i)->getCurrNode()<<std::endl;
 				//std::cout<<" ->DFA: ";
 				if (dfa_list_ordered->operator[](i)->isCurrAccepting()) {
-					//std::cout<<i<<" is accepting";
+					//std::cout<<i<<" is accepting"<<std::endl;
 					temp_lex_set_fill[i] = 0;
 				} else {
+					//std::cout<<i<<" NOT ACCEPTING"<<std::endl;
 					all_accepting = false;
 					temp_lex_set_fill[i] = temp_weight;
 				}
@@ -1677,6 +1693,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 			}
 			//std::cout<<"\n";
 
+			// Only consider non pruned nodes
 			if (prune) {
 				T temp_prune_check(mu, num_dfas); 
 				temp_prune_check = *(curr_path_weight);
@@ -1692,7 +1709,8 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 					continue;
 				}
 			}
-			//std::cout<<"b4 update"<<std::endl;
+			
+			// Check if node was seen before to see if a shorter path has been found
 			if (!min_w.is_inf[con_node_prod_ind]) { // Node was seen before, non inf weight, but not visited
 				int seen_node_ind = min_w.prod2node_list.at(con_node_prod_ind); // This value will be mapped if weve seen the node before
 				IVFlexLex<T>* seen_node = node_list[seen_node_ind];
@@ -1738,28 +1756,36 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 			// The priority queue includes the heuristic cost, however the tree does not:
 			std::pair<int, T*> new_leaf;
 			//T temp_weight_set(mu, num_dfas);
-			T* temp_weight_set_ptr;
+			//T* temp_weight_set_ptr;
 			//if (ITERATE) {
 			//	temp_weight_set_ptr = new T(mu, num_dfas);
 			//	path_length_map_ptrs.push_back(temp_weight_set_ptr);
 			//}
 			if (use_heuristic) {
-				float max_h_val = -1.0;
-				//std::vector<float> h_vals(num_dfas);
+				float max_h_val = 0.0;
+				std::vector<float> lex_h_vals(num_dfas, 0.0);
 				for (int i=0; i<num_dfas; ++i) {
 					bool reachable;
 					if (!dfa_list_ordered->operator[](i)->isCurrAccepting()) {
 						//h_vals[i] = 0;
 						//h_vals[i] = pullStateWeight(TS->getCurrNode(), dfa_list_ordered->operator[](i)->getCurrNode(), i, reachable);
 						float h_val = pullStateWeight(TS->getCurrNode(), dfa_list_ordered->operator[](i)->getCurrNode(), i, reachable);
-						if (i == 0 || h_val > max_h_val) {
-							max_h_val = h_val;
-						}
 						if (!reachable) {
 							std::cout<<"Error: Attempted to find heuristic distance for unreachable product state (ts: "<<TS->getCurrNode()<<" dfa "<<i<<": "<<dfa_list_ordered->operator[](i)->getCurrNode()<<") \n";
 							return min_accepting_cost;
 						}
-					}// else {
+						if (prune) {
+							if (i == 0 || h_val > max_h_val) {
+								max_h_val = h_val;
+							}
+						} else {
+							if (h_val > 0.0) {
+								lex_h_vals[i] = h_val;
+								break;
+							}
+						}
+					}
+					// else {
 						//std::cout<<"dfa curr node: "<<dfa_list_ordered->operator[](i)->getCurrNode()<<" is it accepting? "<<dfa_list_ordered->operator[](i)->isCurrAccepting()<<std::endl;
 					//}
 				}
@@ -1768,7 +1794,11 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 				//new_temp_setptr->operator=(*curr_leaf_weight);
 				new_temp_setptr->operator=(new_temp_nodeptr->lex_set);
 				//new_temp_setptr->operator+=(fill_set);
-				new_temp_setptr->addToMax(max_h_val);
+				if (prune) {
+					new_temp_setptr->addToMax(max_h_val);
+				} else {
+					*new_temp_setptr += lex_h_vals;
+				}
 				//new_temp_setptr->addHeuristic(h_vals);
 				//} else {
 				//	temp_weight_set_ptr->operator=(new_temp_nodeptr->lex_set);
@@ -1806,7 +1836,10 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 			//if (ITERATE) {
 			//	path_length_map[tree_end_node] = temp_weight_set_ptr;
 			//}
+			int solution_ind_prod;
+
 			if (all_accepting) {
+				//std::cout<<"ALL ACCEPTING!"<<std::endl;
 				accepting.first = true;
 				//std::cout<<">>>found accepting state: "<<con_node_prod_ind<<std::endl;
 				//std::vector<int> ret_inds;
@@ -1816,6 +1849,8 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 				//	std::cout<<"   acc dfa "<<i<<": "<<ret_inds[i+1]<<std::endl;
 				//}
 				accepting.second.push_back(con_node_prod_ind);
+				solution_ind_prod = con_node_prod_ind;
+				//std::cout<<"  --acc prod ind: "<<solution_ind_prod<<std::endl;
 				solution_ind = con_node_ind;
 				//std::cout<<"min accepting cost: "<<std::endl;
 				//min_accepting_cost.print();
@@ -1835,6 +1870,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 					finished = true;
 					//std::cout<<"Found a solution!"<<"\n";
 					//std::cout<<"SOLUTION IND: "<<solution_ind<<std::endl;
+					//std::cout<<"SOLUTION IND PROD: "<<solution_ind_prod<<std::endl;
 					//std::cout<<"   -Iterations: "<<iterations<<"\n";
 					//solution_ind = min_w.prod2node_list.at(pq.top().first);
 					//solution_ind = *(pq.top().first);

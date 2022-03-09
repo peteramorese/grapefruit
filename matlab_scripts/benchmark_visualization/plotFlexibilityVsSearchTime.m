@@ -1,12 +1,14 @@
-%% Plot Number of DFAs vs Search Time Benchmark
+%% Plot Flexibility vs Search Time Benchmark
 % Author: Peter Amorese
 % Description: Plots the search time averaged amongst all benchmark data
 %   with the same number of formulas agains the number of formulas
 
-function plotNumDFAsVsSearchTime(filepaths, figure_title, legend_entries)
+function plotFlexibilityVsSearchTime(filepaths, figure_title, legend_entries)
+flex_vs_total_time = {};
+flex_vs_total_time_std = {};
 for j = 1:length(filepaths)
     clear seg_data
-    data = importdata(filepaths(j));
+    data = importdata(filepaths(j),':');
     seg_data.time_lbls = string([]);
     seg_data.units = string([]);
     seg_data.attr_lbls = string([]);
@@ -24,8 +26,7 @@ for j = 1:length(filepaths)
     end
 
     for i=1:length(data.data)
-        cmd_prefix = "seg_data.data.";
-        if ~strcmp(data.textdata(i), ">--")
+        if ~strcmp(data.textdata{i}, ">--")
             field = data.textdata{i};
             if startsWith(field, "-")
                 field = formatTimeLbl(field);
@@ -68,17 +69,18 @@ for j = 1:length(filepaths)
 
     flex_vs_total_time{j} = [];
     flex_vs_total_time_std{j} = [];
-
-    for i = min(seg_data.attr_data{2}):max(seg_data.attr_data{2})
+    un_attrs = getUniqueAttrs(seg_data.attr_data{2});
+    for i = un_attrs
         temp_data = getByAttr(i, seg_data.attr_data{2}, seg_data.time_data{1});
         flex_vs_total_time{j} = [flex_vs_total_time{j} mean(temp_data)];
         flex_vs_total_time_std{j} = [flex_vs_total_time_std{j} std(temp_data)];
     end
+    box_lbls = un_attrs;
 %     group_j{j} = min(seg_data.data{2}):max(seg_data.data{2});
 end  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% PLOT HERE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-box_lbls = min(seg_data.attr_data{2}):max(seg_data.attr_data{2});
+
 boxdata = [];
 boxdata_std = [];
 % group = [];
@@ -114,4 +116,11 @@ function data_arr = getByAttr(attr, attr_data, time_data)
     data_arr = time_data(attr_data == attr);
 end
 
-
+function un_attrs = getUniqueAttrs(attr_data)
+    un_attrs = [];
+    for i=1:length(attr_data)
+        if ~ismember(attr_data(i), un_attrs)
+            un_attrs = [un_attrs attr_data(i)];
+        end
+    end
+end

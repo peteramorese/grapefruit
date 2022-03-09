@@ -16,8 +16,9 @@ class Benchmark {
 		tp_t time_start_init;
 		std::unordered_map<std::string, tp_t> time_points_start;
 		std::vector<std::string> attributes;
+		const std::string filename;
 	public:
-	 	Benchmark() {
+	 	Benchmark(const std::string& filename_) : filename(filename_) {
 			time_start_init = std::chrono::system_clock::now();
 		};
 
@@ -64,7 +65,7 @@ class Benchmark {
 			return dt;
 		}
 
-		void pushAttributesToFile(const std::string& filename) {
+		void pushAttributesToFile() {
 			std::ofstream F;
 			F.open(filename, std::ios::app);
 			for (auto attr : attributes) {
@@ -74,14 +75,14 @@ class Benchmark {
 			F.close();
 		}
 
-		void finishSessionInFile(const std::string& filename) {
+		void finishSessionInFile() {
 			std::ofstream F;
 			F.open(filename, std::ios::app);
 			F << ">--\n";
 			F.close();
 		}
 
-		void wipeAttributesFromFile(const std::string& filename) {}
+		void wipeAttributesFromFile() {}
 };
 
 int main(int argc, char *argv[]) {
@@ -89,7 +90,6 @@ int main(int argc, char *argv[]) {
 	//for (int i=0; i<argc; ++i) {
 	//	std::cout<<argv[i]<<std::endl;
 	//}
-	Benchmark benchmark;
 	//std::cout<<"time init: "<<benchmark.measureMicro()<<std::endl;
 	// Set default arguments:
 
@@ -144,6 +144,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+	Benchmark benchmark(bm_filename_path);
 	
 	if (use_benchmark) {
 		benchmark.addAttribute("num_dfas: " + std::to_string(N_DFAs));
@@ -397,8 +398,8 @@ int main(int argc, char *argv[]) {
 	bool success = search_obj.search(use_h_flag);
 	//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
 	benchmark.measureMilli("before_search");
-	benchmark.pushAttributesToFile(bm_filename_path);
-	benchmark.finishSessionInFile(bm_filename_path);
+	benchmark.pushAttributesToFile();
+	benchmark.finishSessionInFile();
 	//std::cout<<"Found plan? "<<success<<std::endl;
 	if (success) {
 		std::vector<std::string> xtra_info;

@@ -1,11 +1,11 @@
-clear; close all; clc;
+clear; clc; %close all;
 
 %%%%%%%%%%%%%%%
 GRID_SIZE = 10;
 animate = false;
 %%%%%%%%%%%%%%%
 
-plan = importdata("plan.txt");
+plan = importdata("plan_files/plan.txt");
 
 end_plan_found = false;
 end_plan_ind = -1;
@@ -64,7 +64,7 @@ end
 states = states + .5;
 directions(:,1:2) = directions(:,1:2) + .5;
 LOI(:,1:2) = LOI(:,1:2) + .5;
-figure(1)
+figure()
 
 hold on
 % x_vec = 0:GRID_SIZE-1;

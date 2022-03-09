@@ -53,16 +53,19 @@ if __name__ == "__main__":
 
     clear_file(BM_DATA_FILE_NAME_NO_H) # Clear the bm session file
     clear_file(BM_DATA_FILE_NAME_H) # Clear the bm session file
+    clear_file(BM_DATA_FILE_NAME_FLEX_NO_H) # Clear the bm session file
+    clear_file(BM_DATA_FILE_NAME_FLEX_H) # Clear the bm session file
     trials = 8 #Number of random orderings
     grid_size = 10
     mu = 10000
-    mu_disc = range(0, 100, 5)
+    mu_disc = range(0, 60, 5)
+    print("\n\nScaling Formulas: \n\n")
     for _ in range(0, trials):
         num_dfas = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=True)
         if num_dfas <= 2:
             print("Error: Create more than 2 BM formulas")
             break
-        for j in range(2, num_dfas):
+        for j in range(2, num_dfas + 1):
 
             # Run without the heuristic:
             exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
@@ -87,12 +90,14 @@ if __name__ == "__main__":
                 dfas_filepath=WRITE_FILE_DIR_NAME_PREFIX,
                 bm_file=BM_DATA_FILE_NAME_H,
                 grid_size=grid_size)
+    print("\n\nScaling Flexibility: \n\n")
     for _ in range(0, trials):
         num_dfas = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=True)
         if num_dfas <= 2:
             print("Error: Create more than 2 BM formulas")
             break
         for mu_i in mu_disc:
+            print("\nDijkstra's:")
             exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
                 num_dfas=num_dfas, 
                 mu=mu_i, 
@@ -103,6 +108,7 @@ if __name__ == "__main__":
                 dfas_filepath=WRITE_FILE_DIR_NAME_PREFIX,
                 bm_file=BM_DATA_FILE_NAME_FLEX_NO_H,
                 grid_size=grid_size)
+            print("\nAstar:")
             exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
                 num_dfas=num_dfas, 
                 mu=mu_i, 
