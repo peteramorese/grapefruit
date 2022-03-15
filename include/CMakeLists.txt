@@ -5,6 +5,7 @@ add_library(StateSpaceClass stateSpace.cpp)
 add_library(StateClass state.cpp)
 add_library(ConditionClass condition.cpp)
 add_library(TransitionSystemClass transitionSystem.cpp)
+add_library(BenchmarkClass benchmark.cpp)
 
 target_include_directories(GraphClass PUBLIC ${pref_include_dir})
 

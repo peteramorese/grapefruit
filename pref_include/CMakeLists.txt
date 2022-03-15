@@ -8,5 +8,6 @@ target_link_libraries(SymbSearchClass
 	GraphClass 
 	LexSetClass
 	TransitionSystemClass
+	BenchmarkClass
 	)
 #target_link_libraries(GraphClass LexSetClass)

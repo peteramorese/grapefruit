@@ -11,6 +11,7 @@ target_link_libraries(preference_planner_manipulator
 	StateClass
 	SymbSearchClass
 	TransitionSystemClass
+	BenchmarkClass
 	)
 
 add_executable(preference_planner_grid_robot preference_planner_grid_robot.cpp)
@@ -23,5 +24,6 @@ target_link_libraries(preference_planner_grid_robot
 	StateClass
 	SymbSearchClass
 	TransitionSystemClass
+	BenchmarkClass
 	)
 

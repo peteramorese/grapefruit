@@ -3,6 +3,7 @@
 #include "graph.h"
 #include "lexSet.h"
 #include "transitionSystem.h"
+#include "benchmark.h"
 
 template<class T>
 class SymbSearch {
@@ -12,6 +13,7 @@ class SymbSearch {
 			std::vector<std::string> action_map;
 		};
 		const std::string bench_mark_session;
+		Benchmark benchmark;
 	private:
 		//std::unordered_map<std::string, SimpleCondition*> propositions;
 		struct spaceWeight {
@@ -56,14 +58,14 @@ class SymbSearch {
 		std::vector<T*> set_list;
 		std::vector<std::string> TS_action_sequence;
 		std::vector<int> TS_state_sequence;
-		bool dfas_set, TS_set, mu_set, plan_found;
+		bool verbose, dfas_set, TS_set, mu_set, plan_found;
 		std::vector<spaceWeight> heuristic;
 
 		IVFlexLex<T>* newNode();
 		T* newSet();
 		template<typename Q> void printQueue(Q queue);
 		template<typename Q_f> void printQueueFloat(Q_f queue);
-		void extractPath(const std::vector<int>& parents, int accepting_state);
+		void extractPath(const std::vector<int>& parents, int accepting_state, const std::vector<int>& graph_sizes);
 		bool spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa_sps, spaceWeight& spw);
 		bool riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceWeight& spw, std::function<float(unsigned int)> cFunc);
 		bool generateHeuristic();
@@ -73,7 +75,7 @@ class SymbSearch {
 		void clearNodesAndSets();
 	public:
 		SymbSearch();
-		SymbSearch(const std::string& bench_mark_session_);
+		SymbSearch(const std::string& bench_mark_session_, bool verbose_);
 		void setAutomataPrefs(const std::vector<DFA_EVAL*>* dfa_list_ordered_);
 		void setTransitionSystem(TS_EVAL<State>* TS_);
 		void setFlexibilityParam(float mu_);

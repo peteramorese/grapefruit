@@ -2,10 +2,14 @@
 % Author: Peter Amorese
 % Description: Plots the search time averaged amongst all benchmark data
 %   with the same number of formulas agains the number of formulas
-
-function plotFlexibilityVsSearchTime(filepaths, figure_title, legend_entries)
+%
+% Ex:
+%    x_attr_lbl = "flexibility";
+%    box_time_data_lbls = ["before_first_search ", "before_total_search "];
+function units = plotAttrVsTimeData(filepaths, x_attr_lbl, box_time_data_lbls, group_lbls)
 flex_vs_total_time = {};
 flex_vs_total_time_std = {};
+leg_entries = [];
 for j = 1:length(filepaths)
     clear seg_data
     data = importdata(filepaths(j),':');
@@ -48,7 +52,7 @@ for j = 1:length(filepaths)
                     inc_i = length(seg_data.attr_lbls);
                 end
             end
-            
+
             if time_lbl
                 if inc_i <= length(seg_data.time_data)
                     seg_data.time_data{inc_i} = [seg_data.time_data{inc_i} data.data(i)];
@@ -67,41 +71,55 @@ for j = 1:length(filepaths)
 
 
 
-    flex_vs_total_time{j} = [];
-    flex_vs_total_time_std{j} = [];
-    un_attrs = getUniqueAttrs(seg_data.attr_data{2});
+    y_vals{j} = [];
+    y_vals_std{j} = [];
+
+
+    box_time_data_inds = [];
+    for i=1:length(box_time_data_lbls)
+        box_time_data_inds = [box_time_data_inds find(deblank(seg_data.time_lbls)==deblank(box_time_data_lbls(i)), 1)];
+    end
+
+    x_attr_ind = find(seg_data.attr_lbls==x_attr_lbl, 1);
+    un_attrs = getUniqueAttrs(seg_data.attr_data{x_attr_ind});
+    box_time_data{j} = [];
+    box_time_data_std{j} = [];
     for i = un_attrs
-        temp_data = getByAttr(i, seg_data.attr_data{2}, seg_data.time_data{1});
-        flex_vs_total_time{j} = [flex_vs_total_time{j} mean(temp_data)];
-        flex_vs_total_time_std{j} = [flex_vs_total_time_std{j} std(temp_data)];
+        for ii = 1:length(box_time_data_inds)
+            temp_data(ii, :) = getByAttr(i, seg_data.attr_data{x_attr_ind}, seg_data.time_data{box_time_data_inds(ii)});
+        end
+        % Arrange in col vector for each time lbl we are plotting:
+
+        box_time_data{j} = [box_time_data{j} mean(temp_data, 2)];
+        box_time_data_std{j} = [box_time_data_std{j} std(temp_data')];
     end
     box_lbls = un_attrs;
-%     group_j{j} = min(seg_data.data{2}):max(seg_data.data{2});
-end  
+    leg_entries = [leg_entries; group_lbls(j) + box_time_data_lbls'];
+    %     group_j{j} = min(seg_data.data{2}):max(seg_data.data{2});
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% PLOT HERE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 boxdata = [];
 boxdata_std = [];
 % group = [];
 for j=1:length(filepaths)
-    boxdata = [boxdata; flex_vs_total_time{j}];
-    boxdata_std = [boxdata_std; flex_vs_total_time_std{j}];
-%     group = [group; group_j{j}];
+    boxdata = [boxdata; box_time_data{j}];
+    boxdata_std = [boxdata_std; box_time_data_std{j}];
+    %     group = [group; group_j{j}];
 end
 
 
-bar(box_lbls, boxdata)
+bar(box_lbls, boxdata')
 % boxplot(boxdata, group)
 hold on
 grid on
 % H_std = errorbar(box_lbls, boxdata, -boxdata_std, boxdata_std,'-s','MarkerSize',5, 'MarkerFaceColor','k');
 % H_std.Color = 'k';
 % H_std.LineStyle = '--';
-title(figure_title)
-xlabel("Flexibility (\mu)")
-ylabel("Total Search Time ("+ units + ")")
-legend(legend_entries)
+legend(leg_entries,'Interpreter','none')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

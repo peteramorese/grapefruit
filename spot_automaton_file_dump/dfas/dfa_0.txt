@@ -1,29 +1,29 @@
 Alphabet: 
-- ap_x8_y8
-- ap_x0_y9
-- ap_x9_y6
+- ap_x3_y2
+- ap_x2_y8
+- ap_x9_y5
 Initial States: 
 - 2
 Graph:
 - 0
    - 0 -> 0 : 1
 - 1
-   - 1 -> 0 : ap_x0_y9 & ap_x9_y6
-   - 1 -> 1 : !ap_x0_y9 & !ap_x9_y6
-   - 1 -> 3 : ap_x0_y9 & !ap_x9_y6
-   - 1 -> 4 : !ap_x0_y9 & ap_x9_y6
+   - 1 -> 0 : ap_x2_y8 & ap_x9_y5
+   - 1 -> 1 : !ap_x2_y8 & !ap_x9_y5
+   - 1 -> 3 : ap_x2_y8 & !ap_x9_y5
+   - 1 -> 4 : !ap_x2_y8 & ap_x9_y5
 - 2
-   - 2 -> 0 : ap_x0_y9 & ap_x8_y8 & ap_x9_y6
-   - 2 -> 1 : !ap_x0_y9 & ap_x8_y8 & !ap_x9_y6
-   - 2 -> 2 : !ap_x8_y8
-   - 2 -> 3 : ap_x0_y9 & ap_x8_y8 & !ap_x9_y6
-   - 2 -> 4 : !ap_x0_y9 & ap_x8_y8 & ap_x9_y6
+   - 2 -> 0 : ap_x2_y8 & ap_x3_y2 & ap_x9_y5
+   - 2 -> 1 : !ap_x2_y8 & ap_x3_y2 & !ap_x9_y5
+   - 2 -> 2 : !ap_x3_y2
+   - 2 -> 3 : ap_x2_y8 & ap_x3_y2 & !ap_x9_y5
+   - 2 -> 4 : !ap_x2_y8 & ap_x3_y2 & ap_x9_y5
 - 3
-   - 3 -> 0 : ap_x9_y6
-   - 3 -> 3 : !ap_x9_y6
+   - 3 -> 0 : ap_x9_y5
+   - 3 -> 3 : !ap_x9_y5
 - 4
-   - 4 -> 0 : ap_x0_y9
-   - 4 -> 4 : !ap_x0_y9
+   - 4 -> 0 : ap_x2_y8
+   - 4 -> 4 : !ap_x2_y8
 Accepting States:
 - 0
 

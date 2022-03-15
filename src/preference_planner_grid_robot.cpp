@@ -9,81 +9,7 @@
 #include "stateSpace.h"
 #include "state.h"
 #include "symbSearch.h"
-
-class Benchmark {
-	private:
-		using tp_t = std::chrono::time_point<std::chrono::system_clock>;
-		tp_t time_start_init;
-		std::unordered_map<std::string, tp_t> time_points_start;
-		std::vector<std::string> attributes;
-		const std::string filename;
-	public:
-	 	Benchmark(const std::string& filename_) : filename(filename_) {
-			time_start_init = std::chrono::system_clock::now();
-		};
-
-		void addAttribute(const std::string& attr) {
-			attributes.push_back(attr);
-		}
-		void pushStartPoint(const std::string& name) {
-			tp_t time_pt;
-			time_pt = std::chrono::system_clock::now();
-			time_points_start[name] = time_pt;
-		}
-
-		double measureMilli(const std::string& name) {
-			tp_t time_measure, time_start;
-			time_measure = std::chrono::system_clock::now();
-			time_start = time_points_start.at(name);
-			double dt = std::chrono::duration_cast<std::chrono::milliseconds>(time_measure - time_start).count();
-			attributes.push_back("-" + name + " (ms): " + std::to_string(dt));
-			return dt;
-		}
-
-		double measureMilli() {
-			tp_t time_measure;
-			time_measure = std::chrono::system_clock::now();
-			double dt = std::chrono::duration_cast<std::chrono::milliseconds>(time_measure - time_start_init).count();
-			attributes.push_back("-init (ms): " + std::to_string(dt));
-			return dt;
-		}
-
-		double measureMicro(const std::string& name) {
-			tp_t time_measure, time_start;
-			time_measure = std::chrono::system_clock::now();
-			time_start = time_points_start.at(name);
-			double dt = std::chrono::duration_cast<std::chrono::microseconds>(time_measure - time_start).count();
-			attributes.push_back("-" + name + " (us): " + std::to_string(dt));
-			return dt;
-		}
-
-		double measureMicro() {
-			tp_t time_measure;
-			time_measure = std::chrono::system_clock::now();
-			double dt = std::chrono::duration_cast<std::chrono::microseconds>(time_measure - time_start_init).count();
-			attributes.push_back("-init (us): " + std::to_string(dt));
-			return dt;
-		}
-
-		void pushAttributesToFile() {
-			std::ofstream F;
-			F.open(filename, std::ios::app);
-			for (auto attr : attributes) {
-
-				F << attr + "\n";
-			}
-			F.close();
-		}
-
-		void finishSessionInFile() {
-			std::ofstream F;
-			F.open(filename, std::ios::app);
-			F << ">--\n";
-			F.close();
-		}
-
-		void wipeAttributesFromFile() {}
-};
+#include "benchmark.h"
 
 int main(int argc, char *argv[]) {
 	//std::cout<<"time init: "<<time_init<<std::endl;
@@ -361,7 +287,7 @@ int main(int argc, char *argv[]) {
 		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
 	}
 
-	SymbSearch<DetourLex> search_obj;
+	SymbSearch<DetourLex> search_obj(bm_filename_path, verbose);
 	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	search_obj.setTransitionSystem(&ts_eval);
 	if (manual_setup) {
@@ -394,10 +320,10 @@ int main(int argc, char *argv[]) {
 	//search_obj.setFlexibilityParam(0.0f);
 	//bool success = search_obj.search(use_h_flag, use_dfs_flag);
 	search_obj.setFlexibilityParam(mu);
-	benchmark.pushStartPoint("before_search");
+	benchmark.pushStartPoint("total_search");
 	bool success = search_obj.search(use_h_flag);
 	//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
-	benchmark.measureMilli("before_search");
+	benchmark.measureMilli("total_search");
 	benchmark.pushAttributesToFile();
 	benchmark.finishSessionInFile();
 	//std::cout<<"Found plan? "<<success<<std::endl;
