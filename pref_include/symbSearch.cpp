@@ -1335,7 +1335,15 @@ float SymbSearch<T>::pullStateWeight(unsigned ts_ind, unsigned dfa_ind, unsigned
 }
 
 template<class T>
-bool SymbSearch<T>::search(bool use_heuristic) {
+void SymbSearch<T>::resetSearchParameters() {
+	pathlength = 0.0;
+	TS_action_sequence.clear();
+	TS_state_sequence.clear();
+}
+
+template<class T>
+float SymbSearch<T>::search(bool use_heuristic) {
+	resetSearchParameters();
 	if (!TS_set || !dfas_set || !mu_set) {
 		std::cout<<"Error: Forgot to set TS, dfas, or mu\n";
 		return false;
@@ -1353,8 +1361,10 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 	benchmark.pushStartPoint("first_search");
 	prune_bound = BFS(compareLEX, accCompareLEX, ___, false, false, true); // No pruning criteria, no need for path
 	benchmark.measureMilli("first_search");
-	std::cout<<"PRINTING PRUNE BOUND: "<<std::endl;
-	prune_bound.print();
+	if (verbose) {
+		std::cout<<"Printing prune bound: "<<std::endl;
+		prune_bound.print();
+	}
 	auto pruneCriterionMAX = [&prune_bound](const T& arg_set) {
 
 		//std::cout<<"   prune bound set:"<<std::endl;
@@ -1378,6 +1388,11 @@ bool SymbSearch<T>::search(bool use_heuristic) {
 	solution_cost = BFS(compareMAX, accCompareMAX, pruneCriterionMAX, true, true, use_heuristic); 
 	benchmark.measureMilli("second_search");
 	benchmark.pushAttributesToFile();
+	
+	if (verbose) {
+		std::cout<<"Pathlength: "<<pathlength<<", Max val in solution cost: "<<solution_cost.getMaxVal()<<"\n";
+	}
+	return pathlength;
 	//std::cout<<"\nPRINTING SOLUTION COST: "<<std::endl;
 	//solution_cost.print();
 	//std::cout<<"\n";
@@ -2150,7 +2165,9 @@ void SymbSearch<T>::extractPath(const std::vector<int>& parents, int accepting_s
 		}
 		//std::cout<<"af search"<<std::endl;
 	}
-	std::cout<<"Info: Number of actions: "<<TS_action_sequence.size()<<", pathlength: "<<pathlength<<"\n";
+	if (verbose) {
+		std::cout<<"Info: Number of actions: "<<TS_action_sequence.size()<<", pathlength: "<<pathlength<<"\n";
+	}
 }
 
 template<class T>

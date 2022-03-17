@@ -2,7 +2,7 @@ import os
 import struct
 import sys
 import subprocess
-print(sys.executable)
+#print(sys.executable)
 #print(sys.path)
 
 

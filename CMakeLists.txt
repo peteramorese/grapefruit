@@ -11,6 +11,7 @@ set(pref_include_dir ${CMAKE_SOURCE_DIR}/pref_include)
 
 add_subdirectory(include)
 add_subdirectory(src)
+add_subdirectory(test)
 add_subdirectory(pref_include)
 add_subdirectory(examples)
 

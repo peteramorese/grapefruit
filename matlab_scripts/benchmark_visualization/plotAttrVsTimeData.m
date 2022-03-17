@@ -7,6 +7,7 @@
 %    x_attr_lbl = "flexibility";
 %    box_time_data_lbls = ["before_first_search ", "before_total_search "];
 function units = plotAttrVsTimeData(filepaths, x_attr_lbl, box_time_data_lbls, group_lbls)
+time_attr_marker = "[T] ";
 flex_vs_total_time = {};
 flex_vs_total_time_std = {};
 leg_entries = [];
@@ -22,7 +23,7 @@ for j = 1:length(filepaths)
     for i=1:length(data.textdata)
         if ~strcmp(data.textdata(i), ">--")
             field = data.textdata{i};
-            if startsWith(field, "-")
+            if startsWith(field, time_attr_marker)
                 units = extractBetween(field, "(",")");
                 break
             end
@@ -32,7 +33,7 @@ for j = 1:length(filepaths)
     for i=1:length(data.data)
         if ~strcmp(data.textdata{i}, ">--")
             field = data.textdata{i};
-            if startsWith(field, "-")
+            if startsWith(field, time_attr_marker)
                 field = formatTimeLbl(field);
                 time_lbl = true;
             else
@@ -126,7 +127,7 @@ legend(leg_entries,'Interpreter','none')
 end
 
 function lblf = formatTimeLbl(lbl)
-    lblf = erase(lbl, "-");
+    lblf = erase(lbl, time_attr_marker);
     lblf = eraseBetween(lblf, "(", ")", "Boundaries","inclusive");
 end
 
