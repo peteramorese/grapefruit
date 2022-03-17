@@ -406,7 +406,7 @@ int main() {
 		//std::cout<<"   ret: "<<1.0/static_cast<float>(d)<<std::endl;
 		return risk_param/static_cast<float>(d);
 	};
-	SymbSearch<FlexLexSetS>::Strategy S;
+	SymbSearch<DetourLex>::Strategy S;
 	bool success = search_obj.generateRiskStrategy(dfa_eval_ptrs[0], dfa_eval_ptrs[1], cFunc, S, false);
 	std::cout<<"\n   Found strategy? "<<success<<" action_map size: "<<S.action_map.size()<<std::endl;
 	for (int i=0; i<S.action_map.size(); ++i) {

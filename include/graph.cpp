@@ -100,7 +100,7 @@ bool Graph<T>::connect(const std::pair<unsigned int, T*>& src, const std::pair<u
 		new_node_par->adjptr = nullptr;	
 		// Update the tail pointer to the appended element:
 		parent_tails[dst.first]->adjptr = new_node_par;
-		std::cout<<"connecting node: "<<dst.first<< " to node: "<<new_node_par->nodeind<<std::endl;
+		//std::cout<<"connecting node: "<<dst.first<< " to node: "<<new_node_par->nodeind<<std::endl;
 		parent_tails[dst.first] = new_node_par;
 	}
 	return true;
@@ -290,14 +290,14 @@ void Graph<T>::remove(unsigned int ind_) {
 		//std::cout<<"       dst->nodeind: "<<dst->nodeind<<", ind: "<<ind_<<std::endl;
 		if (dst->nodeind == ind_) {
 			prv->adjptr = dst->adjptr;
-			std::cout<<"Deleted: "<<dst<<std::endl;
+			//std::cout<<"Deleted: "<<dst<<std::endl;
 			//prv = prv->adjptr;
 			node* tempptr = dst->adjptr;
 			delete dst;
 			dst = tempptr;
 		}
 	};
-	auto deleteLAM = [](Graph<T>::node* dst, Graph<T>::node* prv){std::cout<<"deleting: "<<dst<<std::endl; delete dst;};
+	auto deleteLAM = [](Graph<T>::node* dst, Graph<T>::node* prv){delete dst;};
 	for (int i=0; i<heads.size(); ++i) {
 		if (!isEmpty(heads[i])){
 			//std::cout<<"CURRENT NODE IND: "<<i<<std::endl;
@@ -557,7 +557,7 @@ Graph<T>::~Graph() {
 		//std::cout<<"deleting: "<<dst<<std::endl; 
 		delete dst;
 	};
-	std::cout<< "Deconstructing " << heads.size() << " lists...\n";
+	//std::cout<< "Deconstructing " << heads.size() << " lists...\n";
 	for (int i=0; i<heads.size(); i++) {
 		//std::cout<<"CURRENT LIST: "<<i<<std::endl;
 		if (!isEmpty(heads[i])) {
@@ -572,7 +572,6 @@ Graph<T>::~Graph() {
 			}
 		}
 	}
-	std::cout<<"made it out of destructor"<<std::endl;
 }
 
 template class Graph<int>;
@@ -587,6 +586,7 @@ template class Graph<WIV>;
 template class Graph<IVFlexLex<LexSet>>;
 template class Graph<IVFlexLex<FlexLexSetS>>;
 template class Graph<IVFlexLex<REQLex>>;
+template class Graph<IVFlexLex<DetourLex>>;
 template class Graph<std::vector<unsigned int>>;
 template class Graph<State>;
 template class Graph<BlockingState>;
@@ -934,7 +934,6 @@ bool DFA::readFileSingle(const std::string& filename) {
 								temp_word_2.push_back(line[i]);
 						}
 					}
-					std::cout<<"adding temp word: "<<temp_word_2<<std::endl;
 					addAP(temp_word_2);
 					break;
 				case 1: // INIT STATES
@@ -1071,7 +1070,6 @@ void DFA::print() {
 }
 
 DFA::~DFA() {
-	std::cout<<"Deleting node data...\n";
 	for (int i=0; i<node_data_list.size(); ++i) {
 		//std::cout<<"DELETING: "<<node_data_list[i]<<std::endl;
 		delete node_data_list[i];
@@ -1094,9 +1092,6 @@ DFA_EVAL::DFA_EVAL(DFA* dfaptr_) : dfaptr(dfaptr_), accepting(false) {
 //DFA_EVAL::DFA_EVAL(const DFA* dfaptr_) : dfaptr(dfaptr_), accepting(false) {
 	// Set the current node to be the initial state
 	curr_node = dfaptr->getInitState();
-	std::cout<<"FOUND INIT STATE:"<<curr_node<<std::endl;
-	std::cout<<"printing reverse:"<<std::endl;
-	dfaptr->printReverse();
 }
 
 const DFA* DFA_EVAL::getDFA() const {
@@ -1148,14 +1143,11 @@ bool DFA_EVAL::evalReverse(const std::string& letter, bool evolve) {
 		//std::cout<<" hopping parent label: "<<*(dst->dataptr)<<std::endl;
 		if (*(dst->dataptr) == letter) {
 			curr_node_g = dst->nodeind;
-			std::cout<<"reverse eval found connected ind: "<<curr_node_g<<std::endl;
 			return true;
 		} else if (*(dst->dataptr) == "1") {
 			found_true = true;
-			//std::cout<<"returning false"<<std::endl;
 			return false;
 		} else {
-			//std::cout<<"returning false"<<std::endl;
 			return false;
 		}
 	};

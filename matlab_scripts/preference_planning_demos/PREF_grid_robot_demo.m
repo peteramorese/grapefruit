@@ -1,11 +1,11 @@
-clear; close all; clc;
+clear; clc; %close all;
 
 %%%%%%%%%%%%%%%
 GRID_SIZE = 10;
 animate = false;
 %%%%%%%%%%%%%%%
 
-plan = importdata("plan.txt");
+plan = importdata("plan_files/plan.txt");
 
 end_plan_found = false;
 end_plan_ind = -1;
@@ -64,7 +64,7 @@ end
 states = states + .5;
 directions(:,1:2) = directions(:,1:2) + .5;
 LOI(:,1:2) = LOI(:,1:2) + .5;
-figure(1)
+figure()
 
 hold on
 % x_vec = 0:GRID_SIZE-1;
@@ -114,7 +114,10 @@ else
     scatter(text_array{1,1}(i,1) - text_offset_x, text_array{1,1}(i,2) - text_offset_y, 80, "filled", "color",'r')
 end
 end
-
+for i=2:length(text_array{1,1}(:,1))
+    text(text_array{1,1}(i,1), text_array{1,1}(i,2), text_array{1,2}(i), "FontSize",12);
+    scatter(text_array{1,1}(i,1) - text_offset_x, text_array{1,1}(i,2) - text_offset_y, 80, "filled", "color",'r')
+end
 
 grid on
 xticks(0:GRID_SIZE)

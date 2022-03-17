@@ -418,7 +418,7 @@ TS_EVAL<T>::TS_EVAL(Graph<WL>* graph_TS_, bool DETERMINISTIC_, bool manual_, int
 template <class T>
 void TS_EVAL<T>::mapStatesToLabels(const std::vector<const std::vector<std::string>*>& alphabet) {
 	state_to_label_map.clear();
-	std::cout<<"Info: Mapping states to labels...\n";
+	//std::cout<<"Info: Mapping states to labels...\n";
 	for (int si=0; si<TransitionSystem<T>::state_map.size(); ++si) {
 		std::vector<std::string> temp_labels;
 		temp_labels.clear();
@@ -449,7 +449,7 @@ void TS_EVAL<T>::mapStatesToLabels(const std::vector<const std::vector<std::stri
 		//}
 		state_to_label_map[si] = temp_labels;
 	}
-	std::cout<<"Info: Done mapping states to labels.\n";
+	//std::cout<<"Info: Done mapping states to labels.\n";
 }
 
 template <class T>

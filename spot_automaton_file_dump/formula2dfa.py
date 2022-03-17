@@ -1,17 +1,25 @@
 #!/usr/bin/env python
-import spot, os, glob
+from posixpath import dirname
+import spot, os, glob, random
 
-def create_file(F_arr, dirname_prefix):
-
+def remove_dfa_files(dirname_prefix):
     # Remove all dfa files in directory:
     for file in os.scandir(dirname_prefix):
         os.remove(file.path)
         #print(file.path)
+
+def create_file(F_arr, dirname_prefix, random_ordering):
+    remove_dfa_files(dirname_prefix)
+    inds = [i for i in range(0, len(F_arr))]
+    if random_ordering:
+        random.shuffle(inds)
     i = 0
     for F in F_arr: 
-        filename = dirname_prefix + "dfa_{}".format(i) + ".txt"
+        file_ind = inds[i]
+        filename = dirname_prefix + "dfa_{}".format(file_ind) + ".txt"
+        print("Writing to: dfa_{}".format(file_ind))
         #filename_list[i] = filename
-        i = i + 1;
+        i = i + 1
         lines_list = list()
         accepting_list = list()
         A = spot.formula(F).translate("BA","complete","deterministic","sbacc")
@@ -67,19 +75,23 @@ def print_automaton(A):
             print("    accepting sets: ", s_con.acc)
 
 
-READ_FILE_NAME = "formulas.txt"
-WRITE_FILE_DIR_NAME_PREFIX = "dfas/"
+def read_write(read_file_name, write_file_dir_name_prefix, random_ordering):
+    with open(read_file_name, "r") as formula_file:
+        lines = formula_file.readlines()
 
-with open(READ_FILE_NAME, "r") as formula_file:
-    lines = formula_file.readlines()
+    F_arr = list()
+    for line in lines:
+        F_i = line.replace("\n","")
+        if not line == "\n": 
+            if not F_i[0]=="#":
+                print("Found formula:     ",F_i)
+                F_arr.append(F_i)
 
-F_arr = list()
-for line in lines:
-    F_i = line.replace("\n","")
-    if not line == "\n": 
-        if not F_i[0]=="#":
-            print("Found formula:     ",F_i)
-            F_arr.append(F_i)
+    print("Number of formulas: ", len(F_arr))
+    create_file(F_arr, write_file_dir_name_prefix, random_ordering)
+    return len(F_arr)
 
-print("Number of formulas: ", len(F_arr))
-create_file(F_arr, WRITE_FILE_DIR_NAME_PREFIX)
+if __name__ == "__main__":
+    READ_FILE_NAME = "formulas.txt"
+    WRITE_FILE_DIR_NAME_PREFIX = "dfas/"
+    read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=False)
