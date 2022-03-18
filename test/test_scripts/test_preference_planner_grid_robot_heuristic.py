@@ -51,4 +51,4 @@ if __name__ == "__main__":
                     dfas_filepath=WRITE_FILE_DIR_NAME_PREFIX,
                     grid_size=grid_size)
                 count += 1
-    print("Test finished. " + count + " scenarios tested.")
+    print("Test finished. " + str(count) + " scenarios tested.")

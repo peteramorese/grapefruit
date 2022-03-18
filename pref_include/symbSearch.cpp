@@ -5,8 +5,12 @@
 #include "benchmark.h"
 
 template<class T>
+SymbSearch<T>::PlanResult::PlanResult(float mu, int num_dfas) : pathcost(mu, num_dfas) {}
+
+template<class T>
 SymbSearch<T>::SymbSearch() : 
 	benchmark("none"), 
+	use_benchmark(false),
 	verbose(false), 
 	dfas_set(false), 
 	TS_set(false), 
@@ -18,7 +22,14 @@ SymbSearch<T>::SymbSearch(const std::string& bench_mark_session_, bool verbose_)
 	verbose(verbose_), 
 	dfas_set(false), 
 	TS_set(false), 
-	mu_set(false) {}
+	mu_set(false) {
+
+	if (bench_mark_session_.empty() || bench_mark_session_ == "none") {
+		use_benchmark = false;
+	} else {
+		use_benchmark = true;
+	}
+}
 
 template<class T>
 void SymbSearch<T>::setAutomataPrefs(const std::vector<DFA_EVAL*>* dfa_list_ordered_) {
@@ -1342,11 +1353,13 @@ void SymbSearch<T>::resetSearchParameters() {
 }
 
 template<class T>
-float SymbSearch<T>::search(bool use_heuristic) {
+std::pair<bool, float> SymbSearch<T>::search(bool use_heuristic) {
 	resetSearchParameters();
+	std::pair<bool, float> ret_vals;
 	if (!TS_set || !dfas_set || !mu_set) {
-		std::cout<<"Error: Forgot to set TS, dfas, or mu\n";
-		return false;
+		std::cout<<"Error: Forgot to set TS, dfas, or mu.\n";
+		ret_vals.second = false;
+		return ret_vals;
 	}
 	auto compareLEX = [](const std::pair<int, T*>& pair1, const std::pair<int, T*>& pair2) {
 		return *(pair1.second) > *(pair2.second);
@@ -1356,16 +1369,22 @@ float SymbSearch<T>::search(bool use_heuristic) {
 	};
 	auto ___ = [](const T&) {return true;};
 
-	T prune_bound(mu, num_dfas);
+	PlanResult result_LEX(mu, num_dfas);
+	//T prune_bound(mu, num_dfas);
 	//prune_bound = BFS(compareLEX, accCompareLEX, ___, false, false, use_heuristic); // No pruning criteria, no need for path
-	benchmark.pushStartPoint("first_search");
-	prune_bound = BFS(compareLEX, accCompareLEX, ___, false, false, true); // No pruning criteria, no need for path
-	benchmark.measureMilli("first_search");
+	if (use_benchmark) {benchmark.pushStartPoint("first_search");}
+	result_LEX = BFS(compareLEX, accCompareLEX, ___, false, false, true); // No pruning criteria, no need for path
+	if (use_benchmark) {benchmark.measureMilli("first_search");}
+	if (!result_LEX.success) {
+		ret_vals.second = false;
+		std::cout<<"Info: First search failed."<<std::endl; //TODO move this to verbose
+		return ret_vals;
+	}
 	if (verbose) {
 		std::cout<<"Printing prune bound: "<<std::endl;
-		prune_bound.print();
+		result_LEX.pathcost.print();
 	}
-	auto pruneCriterionMAX = [&prune_bound](const T& arg_set) {
+	auto pruneCriterionMAX = [&prune_bound=result_LEX.pathcost](const T& arg_set) {
 
 		//std::cout<<"   prune bound set:"<<std::endl;
 		//prune_bound.print();
@@ -1383,16 +1402,25 @@ float SymbSearch<T>::search(bool use_heuristic) {
 		return curr_sol.getMaxVal() < min_acc_sol.getMaxVal();
 	};
 
-	T solution_cost(mu, num_dfas);
-	benchmark.pushStartPoint("second_search");
-	solution_cost = BFS(compareMAX, accCompareMAX, pruneCriterionMAX, true, true, use_heuristic); 
-	benchmark.measureMilli("second_search");
-	benchmark.pushAttributesToFile();
+	PlanResult result_solution(mu, num_dfas);
+	if (use_benchmark) {benchmark.pushStartPoint("second_search");}
+	result_solution = BFS(compareMAX, accCompareMAX, pruneCriterionMAX, true, true, use_heuristic); 
+	if (!result_solution.success) {
+		ret_vals.second = false;
+		std::cout<<"Info: Second search failed."<<std::endl; //TODO move this to verbose
+		return ret_vals;
+	}
+	if (use_benchmark) {
+		benchmark.measureMilli("second_search");
+		benchmark.pushAttributesToFile();
+	}
 	
 	if (verbose) {
-		std::cout<<"Pathlength: "<<pathlength<<", Max val in solution cost: "<<solution_cost.getMaxVal()<<"\n";
+		std::cout<<"Pathlength: "<<pathlength<<", Max val in solution cost: "<<result_solution.pathcost.getMaxVal()<<"\n";
 	}
-	return pathlength;
+	ret_vals.first = pathlength;
+	ret_vals.second = true;
+	return ret_vals;
 	//std::cout<<"\nPRINTING SOLUTION COST: "<<std::endl;
 	//solution_cost.print();
 	//std::cout<<"\n";
@@ -1400,7 +1428,9 @@ float SymbSearch<T>::search(bool use_heuristic) {
 }
 
 template<class T>
-T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pair<int, T*>&)> compare, std::function<bool(const T&, const T&)> acceptanceCompare, std::function<bool(const T&)> pruneCriterion, bool prune, bool extract_path, bool use_heuristic) {	
+typename SymbSearch<T>::PlanResult SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pair<int, T*>&)> compare, std::function<bool(const T&, const T&)> acceptanceCompare, std::function<bool(const T&)> pruneCriterion, bool prune, bool extract_path, bool use_heuristic) {	
+	PlanResult ret_result(mu, num_dfas);
+	ret_result.success = false;
 	//clearNodesAndSets();
 	//std::chrono::time_point<std::chrono::system_clock> end_time;
 	//std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
@@ -1422,7 +1452,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 	std::vector<bool> visited(p_space_size, false);
 	
 	// ATTENTION: "pruned" is indexed in the product space
-	std::vector<bool> pruned(p_space_size, false);
+	// std::vector<bool> pruned(p_space_size, false);
 	
 	// ATTENTION: "parents" is indexed by the tree size for memory space efficiency
 	std::vector<int> parents(p_space_size, -1);
@@ -1442,7 +1472,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 	if (use_heuristic) {
 		bool h_success = generateHeuristic();
 		if (!h_success) {
-			return min_accepting_cost;
+			return ret_result;
 		}
 	}
 	//spaceSearch(TS, dfa_list_ordered->operator[](0), spw);
@@ -1572,8 +1602,9 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 		//std::vector<int> test_inds = {95, 0, 0, 0, 0, 3};
 		//int test_prod = Graph<float>::augmentedStateImage(test_inds, graph_sizes);
 		//int test_prod = 226581;
-		//int test_prod = 201571;
-		//int test_target = 226581;
+		//int test_prod = 133058;
+		//int test_prod = 178925;
+		//int test_target = 178926;
 		//bool test48 = false;
 		//if (prune && curr_leaf_prod_ind == test_prod) {
 		//	std::cout<<"------VISITING TEST PROD: "<<test_prod<<std::endl;
@@ -1703,7 +1734,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 			found_connection = TS->eval(temp_str, true); // second arg tells wether or not to evolve on graph
 			if (!found_connection) {
 				std::cout<<"Error: Did not find connectivity in TS. Current node: "<<TS->getCurrNode()<<", Action: "<<temp_str<<std::endl;
-				return min_accepting_cost;
+				return ret_result;
 			}
 			for (int i=0; i<num_dfas; ++i) {
 				// There could be multiple logical statements the correspond to the same
@@ -1722,7 +1753,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 				}
 				if (!found_connection) {
 					std::cout<<"Error: Connectivity was not found for either the TS or a DFA. \n";
-					return min_accepting_cost;
+					return ret_result;
 				}
 			}
 			//std::cout<<"af eval"<<std::endl;
@@ -1749,22 +1780,23 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 			//// 2028 <- 2038
 
 			//bool test96 = false;
-			//if (con_node_prod_ind == 42) {
+			//if (con_node_prod_ind == test_target) {
 			//	std::cout<<"FOUND NODE!!!!"<<std::endl;
 			//	test96 = true;
 			//}
 
 			// Only consider unvisited connected nodes
-			if (use_heuristic) {
-				if (pruned[con_node_prod_ind]) { // Node was pruned
-					//if (test48) {
-					//	std::cout<<"    -pruned before."<<std::endl;
-					//}
-					continue;
-				}
-			} else {
-				if (visited[con_node_prod_ind] || pruned[con_node_prod_ind]) { // Node was visited
-					//if (test48) {
+			//if (use_heuristic) {
+			//	//if (pruned[con_node_prod_ind]) { // Node was pruned
+			//	//	if (test48 && test96) {
+			//	//		std::cout<<"    -pruned before."<<std::endl;
+			//	//	}
+			//	//	continue;
+			//	//}
+			//} else {
+			if (!use_heuristic) {
+				if (visited[con_node_prod_ind]) { // Node was visited
+					//if (test48 && test96) {
 					//	if (visited[con_node_prod_ind]) {
 					//		std::cout<<"    -visited."<<std::endl;
 					//	} else {
@@ -1806,10 +1838,10 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 				//	std::cout<<", curr_path_weight: "<<curr_path_weight->getMaxVal()<<std::endl;
 				//}
 				if (pruneCriterion(temp_prune_check)) {
-					min_w.is_inf[con_node_prod_ind] = false; // mark node as seen
-					visited[con_node_prod_ind] = true;
-					pruned[con_node_prod_ind] = true;
-					//if (test48) {std::cout<<"    -pruned."<<std::endl;}
+					//min_w.is_inf[con_node_prod_ind] = false; // mark node as seen
+					//visited[con_node_prod_ind] = false;
+					//pruned[con_node_prod_ind] = true;
+					//if (test48 && test96) {std::cout<<"    -pruned."<<std::endl;}
 					continue;
 				}
 			}
@@ -1851,7 +1883,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 						updated = true;
 						//if (test48) {std::cout<<"     -updated."<<std::endl;}
 					}
-					//if (test48) {
+					//if (test48 && test96) {
 					//	std::cout<<"     -already seen not updated."<<std::endl;
 					//	//seen_node->lex_set.print();
 					//}
@@ -1904,7 +1936,7 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 						float h_val = pullStateWeight(TS->getCurrNode(), dfa_list_ordered->operator[](i)->getCurrNode(), i, reachable);
 						if (!reachable) {
 							std::cout<<"Error: Attempted to find heuristic distance for unreachable product state (ts: "<<TS->getCurrNode()<<" dfa "<<i<<": "<<dfa_list_ordered->operator[](i)->getCurrNode()<<") \n";
-							return min_accepting_cost;
+							return ret_result;
 						}
 						if (prune) {
 							if (i == 0 || h_val > max_h_val) {
@@ -2060,10 +2092,15 @@ T SymbSearch<T>::BFS(std::function<bool(const std::pair<int, T*>&, const std::pa
 			//std::cout<<"Finished. Tree size: "<<tree.size()<<" Iterations: "<<iterations<<" (P space size: "<<p_space_size<<")\n";//<<", Maximum product graph (no pruning) size: "<<
 			//std::cout<<"\n\n ...Finished with plan."<<std::endl;
 		}
-		return min_accepting_cost;
+		if (use_benchmark && prune) {
+			benchmark.addCustomTimeAttr("iterations", static_cast<double>(iterations), ""); // no units
+		}
+		ret_result.pathcost = min_accepting_cost;
+		ret_result.success = true;
+		return ret_result;
 	} else {
 		std::cout<<"Failed (no plan)."<<std::endl;
-		return min_accepting_cost;
+		return ret_result;
 	}
 	//	} else {
 	//		std::cout<<"in da check"<<std::endl;

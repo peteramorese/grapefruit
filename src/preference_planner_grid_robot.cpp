@@ -46,10 +46,11 @@ int main(int argc, char *argv[]) {
 			} else if (arg == "--numdfas") {
 				std::string::size_type size_t;
 				N_DFAs = std::stoi(argv[i_arg + 1], &size_t);
-
+				i_arg++;
 			} else if (arg == "--mu") {
 				std::string::size_type size_t;
 				mu = std::stof(argv[i_arg + 1], &size_t);
+				i_arg++;
 			} else if (arg == "--use-h") {
 				use_h_flag = true;
 			} else if (arg == "--write-plan") {
@@ -60,10 +61,13 @@ int main(int argc, char *argv[]) {
 				use_benchmark = true;
 			} else if (arg == "--plan-file") {
 				plan_filename_path = argv[i_arg + 1];
+				i_arg++;
 			} else if (arg == "--dfas-filepath") {
 				dfa_filename_path_prefix = argv[i_arg + 1];
+				i_arg++;
 			} else if (arg == "--bm-file") {
 				bm_filename_path = argv[i_arg + 1];
+				i_arg++;
 				//std::cout<<"BM FILE NAME PREF: "<<bm_filename_path<<std::endl;
 			} else {
 				std::cout<<"Unrecognized argument: "<<argv[i_arg]<<"\n";
@@ -76,8 +80,8 @@ int main(int argc, char *argv[]) {
 	Benchmark benchmark(bm_filename_path);
 	
 	if (use_benchmark) {
-		benchmark.addAttribute("num_dfas: " + std::to_string(N_DFAs));
-		benchmark.addAttribute("flexibility: " + std::to_string(mu));
+		benchmark.addAttribute("num_dfas", std::to_string(N_DFAs));
+		benchmark.addAttribute("flexibility", std::to_string(mu));
 	}
 
 	//std::cout<<"PRINTING ARGS:"<<argv[1]<<std::endl;
@@ -324,27 +328,29 @@ int main(int argc, char *argv[]) {
 	//bool success = search_obj.search(use_h_flag, use_dfs_flag);
 	search_obj.setFlexibilityParam(mu);
 	benchmark.pushStartPoint("total_search");
-	float pathlength = search_obj.search(use_h_flag);
+	std::pair<bool, float> result = search_obj.search(use_h_flag);
 	//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
-	benchmark.measureMilli("total_search");
-	benchmark.pushAttributesToFile();
-	benchmark.finishSessionInFile();
-	//std::cout<<"Found plan? "<<success<<std::endl;
-	if (pathlength > 0.0) {
-		std::vector<std::string> xtra_info;
-		for (int i=0; i<dfa_arr.size(); ++i) {
-			const std::vector<std::string>* ap_ptr = dfa_arr[i].getAP();
-			for (int ii=0; ii<ap_ptr->size(); ++ii) {
-				xtra_info.push_back(ap_ptr->operator[](ii));
-				xtra_info.back() = xtra_info.back() + "_prio" + std::to_string(i);
+	if (result.first) {
+		benchmark.measureMilli("total_search");
+		benchmark.pushAttributesToFile();
+		benchmark.finishSessionInFile();
+		//std::cout<<"Found plan? "<<success<<std::endl;
+		if (result.second > 0.0) {
+			std::vector<std::string> xtra_info;
+			for (int i=0; i<dfa_arr.size(); ++i) {
+				const std::vector<std::string>* ap_ptr = dfa_arr[i].getAP();
+				for (int ii=0; ii<ap_ptr->size(); ++ii) {
+					xtra_info.push_back(ap_ptr->operator[](ii));
+					xtra_info.back() = xtra_info.back() + "_prio" + std::to_string(i);
+				}
 			}
-		}
-		if (write_file_flag) {
-			search_obj.writePlanToFile(plan_filename_path, xtra_info);
+			if (write_file_flag) {
+				search_obj.writePlanToFile(plan_filename_path, xtra_info);
+			}
 		}
 	}
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {
 		delete dfa_eval_ptrs[i];
 	}
-	return 0;
+	return 1;
 }

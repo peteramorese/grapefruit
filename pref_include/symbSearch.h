@@ -12,10 +12,13 @@ class SymbSearch {
 			std::vector<bool> reachability;
 			std::vector<std::string> action_map;
 		};
-		const std::string bench_mark_session;
-		Benchmark benchmark;
 	private:
 		//std::unordered_map<std::string, SimpleCondition*> propositions;
+		struct PlanResult {
+			T pathcost;
+			bool success;
+			PlanResult(float mu, int num_dfas);
+		};
 		struct spaceWeight {
 			int dfa_ind;
 			std::vector<bool> reachability;
@@ -58,8 +61,10 @@ class SymbSearch {
 		std::vector<T*> set_list;
 		std::vector<std::string> TS_action_sequence;
 		std::vector<int> TS_state_sequence;
-		bool verbose, dfas_set, TS_set, mu_set, plan_found;
+		const std::string bench_mark_session;
+		bool verbose, dfas_set, TS_set, mu_set, plan_found, use_benchmark;
 		std::vector<spaceWeight> heuristic;
+		Benchmark benchmark;
 
 		IVFlexLex<T>* newNode();
 		T* newSet();
@@ -71,7 +76,7 @@ class SymbSearch {
 		bool generateHeuristic();
 		float pullStateWeight(unsigned ts_ind, unsigned dfa_ind, unsigned dfa_list_ind, bool& reachable) const;
 		void clearNodes();
-		T BFS(std::function<bool(const std::pair<int, T*>&, const std::pair<int, T*>&)> compare, std::function<bool(const T&, const T&)> acceptanceCompare, std::function<bool(const T&)> pruneCriterion, bool prune, bool extract_path, bool use_heuristic = false);
+		PlanResult BFS(std::function<bool(const std::pair<int, T*>&, const std::pair<int, T*>&)> compare, std::function<bool(const T&, const T&)> acceptanceCompare, std::function<bool(const T&)> pruneCriterion, bool prune, bool extract_path, bool use_heuristic = false);
 		void clearNodesAndSets();
 		void resetSearchParameters();
 	public:
@@ -80,7 +85,7 @@ class SymbSearch {
 		void setAutomataPrefs(const std::vector<DFA_EVAL*>* dfa_list_ordered_);
 		void setTransitionSystem(TS_EVAL<State>* TS_);
 		void setFlexibilityParam(float mu_);
-		float search(bool use_heuristic = false);
+		std::pair<bool, float> search(bool use_heuristic = false);
 		bool generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_dfa, std::function<float(unsigned int)> cFunc, Strategy& strat, bool use_cost);
 
 		void writePlanToFile(std::string filename, const std::vector<std::string>& xtra_info);

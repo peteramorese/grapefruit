@@ -12,8 +12,8 @@ Benchmark::Benchmark(const std::string& filename_) : filename(filename_) {
 	time_start_init = std::chrono::system_clock::now();
 };
 
-void Benchmark::addAttribute(const std::string& attr) {
-	attributes.push_back(attr);
+void Benchmark::addAttribute(const std::string& attr, const std::string& attr_val) {
+	attributes.push_back(attr + ": " + attr_val);
 }
 
 void Benchmark::addCustomTimeAttr(const std::string& attr, double custom_time, const std::string& units) {

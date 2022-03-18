@@ -186,7 +186,7 @@ int main() {
 	search_obj.setTransitionSystem(&ts_eval);
 	search_obj.setFlexibilityParam(1000.0f);
 	//search_obj.setFlexibilityParam(0.0f);
-	bool success = search_obj.search();
+	std::pair<bool, float> success = search_obj.search();
 	//std::cout<<"Found plan? "<<success<<std::endl;
 
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {

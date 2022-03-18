@@ -31,7 +31,7 @@ def exec_pref_plan_grid_robot(exec_file_name, num_dfas, mu, use_h_flag, write_fi
     exec_cmd += ' --bm-file ' + bm_file
     if grid_size is not None:
         exec_cmd += ' --gridsize ' + str(grid_size) 
-    print("Executable command: ", exec_cmd)
+    #print("Executable command: ", exec_cmd)
     pc = subprocess.call(exec_cmd, shell=True)
     #print("\nFINISHED ON PYTHON SIDE")
     #pc.read()
@@ -97,7 +97,7 @@ if __name__ == "__main__":
             print("Error: Create more than 2 BM formulas")
             break
         for mu_i in mu_disc:
-            print("\nDijkstra's:")
+            #print("\nDijkstra's:")
             exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
                 num_dfas=num_dfas, 
                 mu=mu_i, 
@@ -108,7 +108,7 @@ if __name__ == "__main__":
                 dfas_filepath=WRITE_FILE_DIR_NAME_PREFIX,
                 bm_file=BM_DATA_FILE_NAME_FLEX_NO_H,
                 grid_size=grid_size)
-            print("\nAstar:")
+            #print("\nAstar:")
             exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
                 num_dfas=num_dfas, 
                 mu=mu_i, 

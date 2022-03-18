@@ -253,16 +253,25 @@ int main(int argc, char *argv[]) {
 	}
 
 	search_obj.setFlexibilityParam(mu);
-	float pathlength_no_h = search_obj.search(false);
-	float pathlength_h = search_obj.search(true);
+	std::pair<bool, float> result_no_h = search_obj.search(false);
+	std::pair<bool, float> result_h = search_obj.search(true);
 
-	if (pathlength_no_h != pathlength_h) {
-		std::cout<<"<FAILURE> Dijkstra's pathlength: "<<pathlength_no_h<<" A* pathlength: "<<pathlength_h<<"\n";
+	if (!result_no_h.first || (!result_h.first)) {
+		std::cout<<"<INFO> Planner failed to find a plan\n";
 		std::cout<<"(arguments:";
 		for (int i=0; i<argc; ++i) {
 			std::cout<<" "<<argv[i];
 		}
 		std::cout<<")\n";
+	} else {
+		if (result_no_h.second != result_h.second) {
+			std::cout<<"<FAILURE> Dijkstra's pathlength: "<<result_no_h.second<<" A* pathlength: "<<result_h.second<<"\n";
+			std::cout<<"(arguments:";
+			for (int i=0; i<argc; ++i) {
+				std::cout<<" "<<argv[i];
+			}
+			std::cout<<")\n";
+		}
 	}
 	
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {

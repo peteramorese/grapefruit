@@ -11,6 +11,7 @@ time_attr_marker = "[T] ";
 flex_vs_total_time = {};
 flex_vs_total_time_std = {};
 leg_entries = [];
+n_sessions = zeros(size(filepaths));
 for j = 1:length(filepaths)
     clear seg_data
     data = importdata(filepaths(j),':');
@@ -34,7 +35,7 @@ for j = 1:length(filepaths)
         if ~strcmp(data.textdata{i}, ">--")
             field = data.textdata{i};
             if startsWith(field, time_attr_marker)
-                field = formatTimeLbl(field);
+                field = formatTimeLbl(field, time_attr_marker);
                 time_lbl = true;
             else
                 time_lbl = false;
@@ -71,7 +72,7 @@ for j = 1:length(filepaths)
     end
 
 
-
+    n_sessions(j) = length(data.data(~isnan(data.data)))/(length(seg_data.time_lbls) + length(seg_data.attr_lbls));
     y_vals{j} = [];
     y_vals_std{j} = [];
 
@@ -87,12 +88,14 @@ for j = 1:length(filepaths)
     box_time_data_std{j} = [];
     for i = un_attrs
         for ii = 1:length(box_time_data_inds)
-            temp_data(ii, :) = getByAttr(i, seg_data.attr_data{x_attr_ind}, seg_data.time_data{box_time_data_inds(ii)});
+            temp_get_by_attr = getByAttr(i, seg_data.attr_data{x_attr_ind}, seg_data.time_data{box_time_data_inds(ii)});
+            temp_data_mean(ii) = mean(temp_get_by_attr);
+            temp_data_std(ii) = std(temp_get_by_attr);
         end
         % Arrange in col vector for each time lbl we are plotting:
 
-        box_time_data{j} = [box_time_data{j} mean(temp_data, 2)];
-        box_time_data_std{j} = [box_time_data_std{j} std(temp_data')];
+        box_time_data{j} = [box_time_data{j} temp_data_mean(:)];
+        box_time_data_std{j} = [box_time_data_std{j} temp_data_std(:)];
     end
     box_lbls = un_attrs;
     leg_entries = [leg_entries; group_lbls(j) + box_time_data_lbls'];
@@ -126,7 +129,7 @@ legend(leg_entries,'Interpreter','none')
 
 end
 
-function lblf = formatTimeLbl(lbl)
+function lblf = formatTimeLbl(lbl, time_attr_marker)
     lblf = erase(lbl, time_attr_marker);
     lblf = eraseBetween(lblf, "(", ")", "Boundaries","inclusive");
 end
