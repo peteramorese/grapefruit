@@ -328,6 +328,11 @@ int main(int argc, char *argv[]) {
 	//bool success = search_obj.search(use_h_flag, use_dfs_flag);
 	search_obj.setFlexibilityParam(mu);
 	benchmark.pushStartPoint("total_search");
+	if (verbose) {
+		if (use_h_flag) {
+			std::cout<<"Using heuristic."<<std::endl;
+		}
+	}
 	std::pair<bool, float> result = search_obj.search(use_h_flag);
 	//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
 	if (result.first) {

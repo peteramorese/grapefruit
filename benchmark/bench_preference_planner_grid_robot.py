@@ -55,12 +55,14 @@ if __name__ == "__main__":
     clear_file(BM_DATA_FILE_NAME_H) # Clear the bm session file
     clear_file(BM_DATA_FILE_NAME_FLEX_NO_H) # Clear the bm session file
     clear_file(BM_DATA_FILE_NAME_FLEX_H) # Clear the bm session file
-    trials = 8 #Number of random orderings
+    trials_formulas = 1 #Number of random orderings
+    trials_flexibility = 1 #Number of random orderings
     grid_size = 10
     mu = 10000
-    mu_disc = range(0, 60, 5)
+    mu_disc = range(0, 10, 1)
     print("\n\nScaling Formulas: \n\n")
-    for _ in range(0, trials):
+    for i in range(0, trials_formulas):
+        print("Working on trial {} out of {}...".format(i + 1, trials_formulas))
         num_dfas = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=True)
         if num_dfas <= 2:
             print("Error: Create more than 2 BM formulas")
@@ -91,8 +93,9 @@ if __name__ == "__main__":
                 bm_file=BM_DATA_FILE_NAME_H,
                 grid_size=grid_size)
     print("\n\nScaling Flexibility: \n\n")
-    for _ in range(0, trials):
-        num_dfas = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=True)
+    for i in range(0, trials_flexibility):
+        print("Working on trial {} out of {}...".format(i + 1, trials_flexibility))
+        num_dfas = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=False, verbose=True)
         if num_dfas <= 2:
             print("Error: Create more than 2 BM formulas")
             break

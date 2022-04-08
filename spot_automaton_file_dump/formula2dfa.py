@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from posixpath import dirname
 import spot, os, glob, random
+import argparse
 
 def remove_dfa_files(dirname_prefix):
     # Remove all dfa files in directory:
@@ -8,7 +9,7 @@ def remove_dfa_files(dirname_prefix):
         os.remove(file.path)
         #print(file.path)
 
-def create_file(F_arr, dirname_prefix, random_ordering):
+def create_file(F_arr, dirname_prefix, random_ordering, verbose=False):
     remove_dfa_files(dirname_prefix)
     inds = [i for i in range(0, len(F_arr))]
     if random_ordering:
@@ -17,7 +18,8 @@ def create_file(F_arr, dirname_prefix, random_ordering):
     for F in F_arr: 
         file_ind = inds[i]
         filename = dirname_prefix + "dfa_{}".format(file_ind) + ".txt"
-        print("Writing to: dfa_{}".format(file_ind))
+        if verbose:
+            print("Writing to: dfa_{}".format(file_ind))
         #filename_list[i] = filename
         i = i + 1
         lines_list = list()
@@ -75,7 +77,7 @@ def print_automaton(A):
             print("    accepting sets: ", s_con.acc)
 
 
-def read_write(read_file_name, write_file_dir_name_prefix, random_ordering):
+def read_write(read_file_name, write_file_dir_name_prefix, random_ordering, verbose=False):
     with open(read_file_name, "r") as formula_file:
         lines = formula_file.readlines()
 
@@ -84,14 +86,22 @@ def read_write(read_file_name, write_file_dir_name_prefix, random_ordering):
         F_i = line.replace("\n","")
         if not line == "\n": 
             if not F_i[0]=="#":
-                print("Found formula:     ",F_i)
+                if verbose:
+                    print("Found formula:     ",F_i)
                 F_arr.append(F_i)
 
-    print("Number of formulas: ", len(F_arr))
-    create_file(F_arr, write_file_dir_name_prefix, random_ordering)
+    if verbose: 
+        print("Number of formulas: ", len(F_arr))
+    create_file(F_arr, write_file_dir_name_prefix, random_ordering, verbose=verbose)
     return len(F_arr)
 
 if __name__ == "__main__":
-    READ_FILE_NAME = "formulas.txt"
+    parser =  argparse.ArgumentParser()
+    parser.add_argument("-f", "--filepath", default="formulas.txt", help="Specify forumla.txt file")
+    args = parser.parse_args()
+
+
+    print("Reading file: ", args.filepath)
+    READ_FILE_NAME = args.filepath
     WRITE_FILE_DIR_NAME_PREFIX = "dfas/"
-    read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=False)
+    read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=False, verbose=True)

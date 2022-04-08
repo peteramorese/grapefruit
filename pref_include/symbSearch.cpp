@@ -1774,9 +1774,15 @@ typename SymbSearch<T>::PlanResult SymbSearch<T>::BFS(std::function<bool(const s
 			//	for (int i=0; i<node_inds.size(); ++i) {
 			//		std::cout<<" "<<node_inds[i];
 			//	}
-			//	std::cout<<"\n";
+
+			//int testi = 559;
+			//bool test74 = false;
+			//if (con_node_prod_ind == testi || con_node_prod_ind == 1049) {
 			//	std::cout<<"  con node prod: "<< con_node_prod_ind<<std::endl;
+			//	test74 = true;
 			//}
+			//}
+
 			//// 2028 <- 2038
 
 			//bool test96 = false;
@@ -1957,6 +1963,12 @@ typename SymbSearch<T>::PlanResult SymbSearch<T>::BFS(std::function<bool(const s
 				//if (!ITERATE) { // ITERATE determine whether or not to use A* or DFS
 				//new_temp_setptr->operator=(*curr_leaf_weight);
 				new_temp_setptr->operator=(new_temp_nodeptr->lex_set);
+				
+				//if (test74) {
+				//	std::cout<<"b4 add h"<<std::endl;
+				//	new_temp_setptr->print();
+				//	std::cout<<"max h val: "<<max_h_val<<std::endl;
+				//}
 				//new_temp_setptr->operator+=(fill_set);
 				if (prune) {
 					new_temp_setptr->addToMax(max_h_val);
@@ -1971,7 +1983,20 @@ typename SymbSearch<T>::PlanResult SymbSearch<T>::BFS(std::function<bool(const s
 				//	temp_weight_set_ptr->operator=(new_temp_nodeptr->lex_set);
 				//	new_temp_setptr->operator=(fill_set);
 				//}
+				//if (prune) {
+				//	if (pruneCriterion(*(new_temp_setptr))) {
+				//		//min_w.is_inf[con_node_prod_ind] = false; // mark node as seen
+				//		//visited[con_node_prod_ind] = false;
+				//		//pruned[con_node_prod_ind] = true;
+				//		//if (test48 && test96) {std::cout<<"    -pruned."<<std::endl;}
+				//		continue;
+				//	}
+				//}
 				new_leaf = {con_node_prod_ind, new_temp_setptr};
+				//if (test74) {
+				//	std::cout<<"af add h (f)"<<std::endl;
+				//	new_temp_setptr->print();
+				//}
 			} else {
 				new_leaf = {con_node_prod_ind, &(new_temp_nodeptr->lex_set)};
 			}
@@ -1998,6 +2023,9 @@ typename SymbSearch<T>::PlanResult SymbSearch<T>::BFS(std::function<bool(const s
 			//if (con_node_prod_ind == test_target) {
 			//	std::cout<<"### found the target, parent node: "<<curr_leaf_prod_ind<<" parent node cost: "<<curr_path_weight->getMaxVal()<< std::endl;
 			//}
+
+			// Only consider non pruned nodes
+
 			pq.push(new_leaf); // add to prio queue
 			tree.connect(curr_leaf_ind, {con_node_ind, new_temp_nodeptr});
 			min_w.is_inf[con_node_prod_ind] = false; // mark node as seen
@@ -2041,7 +2069,7 @@ typename SymbSearch<T>::PlanResult SymbSearch<T>::BFS(std::function<bool(const s
 					finished = true;
 					//std::cout<<"Found a solution!"<<"\n";
 					//std::cout<<"SOLUTION IND: "<<solution_ind<<std::endl;
-					//std::cout<<"SOLUTION IND PROD: "<<solution_ind_prod<<std::endl;
+					std::cout<<"SOLUTION IND PROD: "<<solution_ind_prod<<std::endl;
 					//std::cout<<"   -Iterations: "<<iterations<<"\n";
 					//solution_ind = min_w.prod2node_list.at(pq.top().first);
 					//solution_ind = *(pq.top().first);
@@ -2167,20 +2195,21 @@ void SymbSearch<T>::extractPath(const std::vector<int>& parents, int accepting_s
 	if (verbose) {
 		std::cout<<"\n";
 	}
-	//if (verbose) {
-	//	std::cout<<"\nProduct State sequence: ";
-	//}
-	////std::cout<<"first state: "<<reverse_TS_state_sequence[0]<<std::endl;
-	//for (int i=0; i<reverse_prod_state_sequence.size(); ++i) {
-	//	//std::cout<<"i: "<<i<<" size(): "<<TS_state_sequence.size()<<std::endl;
-	//	prod_state_sequence[i] = reverse_prod_state_sequence[reverse_prod_state_sequence.size()-1-i];
-	//	if (verbose) {
-	//		std::cout<<" -> "<<prod_state_sequence[i];
-	//	}
-	//}
-	//if (verbose) {
-	//	std::cout<<"\n";
-	//}
+
+	if (verbose) {
+		std::cout<<"\nProduct State sequence: ";
+	}
+	//std::cout<<"first state: "<<reverse_TS_state_sequence[0]<<std::endl;
+	for (int i=0; i<reverse_prod_state_sequence.size(); ++i) {
+		//std::cout<<"i: "<<i<<" size(): "<<TS_state_sequence.size()<<std::endl;
+		prod_state_sequence[i] = reverse_prod_state_sequence[reverse_prod_state_sequence.size()-1-i];
+		if (verbose) {
+			std::cout<<" -> "<<prod_state_sequence[i];
+		}
+	}
+	if (verbose) {
+		std::cout<<"\n";
+	}
 
 	//TS->reset();
 	std::vector<WL*> con_data;
