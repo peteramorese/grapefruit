@@ -66,6 +66,15 @@ IVFlexLex<T>* SymbSearch<T>::newNode() {
 }
 
 template<class T>
+IVLex* SymbSearch<T>::newNodeLS(unsigned node_size, unsigned set_size) {
+	IVLex* node_i = new IVLex(node_size, set_size);
+	//std::cout<<"new node: "<<node_i<<std::endl;
+	//node_i->v.resize(num_dfas);
+	node_list_ls.push_back(node_i);
+	return node_i;
+}
+
+template<class T>
 T* SymbSearch<T>::newSet() {
 	T* set_i = new T(mu, num_dfas);
 	//node_i->v.resize(num_dfas);
@@ -432,7 +441,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 				int connected_node_ind = -1;
 				std::vector<int> unique_dfa_parent_set;
 				float weight = curr_leaf_weight + temp_weight;
-				unsigned int depth = curr_leaf_depth + 1:
+				unsigned int depth = curr_leaf_depth + 1;
 				bool all_included = true;
 				if (round == 0) {
 					std::vector<int> node_inds(num_dfa_sps + 1);
@@ -1095,16 +1104,22 @@ std::pair<bool, float> SymbSearch<T>::search(bool use_heuristic) {
 
 template<class T>
 SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_dfa) {
-	//std::chrono::time_point<std::chrono::system_clock> end_time;
-	//std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
+	num_dfas = 2; // Only cosafe and liveness dfas
 	std::vector<const std::vector<std::string>*> total_alphabet(num_dfas);
-	std::vector<int> graph_sizes = {static_cast<int>(TS->size())};
+	std::vector<int> graph_sizes(3)
+	graph_size[0] = TS->size();
 	int p_space_size = TS->size();
-	for (int i=0; i<num_dfas; ++i) {
-		total_alphabet[i] = dfa_list_ordered->operator[](i)->getAlphabetEVAL();
-		graph_sizes.push_back(dfa_list_ordered->operator[](i)->getDFA()->size());
-		p_space_size *= dfa_list_ordered->operator[](i)->getDFA()->size();
-	}
+	//for (int i=0; i<num_dfas; ++i) {
+	//	total_alphabet[i] = dfa_list_ordered->operator[](i)->getAlphabetEVAL();
+	//	graph_sizes.push_back(dfa_list_ordered->operator[](i)->getDFA()->size());
+	//	p_space_size *= dfa_list_ordered->operator[](i)->getDFA()->size();
+	//}
+	total_alphabet[0] = cosafe_dfa->getAlphabetEVAL();
+	graph_size[1] = cosafe_dfa->getDFA()->size();
+	total_alphabet[1] = live_dfa->getAlphabetEVAL();
+	graph_size[2] = live_dfa->getDFA()->size();
+	p_space_size *= graph_size[1] * graph_size[2];
+
 	StrategyResult ret_result(p_space_size);
 	//std::vector<bool> included(p_space_size, false); // Check if a node has been seen
 	
@@ -1122,9 +1137,10 @@ SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(DFA_EVAL* co
 	minLS min_w(p_space_size);
 	//std::cout<<"PSPACE SIZE: "<<p_space_size<<std::endl;
 
-	TS->mapStatesToLabels(total_alphabet); // This is in efficient with diverse/large alphabet
+	TS->mapStatesToLabels(total_alphabet); // This is not efficient with diverse/large alphabet
 
-	LexSet min_accepting_cost(mu, num_dfas); // Declare here so we can have a return value
+	// First index in lex set is risk, second is cost
+	LexSet min_accepting_cost(2); // Declare here so we can have a return value
 
 	spaceWeight risk_spw;
 	//std::cout<<"b4 space search"<<std::endl;
@@ -1142,16 +1158,16 @@ SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(DFA_EVAL* co
 	std::priority_queue<std::pair<int, LexSet*>, std::vector<std::pair<int, LexSet*>>, decltype(compare)> pq(compare);
 
 	// Tree to keep history as well as parent node list:
-	Graph<IVFlexLex<LexSet>> tree;
-	std::vector<IVFlexLex<LexSet>*> node_list;
+	Graph<IVLex> tree;
+	std::vector<IVLex*> node_list_ls;
 
-	clearNodes();
+	clearNodesLS();
 
 	// Fill the root tree node (init node):
 	TS->reset();
 	bool init = true;
-	IVFlexLex<LexSet>* temp_nodeptr = newNode();
-	std::vector<float> temp_lex_set_fill(num_dfas);
+	IVLex* temp_nodeptr = newNodeLS();
+	std::vector<float> temp_lex_set_fill(2);
 	temp_nodeptr->i = TS->getCurrNode();
 	std::vector<int> init_node_inds(num_dfas + 1);
 	init_node_inds[0] = TS->getCurrNode();
@@ -1163,8 +1179,7 @@ SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(DFA_EVAL* co
 		temp_lex_set_fill[i] = 0;
 	}
 	int init_node_prod_ind = Graph<float>::augmentedStateImage(init_node_inds, graph_sizes);
-	//std::cout<<"  MAPPING: "<<init_node_prod_ind<<" TO: "<<node_list.size() - 1;
-	min_w.prod2node_list[init_node_prod_ind] = node_list.size() - 1; //map the prod node ind to the node in node list
+	min_w.prod2node_list[init_node_prod_ind] = node_list_ls.size() - 1; //map the prod node ind to the node in node list
 	visited[init_node_prod_ind] = true;
 	min_w.is_inf[init_node_prod_ind] = false;
 	temp_nodeptr->lex_set = temp_lex_set_fill;
@@ -1193,15 +1208,13 @@ SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(DFA_EVAL* co
 		pq.pop();
 		int curr_leaf_prod_ind = curr_leaf.first;
 		int curr_leaf_ind = min_w.prod2node_list.at(curr_leaf_prod_ind);
-		LexSet* curr_path_weight = &node_list[curr_leaf_ind]->lex_set;
+		LexSet* curr_path_weight = &node_list_ls[curr_leaf_ind]->lex_set;
 		
 		visited[curr_leaf_prod_ind] = true;
 
-		TS->set(node_list[curr_leaf_ind]->i);
-		//std::cout<<" SET NODE: "<<node_list[curr_leaf_ind]->i;
+		TS->set(node_list_ls[curr_leaf_ind]->i);
 		for (int i=0; i<num_dfas; ++i) {
-			//std::cout<<", "<<node_list[curr_leaf_ind]->v[i];
-			dfa_list_ordered->operator[](i)->set(node_list[curr_leaf_ind]->v[i]);
+			dfa_list_ordered->operator[](i)->set(node_list_ls[curr_leaf_ind]->v[i]);
 		}
 		con_data.clear();
 		TS->getConnectedDataEVAL(con_data);
@@ -1224,9 +1237,9 @@ SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(DFA_EVAL* co
 		//for (auto con_data_ptr : con_data) {
 		//std::cout<<"entering da loop 2"<<std::endl;
 		for (int j=0; j<con_data.size(); ++j) {
-			TS->set(node_list[curr_leaf_ind]->i);
+			TS->set(node_list_ls[curr_leaf_ind]->i);
 			for (int i=0; i<num_dfas; ++i) {
-				dfa_list_ordered->operator[](i)->set(node_list[curr_leaf_ind]->v[i]);
+				dfa_list_ordered->operator[](i)->set(node_list_ls[curr_leaf_ind]->v[i]);
 			}
 			//printQueue(pq);
 			//std::string temp_str = con_data_ptr->label;
@@ -1305,7 +1318,7 @@ SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(DFA_EVAL* co
 			// Check if node was seen before to see if a shorter path has been found
 			if (!min_w.is_inf[con_node_prod_ind]) { // Node was seen before, non inf weight, but not visited
 				int seen_node_ind = min_w.prod2node_list.at(con_node_prod_ind); // This value will be mapped if weve seen the node before
-				IVFlexLex<LexSet>* seen_node = node_list[seen_node_ind];
+				IVLex* seen_node = node_list_ls[seen_node_ind];
 				LexSet temp_lex_set(mu, &temp_lex_set_fill, num_dfas);
 				temp_lex_set += *curr_path_weight;
 				bool updated = false;
@@ -1331,11 +1344,9 @@ SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(DFA_EVAL* co
 					continue;
 				}
 			} 
-			IVFlexLex<LexSet>* new_temp_nodeptr = newNode();
-			//std::cout<<"  MAPPING: "<<con_node_prod_ind<<" TO: "<<node_list.size() - 1<<std::endl;
-			min_w.prod2node_list[con_node_prod_ind] = node_list.size() - 1; // Make new node, must map the tree and prod indices
-			//std::cout<<" mapping prod node: "<<con_node_prod_ind<<" to tr node: "<<node_list.size() -1<<std::endl;
-			int con_node_ind = node_list.size() - 1;
+			IVLex* new_temp_nodeptr = newNode();
+			min_w.prod2node_list[con_node_prod_ind] = node_list_ls.size() - 1; // Make new node, must map the tree and prod indices
+			int con_node_ind = node_list_ls.size() - 1;
 			new_temp_nodeptr->i = TS->getCurrNode();
 			for (int i=0; i<num_dfas; ++i) {
 				new_temp_nodeptr->v[i] = dfa_list_ordered->operator[](i)->getCurrNode();
@@ -1432,10 +1443,10 @@ SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(DFA_EVAL* co
 		prev_leaf_ind = curr_leaf_ind;
 	}
 	if (finished && sol_found) {
-		if (extract_path) {
-			extractPath(parents, solution_ind,graph_sizes);
-			int p_space_size = 1;
-		}
+		//if (extract_path) {
+		//	extractPath(parents, solution_ind,graph_sizes);
+		//	int p_space_size = 1;
+		//}
 		if (use_benchmark && prune) {
 			benchmark.addCustomTimeAttr("iterations", static_cast<double>(iterations), ""); // no units
 		}
@@ -1527,7 +1538,6 @@ typename SymbSearch<T>::PlanResult SymbSearch<T>::BFS(std::function<bool(const s
 
 	// Tree to keep history as well as parent node list:
 	Graph<IVFlexLex<T>> tree;
-	std::vector<IVFlexLex<T>*> node_list;
 	//std::unordered_map<int, T*> path_length_map;
 	//path_length_map.clear();
 	//std::vector<T*> path_length_map_ptrs;
@@ -2143,7 +2153,7 @@ typename SymbSearch<T>::PlanResult SymbSearch<T>::BFS(std::function<bool(const s
 }
 
 template<class T>
-void SymbSearch<T>::extractPath(const std::vector<IVFlexLex<T>*> node_list, const std::vector<int>& parents, int accepting_state, const std::vector<int>& graph_sizes) {
+void SymbSearch<T>::extractPath(const std::vector<int>& parents, int accepting_state, const std::vector<int>& graph_sizes) {
 	int curr_node = 0;
 	curr_node = accepting_state;
 	std::vector<int> reverse_TS_state_sequence;
@@ -2241,6 +2251,14 @@ void SymbSearch<T>::clearNodes() {
 		delete node_list[i];
 	}
 	node_list.clear();
+}
+
+template<class T>
+void SymbSearch<T>::clearNodesLS() {
+	for (int i=0; i<node_list_ls.size(); ++i) {
+		delete node_list_ls[i];
+	}
+	node_list_ls.clear();
 }
 
 template<class T>

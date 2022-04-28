@@ -58,7 +58,8 @@ class SymbSearch {
 		int num_dfas;
 		TS_EVAL<State>* TS;
 		float mu, pathlength;
-		//std::vector<IVFlexLex<T>*> node_list;
+		std::vector<IVFlexLex<T>*> node_list;
+		std::vector<IVLex> node_list_ls;
 		std::vector<T*> set_list;
 		std::vector<std::string> TS_action_sequence;
 		std::vector<int> TS_state_sequence;
@@ -68,16 +69,18 @@ class SymbSearch {
 		Benchmark benchmark;
 
 		IVFlexLex<T>* newNode();
+		IVLex* newNodeLS(unsigned node_size, unsigned set_size);
 		T* newSet();
 		template<typename Q> void printQueue(Q queue);
 		template<typename Q_f> void printQueueFloat(Q_f queue);
-		void extractPath(const std::vector<IVFlexLex<T>*> node_list, const std::vector<int>& parents, int accepting_state, const std::vector<int>& graph_sizes);
+		void extractPath(const std::vector<int>& parents, int accepting_state, const std::vector<int>& graph_sizes);
 		bool spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa_sps, spaceWeight& spw, std::function<float(float, unsigned int)> spwFunc, int max_depth = -1);
 		bool riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceWeight& spw, std::function<float(unsigned int)> cFunc);
 		bool generateRisk(DFA_EVAL* cosafe_dfa, spaceWeight& spw);
 		bool generateHeuristic();
 		float pullStateWeight(unsigned ts_ind, unsigned dfa_ind, unsigned dfa_list_ind, bool& reachable) const;
 		void clearNodes();
+		void clearNodesLS();
 		PlanResult BFS(std::function<bool(const std::pair<int, T*>&, const std::pair<int, T*>&)> compare, std::function<bool(const T&, const T&)> acceptanceCompare, std::function<bool(const T&)> pruneCriterion, bool prune, bool extract_path, bool use_heuristic = false);
 		void clearNodesAndSets();
 		void resetSearchParameters();
