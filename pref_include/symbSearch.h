@@ -27,7 +27,8 @@ class SymbSearch {
 			std::vector<float> state_weights;
 			std::vector<bool> is_inf;
 		};	
-		struct minWeight {
+		template<>
+		struct minWeight<float> {
 			std::vector<bool> is_inf;
 			std::vector<float> min_weight;
 			minWeight(int size) {
@@ -38,6 +39,21 @@ class SymbSearch {
 				for (int i=0; i<is_inf.size(); ++i) {
 					is_inf[i] = true;
 					min_weight[i] = 0.0f;
+				}
+			}
+		};
+		template<>
+		struct minWeight<LexSet> {
+			std::vector<bool> is_inf;
+			std::vector<LexSet> min_weight;
+			minWeight(int size) {
+				is_inf.resize(size, true);
+				min_weight.resize(size);
+			}
+			void reset() {
+				for (int i=0; i<is_inf.size(); ++i) {
+					is_inf[i] = true;
+					min_weight[i].fill(0.0f);
 				}
 			}
 		};

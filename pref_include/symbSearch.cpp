@@ -211,6 +211,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 				dfa_ptr->reset();
 			}
 			std::vector<int> init_node_inds(num_dfa_sps + 1);
+			init_node_inds[0] = TS_sps->getCurrNode();
 			for (int i=0; i<num_dfa_sps; ++i) {
 				init_node_inds[i+1] = dfa_list_ordered->operator[](i)->getCurrNode();
 			}
@@ -603,13 +604,18 @@ SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(TS_EVAL<Stat
 		std::pair<int, LexSet*> curr_leaf;
 		if (round == 0) {
 			TS_sps->reset();
-			for (auto dfa_ptr : *(dfa_list_sps)) {
-				dfa_ptr->reset();
-			}
+			//for (auto dfa_ptr : *(dfa_list_sps)) {
+			//	dfa_ptr->reset();
+			//}
+			cosafe_dfa->reset();
+			live_dfa->reset();
 			std::vector<int> init_node_inds(num_dfa_sps + 1);
-			for (int i=0; i<num_dfa_sps; ++i) {
-				init_node_inds[i+1] = dfa_list_ordered->operator[](i)->getCurrNode();
-			}
+			init_node_inds[0] = TS_sps->getCurrNode();
+			init_node_inds[1] = cosafe_dfa->getCurrNode();
+			init_node_inds[2] = live_dfa->getCurrNode();
+			//for (int i=0; i<num_dfa_sps; ++i) {
+			//	init_node_inds[i+1] = dfa_list_ordered->operator[](i)->getCurrNode();
+			//}
 			int init_node_prod_ind = Graph<float>::augmentedStateImage(init_node_inds, graph_sizes);
 			//std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_prod_ind<<std::endl;
 			min_w.is_inf[init_node_prod_ind] = false;

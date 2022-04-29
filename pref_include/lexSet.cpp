@@ -16,6 +16,12 @@ void LexSet::setInf() {
 	inf_set = true;
 }
 
+void LexSet::fill(float value) {
+	for (int i=0; i<S; ++i) {
+		lex_set[i] = value;
+	}
+}
+
 bool LexSet::isInf() const {
 	return inf_set;
 }
