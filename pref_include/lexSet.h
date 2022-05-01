@@ -12,6 +12,7 @@ class LexSet {
 		LexSet(float fill_val, unsigned int S_);
 		LexSet(const std::vector<float>* fill_set, unsigned int S_);
 		unsigned int size() const;
+		void fill(float value);
 		void setInf();
 		bool isInf() const;
 		float getMaxVal() const;

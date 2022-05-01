@@ -14,7 +14,7 @@ class StrategyRTEVAL {
 		DFA_EVAL* cosafe_dfa;
 		DFA_EVAL* live_dfa;
 		const std::string NAME = " [StrategyRTEVAL] ";
-		const SymbSearch<FlexLexSetS>::Strategy* strat;
+		const SymbSearch<DetourLex>::StrategyResult* strat;
 		std::vector<int> graph_sizes;
 		std::vector<std::string> action_seq;
 		//void environmentAction(const std::string& action);
@@ -23,7 +23,7 @@ class StrategyRTEVAL {
 		bool violating;
 	public:
 		StrategyRTEVAL(TS_EVAL<State>* TS_, DFA_EVAL* cosafe_dfa_, DFA_EVAL* live_dfa_);
-		void setStrategy(const SymbSearch<FlexLexSetS>::Strategy* strat_);
+		void setStrategy(const SymbSearch<DetourLex>::StrategyResult* strat_);
 		bool run();
 		void writeToFile(const std::string& filename, const std::vector<std::string>& xtra_info);
 };
@@ -87,7 +87,7 @@ void StrategyRTEVAL::reset() {
 	violating = false;
 }
 
-void StrategyRTEVAL::setStrategy(const SymbSearch<FlexLexSetS>::Strategy* strat_) {
+void StrategyRTEVAL::setStrategy(const SymbSearch<DetourLex>::StrategyResult* strat_) {
 	strat = strat_;
 }
 
@@ -338,7 +338,7 @@ int main() {
 	std::vector<DFA> dfa_arr(N_DFAs);
 	std::vector<std::string> filenames(N_DFAs);
 	for (int i=0; i<N_DFAs; ++i) {
-		filenames[i] = "../spot_automaton_file_dump/dfas/dfa_" + std::to_string(i) +".txt";
+		filenames[i] = "../../spot_automaton_file_dump/dfas/dfa_" + std::to_string(i) +".txt";
 	}
 	for (int i=0; i<N_DFAs; ++i) {
 		dfa_arr[i].readFileSingle(filenames[i]);
@@ -370,9 +370,9 @@ int main() {
 		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
 	}
 
-	SymbSearch<FlexLexSetS> search_obj;
+	SymbSearch<DetourLex> search_obj;
 	//search_obj.setAutomataPrefs(&dfa_eval_ptrs);
-	search_obj.setTransitionSystem(&ts_eval);
+	//search_obj.setTransitionSystem(&ts_eval);
 	//float mu;
 	//char use_h;
 	//char use_dfs;
@@ -395,20 +395,20 @@ int main() {
 	//bool use_dfs_flag = (use_dfs == 'y') ? true : false;
 	//search_obj.setFlexibilityParam(0.0f);
 	
-	float risk_param;
-	std::cout<<"\n------------------------------\n";
-	std::cout<<"Enter risk parameter: ";
-	//std::cout<<"\n";
-	std::cin >> risk_param;
+	//float risk_param;
+	//std::cout<<"\n------------------------------\n";
+	//std::cout<<"Enter risk parameter: ";
+	////std::cout<<"\n";
+	//std::cin >> risk_param;
 	
-	auto cFunc = [&risk_param](unsigned int d){
-		//std::cout<<"received: "<<d<<std::endl;
-		//std::cout<<"   ret: "<<1.0/static_cast<float>(d)<<std::endl;
-		return risk_param/static_cast<float>(d);
-	};
-	SymbSearch<DetourLex>::Strategy S;
-	bool success = search_obj.generateRiskStrategy(dfa_eval_ptrs[0], dfa_eval_ptrs[1], cFunc, S, false);
-	std::cout<<"\n   Found strategy? "<<success<<" action_map size: "<<S.action_map.size()<<std::endl;
+	//auto cFunc = [&risk_param](unsigned int d){
+	//	//std::cout<<"received: "<<d<<std::endl;
+	//	//std::cout<<"   ret: "<<1.0/static_cast<float>(d)<<std::endl;
+	//	return risk_param/static_cast<float>(d);
+	//};
+	SymbSearch<DetourLex>::StrategyResult S = search_obj.synthesizeRiskStrategy(&ts_eval, dfa_eval_ptrs[0], dfa_eval_ptrs[1]);
+	
+	std::cout<<"\n   Found strategy? "<<S.success<<" action_map size: "<<S.action_map.size()<<std::endl;
 	for (int i=0; i<S.action_map.size(); ++i) {
 		std::vector<int> ret_inds;
 		Graph<float>::augmentedStatePreImage({static_cast<int>(ts_eval.size()),dfa_eval_ptrs[0]->getDFA()->size(),dfa_eval_ptrs[0]->getDFA()->size()}, i, ret_inds);

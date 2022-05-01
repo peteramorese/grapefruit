@@ -54,7 +54,7 @@ void LexSet::operator+=(const LexSet& arg_set) {
 			lex_set[i] += arg_set.lex_set[i];
 		}
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"Error: Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
 	}
 }
 
@@ -64,7 +64,7 @@ void LexSet::operator+=(const std::vector<float>& arg_vec) {
 			lex_set[i] += arg_vec[i];
 		}
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"Error: Cannot operate on sets of different size ("<<arg_vec.size()<<", "<<lex_set.size()<<").\n";
 	}
 }
 
@@ -77,7 +77,10 @@ void LexSet::operator=(const LexSet& arg_set) {
 			lex_set = arg_set.lex_set;
 		}
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"skobi"<<std::endl;
+		std::cout<<"Error: Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
+		std::vector<int> kill;
+		kill[2] = 1;
 	}
 }
 
@@ -86,7 +89,7 @@ void LexSet::operator=(const std::vector<float>& arg_vec) {
 		inf_set = false;
 		lex_set = arg_vec;
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"Error: Cannot operate on sets of different size ("<<arg_vec.size()<<", "<<lex_set.size()<<").\n";
 	}
 }
 
@@ -97,7 +100,7 @@ bool LexSet::operator==(const LexSet& arg_set) const {
 		}
 		return lex_set == arg_set.lex_set;
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"Error: Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
 		return false;
 	}
 }
@@ -120,7 +123,7 @@ bool LexSet::operator<(const LexSet& arg_set) const {
 		}
 		return false;
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"Error: Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
 		return false;
 	}
 }
@@ -143,7 +146,7 @@ bool LexSet::operator<=(const LexSet& arg_set) const {
 		}
 		return true;
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"Error: Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
 		return false;
 	}
 }
@@ -166,7 +169,7 @@ bool LexSet::operator>(const LexSet& arg_set) const {
 		}
 		return false;
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"Error: Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
 		return false;
 	}
 }
@@ -189,7 +192,7 @@ bool LexSet::operator>=(const LexSet& arg_set) const {
 		}
 		return true;
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"Error: Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
 		return false;
 	}
 }

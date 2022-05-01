@@ -27,8 +27,7 @@ class SymbSearch {
 			std::vector<float> state_weights;
 			std::vector<bool> is_inf;
 		};	
-		template<>
-		struct minWeight<float> {
+		struct minWeight {
 			std::vector<bool> is_inf;
 			std::vector<float> min_weight;
 			minWeight(int size) {
@@ -42,13 +41,12 @@ class SymbSearch {
 				}
 			}
 		};
-		template<>
-		struct minWeight<LexSet> {
+		struct minWeightLS {
 			std::vector<bool> is_inf;
 			std::vector<LexSet> min_weight;
-			minWeight(int size) {
+			minWeightLS(int set_size, int size) {
 				is_inf.resize(size, true);
-				min_weight.resize(size);
+				min_weight.resize(size, LexSet(set_size));
 			}
 			void reset() {
 				for (int i=0; i<is_inf.size(); ++i) {
@@ -76,7 +74,7 @@ class SymbSearch {
 		TS_EVAL<State>* TS;
 		float mu, pathlength;
 		std::vector<IVFlexLex<T>*> node_list;
-		std::vector<IVLex> node_list_ls;
+		//std::vector<IVLex> node_list_ls;
 		std::vector<T*> set_list;
 		std::vector<LexSet*> set_list_ls;
 		std::vector<std::string> TS_action_sequence;
@@ -88,21 +86,22 @@ class SymbSearch {
 
 		// TODO remove LS methods
 		IVFlexLex<T>* newNode();
-		IVLex* newNodeLS(unsigned node_size, unsigned set_size);
+		//IVLex* newNodeLS(unsigned node_size, unsigned set_size);
 		T* newSet();
 		LexSet* newSetLS(unsigned set_size);
 		template<typename Q> void printQueue(Q queue);
 		template<typename Q_f> void printQueueFloat(Q_f queue);
 		void extractPath(const std::vector<int>& parents, int accepting_state, const std::vector<int>& graph_sizes);
 		bool spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa_sps, spaceWeight& spw, std::function<float(float, unsigned int)> spwFunc, int max_depth = -1);
-		bool generateRisk(DFA_EVAL* cosafe_dfa, spaceWeight& spw);
+		bool generateRisk(TS_EVAL<State>* TS_sps, DFA_EVAL* cosafe_dfa, spaceWeight& spw);
 		bool generateHeuristic();
 		float pullStateWeight(unsigned ts_ind, unsigned dfa_ind, unsigned dfa_list_ind, bool& reachable) const;
 		void clearNodes();
-		void clearNodesLS();
+		void clearSetsLS();
+		//void clearNodesLS();
 		PlanResult BFS(std::function<bool(const std::pair<int, T*>&, const std::pair<int, T*>&)> compare, std::function<bool(const T&, const T&)> acceptanceCompare, std::function<bool(const T&)> pruneCriterion, bool prune, bool extract_path, bool use_heuristic = false);
 		void clearNodesAndSets();
-		void clearNodesAndSetsLS();
+		//void clearNodesAndSetsLS();
 		void resetSearchParameters();
 	public:
 		SymbSearch();

@@ -27,3 +27,17 @@ target_link_libraries(preference_planner_grid_robot
 	BenchmarkClass
 	)
 
+
+add_executable(risk_mitigation_grid_robot risk_mitigation_grid_robot.cpp)
+target_include_directories(risk_mitigation_grid_robot PUBLIC ${base_include_dir} ${pref_include_dir}) 
+target_link_libraries(risk_mitigation_grid_robot
+	LexSetClass
+	GraphClass
+	ConditionClass
+	StateSpaceClass
+	StateClass
+	SymbSearchClass
+	TransitionSystemClass
+	BenchmarkClass
+	)
+
