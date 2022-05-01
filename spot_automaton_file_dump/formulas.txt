@@ -24,8 +24,8 @@
 
 # 10 x 10 test case
 # Cosafe:
-#F(ap_x1_y5) | F(ap_x3_y5) | F(ap_x5_y5) | F(ap_x7_y5) | F(ap_x9_y5)
-F(ap_x1_y5) | F(ap_x3_y5) | F(ap_x5_y5) | F(ap_x7_y5) 
+F(ap_x1_y4) | F(ap_x1_y5) | F(ap_x3_y5) | F(ap_x5_y5) | F(ap_x7_y5) | F(ap_x9_y5)
+#F(ap_x1_y5) | F(ap_x3_y5) | F(ap_x5_y5) | F(ap_x7_y5) 
 # Liveness: 
 F(ap_x0_y9)
 

@@ -12,7 +12,7 @@ text_offset_x = .1;
 text_offset_y = .3;
 %%%%%%%%%%%%%%%
 
-plan = importdata("strat_traj_execution.txt");
+plan = importdata("plan_files/strat_traj_execution.txt");
 
 GRID_SIZE = str2double(extractAfter(plan{end}, "GRID_SIZE_"));
 

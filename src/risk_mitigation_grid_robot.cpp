@@ -443,7 +443,7 @@ int main() {
 			}
 		}
 		xtra_info.push_back("GRID_SIZE_" + std::to_string(grid_size));
-		rt_eval.writeToFile("/Users/Peter/Documents/MATLAB/preference_planning_demos/strat_traj_execution.txt", xtra_info);
+		rt_eval.writeToFile("../../matlab_scripts/preference_planning_demos/plan_files/strat_traj_execution.txt", xtra_info);
 	}
 
 
