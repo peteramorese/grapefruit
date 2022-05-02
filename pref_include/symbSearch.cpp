@@ -283,6 +283,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 			int curr_leaf_depth;
 			if (depth_limiting) {
 				curr_leaf_depth = depth_map.at(curr_leaf_ind);
+				std::cout<<"curr_leaf_depth: "<<curr_leaf_depth<<std::endl;
 				if (curr_leaf_depth >= max_depth) {
 					continue;
 				}
@@ -520,6 +521,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 						}
 						if (depth_limiting) {
 							depth_map[temp_connected_node_ind] = depth;
+							std::cout<<"state_weights set: "<<spwFunc(weight, depth)<<std::endl;
                             spw.state_weights[temp_connected_node_ind] = spwFunc(weight, depth);
 						} else {
                             spw.state_weights[temp_connected_node_ind] = spwFunc(weight, 0); 
@@ -601,6 +603,9 @@ typename SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(TS_
 
 	spaceWeight risk_spw;
 	bool success = generateRisk(TS_sps, cosafe_dfa, risk_spw);
+	for (int bb=0; bb<risk_spw.state_weights.size(); ++bb) {
+		std::cout<<"prod_state: "<<bb<<" risk val: "<<risk_spw.state_weights.size()<<std::endl;
+	}
 
 	minWeightLS min_w(2, p_space_size);
 
