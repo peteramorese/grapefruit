@@ -244,7 +244,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 				min_w.is_inf[acc_prod_state] = false;
 				min_w.min_weight[acc_prod_state] = 0;
 				visited[acc_prod_state] = true;
-				spw.state_weights[acc_prod_state] = 0.0f;
+				spw.state_weights[acc_prod_state] = spwFunc(0.0f, 0); // 0.0 edge wieght, 0 depth
 				spw.reachability[acc_prod_state] = true;
 				std::vector<int> sol_inds;
 				//std::cout<<"acc prod state: "<<acc_prod_state<<std::endl;
@@ -603,9 +603,9 @@ typename SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(TS_
 
 	spaceWeight risk_spw;
 	bool success = generateRisk(TS_sps, cosafe_dfa, risk_spw);
-	for (int bb=0; bb<risk_spw.state_weights.size(); ++bb) {
-		std::cout<<"prod_state: "<<bb<<" risk val: "<<risk_spw.state_weights.size()<<std::endl;
-	}
+	//for (int bb=0; bb<risk_spw.state_weights.size(); ++bb) {
+	//	std::cout<<"prod_state: "<<bb<<" risk val: "<<risk_spw.state_weights[bb]<<std::endl;
+	//}
 
 	minWeightLS min_w(2, p_space_size);
 
@@ -710,15 +710,6 @@ typename SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(TS_
 			Graph<float>::augmentedStatePreImage(graph_sizes, curr_leaf_ind, ret_inds);
 
 
-			// Get risk values:
-			// Project into TS x cosafe product
-			int curr_risk_ind = Graph<float>::augmentedStateImage({ret_inds[0], ret_inds[1]}, {graph_sizes[0], graph_sizes[1]});
-			float curr_risk;
-			if (risk_spw.reachability[curr_risk_ind]) {
-				curr_risk = risk_spw.state_weights[curr_risk_ind];
-			} else {
-				curr_risk = 0.0f; // Obtain no cost if there is no risk
-			}
 
 			// SET:
 			TS_sps->set(ret_inds[0]);
@@ -835,14 +826,6 @@ typename SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(TS_
 				int connected_node_ind = -1;
 				std::vector<int> unique_dfa_parent_set;
 				//std::cout<<"b4 the weight stuff"<<std::endl;
-				LexSet weight(2);
-				weight = *curr_leaf_weight;
-				// Get risk values:
-				std::vector<float> risk_vals(2);
-				//std::cout<<"curr risk: "<<curr_risk<<std::endl;
-				risk_vals[0] = curr_risk;
-				risk_vals[1] = temp_weight;
-				weight += risk_vals;
 				//std::cout<<"af the weight stuff"<<std::endl;
 
 
@@ -857,6 +840,15 @@ typename SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(TS_
 					//for (int i=0; i<num_dfa_sps; ++i) {
 					//	node_inds[i+1] = dfa_list_sps->operator[](i)->getCurrNode();
 					//}
+					LexSet weight(2);
+					weight = *curr_leaf_weight;
+					// Get risk values:
+					std::vector<float> risk_vals(2);
+					//std::cout<<"curr risk: "<<curr_risk<<std::endl;
+					risk_vals[0] = 0.0;
+					risk_vals[1] = temp_weight;
+					weight += risk_vals;
+
 					connected_node_ind = Graph<float>::augmentedStateImage(node_inds, graph_sizes);
 					if (visited[connected_node_ind]) {
 						continue;
@@ -888,6 +880,31 @@ typename SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(TS_
 						//	std::cout<<"par node: "<<par_node[bb]<<std::endl;
 						//}
 						temp_connected_node_ind = Graph<float>::augmentedStateImage(par_node, graph_sizes);
+						// Get risk values:
+						// Project into TS x cosafe product
+						int curr_risk_ind = Graph<float>::augmentedStateImage({par_node[0], par_node[1]}, {graph_sizes[0], graph_sizes[1]});
+						float curr_risk;
+						bool curr_risk_is_inf = false;
+						if (risk_spw.reachability[curr_risk_ind]) {
+							curr_risk = risk_spw.state_weights[curr_risk_ind];
+							if (curr_risk == 2.0f) {
+								continue;
+								//curr_risk_is_inf = true;
+							}
+						} else {
+							curr_risk = 0.0f; // Obtain no cost if there is no risk
+						}
+						// Assign the weights
+						LexSet weight(2);
+						weight = *curr_leaf_weight;
+						// Get risk values:
+						std::vector<float> risk_vals(2);
+						//std::cout<<"curr risk: "<<curr_risk<<std::endl;
+						risk_vals[0] = curr_risk;
+						risk_vals[1] = temp_weight;
+						weight += risk_vals;
+
+
 						//std::cout<<"tmp con node ind: "<<temp_connected_node_ind<<std::endl;
 						if (visited[temp_connected_node_ind]) {
 							continue;
@@ -939,6 +956,10 @@ typename SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(TS_
 		}
 	}
 	if (!exit_failure) {
+		for (int bb=0; bb<min_w.min_weight.size(); ++bb) {
+			std::cout<<"prod_state: "<<bb<<" min cost to goal: "<<std::endl;
+			min_w.min_weight[bb].print();
+		}
 		ret_result.success = true;
 		return ret_result;
 	} else {
@@ -952,8 +973,11 @@ template<class T>
 bool SymbSearch<T>::generateRisk(TS_EVAL<State>* TS_sps, DFA_EVAL* cosafe_dfa, spaceWeight& spw) {
 	std::vector<DFA_EVAL*> co_safe_dfa_vec = {cosafe_dfa};
 	auto spwFunc = [](float ts_cost_to_goal, unsigned depth_to_goal) {
-		//return static_cast<float>(depth_to_goal);
-		return 1.0f; // Return a value of 1.0 for any state with imminent risk
+		if (depth_to_goal == 0) {
+			return 2.0f;
+		} else {
+			return 1.0f; // Return a value of 1.0 for any state with imminent risk
+		}
 	};
 	bool success = spaceSearch(TS_sps, &co_safe_dfa_vec, spw, spwFunc, 1); // max_depth of 1 determines risk
 	if (!success) {

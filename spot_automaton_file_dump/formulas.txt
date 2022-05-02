@@ -11,7 +11,7 @@
 ## Risk Mitigation: 
 
 # simple 3 x 3 test case (risk mitigation)
-#F(ap_x0_y2)
+#F(ap_x1_y1) | F(ap_x1_y1)
 #F(ap_x2_y2)
 
 # simple 4 x 4 test case (risk mitigation)
