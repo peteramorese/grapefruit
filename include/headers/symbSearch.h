@@ -84,10 +84,11 @@ class SymbSearch {
 		Benchmark benchmark;
 
 		// DetourLexODO remove LS methods
-		IVFlexLex<DetourLex>* newNode();
+		template<typename LS> IVFlexLex<LS>* newNode();
 		//IVLex* newNodeLS(unsigned node_size, unsigned set_size);
-		DetourLex* newSet();
-		LexSet* newSetLS(unsigned set_size);
+		//DetourLex* newSet();
+		//LexSet* newSetLS(unsigned set_size);
+		template<typename LS> std::shared_ptr<LS> newSet(unsigned set_size);
 		template<typename Q> void printQueue(Q queue);
 		template<typename Q_f> void printQueueFloat(Q_f queue);
 		void extractPath(const std::vector<int>& parents, int accepting_state, const std::vector<int>& graph_sizes);

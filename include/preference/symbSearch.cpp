@@ -2,8 +2,14 @@
 #include<chrono>
 #include<ctime>
 #include<unordered_map>
+#include<memory>
 #include "symbSearch.h"
 #include "benchmark.h"
+
+using std::cout;
+using std::endl;
+template<class T> using shptr = std::shared_ptr<T>;
+template<class T> using unptr = std::unique_ptr<T>;
 
 SymbSearch::PlanResult::PlanResult(float mu, int num_dfas) : pathcost(mu, num_dfas) {}
 
@@ -49,21 +55,29 @@ void SymbSearch::setFlexibilityParam(float mu_) {
 	mu_set = true;
 }
 
-IVFlexLex<DetourLex>* SymbSearch::newNode() {
-	IVFlexLex<DetourLex>* node_i = new IVFlexLex<DetourLex>(mu, num_dfas);
+
+template<typename LS>
+IVFlexLex<LS>* SymbSearch::newNode() {
+	IVFlexLex<LS>* node_i = new IVFlexLex<LS>(mu, num_dfas);
 	node_list.push_back(node_i);
 	return node_i;
 }
 
-DetourLex* SymbSearch::newSet() {
-	DetourLex* set_i = new DetourLex(mu, num_dfas);
-	set_list.push_back(set_i);
-	return set_i;
-}
+//DetourLex* SymbSearch::newSet() {
+//	DetourLex* set_i = new DetourLex(mu, num_dfas);
+//	set_list.push_back(set_i);
+//	return set_i;
+//}
 
-LexSet* SymbSearch::newSetLS(unsigned set_size) {
-	LexSet* set_i = new LexSet(0.0f, set_size);
-	set_list_ls.push_back(set_i);
+//LexSet* SymbSearch::newSetLS(unsigned set_size) {
+//	LexSet* set_i = new LexSet(0.0f, set_size);
+//	set_list_ls.push_back(set_i);
+//	return set_i;
+//}
+
+template<typename LS>
+shptr<LS> SymbSearch::newSet(unsigned set_size) {
+	shptr<LS> set_i = std::make_shared<LS>(0.0f, set_size);
 	return set_i;
 }
 
@@ -71,8 +85,8 @@ template<typename Q>
 void SymbSearch::printQueue(Q queue) {
 	int toomuch = 0;
 	while (!queue.empty()) {
-		std::cout<<"Ind: "<<queue.top().first<<std::endl;
-		std::cout<<"LexSet: ";
+		cout<<"Ind: "<<queue.top().first<<endl;
+		cout<<"LexSet: ";
 		queue.top().second->print();
 		queue.pop();
 		toomuch++;
@@ -85,7 +99,7 @@ void SymbSearch::printQueue(Q queue) {
 template<typename Q_f>
 void SymbSearch::printQueueFloat(Q_f queue) {
 	while (!queue.empty()) {
-		std::cout<<"Ind: "<<queue.top().first<<", Weight: "<<queue.top().second<<std::endl;
+		cout<<"Ind: "<<queue.top().first<<", Weight: "<<queue.top().second<<endl;
 		queue.pop();
 	}
 }
@@ -104,12 +118,12 @@ bool SymbSearch::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa
 	bool depth_limiting_g = (max_depth > 0) ? true : false;
 	const int num_dfa_sps = dfa_list_sps->size();
 	if (!TS_sps->isReversible()) {
-		std::cout<<"Error: Cannot perform space search on irreversible graphs\n";
+		cout<<"Error: Cannot perform space search on irreversible graphs\n";
 		return false;
 	}
 	for (int i=0; i<num_dfa_sps; ++i) {
 		if (!dfa_list_sps->operator[](i)->getDFA()->isReversible()) {
-			std::cout<<"Error: Cannot perform space search on irreversible graphs\n";
+			cout<<"Error: Cannot perform space search on irreversible graphs\n";
 			return false;
 		}
 	} 
@@ -166,7 +180,7 @@ bool SymbSearch::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa
 			pq.push(curr_leaf);
 		} else {
 			if (!accepting.first) {
-				std::cout<<"Error: Did not find target in first search.\n";
+				cout<<"Error: Did not find target in first search.\n";
 				return false;
 			}
 			int ROOT_STATE = p_space_size; // this is the root state ind, guaranteed to be larger than any prod state ind
@@ -201,7 +215,7 @@ bool SymbSearch::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa
 			int curr_leaf_depth;
 			if (depth_limiting) {
 				curr_leaf_depth = depth_map.at(curr_leaf_ind);
-				std::cout<<"curr_leaf_depth: "<<curr_leaf_depth<<std::endl;
+				cout<<"curr_leaf_depth: "<<curr_leaf_depth<<endl;
 				if (curr_leaf_depth >= max_depth) {
 					continue;
 				}
@@ -247,7 +261,7 @@ bool SymbSearch::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa
 				
 				}
 				if (!found_connection) {
-					std::cout<<"Error ("<<search_type<<"): Did not find connectivity in TS. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<std::endl;
+					cout<<"Error ("<<search_type<<"): Did not find connectivity in TS. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<endl;
 					return false;
 				}
 				const std::vector<std::string>* lbls;
@@ -269,7 +283,7 @@ bool SymbSearch::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa
 							}
 						}
 						if (!found_connection) {
-							std::cout<<"Error ("<<search_type<<"): Did not find connectivity in DFA. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<std::endl;
+							cout<<"Error ("<<search_type<<"): Did not find connectivity in DFA. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<endl;
 							return false;
 						}
 					}
@@ -349,7 +363,7 @@ bool SymbSearch::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa
 						}
 						if (depth_limiting) {
 							depth_map[temp_connected_node_ind] = depth;
-							std::cout<<"state_weights set: "<<spwFunc(weight, depth)<<std::endl;
+							cout<<"state_weights set: "<<spwFunc(weight, depth)<<endl;
                             spw.state_weights[temp_connected_node_ind] = spwFunc(weight, depth);
 						} else {
                             spw.state_weights[temp_connected_node_ind] = spwFunc(weight, 0); 
@@ -380,7 +394,7 @@ bool SymbSearch::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa
 	if (!exit_failure) {
 		return true;
 	} else {
-		std::cout<<"Failed space search."<<std::endl;
+		cout<<"Failed space search."<<endl;
 		return false;
 	}
 }
@@ -412,11 +426,11 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 	StrategyResult ret_result(p_space_size);
 
 	if (!TS_sps->isReversible()) {
-		std::cout<<"Error: Cannot perform space search on irreversible graphs\n";
+		cout<<"Error: Cannot perform space search on irreversible graphs\n";
 		return ret_result;
 	}
 	if (!cosafe_dfa->getDFA()->isReversible()) {
-		std::cout<<"Error: Cannot perform space search on irreversible graph cosafe_dfa\n";
+		cout<<"Error: Cannot perform space search on irreversible graph cosafe_dfa\n";
 		return ret_result;
 	}
 
@@ -435,14 +449,14 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 	std::pair<bool, std::vector<int>> accepting;
 	for (int round=0; round<2; ++round) {
 		std::string search_type = (round == 0) ? "forward" : "reverse";
-		std::priority_queue<std::pair<int, LexSet*>, std::vector<std::pair<int, LexSet*>>, decltype(compare)> pq(compare);
+		std::priority_queue<std::pair<int, shptr<LexSet>>, std::vector<std::pair<int, shptr<LexSet>>>, decltype(compare)> pq(compare);
 
 		bool found_target_state = false;
 		std::vector<bool> visited(p_space_size, false);
 
 		clearSetsLS();
 		
-		std::pair<int, LexSet*> curr_leaf;
+		std::pair<int, shptr<LexSet>> curr_leaf;
 		if (round == 0) {
 			TS_sps->reset();
 			cosafe_dfa->reset();
@@ -456,7 +470,7 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 			min_w.min_weight[init_node_prod_ind].fill(0.0f);
 			visited[init_node_prod_ind] = true;
 			curr_leaf.first = init_node_prod_ind;
-			LexSet* new_set_ptr = newSetLS(num_objectives);
+			auto new_set_ptr = newSet<LexSet>(num_objectives);
 			curr_leaf.second = new_set_ptr;
 			pq.push(curr_leaf);
 		} else {
@@ -469,7 +483,7 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 				std::vector<int> sol_inds;
 				Graph<float>::augmentedStatePreImage(graph_sizes, acc_prod_state, sol_inds);
 				curr_leaf.first = acc_prod_state;
-				LexSet* new_set_ptr = newSetLS(num_objectives);
+				auto new_set_ptr = newSet<LexSet>(num_objectives);
 				curr_leaf.second = new_set_ptr;
 				pq.push(curr_leaf);
 			}
@@ -484,7 +498,7 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 			curr_leaf = pq.top();
 			pq.pop();
 			int curr_leaf_ind = curr_leaf.first;
-			LexSet* curr_leaf_weight = curr_leaf.second;
+			shptr<LexSet> curr_leaf_weight = curr_leaf.second;
 			if (!min_w.is_inf[curr_leaf_ind]) {
 				if ((*curr_leaf_weight) > min_w.min_weight[curr_leaf_ind]) {
 					continue;
@@ -522,7 +536,7 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 					found_connection = TS_sps->evalReverse(temp_str, true); // second arg tells wether or not to evolve on graph
 				}
 				if (!found_connection) {
-					std::cout<<"Error ("<<search_type<<"): Did not find connectivity in TS. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<std::endl;
+					cout<<"Error ("<<search_type<<"): Did not find connectivity in TS. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<endl;
 					return ret_result;
 				}
 				const std::vector<std::string>* lbls;
@@ -543,7 +557,7 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 						}
 					}
 					if (!found_connection) {
-						std::cout<<"Error ("<<search_type<<"): Did not find connectivity in cosafe DFA. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<std::endl;
+						cout<<"Error ("<<search_type<<"): Did not find connectivity in cosafe DFA. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<endl;
 						return ret_result;
 					}
 					found_connection = false;
@@ -554,7 +568,7 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 						}
 					}
 					if (!found_connection) {
-						std::cout<<"Error ("<<search_type<<"): Did not find connectivity in liveness DFA. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<std::endl;
+						cout<<"Error ("<<search_type<<"): Did not find connectivity in liveness DFA. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<endl;
 						return ret_result;
 					}
 				} else {
@@ -567,7 +581,7 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 						} else if (ii == 1) {
 							found_connection = live_dfa->getParentNodesWithLabels(lbls, temp_par_container[ii]);
 						} else {
-							std::cout<<"Error num_dfa_sps is greater than 2\n";
+							cout<<"Error num_dfa_sps is greater than 2\n";
 						}
 						parent_node_list_size *= temp_par_container[ii].size();
 						node_list_sizes[ii] = temp_par_container[ii].size();
@@ -622,9 +636,9 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 						min_w.is_inf[connected_node_ind] = false;
 						min_w.min_weight[connected_node_ind] = weight;
 					}
-					LexSet* tmp_new_set_ptr = newSetLS(2);
+					auto tmp_new_set_ptr = newSet<LexSet>(2);
 					*tmp_new_set_ptr = weight;
-					std::pair<int, LexSet*> new_leaf;
+					std::pair<int, shptr<LexSet>> new_leaf;
 					new_leaf.first = connected_node_ind;
 					new_leaf.second = tmp_new_set_ptr;
 					pq.push(new_leaf); // add to prio queue
@@ -668,9 +682,9 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 							ret_result.reachability[temp_connected_node_ind] = true; // mark the new new as reachable
 							ret_result.action_map[temp_connected_node_ind] = temp_str; 
 						}
-						LexSet* tmp_new_set_ptr = newSetLS(2);
+						auto tmp_new_set_ptr = newSet<LexSet>(2);
 						*tmp_new_set_ptr = weight;
-						std::pair<int, LexSet*> new_leaf;
+						std::pair<int, shptr<LexSet>> new_leaf;
 						new_leaf.first = temp_connected_node_ind;
 						new_leaf.second = tmp_new_set_ptr;
 						pq.push(new_leaf); // add to prio queue
@@ -689,13 +703,13 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 	}
 	if (!exit_failure) {
 		for (int bb=0; bb<min_w.min_weight.size(); ++bb) {
-			std::cout<<"prod_state: "<<bb<<" min cost to goal: "<<std::endl;
+			cout<<"prod_state: "<<bb<<" min cost to goal: "<<endl;
 			min_w.min_weight[bb].print();
 		}
 		ret_result.success = true;
 		return ret_result;
 	} else {
-		std::cout<<"Failed space search."<<std::endl;
+		cout<<"Failed space search."<<endl;
 		ret_result.success = false;
 		return ret_result;
 	}
@@ -712,7 +726,7 @@ bool SymbSearch::generateRisk(TS_EVAL<State>* TS_sps, DFA_EVAL* cosafe_dfa, spac
 	};
 	bool success = spaceSearch(TS_sps, &co_safe_dfa_vec, spw, spwFunc, 1); // max_depth of 1 determines risk
 	if (!success) {
-		std::cout<<"Error: spaceSearch failed.\n";
+		cout<<"Error: spaceSearch failed.\n";
 		return false;
 	}
 	return true;
@@ -728,7 +742,7 @@ bool SymbSearch::generateHeuristic() {
 		};
 		bool success = spaceSearch(TS, &dfa_list_single, heuristic[i], spwFunc);
 		if (!success) {
-			std::cout<<"Error: spaceSearch failed on dfa: "<<i<<"\n";
+			cout<<"Error: spaceSearch failed on dfa: "<<i<<"\n";
 			return false;
 		}
 	}
@@ -761,7 +775,7 @@ std::pair<bool, float> SymbSearch::search(bool use_heuristic) {
 	resetSearchParameters();
 	std::pair<bool, float> ret_vals;
 	if (!TS_set || !dfas_set || !mu_set) {
-		std::cout<<"Error: Forgot to set TS, dfas, or mu.\n";
+		cout<<"Error: Forgot to set TS, dfas, or mu.\n";
 		ret_vals.second = false;
 		return ret_vals;
 	}
@@ -779,11 +793,11 @@ std::pair<bool, float> SymbSearch::search(bool use_heuristic) {
 	if (use_benchmark) {benchmark.measureMilli("first_search");}
 	if (!result_LEX.success) {
 		ret_vals.second = false;
-		std::cout<<"Info: First search failed."<<std::endl; //TODO move this to verbose
+		cout<<"Info: First search failed."<<endl; //TODO move this to verbose
 		return ret_vals;
 	}
 	if (verbose) {
-		std::cout<<"Printing prune bound: "<<std::endl;
+		cout<<"Printing prune bound: "<<endl;
 		result_LEX.pathcost.print();
 	}
 	auto pruneCriterionMAX = [&prune_bound=result_LEX.pathcost](const DetourLex& arg_set) {
@@ -804,7 +818,7 @@ std::pair<bool, float> SymbSearch::search(bool use_heuristic) {
 	result_solution = BFS(compareMAX, accCompareMAX, pruneCriterionMAX, true, true, use_heuristic); 
 	if (!result_solution.success) {
 		ret_vals.second = false;
-		std::cout<<"Info: Second search failed."<<std::endl; //TODO move this to verbose
+		cout<<"Info: Second search failed."<<endl; //TODO move this to verbose
 		return ret_vals;
 	}
 	if (use_benchmark) {
@@ -813,7 +827,7 @@ std::pair<bool, float> SymbSearch::search(bool use_heuristic) {
 	}
 	
 	if (verbose) {
-		std::cout<<"Pathlength: "<<pathlength<<", Max val in solution cost: "<<result_solution.pathcost.getMaxVal()<<"\n";
+		cout<<"Pathlength: "<<pathlength<<", Max val in solution cost: "<<result_solution.pathcost.getMaxVal()<<"\n";
 	}
 	ret_vals.first = pathlength;
 	ret_vals.second = true;
@@ -859,7 +873,7 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 	clearNodes();
 	TS->reset();
 	bool init = true;
-	IVFlexLex<DetourLex>* temp_nodeptr = newNode();
+	IVFlexLex<DetourLex>* temp_nodeptr = newNode<DetourLex>();
 	std::vector<float> temp_lex_set_fill(num_dfas);
 	temp_nodeptr->i = TS->getCurrNode();
 	std::vector<int> init_node_inds(num_dfas + 1);
@@ -921,7 +935,7 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 			// Evaluate each graph under the current action
 			found_connection = TS->eval(temp_str, true); // second arg tells wether or not to evolve on graph
 			if (!found_connection) {
-				std::cout<<"Error: Did not find connectivity in TS. Current node: "<<TS->getCurrNode()<<", Action: "<<temp_str<<std::endl;
+				cout<<"Error: Did not find connectivity in TS. Current node: "<<TS->getCurrNode()<<", Action: "<<temp_str<<endl;
 				return ret_result;
 			}
 			for (int i=0; i<num_dfas; ++i) {
@@ -937,7 +951,7 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 					}
 				}
 				if (!found_connection) {
-					std::cout<<"Error: Connectivity was not found for either the TS or a DFA. \n";
+					cout<<"Error: Connectivity was not found for either the TS or a DFA. \n";
 					return ret_result;
 				}
 			}
@@ -998,7 +1012,7 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 					continue;
 				}
 			} 
-			IVFlexLex<DetourLex>* new_temp_nodeptr = newNode();
+			IVFlexLex<DetourLex>* new_temp_nodeptr = newNode<DetourLex>();
 			min_w.prod2node_list[con_node_prod_ind] = node_list.size() - 1; // Make new node, must map the tree and prod indices
 			int con_node_ind = node_list.size() - 1;
 			new_temp_nodeptr->i = TS->getCurrNode();
@@ -1017,7 +1031,7 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 					if (!dfa_list_ordered->operator[](i)->isCurrAccepting()) {
 						float h_val = pullStateWeight(TS->getCurrNode(), dfa_list_ordered->operator[](i)->getCurrNode(), i, reachable);
 						if (!reachable) {
-							std::cout<<"Error: Attempted to find heuristic distance for unreachable product state (ts: "<<TS->getCurrNode()<<" dfa "<<i<<": "<<dfa_list_ordered->operator[](i)->getCurrNode()<<") \n";
+							cout<<"Error: Attempted to find heuristic distance for unreachable product state (ts: "<<TS->getCurrNode()<<" dfa "<<i<<": "<<dfa_list_ordered->operator[](i)->getCurrNode()<<") \n";
 							return ret_result;
 						}
 						if (prune) {
@@ -1080,7 +1094,7 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 		ret_result.success = true;
 		return ret_result;
 	} else {
-		std::cout<<"Failed (no plan)."<<std::endl;
+		cout<<"Failed (no plan)."<<endl;
 		return ret_result;
 	}
 }
@@ -1108,30 +1122,30 @@ void SymbSearch::extractPath(const std::vector<int>& parents, int accepting_stat
 	TS_action_sequence.resize(reverse_TS_state_sequence.size()-1);
 	std::vector<int> prod_state_sequence(reverse_prod_state_sequence.size());
 	if (verbose) {
-		std::cout<<"Info: Successfully extracted plan!\n";
-		std::cout<<"State sequence: ";
+		cout<<"Info: Successfully extracted plan!\n";
+		cout<<"State sequence: ";
 	}
 	for (int i=0; i<reverse_TS_state_sequence.size(); ++i) {
 		TS_state_sequence[i] = reverse_TS_state_sequence[reverse_TS_state_sequence.size()-1-i];
 		if (verbose) {
-			std::cout<<" -> "<<TS_state_sequence[i];
+			cout<<" -> "<<TS_state_sequence[i];
 		}
 	}
 	if (verbose) {
-		std::cout<<"\n";
+		cout<<"\n";
 	}
 
 	if (verbose) {
-		std::cout<<"\nProduct State sequence: ";
+		cout<<"\nProduct State sequence: ";
 	}
 	for (int i=0; i<reverse_prod_state_sequence.size(); ++i) {
 		prod_state_sequence[i] = reverse_prod_state_sequence[reverse_prod_state_sequence.size()-1-i];
 		if (verbose) {
-			std::cout<<" -> "<<prod_state_sequence[i];
+			cout<<" -> "<<prod_state_sequence[i];
 		}
 	}
 	if (verbose) {
-		std::cout<<"\n";
+		cout<<"\n";
 	}
 	std::vector<WL*> con_data;
 	std::vector<int> con_nodes;
@@ -1148,7 +1162,7 @@ void SymbSearch::extractPath(const std::vector<int>& parents, int accepting_stat
 		}
 	}
 	if (verbose) {
-		std::cout<<"Info: Number of actions: "<<TS_action_sequence.size()<<", pathlength: "<<pathlength<<"\n";
+		cout<<"Info: Number of actions: "<<TS_action_sequence.size()<<", pathlength: "<<pathlength<<"\n";
 	}
 }
 
