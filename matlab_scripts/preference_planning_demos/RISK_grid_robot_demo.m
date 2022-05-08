@@ -7,12 +7,13 @@ N_ANIMATE = 25;
 robot_size = 200;
 
 arrow_length = .9;
-arrow_grid_offset = 0;%.05;
+arrow_grid_offset = 0.0;
 text_offset_x = .1;
 text_offset_y = .3;
+no_animate_line_width = 6;
 %%%%%%%%%%%%%%%
 
-plan = importdata("strat_traj_execution.txt");
+plan = importdata("plan_files/strat_traj_execution.txt");
 
 GRID_SIZE = str2double(extractAfter(plan{end}, "GRID_SIZE_"));
 
@@ -135,10 +136,14 @@ scatter(states(1,1), states(1,2), 160, 'r', "filled",'d')
 text(states(1,1) + text_offset_x, states(1,2) + text_offset_y, "Init State")
 
 if (~animate)
-    plot(states(:,1), states(:,2),"LineWidth", 8, 'Color',act_clr(i,:))
-%     scatter(states(:,1), states(:,2),"LineWidth", 8, "Color",'c')
+%     plot(states(:,1), states(:,2),"LineWidth", 8, 'Color',act_clr(i,:))
+    %scatter(states(:,1), states(:,2),"LineWidth", 8, "Color",'c')
     for i=1:size(directions,1)
-        H = quiver(directions(i,1),directions(i,2),directions(i,3),directions(i,4),'off','Color', act_clr(i-1,:),'LineWidth',3);
+        if i == 1
+            H = quiver(directions(i,1),directions(i,2),directions(i,3),directions(i,4),'off','Color', act_clr(1,:),'LineWidth',no_animate_line_width);
+        else
+            H = quiver(directions(i,1),directions(i,2),directions(i,3),directions(i,4),'off','Color', act_clr(i-1,:),'LineWidth',no_animate_line_width);
+        end
     end
 else
     hold on

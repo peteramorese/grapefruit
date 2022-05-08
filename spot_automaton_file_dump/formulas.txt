@@ -11,7 +11,7 @@
 ## Risk Mitigation: 
 
 # simple 3 x 3 test case (risk mitigation)
-#F(ap_x0_y2)
+#F(ap_x1_y1) | F(ap_x1_y1)
 #F(ap_x2_y2)
 
 # simple 4 x 4 test case (risk mitigation)
@@ -25,9 +25,10 @@
 # 10 x 10 test case
 # Cosafe:
 #F(ap_x1_y5) | F(ap_x3_y5) | F(ap_x5_y5) | F(ap_x7_y5) | F(ap_x9_y5)
-#F(ap_x1_y5) | F(ap_x3_y5) | F(ap_x5_y5) | F(ap_x7_y5) 
+#F(ap_x1_y4) | F(ap_x1_y5) | F(ap_x3_y5) | F(ap_x5_y5) | F(ap_x7_y5) | F(ap_x9_y5)
+F(ap_x1_y5) | F(ap_x3_y5) | F(ap_x5_y5) | F(ap_x7_y5) 
 # Liveness: 
-#F(ap_x0_y9)
+F(ap_x0_y9)
 
 ## Preference Planning: 
 
@@ -82,11 +83,11 @@
 #F(ap_x8_y4 & F(ap_x3_y3) & F(ap_x1_y9))
 
 # zig zag:
-F(ap_x1_y9)
-F(ap_x5_y9)
-F(ap_x3_y9)
-F(ap_x4_y0)
-F(ap_x2_y0)
+#F(ap_x1_y9)
+#F(ap_x5_y9)
+#F(ap_x3_y9)
+#F(ap_x4_y0)
+#F(ap_x2_y0)
 
 # zig zag:
 #F(ap_x1_y9)

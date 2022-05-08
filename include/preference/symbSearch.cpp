@@ -1,11 +1,21 @@
 #include<fstream>
 #include<chrono>
 #include<ctime>
+#include<unordered_map>
 #include "symbSearch.h"
 #include "benchmark.h"
 
 template<class T>
 SymbSearch<T>::PlanResult::PlanResult(float mu, int num_dfas) : pathcost(mu, num_dfas) {}
+
+template<class T>
+SymbSearch<T>::StrategyResult::StrategyResult(int graph_size) : reachability(graph_size, false), action_map(graph_size), success(false) {}
+
+//template<class T>
+//template<>
+//SymbSearch<T>::StrategyResult::minWeight(int size) : reachability(graph_size, false), action_map(graph_size), success(false) {}
+
+
 
 template<class T>
 SymbSearch<T>::SymbSearch() : 
@@ -61,11 +71,28 @@ IVFlexLex<T>* SymbSearch<T>::newNode() {
 	return node_i;
 }
 
+//template<class T>
+//IVLex* SymbSearch<T>::newNodeLS(unsigned node_size, unsigned set_size) {
+//	IVLex* node_i = new IVLex(node_size, set_size);
+//	//std::cout<<"new node: "<<node_i<<std::endl;
+//	//node_i->v.resize(num_dfas);
+//	node_list_ls.push_back(node_i);
+//	return node_i;
+//}
+
 template<class T>
 T* SymbSearch<T>::newSet() {
 	T* set_i = new T(mu, num_dfas);
 	//node_i->v.resize(num_dfas);
 	set_list.push_back(set_i);
+	return set_i;
+}
+
+template<class T>
+LexSet* SymbSearch<T>::newSetLS(unsigned set_size) {
+	LexSet* set_i = new LexSet(0.0f, set_size);
+	//node_i->v.resize(num_dfas);
+	set_list_ls.push_back(set_i);
 	return set_i;
 }
 
@@ -104,7 +131,18 @@ void SymbSearch<T>::printQueueFloat(Q_f queue) {
 }
 
 template<class T>
-bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa_list_sps, spaceWeight& spw) {
+bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa_list_sps, spaceWeight& spw, std::function<float(float, unsigned int)> spwFunc, int max_depth) {
+
+	/* Arguments:
+
+	- TS_sps: Transition system
+	- dfa_list_sps: List of dfas in product
+	- spw: Space weight (product state weights)
+	- spwFunc: Space weight function: spwFunc(float ts_cost_to_goal, unsigned depth_to_goal)
+
+	*/
+
+	bool depth_limiting_g = (max_depth > 0) ? true : false;
 	const int num_dfa_sps = dfa_list_sps->size();
 	if (!TS_sps->isReversible()) {
 		std::cout<<"Error: Cannot perform space search on irreversible graphs\n";
@@ -138,7 +176,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 
 	//std::vector<float> first_search_weights(p_space_size, -1.0);
 	//std::vector<float> second_search_weights(p_space_size, -1.0);
-	spw.state_weights.resize(p_space_size);
+	spw.state_weights.resize(p_space_size, 0.0);
 	spw.reachability.resize(p_space_size, false);
 	//spw.is_inf.resize(p_space_size, false);
 	
@@ -159,8 +197,10 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 	std::pair<bool, std::vector<int>> accepting;
 	for (int round=0; round<2; ++round) {
 		//std::cout<<"\n -- spaceSearch: STARTING ROUND: "<<round<<std::endl;
+		bool depth_limiting = (round == 0) ? false : depth_limiting_g;
 		std::string search_type = (round == 0) ? "forward" : "reverse";
 		std::priority_queue<std::pair<int, float>, std::vector<std::pair<int, float>>, decltype(compare)> pq(compare);
+		std::unordered_map<int, int> depth_map;
 		//pq.clear();
 
 		// Tree to keep history as well as parent node list:
@@ -178,8 +218,10 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 				dfa_ptr->reset();
 			}
 			std::vector<int> init_node_inds(num_dfa_sps + 1);
+			init_node_inds[0] = TS_sps->getCurrNode();
 			for (int i=0; i<num_dfa_sps; ++i) {
-				init_node_inds[i+1] = dfa_list_ordered->operator[](i)->getCurrNode();
+				init_node_inds[i+1] = dfa_list_sps->operator[](i)->getCurrNode();
+				//std::cout<<"setting dfa "<<i<<" to: "<<init_node_inds[i+1] <<std::endl;
 			}
 			int init_node_prod_ind = Graph<float>::augmentedStateImage(init_node_inds, graph_sizes);
 			//std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_prod_ind<<std::endl;
@@ -191,6 +233,10 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 			pq.push(curr_leaf);
 		} else {
 			// Add the accepting states to the prio queue with weight zero, and add them to the tree so
+			if (!accepting.first) {
+				std::cout<<"Error: Did not find target in first search.\n";
+				return false;
+			}
 			int ROOT_STATE = p_space_size; // this is the root state ind, guaranteed to be larger than any prod state ind
 			min_w.reset();
 			for (auto acc_prod_state : accepting.second) {
@@ -198,13 +244,20 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 				min_w.is_inf[acc_prod_state] = false;
 				min_w.min_weight[acc_prod_state] = 0;
 				visited[acc_prod_state] = true;
-				spw.state_weights[acc_prod_state] = 0.0f;
+				spw.state_weights[acc_prod_state] = spwFunc(0.0f, 0); // 0.0 edge wieght, 0 depth
 				spw.reachability[acc_prod_state] = true;
 				std::vector<int> sol_inds;
+				//std::cout<<"acc prod state: "<<acc_prod_state<<std::endl;
 				Graph<float>::augmentedStatePreImage(graph_sizes, acc_prod_state, sol_inds);
+				//for (int bb =0; bb<sol_inds.size(); bb++) {
+				//	std::cout<<"sol_inds: "<<sol_inds[bb]<<std::endl;
+				//}
 				curr_leaf.first = acc_prod_state;
 				curr_leaf.second = 0.0f;
 				pq.push(curr_leaf);
+				if (depth_limiting) {
+					depth_map[acc_prod_state] = 0; // Depth of pin states is defined as zero
+				}
 				tree.connect(ROOT_STATE, {acc_prod_state, nullptr}); // the root state is the merged accepting state
 			}
 			//std::cout<<"round 1 set ts init: "<<TS_accepting_state<<std::endl;
@@ -221,22 +274,20 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 		int iterations = 0;
 		while (pq.size() > 0) {
 			iterations++;
-			//std::cout<<iterations<<std::endl;
-			//std::cout<<"in loop"<<std::endl;
-			//pq.top();
-			//std::cout<<"Prior queue size(): "<<pq.size()<<std::endl;
 
 			//printQueueFloat(pq);
-			//int pause;
-			//std::cin >> pause;
 
 			curr_leaf = pq.top();
-			//std::cout<<" TOP --- Ind: "<<pq.top().first<<std::endl;
-			//std::cout<<" TOP --- LexSet: ";
-			//pq.top().second->print();
-
 			pq.pop();
 			int curr_leaf_ind = curr_leaf.first;
+			int curr_leaf_depth;
+			if (depth_limiting) {
+				curr_leaf_depth = depth_map.at(curr_leaf_ind);
+				std::cout<<"curr_leaf_depth: "<<curr_leaf_depth<<std::endl;
+				if (curr_leaf_depth >= max_depth) {
+					continue;
+				}
+			}
 			float curr_leaf_weight = curr_leaf.second;
 			if (!min_w.is_inf[curr_leaf_ind]) {
 				if (curr_leaf_weight > min_w.min_weight[curr_leaf_ind]) {
@@ -318,11 +369,12 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 			//for (auto con_data_ptr : con_data) {
 			for (int j=0; j<con_data.size(); ++j) {
 				// Reset after checking connected nodes
-				TS->set(ret_inds[0]);
+				TS_sps->set(ret_inds[0]);
 				//dfa_sps->set(ret_inds[1]);
 				for (int i=0; i<num_dfa_sps; ++i) {
 					dfa_list_sps->operator[](i)->set(ret_inds[i+1]);
 				}
+				//std::cout<<"ret inds [1]: "<<ret_inds[1]<<std::endl;
 
 				//for (int i=0; i<num_dfas; ++i) {
 				//	//std::cout<<", "<<node_list[curr_leaf_ind]->v[i];
@@ -340,27 +392,27 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 
 				if (round == 0) {
 					//std::cout<<"forward ts eval"<<std::endl;
-					found_connection = TS->eval(temp_str, true); // second arg tells wether or not to evolve on graph
+					found_connection = TS_sps->eval(temp_str, true); // second arg tells wether or not to evolve on graph
 				} else {
 					//std::cout<<"reverse ts eval"<<std::endl;
-					prev_ts_ind = TS->getCurrNode();
-					found_connection = TS->evalReverse(temp_str, true); // second arg tells wether or not to evolve on graph
+					prev_ts_ind = TS_sps->getCurrNode();
+					found_connection = TS_sps->evalReverse(temp_str, true); // second arg tells wether or not to evolve on graph
 				
 				}
 				//std::cout<<"ts evolved state: "<<TS->getCurrNode()<<" under action: "<<temp_str<<std::endl;
 				//
 
 				if (!found_connection) {
-					std::cout<<"Error ("<<search_type<<"): Did not find connectivity in TS. Current node: "<<TS->getCurrNode()<<", Action: "<<temp_str<<std::endl;
+					std::cout<<"Error ("<<search_type<<"): Did not find connectivity in TS. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<std::endl;
 					return false;
 				}
 				const std::vector<std::string>* lbls;
 				if (round == 0){
 					//std::cout<<"\nts node b4 return state labels: "<<TS->getCurrNode()<<std::endl;
-					lbls = TS->returnStateLabels(TS->getCurrNode());
+					lbls = TS_sps->returnStateLabels(TS_sps->getCurrNode());
 				} else {
 					//std::cout<<"\nts node b4 return state labels: "<<prev_ts_ind<<std::endl;
-					lbls = TS->returnStateLabels(prev_ts_ind);
+					lbls = TS_sps->returnStateLabels(prev_ts_ind);
 				}
 				found_connection = false;
 				//std::cout<<"\n before eval"<<std::endl;
@@ -379,7 +431,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 							}
 						}
 						if (!found_connection) {
-							std::cout<<"Error ("<<search_type<<"): Did not find connectivity in DFA. Current node: "<<TS->getCurrNode()<<", Action: "<<temp_str<<std::endl;
+							std::cout<<"Error ("<<search_type<<"): Did not find connectivity in DFA. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<std::endl;
 							return false;
 						}
 					}
@@ -392,7 +444,6 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 						parent_node_list_size *= temp_par_container[ii].size();
 						node_list_sizes[ii] = temp_par_container[ii].size();
 						if (!found_connection) {
-							//std::cout<<"DID NOT FIND CONEC OIOI"<<std::endl;
 							parent_node_list.clear();
 							break;
 						}
@@ -420,6 +471,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 				int connected_node_ind = -1;
 				std::vector<int> unique_dfa_parent_set;
 				float weight = curr_leaf_weight + temp_weight;
+				unsigned int depth = curr_leaf_depth + 1;
 				bool all_included = true;
 				if (round == 0) {
 					std::vector<int> node_inds(num_dfa_sps + 1);
@@ -467,7 +519,13 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 							min_w.min_weight[temp_connected_node_ind] = weight;
 							spw.reachability[temp_connected_node_ind] = true; // mark the new new as reachable
 						}
-						spw.state_weights[temp_connected_node_ind] = weight;
+						if (depth_limiting) {
+							depth_map[temp_connected_node_ind] = depth;
+							std::cout<<"state_weights set: "<<spwFunc(weight, depth)<<std::endl;
+                            spw.state_weights[temp_connected_node_ind] = spwFunc(weight, depth);
+						} else {
+                            spw.state_weights[temp_connected_node_ind] = spwFunc(weight, 0); 
+						}
 						std::pair<int, float> new_leaf = {temp_connected_node_ind, weight};
 						pq.push(new_leaf); // add to prio queue
 						tree.connect(curr_leaf_ind, {temp_connected_node_ind, &min_w.min_weight[temp_connected_node_ind]});
@@ -494,35 +552,8 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 			}
 			prev_leaf_ind = curr_leaf_ind;
 		}
-		//std::cout<<"made it out of space search"<<std::endl;
-		//if ((round == 0) && !found_target_state) {
-		//	std::cout<<"Error: Target state not found\n";
-		//	exit_failure = true; // currently not using this
-		//	return false;
-		//}
-		//if (round == 1) {
-		//	for (int i=0; i<spw.reachability.size(); ++i) {
-		//		if (!spw.reachability[i]) {
-		//			std::cout<<"Warning: Not all states were searched (round 2). Failed prod state ind: "<<i<<std::endl;
-		//			std::vector<int> temp_inds;
-		//			Graph<float>::augmentedStatePreImage(graph_sizes, i, temp_inds);
-		//			std::cout<<"   TS ind: "<<temp_inds[0]<<std::endl;
-		//			std::cout<<"   DFA ind: "<<temp_inds[1]<<std::endl;
-		//		}
-		//	}
-		//}
 	}
 	if (!exit_failure) {
-		//extractPath(parents, solution_ind);
-		//int p_space_size = 1;
-		//p_space_size *=
-		//for 
-
-		//end_time = std::chrono::system_clock::now();
-		//double search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-		//std::cout<<"Search time (milliseconds): "<<search_time<<std::endl;
-		//std::cout<<"Finished. Tree size: "<<tree.size()<<std::endl; //<<", Maximum product graph (no pruning) size: "<<
-		//std::cout<<"\n\n ...Finished with plan."<<std::endl;
 		return true;
 	} else {
 		std::cout<<"Failed space search."<<std::endl;
@@ -530,142 +561,163 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 	}
 }
 
+
 template<class T>
-bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceWeight& spw, std::function<float(unsigned int)> cFunc) {
-	if (!TS_sps->isReversible() || !dfa_sps->getDFA()->isReversible()) {
+typename SymbSearch<T>::StrategyResult SymbSearch<T>::synthesizeRiskStrategy(TS_EVAL<State>* TS_sps, DFA_EVAL* cosafe_dfa, DFA_EVAL* live_dfa) {
+
+	/* Arguments:
+
+	- TS_sps: Transition system
+	- dfa_list_sps: List of dfas in product
+	- spw: Space weight (product state weights)
+	- spwFunc: Space weight function: spwFunc(float ts_cost_to_goal, unsigned depth_to_goal)
+
+	*/
+
+	const int num_dfa_sps = 2;
+	const int num_objectives = 2;
+
+
+	std::vector<const std::vector<std::string>*> total_alphabet(num_dfa_sps);
+	std::vector<int> graph_sizes;
+	graph_sizes.push_back(TS_sps->size());
+	int p_space_size = TS_sps->size();
+	total_alphabet[0] = cosafe_dfa->getAlphabetEVAL();
+	graph_sizes.push_back(cosafe_dfa->getDFA()->size());
+	total_alphabet[1] = live_dfa->getAlphabetEVAL();
+	graph_sizes.push_back(live_dfa->getDFA()->size());
+	p_space_size *= graph_sizes[1] * graph_sizes[2];
+
+	StrategyResult ret_result(p_space_size);
+
+	if (!TS_sps->isReversible()) {
 		std::cout<<"Error: Cannot perform space search on irreversible graphs\n";
-		return false;
+		return ret_result;
 	}
-	int n = TS_sps->size();
-	int m = dfa_sps->getDFA()->size();
-	int p_space_size = n * m;
-	std::vector<int> graph_sizes = {n, m};
+	if (!cosafe_dfa->getDFA()->isReversible()) {
+		std::cout<<"Error: Cannot perform space search on irreversible graph cosafe_dfa\n";
+		return ret_result;
+	}
 
-	// These indices are determined after the first search round:
-	//int TS_accepting_state = -1;
+	TS_sps->mapStatesToLabels(total_alphabet); // This is in efficient with diverse/large alphabet
 
-	//std::vector<int> first_search_weights(p_space_size, -1); 
-	//std::vector<int> second_search_weights(p_space_size, -1);
-	spw.state_weights.resize(p_space_size);
-	spw.reachability.resize(p_space_size, false);
-	spw.is_inf.resize(p_space_size, false);
-
-	minWeight min_w(p_space_size);
-	
-	// Search: 
-
-	//std::chrono::time_point<std::chrono::system_clock> end_time;
-	//std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
-	std::vector<const std::vector<std::string>*> total_alphabet(1);
-	total_alphabet[0] = dfa_sps->getAlphabetEVAL();
-	//for (int i=0; i<num_dfas; ++i) {
+	spaceWeight risk_spw;
+	bool success = generateRisk(TS_sps, cosafe_dfa, risk_spw);
+	//for (int bb=0; bb<risk_spw.state_weights.size(); ++bb) {
+	//	std::cout<<"prod_state: "<<bb<<" risk val: "<<risk_spw.state_weights[bb]<<std::endl;
 	//}
-	//TS->mapStatesToLabels(total_alphabet); // This is in efficient with diverse/large alphabet
-	auto compare = [](std::pair<int, int> pair1, std::pair<int, int> pair2) {
-		return pair1.second > pair2.second;
+
+	minWeightLS min_w(2, p_space_size);
+
+	//auto compare = [](std::pair<int, LexSet*> pair1, std::pair<int, float> pair2) {
+	//	return pair1.second > pair2.second;
+	//};
+	auto compare = [](const std::pair<int, LexSet*>& pair1, const std::pair<int, LexSet*>& pair2) {
+		return *(pair1.second) > *(pair2.second);
 	};
 
 	bool exit_failure = false;
 	std::pair<bool, std::vector<int>> accepting;
 	for (int round=0; round<2; ++round) {
-		std::cout<<"\n -- riskSearch: STARTING ROUND: "<<round<<std::endl;
+		//std::cout<<"\n -- spaceSearch: STARTING ROUND: "<<round<<std::endl;
 		std::string search_type = (round == 0) ? "forward" : "reverse";
-		std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, decltype(compare)> pq(compare);
+		std::priority_queue<std::pair<int, LexSet*>, std::vector<std::pair<int, LexSet*>>, decltype(compare)> pq(compare);
 		//pq.clear();
 
 		// Tree to keep history as well as parent node list:
 		bool found_target_state = false;
-		std::vector<bool> included(p_space_size, false);
-		Graph<float> tree; // values represent the path distance AKA the tree depth
+		std::vector<bool> visited(p_space_size, false);
+		//Graph<IVLex> tree;
+		//std::vector<int> parents;
 
+		//clearNodesAndSetsLS();
+		clearSetsLS();
+		
 		// Root tree node has index zero with weight zero
-		std::pair<int, int> curr_leaf;
+		std::pair<int, LexSet*> curr_leaf;
 		if (round == 0) {
-			//std::cout<<"b4 reset"<<std::endl;
 			TS_sps->reset();
-			dfa_sps->reset();
-			int init_node_ind = Graph<float>::augmentedStateImage({TS_sps->getCurrNode(), dfa_sps->getCurrNode()}, graph_sizes);
-			std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_ind<<std::endl;
-			min_w.is_inf[init_node_ind] = false;
-			min_w.min_weight[init_node_ind] = 0;
-
-			//first_search_weights[init_node_ind] = -1;
-			included[init_node_ind] = true;
-			curr_leaf.first = init_node_ind;
-			curr_leaf.second = 0;
+			//for (auto dfa_ptr : *(dfa_list_sps)) {
+			//	dfa_ptr->reset();
+			//}
+			cosafe_dfa->reset();
+			live_dfa->reset();
+			std::vector<int> init_node_inds(num_dfa_sps + 1);
+			init_node_inds[0] = TS_sps->getCurrNode();
+			init_node_inds[1] = cosafe_dfa->getCurrNode();
+			init_node_inds[2] = live_dfa->getCurrNode();
+			//for (int i=0; i<num_dfa_sps; ++i) {
+			//	init_node_inds[i+1] = dfa_list_ordered->operator[](i)->getCurrNode();
+			//}
+			int init_node_prod_ind = Graph<float>::augmentedStateImage(init_node_inds, graph_sizes);
+			//std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_prod_ind<<std::endl;
+			min_w.is_inf[init_node_prod_ind] = false;
+			min_w.min_weight[init_node_prod_ind].fill(0.0f);
+			visited[init_node_prod_ind] = true;
+			curr_leaf.first = init_node_prod_ind;
+			LexSet* new_set_ptr = newSetLS(num_objectives);
+			curr_leaf.second = new_set_ptr;
 			pq.push(curr_leaf);
-			//std::cout<<"af reset"<<std::endl;
 		} else {
 			// Add the accepting states to the prio queue with weight zero, and add them to the tree so
-			int ROOT_STATE = n * m; // this is the root state ind, guaranteed to be larger than any prod state ind
+			int ROOT_STATE = p_space_size; // this is the root state ind, guaranteed to be larger than any prod state ind
 			min_w.reset();
 			for (auto acc_prod_state : accepting.second) {
+				//std::cout<<"Found accepting prod state: "<<acc_prod_state<<std::endl;
 				min_w.is_inf[acc_prod_state] = false;
-				min_w.min_weight[acc_prod_state] = 0;
-				included[acc_prod_state] = true;
-				spw.state_weights[acc_prod_state] = -1.0f;
-				spw.is_inf[acc_prod_state] = true;
-				spw.reachability[acc_prod_state] = true;
+				min_w.min_weight[acc_prod_state].fill(0.0f);
+				visited[acc_prod_state] = true;
+				//spw.state_weights[acc_prod_state] = 0.0f;
+				//spw.reachability[acc_prod_state] = true;
 				std::vector<int> sol_inds;
 				Graph<float>::augmentedStatePreImage(graph_sizes, acc_prod_state, sol_inds);
-				std::cout<<" ---- Found (TS): "<< sol_inds[0]<<std::endl;
 				curr_leaf.first = acc_prod_state;
-				curr_leaf.second = 0.0f;
+				LexSet* new_set_ptr = newSetLS(num_objectives);
+				curr_leaf.second = new_set_ptr;
 				pq.push(curr_leaf);
-				tree.connect(ROOT_STATE, {acc_prod_state, nullptr}); // the root state is the merged accepting state
+				//if (depth_limiting) {
+				//	depth_map[acc_prod_state] = 0; // Depth of pin states is defined as zero
+				//}
+				//tree.connect(ROOT_STATE, {acc_prod_state, nullptr}); // the root state is the merged accepting state
 			}
-			std::cout<<"found "<<accepting.second.size()<<" accepting states"<<std::endl;
 		}
 
 		float min_accepting_cost = -1;
 		int prev_leaf_ind = -1;
 		int prod_solution_ind;
+		int iterations = 0;
 		while (pq.size() > 0) {
-			//int pause;
-			//std::cin >> pause;
-			curr_leaf = pq.top();
-			//std::cout<<" TOP --- Ind: "<<pq.top().first<<std::endl;
-			//std::cout<<" TOP --- LexSet: ";
-			//pq.top().second->print();
+			iterations++;
 
+			//printQueueFloat(pq);
+
+			curr_leaf = pq.top();
 			pq.pop();
 			int curr_leaf_ind = curr_leaf.first;
-			int curr_leaf_depth = curr_leaf.second;
+			//int curr_leaf_depth = depth_map.at(curr_leaf_ind);
+			//if (depth_limiting && curr_leaf_depth >= max_depth) {
+			//	continue;
+			//}
+			LexSet* curr_leaf_weight = curr_leaf.second;
 			if (!min_w.is_inf[curr_leaf_ind]) {
-				int min_leaf_depth = static_cast<int>(min_w.min_weight[curr_leaf_ind]);
-				if (curr_leaf_depth > min_leaf_depth ) {
+				if ((*curr_leaf_weight) > min_w.min_weight[curr_leaf_ind]) {
 					continue;
 				}
 			}
+
+			visited[curr_leaf_ind] = true;
 			std::vector<int> ret_inds;
 			Graph<float>::augmentedStatePreImage(graph_sizes, curr_leaf_ind, ret_inds);
 
-			//if (curr_leaf_ind == prev_leaf_ind) {
-			//	std::cout<<"Info: No solution found. "<<std::endl;
-			//	exit_failure = true;
-			//	break;
-			//}
 
-			//std::cout<<" ------ CURRENT LEAF: "<<curr_leaf_ind<<std::endl;
-			//std::cout<<" CURR LEAF WEIGHT: "<<curr_leaf_weight<<std::endl;
-			//curr_leaf.second->setInf();
-			//pq.push(curr_leaf);
-			//printQueue(pq);
-
-			//if (tree_end_node != 0) { // Use temp_nodeptr from outside the loop (init) when no nodes are in tree (=0)
-			//	temp_nodeptr = tree.getNodeDataptr(curr_leaf_ind);
-			//}
 
 			// SET:
 			TS_sps->set(ret_inds[0]);
-			dfa_sps->set(ret_inds[1]);
-
-			//std::cout<<" SET NODE: "<<node_list[curr_leaf_ind]->i;
-			//for (int i=0; i<num_dfas; ++i) {
-			//	//std::cout<<", "<<node_list[curr_leaf_ind]->v[i];
-			//	dfa_list_ordered->operator[](i)->set(node_list[curr_leaf_ind]->v[i]);
+			cosafe_dfa->set(ret_inds[1]);
+			live_dfa->set(ret_inds[2]);
+			//for (int i=0; i<num_dfa_sps; ++i) {
+			//	dfa_list_sps->operator[](i)->set(ret_inds[i+1]);
 			//}
-			//std::cout<<" ---\n";
 			std::vector<int> con_nodes;
 			std::vector<WL*> con_data;
 			con_data.clear();
@@ -676,589 +728,224 @@ bool SymbSearch<T>::riskSearch(TS_EVAL<State>* TS_sps, DFA_EVAL* dfa_sps, spaceW
 				TS_sps->getParentDataEVAL(con_data);
 				TS_sps->getParentNodesEVAL(con_nodes);
 			}
-			//if (round == 1) {
-			//std::cout<<"ROOT:  ts curr node: "<<TS_sps->getCurrNode()<<std::endl;
-			//std::cout<<"    :  ts labels:";
-			//const std::vector<std::string>* temp_lbls;
-			//temp_lbls = TS->returnStateLabels(TS_sps->getCurrNode());
-			//for (int i=0; i<temp_lbls->size(); ++i) {
-			//	std::cout<<" "<<temp_lbls->operator[](i);
-			////	std::cout<<"  label: "<<con_data[i]->label<<std::endl;
-			////	std::cout<<"  weight: "<<con_data[i]->weight<<std::endl;
-			//}
-			//std::cout<<"\n";
-			//std::cout<<"ROOT:  dfa curr node: "<<dfa_sps->getCurrNode()<<std::endl;
-			////std::cout<<"printing con nodes and data for current node: "<<TS_sps->getCurrNode()<<std::endl;
-			//////std::cout<<"con nodes size:"<<con_nodes.size()<<std::endl;
-			//////std::cout<<"con data size:"<<con_data.size()<<std::endl;
-			//std::cout<<"STAR: con ts nodes:";
-			//for (int i=0; i<con_data.size(); ++i) {
-			//	std::cout<<" "<<con_nodes[i];
-			////	std::cout<<"  label: "<<con_data[i]->label<<std::endl;
-			////	std::cout<<"  weight: "<<con_data[i]->weight<<std::endl;
-			//}
-			//std::cout<<"\n";
-		
-			//int pause;
-			//std::cin >> pause;
-			//}
-			//std::pair<int, int*> src;
-			//src.first = curr_leaf_ind;
-			//src.second = &curr_leaf_depth;
-			//for (auto con_data_ptr : con_data) {
 			for (int j=0; j<con_data.size(); ++j) {
 				// Reset after checking connected nodes
 				TS_sps->set(ret_inds[0]);
-				dfa_sps->set(ret_inds[1]);
-
-				//for (int i=0; i<num_dfas; ++i) {
-				//	//std::cout<<", "<<node_list[curr_leaf_ind]->v[i];
-				//	dfa_list_ordered->operator[](i)->set(node_list[curr_leaf_ind]->v[i]);
+                cosafe_dfa->set(ret_inds[1]);
+                live_dfa->set(ret_inds[2]);
+				//dfa_sps->set(ret_inds[1]);
+				//for (int i=0; i<num_dfa_sps; ++i) {
+				//	dfa_list_sps->operator[](i)->set(ret_inds[i+1]);
 				//}
-				//printQueue(pq);
-				//std::string temp_str = con_data_ptr->label;
-				//float temp_weight = con_data_ptr->weight;
 				std::string temp_str = con_data[j]->label;
-				//float temp_weight = con_data[j]->weight;
-				int temp_depth = 1;
-				//std::cout<<"curr_leaf_depth = "<<curr_leaf_depth<<std::endl;
-				//float temp_weight = cFunc(curr_leaf_depth + temp_depth);
-				//std::cout<<" CFUNC INPUT: "<<curr_leaf_depth + temp_depth<<" OUTPUT: "<<temp_weight<<std::endl;
-				//std::cout<<"temp label: "<<temp_str<<std::endl;
-				//std::cout<<"temp weight: "<<temp_weight<<std::endl;
+				float temp_weight = con_data[j]->weight;
 				bool found_connection = true;
 				int prev_ts_ind;
 
 				if (round == 0) {
-					//std::cout<<"forward ts eval"<<std::endl;
 					found_connection = TS_sps->eval(temp_str, true); // second arg tells wether or not to evolve on graph
 				} else {
-					//std::cout<<"reverse ts eval"<<std::endl;
 					prev_ts_ind = TS_sps->getCurrNode();
 					found_connection = TS_sps->evalReverse(temp_str, true); // second arg tells wether or not to evolve on graph
 				
 				}
-				//std::cout<<"ts evolved state: "<<TS->getCurrNode()<<" under action: "<<temp_str<<std::endl;
-				//
-
 				if (!found_connection) {
-					std::cout<<"Error ("<<search_type<<"): Did not find connectivity in TS. Current node: "<<TS->getCurrNode()<<", Action: "<<temp_str<<std::endl;
-					return false;
+					std::cout<<"Error ("<<search_type<<"): Did not find connectivity in TS. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<std::endl;
+					return ret_result;
 				}
 				const std::vector<std::string>* lbls;
 				if (round == 0){
-					//std::cout<<"\nts node b4 return state labels: "<<TS->getCurrNode()<<std::endl;
-					//std::cout<<"ts curr node (4 lblsl) : "<<TS->getCurrNode()<<std::endl;
-					lbls = TS->returnStateLabels(TS->getCurrNode());
+					lbls = TS_sps->returnStateLabels(TS_sps->getCurrNode());
 				} else {
-					//std::cout<<"\nts node b4 return state labels: "<<prev_ts_ind<<std::endl;
-					lbls = TS->returnStateLabels(prev_ts_ind);
+					lbls = TS_sps->returnStateLabels(prev_ts_ind);
 				}
 				found_connection = false;
-				//std::cout<<"\n before eval"<<std::endl;
 				bool found_true = true;
-				std::vector<int> parent_node_list;
-				//std::cout<<"LBLS SIZE::::: "<<lbls->size()<<std::endl;
+				std::vector<std::vector<int>> parent_node_list(num_dfa_sps); // Array of nodes arrays [(TS, DFA1, DFA2, ...), (), (), ...]
 				if (round == 0) {
-					for (int ii=0; ii<lbls->size(); ++ii) {
-						//std::cout<<" INPUT, lbl: "<<lbls->operator[](ii)<<std::endl;
-						//std::cout<<"       label: --- "<<lbls->operator[](ii)<<std::endl;
-						//std::cout<<"DFA::: "<<(i-1)<<" curr node; "<<(dfa_list_ordered->operator[](i-1)->getCurrNode())<<std::endl;
-						//if (round == 0) {
-						if (dfa_sps->eval(lbls->operator[](ii), true)) {
-							//std::cout<<" OUTPUT EVAL TRUE"<<std::endl;
-							found_connection = true;
-							break;
-						} 
-					}
+					//for (int i=0; i<num_dfa_sps; ++i) {
+						found_connection = false;
+						for (int ii=0; ii<lbls->size(); ++ii) {
+							if (cosafe_dfa->eval(lbls->operator[](ii), true)) {
+								found_connection = true;
+								break;
+							}
+						}
+						if (!found_connection) {
+							std::cout<<"Error ("<<search_type<<"): Did not find connectivity in cosafe DFA. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<std::endl;
+							return ret_result;
+						}
+						found_connection = false;
+						for (int ii=0; ii<lbls->size(); ++ii) {
+							if (live_dfa->eval(lbls->operator[](ii), true)) {
+								found_connection = true;
+								break;
+							}
+						}
+						if (!found_connection) {
+							std::cout<<"Error ("<<search_type<<"): Did not find connectivity in liveness DFA. Current node: "<<TS_sps->getCurrNode()<<", Action: "<<temp_str<<std::endl;
+							return ret_result;
+						}
+					//}
 				} else {
-					found_connection = dfa_sps->getParentNodesWithLabels(lbls, parent_node_list);
-					//std::cout<<"found connection? : "<<found_connection<<" parent_node_list size: "<<parent_node_list.size()<<std::endl;
-
+					std::vector<std::vector<int>> temp_par_container(num_dfa_sps); // Array of lists of parent nodes for each DFA
+					std::vector<int> node_list_sizes(num_dfa_sps);
+					int parent_node_list_size = 1;
+					for (int ii=0; ii<num_dfa_sps; ++ii) {
+						if (ii == 0) {
+							found_connection = cosafe_dfa->getParentNodesWithLabels(lbls, temp_par_container[ii]);
+						} else if (ii == 1) {
+							found_connection = live_dfa->getParentNodesWithLabels(lbls, temp_par_container[ii]);
+						} else {
+							std::cout<<"Error num_dfa_sps is greater than 2\n";
+						}
+						parent_node_list_size *= temp_par_container[ii].size();
+						node_list_sizes[ii] = temp_par_container[ii].size();
+						if (!found_connection) {
+							parent_node_list.clear();
+							break;
+						}
+					}
+					if (found_connection){
+						parent_node_list.resize(parent_node_list_size);
+						for (int ii=0; ii<parent_node_list_size; ++ii) {
+							std::vector<int> node(num_dfa_sps + 1); // Temp unique node
+							std::vector<int> ret_list_inds;
+							// Use aug state pre image in the space of node list sizes (not product graph)
+							Graph<float>::augmentedStatePreImage(node_list_sizes, ii, ret_list_inds);
+							node[0] = TS_sps->getCurrNode();
+							for (int iii=0; iii<num_dfa_sps; ++iii) {
+								node[iii+1] = temp_par_container[iii][ret_list_inds[iii]];
+							}
+							parent_node_list[ii] = node;
+						}
+					}
 				}
-			
+
 				bool unique = true;
 				int connected_node_ind = -1;
 				std::vector<int> unique_dfa_parent_set;
+				//std::cout<<"b4 the weight stuff"<<std::endl;
+				//std::cout<<"af the weight stuff"<<std::endl;
 
-				// CHECK IF CANDIDATE NODE WAS ALREADY INCLUDED, IF SO, ADD IT TO THE QUEUE AND TREE:
-				int depth = curr_leaf_depth + temp_depth;
-				float f_depth = static_cast<float>(depth);
+
+				//float weight = curr_leaf_weight + temp_weight;
+				//unsigned int depth = curr_leaf_depth + 1;
 				bool all_included = true;
 				if (round == 0) {
-					//std::cout<<"Checking acceptance: TS: "<<TS_sps->getCurrNode()<<" DFA: "<<dfa_sps->getCurrNode()<<std::endl;
-					connected_node_ind = Graph<float>::augmentedStateImage({TS_sps->getCurrNode(), dfa_sps->getCurrNode()}, graph_sizes);
-					if (included[connected_node_ind]) {
+					std::vector<int> node_inds(num_dfa_sps + 1);
+					node_inds[0] = TS_sps->getCurrNode();
+					node_inds[1] = cosafe_dfa->getCurrNode();
+					node_inds[2] = live_dfa->getCurrNode();
+					//for (int i=0; i<num_dfa_sps; ++i) {
+					//	node_inds[i+1] = dfa_list_sps->operator[](i)->getCurrNode();
+					//}
+					LexSet weight(2);
+					weight = *curr_leaf_weight;
+					// Get risk values:
+					std::vector<float> risk_vals(2);
+					//std::cout<<"curr risk: "<<curr_risk<<std::endl;
+					risk_vals[0] = 0.0;
+					risk_vals[1] = temp_weight;
+					weight += risk_vals;
+
+					connected_node_ind = Graph<float>::augmentedStateImage(node_inds, graph_sizes);
+					if (visited[connected_node_ind]) {
 						continue;
-					}
+					} 
 					if (!min_w.is_inf[connected_node_ind]) { // Candidate node has been found
-						if (min_w.min_weight[connected_node_ind] > f_depth) { // Candidate node is more optimal than previous found node
-							min_w.min_weight[connected_node_ind] = f_depth;
-						} else if (min_w.min_weight[connected_node_ind] < f_depth) { // Candidate node is less optimal than previous found node (don't care about it)
-							continue;
-						}
+						if (min_w.min_weight[connected_node_ind] > weight) { // Candidate node is more optimal than previous found node
+							min_w.min_weight[connected_node_ind] = weight;
+						} //else if (min_w.min_weight[connected_node_ind] < weight) { // Candidate node is less optimal than previous found node (don't care about it)
+						//}
+						continue;
 					} else {
 						min_w.is_inf[connected_node_ind] = false;
-						min_w.min_weight[connected_node_ind] = f_depth;
+						min_w.min_weight[connected_node_ind] = weight;
 					}
-					//first_search_weights[connected_node_ind] = depth;
-					std::pair<int, int> new_leaf = {connected_node_ind, depth};
+
+					//first_search_weights[connected_node_ind] = curr_leaf_weight + temp_weight;
+					LexSet* tmp_new_set_ptr = newSetLS(2);
+					*tmp_new_set_ptr = weight;
+					std::pair<int, LexSet*> new_leaf;
+					new_leaf.first = connected_node_ind;
+					new_leaf.second = tmp_new_set_ptr;
 					pq.push(new_leaf); // add to prio queue
-					//tree.connect(src, {connected_node_ind, &first_search_weights[connected_node_ind]});
-					tree.connect(curr_leaf_ind, {connected_node_ind, &min_w.min_weight[connected_node_ind]});
-					included[connected_node_ind] = true;
+					//tree.connect(curr_leaf_ind, {connected_node_ind, &min_w.min_weight[connected_node_ind]});
+					//included[connected_node_ind] = true;
 				} else {
 					int temp_connected_node_ind = -1;
 					for (auto par_node : parent_node_list) {
-						temp_connected_node_ind = Graph<float>::augmentedStateImage({TS_sps->getCurrNode(), par_node}, graph_sizes);
-						//std::cout<<"b4 incl"<<std::endl;
-						if (included[temp_connected_node_ind]) {
+						//for (int bb=0; bb<par_node.size(); bb++) {
+						//	std::cout<<"par node: "<<par_node[bb]<<std::endl;
+						//}
+						temp_connected_node_ind = Graph<float>::augmentedStateImage(par_node, graph_sizes);
+						// Get risk values:
+						// Project into TS x cosafe product
+						int curr_risk_ind = Graph<float>::augmentedStateImage({par_node[0], par_node[1]}, {graph_sizes[0], graph_sizes[1]});
+						float curr_risk;
+						bool curr_risk_is_inf = false;
+						if (risk_spw.reachability[curr_risk_ind]) {
+							curr_risk = risk_spw.state_weights[curr_risk_ind];
+							if (curr_risk == 2.0f) {
+								continue;
+								//curr_risk_is_inf = true;
+							}
+						} else {
+							curr_risk = 0.0f; // Obtain no cost if there is no risk
+						}
+						// Assign the weights
+						LexSet weight(2);
+						weight = *curr_leaf_weight;
+						// Get risk values:
+						std::vector<float> risk_vals(2);
+						//std::cout<<"curr risk: "<<curr_risk<<std::endl;
+						risk_vals[0] = curr_risk;
+						risk_vals[1] = temp_weight;
+						weight += risk_vals;
+
+
+						//std::cout<<"tmp con node ind: "<<temp_connected_node_ind<<std::endl;
+						if (visited[temp_connected_node_ind]) {
 							continue;
 						} else {
 							all_included = false;
 						}
-						//std::cout<<"af incl"<<std::endl;
 						if (!min_w.is_inf[temp_connected_node_ind]) {
-							if (min_w.min_weight[temp_connected_node_ind] > f_depth) { // Candidate node is more optimal than previous found node
-								min_w.min_weight[temp_connected_node_ind] = f_depth;
-							} else if (min_w.min_weight[temp_connected_node_ind] < f_depth) { // Candidate node is less optimal than previous found node (don't care about it)
-								continue;
-							}
+							if (min_w.min_weight[temp_connected_node_ind] > weight) {
+								min_w.min_weight[temp_connected_node_ind] = weight;
+								ret_result.action_map[temp_connected_node_ind] = temp_str; 
+							} //else if (min_w.min_weight[temp_connected_node_ind] < weight) {
+							//}
+							continue;
 						} else {
 							min_w.is_inf[temp_connected_node_ind] = false;
-							min_w.min_weight[temp_connected_node_ind] = f_depth;
-							spw.reachability[temp_connected_node_ind] = true; // mark the new new as reachable
-							//unique_dfa_parent_set.push_back(temp_connected_node_ind); // add the prod ind to the set of nodes to add
+							min_w.min_weight[temp_connected_node_ind] = weight;
+							ret_result.reachability[temp_connected_node_ind] = true; // mark the new new as reachable
+							ret_result.action_map[temp_connected_node_ind] = temp_str; 
 						}
-						spw.state_weights[temp_connected_node_ind] = cFunc(depth); // Only a fcn of depth
-						//second_search_weights[unique_con_node] = depth;
-						std::pair<int, int> new_leaf = {temp_connected_node_ind, depth};
+						//if (depth_limiting) {
+						//	depth_map[temp_connected_node_ind] = depth;
+						//		spw.state_weights[temp_connected_node_ind] = spwFunc(weight, depth);
+						//} else {
+						//spw.state_weights[temp_connected_node_ind] = spwFunc(weight, 0); 
+						//}
+						LexSet* tmp_new_set_ptr = newSetLS(2);
+						*tmp_new_set_ptr = weight;
+						std::pair<int, LexSet*> new_leaf;
+						//if (temp_connected_node_ind == -1) {
+						//	std::cout<<"SOMETHING WRONG HERE"<<std::endl;
+						//	return ret_result;
+						//}
+						new_leaf.first = temp_connected_node_ind;
+						new_leaf.second = tmp_new_set_ptr;
 						pq.push(new_leaf); // add to prio queue
-						//tree.connect(src, {temp_connected_node_ind, &second_search_weights[temp_connected_node_ind]});
-						tree.connect(curr_leaf_ind, {temp_connected_node_ind, &min_w.min_weight[temp_connected_node_ind]});
-						included[temp_connected_node_ind] = true;
-					}
-						//std::cout<<"af for loop"<<std::endl;
-					if (all_included) {
-						continue;
+						//tree.connect(curr_leaf_ind, {temp_connected_node_ind, &min_w.min_weight[temp_connected_node_ind]});
+						//included[temp_connected_node_ind] = true;
 					}
 				}
-				
-				// CHECK IF CANDIDATE NODE IS ACCEPTING:
-				if (round == 0) {
-					if (dfa_sps->isCurrAccepting()) {
-						//std::cout<<"found accepting node: "<<std::endl;
-						//std::cout<<" ts node: "<<TS_sps->getCurrNode()<<std::endl;
-						//std::cout<<" ts node: "<<dfa_sps->getCurrNode()<<std::endl;
-						accepting.first = true;
-						//std::cout<<"Pushing node to accepting set: "<<connected_node_ind<<std::endl;
-						accepting.second.push_back(connected_node_ind);
-					}
-				}
-			}
-			prev_leaf_ind = curr_leaf_ind;
-		}
-		//if ((round == 0) && !found_target_state) {
-		//	std::cout<<"Error: Target state not found\n";
-		//	exit_failure = true; // currently not using this
-		//	return false;
-		//}
-		if (round == 1) {
-			for (int i=0; i<spw.reachability.size(); ++i) {
-				if (!spw.reachability[i]) {
-					std::cout<<"Warning: Not all states were searched (round 2). Failed prod state ind: "<<i<<std::endl;
-					std::vector<int> temp_inds;
-					Graph<float>::augmentedStatePreImage(graph_sizes, i, temp_inds);
-					std::cout<<"   TS ind: "<<temp_inds[0]<<std::endl;
-					std::cout<<"   DFA ind: "<<temp_inds[1]<<std::endl;
-				}
-			}
-		}
-	}
-	if (!exit_failure) {
-		//extractPath(parents, solution_ind);
-		//int p_space_size = 1;
-		//p_space_size *=
-		//for 
-
-		//end_time = std::chrono::system_clock::now();
-		//double search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-		//std::cout<<"Search time (milliseconds): "<<search_time<<std::endl;
-		//std::cout<<"Finished. Tree size: "<<tree.size()<<std::endl; //<<", Maximum product graph (no pruning) size: "<<
-		//std::cout<<"\n\n ...Finished with plan."<<std::endl;
-		return true;
-	} else {
-		std::cout<<"Failed space search."<<std::endl;
-		return false;
-	}
-}
-
-template<class T>
-bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_dfa, std::function<float(unsigned int)> cFunc, Strategy& strat, bool use_cost) {
-	if (!TS->isReversible() || !cosafe_dfa->getDFA()->isReversible() || !live_dfa->getDFA()->isReversible()) {
-		std::cout<<"Error: Cannot perform space search on irreversible graphs\n";
-		return false;
-	}
-	int n = TS->size();
-	int m = cosafe_dfa->getDFA()->size();
-	int l = live_dfa->getDFA()->size();
-	int p_space_size = n * m * l;
-	std::vector<int> graph_sizes = {n, m, l};
-
-	std::vector<const std::vector<std::string>*> total_alphabet(2);
-	total_alphabet[0] = cosafe_dfa->getAlphabetEVAL();
-	total_alphabet[1] = live_dfa->getAlphabetEVAL();
-	TS->mapStatesToLabels(total_alphabet); // This is in efficient with diverse/large alphabet
-
-	spaceWeight spw_rsk;
-	bool rsk_success = riskSearch(TS, cosafe_dfa, spw_rsk, cFunc);
-	if (!rsk_success) {
-		std::cout<<"Error: Risk state weighting failed\n";
-		return false;
-	}
-	std::cout<<"spw_rsk size: "<<spw_rsk.reachability.size()<<std::endl;
-	for (int i=0; i<spw_rsk.reachability.size(); ++i) {
-		if (spw_rsk.reachability[i]) {
-			std::vector<int> ret_inds;
-			Graph<float>::augmentedStatePreImage({n, m}, i, ret_inds);
-			if (spw_rsk.is_inf[i]) {
-				std::cout<<"spw_rsk: P:"<<i<<" TS State: "<<ret_inds[0]<<" (cosafe: "<<ret_inds[1]<<") is reachable with weight: INF"<<std::endl;
-			} else {
-				std::cout<<"spw_rsk: P:"<<i<<" TS State: "<<ret_inds[0]<<"(cosafe: "<<ret_inds[1]<<") is reachable with weight: "<<spw_rsk.state_weights[i]<<std::endl;
-			}
-		}
-	}
-
-	//std::vector<float> first_search_weights(p_space_size, -1.0f); 
-	//std::vector<float> second_search_weights(p_space_size, -1);
-	//std::cout<<" P SPACE SIZE: "<<p_space_size<<std::endl;
-	strat.action_map.resize(p_space_size);
-	strat.reachability.resize(p_space_size, false);
-	
-	minWeight min_w(p_space_size);
-	
-	// Search: 
-
-	//std::chrono::time_point<std::chrono::system_clock> end_time;
-	//std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
-	
-	// Priority queue lambda
-	auto compare = [](std::pair<int, int> pair1, std::pair<int, int> pair2) {
-		if (pair1.second == -1.0) {
-			return true; // pair1 is infinite
-		} else if (pair2.second == -1.0) {
-			return false;
-		} else {
-			return pair1.second > pair2.second;
-		}
-	};
-
-	bool exit_failure = false;
-	std::pair<bool, std::vector<int>> accepting;
-	for (int round=0; round<2; ++round) {
-		std::cout<<"\n generateRiskStrategy: STARTING ROUND: "<<round<<std::endl;
-		std::string search_type = (round == 0) ? "forward" : "reverse";
-		std::priority_queue<std::pair<int, float>, std::vector<std::pair<int, float>>, decltype(compare)> pq(compare);
-		//pq.clear();
-
-		// Tree to keep history as well as parent node list:
-		bool found_target_state = false;
-		std::vector<bool> included(p_space_size, false);
-		Graph<float> tree; 
-
-		// Root tree node has index zero with weight zero
-		std::pair<int, float> curr_leaf;
-		if (round == 0) {
-			//std::cout<<"b4 reset"<<std::endl;
-			TS->reset();
-			cosafe_dfa->reset();
-			live_dfa->reset();
-			//std::cout<<" \n\n WE RESET: "<<live_dfa->getCurrNode()<<std::endl;
-			int init_node_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), cosafe_dfa->getCurrNode(), live_dfa->getCurrNode()}, graph_sizes);
-			std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_ind<<std::endl;
-			//first_search_weights[init_node_ind] = -1.0f;
-			min_w.is_inf[init_node_ind] = false;
-			min_w.min_weight[init_node_ind] = 0;
-			included[init_node_ind] = true;
-			curr_leaf.first = init_node_ind;
-			curr_leaf.second = 0.0f;
-			pq.push(curr_leaf);
-		} else {
-			// Add the accepting states to the prio queue with weight zero, and add them to the tree so
-			int ROOT_STATE = n*m*l; // this is the root state ind, guaranteed to be larger than any prod state ind
-			min_w.reset();
-			std::cout<<"num acc states rnd 2: "<<accepting.second.size()<<std::endl;
-			for (auto acc_prod_state : accepting.second) {
-				//std::cout<<"in the accepting states... acc prod state: "<<acc_prod_state<<std::endl;
-				min_w.is_inf[acc_prod_state] = false;
-				min_w.min_weight[acc_prod_state] = 0;
-				included[acc_prod_state] = true;
-				//spw.state_weights[acc_prod_state] = 0.0f;
-				strat.reachability[acc_prod_state] = true;
-				strat.action_map[acc_prod_state] = "ACCEPTING";
-				//std::vector<int> sol_inds;
-				curr_leaf.first = acc_prod_state;
-				curr_leaf.second = 0.0f;
-				pq.push(curr_leaf);
-				tree.connect(ROOT_STATE, {acc_prod_state, nullptr}); // the root state is the merged accepting state
-			}
-			//std::cout<<"out of the accepting states"<<std::endl;
-		}
-
-		float min_accepting_cost = -1;
-		int prev_leaf_ind = -1;
-		int prod_solution_ind;
-		while (pq.size() > 0) {
-			//int pause;
-			//std::cin >> pause;
-			curr_leaf = pq.top();
-			//std::cout<<" TOP --- Ind: "<<pq.top().first<<std::endl;
-			//std::cout<<" TOP --- LexSet: ";
-			//pq.top().second->print();
-
-			pq.pop();
-			int curr_leaf_ind = curr_leaf.first;
-			float curr_leaf_weight = curr_leaf.second;
-			if (!min_w.is_inf[curr_leaf_ind]) {
-				if (curr_leaf_weight > min_w.min_weight[curr_leaf_ind]) {
-					continue;
-				}
-			}
-			std::vector<int> ret_inds;
-			Graph<float>::augmentedStatePreImage(graph_sizes, curr_leaf_ind, ret_inds);
-
-			//if (curr_leaf_ind == prev_leaf_ind) {
-			//	std::cout<<"no sol"<<std::endl;
-			//	exit_failure = true;
-			//	break;
-			//}
-
-			//std::cout<<" ------ CURRENT LEAF: "<<curr_leaf_ind<<std::endl;
-			//std::cout<<" CURR LEAF WEIGHT: "<<curr_leaf_weight<<std::endl;
-			//curr_leaf.second->setInf();
-			//pq.push(curr_leaf);
-			//printQueue(pq);
-
-			//if (tree_end_node != 0) { // Use temp_nodeptr from outside the loop (init) when no nodes are in tree (=0)
-			//	temp_nodeptr = tree.getNodeDataptr(curr_leaf_ind);
-			//}
-
-			// SET:
-			TS->set(ret_inds[0]);
-			cosafe_dfa->set(ret_inds[1]);
-			live_dfa->set(ret_inds[2]);
-
-			//std::cout<<" SET NODE: "<<node_list[curr_leaf_ind]->i;
-			//for (int i=0; i<num_dfas; ++i) {
-			//	//std::cout<<", "<<node_list[curr_leaf_ind]->v[i];
-			//	dfa_list_ordered->operator[](i)->set(node_list[curr_leaf_ind]->v[i]);
-			//}
-			//std::cout<<" ---\n";
-			std::vector<int> con_nodes;
-			std::vector<WL*> con_data;
-			con_data.clear();
-			if (round == 0) {
-				TS->getConnectedDataEVAL(con_data);
-				TS->getConnectedNodesEVAL(con_nodes);
-			} else {
-				TS->getParentDataEVAL(con_data);
-				TS->getParentNodesEVAL(con_nodes);
-			}
-			//if (round == 1) {
-			//std::cout<<"ROOT:  ts curr node: "<<TS_sps->getCurrNode()<<std::endl;
-			//std::cout<<"    :  ts labels:";
-			//const std::vector<std::string>* temp_lbls;
-			//temp_lbls = TS->returnStateLabels(TS_sps->getCurrNode());
-			//for (int i=0; i<temp_lbls->size(); ++i) {
-			//	std::cout<<" "<<temp_lbls->operator[](i);
-			////	std::cout<<"  label: "<<con_data[i]->label<<std::endl;
-			////	std::cout<<"  weight: "<<con_data[i]->weight<<std::endl;
-			//}
-			//std::cout<<"\n";
-			//std::cout<<"ROOT:  dfa curr node: "<<dfa_sps->getCurrNode()<<std::endl;
-			////std::cout<<"printing con nodes and data for current node: "<<TS_sps->getCurrNode()<<std::endl;
-			//////std::cout<<"con nodes size:"<<con_nodes.size()<<std::endl;
-			//////std::cout<<"con data size:"<<con_data.size()<<std::endl;
-			//std::cout<<"STAR: con ts nodes:";
-			//for (int i=0; i<con_data.size(); ++i) {
-			//	std::cout<<" "<<con_nodes[i];
-			////	std::cout<<"  label: "<<con_data[i]->label<<std::endl;
-			////	std::cout<<"  weight: "<<con_data[i]->weight<<std::endl;
-			//}
-			//std::cout<<"\n";
-		
-			//int pause;
-			//std::cin >> pause;
-			//}
-			//std::pair<int, float*> src;
-			//src.first = curr_leaf_ind;
-			//src.second = nullptr;
-			//for (auto con_data_ptr : con_data) {
-			for (int j=0; j<con_data.size(); ++j) {
-				// Reset after checking connected nodes
-				TS->set(ret_inds[0]);
-				cosafe_dfa->set(ret_inds[1]);
-				live_dfa->set(ret_inds[2]);
-				//TS->set(ret_inds.first);
-				//dfa_sps->set(ret_inds.second);
-
-				//for (int i=0; i<num_dfas; ++i) {
-				//	//std::cout<<", "<<node_list[curr_leaf_ind]->v[i];
-				//	dfa_list_ordered->operator[](i)->set(node_list[curr_leaf_ind]->v[i]);
-				//}
-				//printQueue(pq);
-				//std::string temp_str = con_data_ptr->label;
-				//float temp_weight = con_data_ptr->weight;
-				std::string temp_str = con_data[j]->label;
-				float temp_weight = con_data[j]->weight;
-				//float temp_weight = cFunc(curr_leaf_depth + temp_depth);
-				//std::cout<<"temp label: "<<temp_str<<std::endl;
-				//std::cout<<"temp weight: "<<temp_weight<<std::endl;
-				bool found_connection = true;
-				int prev_ts_ind;
 
 				if (round == 0) {
-					//std::cout<<"forward ts eval"<<std::endl;
-					//std::cout<<"ACTION: "<<temp_str<<std::endl;
-					//std::cout<<"pre ts ind: "<<TS->getCurrNode()<<std::endl;
-					found_connection = TS->eval(temp_str, true); // second arg tells wether or not to evolve on graph
-					//std::cout<<"post ts ind: "<<TS->getCurrNode()<<std::endl;
-				} else {
-					//std::cout<<"reverse ts eval"<<std::endl;
-					prev_ts_ind = TS->getCurrNode();
-					found_connection = TS->evalReverse(temp_str, true); // second arg tells wether or not to evolve on graph
-				
-				}
-				//std::cout<<"ts evolved state: "<<TS->getCurrNode()<<" under action: "<<temp_str<<std::endl;
-				//
-
-				if (!found_connection) {
-					std::cout<<"Error ("<<search_type<<"): Did not find connectivity in TS. Current node: "<<TS->getCurrNode()<<", Action: "<<temp_str<<std::endl;
-					return false;
-				}
-				const std::vector<std::string>* lbls;
-				if (round == 0){
-					//std::cout<<"\nts node b4 return state labels: "<<TS->getCurrNode()<<std::endl;
-					//std::cout<<"ts curr node: "<<TS->getCurrNode()<<std::endl;
-					lbls = TS->returnStateLabels(TS->getCurrNode());
-					//std::cout<<"lbls size: "<<lbls->size()<<std::endl;
-				} else {
-					//std::cout<<"\nts node b4 return state labels: "<<prev_ts_ind<<std::endl;
-					lbls = TS->returnStateLabels(prev_ts_ind);
-				}
-				found_connection = false;
-				//std::cout<<"\n before eval"<<std::endl;
-				bool found_true = true;
-				std::vector<int> parent_node_list_cosafe;
-				std::vector<int> parent_node_list_live;
-				if (round == 0) {
-					for (int ii=0; ii<lbls->size(); ++ii) {
-						//std::cout<<"pre cosafe ind: "<<cosafe_dfa->getCurrNode()<<std::endl;
-						if (cosafe_dfa->eval(lbls->operator[](ii), true)) {
-							found_connection = true;
-							//std::cout<<"post cosafe ind: "<<cosafe_dfa->getCurrNode()<<std::endl;
-							break;
-						}
-					}
-					if (!found_connection) {
-						std::cout<<" DID NOT FIND CONNECTION IN COSAFE DFA "<<std::endl;
-					}
-					for (int ii=0; ii<lbls->size(); ++ii) {
-						//std::cout<<" testing lbl: "<<lbls->operator[](ii)<<std::endl;
-						if (live_dfa->eval(lbls->operator[](ii), true)) {
-							found_connection = found_connection && true;
-							break;
-						}
-					}
-					if (!found_connection) {
-						std::cout<<" DID NOT FIND CONNECTION IN LIVE DFA "<<std::endl;
-					}
-				} else {
-					found_connection = cosafe_dfa->getParentNodesWithLabels(lbls, parent_node_list_cosafe);
-					//if (!found_connection) {
-					//	std::cout<<"Error: Did not find parent connection for cosafe DFA\n";
-					//}
-					//std::cout<<"\n HERE"<<std::endl;
-					found_connection = live_dfa->getParentNodesWithLabels(lbls, parent_node_list_live);
-					//if (!found_connection) {
-					//	std::cout<<"Error: Did not find parent connection for liveness DFA\n";
-					//}
-					//std::cout<<"found connection? : "<<found_connection<<" parent_node_list size: "<<parent_node_list.size()<<std::endl;
-				}
-
-				bool unique = true;
-				int connected_node_ind = -1;
-				std::vector<int> unique_dfa_parent_set;
-				float weight;
-				bool all_included = true;
-				if (round == 0) {
-					weight = curr_leaf_weight + temp_weight;
-					connected_node_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), cosafe_dfa->getCurrNode(), live_dfa->getCurrNode()}, graph_sizes);
-					if (included[connected_node_ind]) {
-						//std::cout<<"included??? con node ind: "<<connected_node_ind<<std::endl;
-						continue;
-					} 
-					if (!min_w.is_inf[connected_node_ind]) {
-						if (min_w.min_weight[connected_node_ind] > weight) {
-							min_w.min_weight[connected_node_ind] = weight;
-						} else if (min_w.min_weight[connected_node_ind] < weight) {
-							continue;
-						} 
-					}else {
-						min_w.is_inf[connected_node_ind] = false;
-						min_w.min_weight[connected_node_ind] = weight;
-					}
-					//first_search_weights[connected_node_ind] = curr_leaf_weight + temp_weight;
-					std::pair<int, float> new_leaf = {connected_node_ind, weight};
-					pq.push(new_leaf); // add to prio queue
-					tree.connect(curr_leaf_ind, {connected_node_ind, &min_w.min_weight[connected_node_ind]});
-					included[connected_node_ind] = true;
-				} else {
-					
-					int temp_connected_node_ind = -1;
-					for (auto par_node_cosafe : parent_node_list_cosafe) {
-						for (auto par_node_live : parent_node_list_live) {
-							// Convert from triple product to double product:
-							int spw_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), par_node_cosafe}, {n, m});
-							if (spw_rsk.is_inf[spw_ind]) {
-								weight = -1.0; // Infinity
-							} else {
-								float spw_cost = spw_rsk.state_weights[spw_ind];
-								if (use_cost) {
-									float model_cost = curr_leaf_weight + temp_weight;
-									weight = spw_cost + model_cost;
-								} else {
-									weight = spw_cost;
-								}
-							}
-							temp_connected_node_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), par_node_cosafe, par_node_live}, graph_sizes);
-							if (included[temp_connected_node_ind]) {
-								continue;
-							} else {
-								all_included = false;
-							}
-							if (!min_w.is_inf[temp_connected_node_ind]) {
-								if (min_w.min_weight[temp_connected_node_ind] > weight) {
-									min_w.min_weight[temp_connected_node_ind] = weight;
-								} else if (min_w.min_weight[temp_connected_node_ind] < weight) {
-									continue;
-								}
-							} else {
-								min_w.is_inf[temp_connected_node_ind] = false;
-								min_w.min_weight[temp_connected_node_ind] = weight;
-								strat.reachability[temp_connected_node_ind] = true; // mark the new new as reachable
-							}
-							//second_search_weights[unique_con_node] = cost;
-							std::pair<int, float> new_leaf = {temp_connected_node_ind, weight};
-							pq.push(new_leaf); // add to prio queue
-							tree.connect(curr_leaf_ind, {temp_connected_node_ind, &min_w.min_weight[temp_connected_node_ind]});
-							strat.action_map[temp_connected_node_ind] = temp_str; // Set the optimal action
-							included[temp_connected_node_ind] = true; // prevent node from being searched again in loop
-						}
-					}
-				}
-				if (round == 0) {
-					//std::cout<<"curr live node: "<<live_dfa->getCurrNode()<<std::endl;
 					if (live_dfa->isCurrAccepting()) {
 						accepting.first = true;
 						accepting.second.push_back(connected_node_ind);
@@ -1267,44 +954,38 @@ bool SymbSearch<T>::generateRiskStrategy(DFA_EVAL* cosafe_dfa, DFA_EVAL* live_df
 			}
 			prev_leaf_ind = curr_leaf_ind;
 		}
-		//if ((round == 0) && !found_target_state) {
-		//	std::cout<<"Error: Target state not found\n";
-		//	exit_failure = true; // currently not using this
-		//	return false;
-		//}
-		//if (round == 1) {
-		//	for (int i=0; i<strat.reachability.size(); ++i) {
-		//		if (!strat.reachability[i]) {
-		//			std::cout<<"Warning: Not all states were searched (round 2). Failed prod state ind: "<<i<<std::endl;
-		//			std::vector<int> ret_inds;
-		//			Graph<float>::augmentedStatePreImage(graph_sizes, i, ret_inds);
-
-		//			std::cout<<"   TS ind: "<<ret_inds[0]<<std::endl;
-		//			std::cout<<"   Cosafe DFA ind: "<<ret_inds[1]<<std::endl;
-		//			std::cout<<"   Live DFA ind: "<<ret_inds[2]<<std::endl;
-		//		}
-		//	}
-		//}
 	}
 	if (!exit_failure) {
-		//extractPath(parents, solution_ind);
-		//int p_space_size = 1;
-		//p_space_size *=
-		//for 
-
-		//end_time = std::chrono::system_clock::now();
-		//double search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-		//std::cout<<"Search time (milliseconds): "<<search_time<<std::endl;
-		//std::cout<<"Finished. Tree size: "<<tree.size()<<std::endl; //<<", Maximum product graph (no pruning) size: "<<
-		//std::cout<<"\n\n ...Finished with plan."<<std::endl;
-		return true;
+		for (int bb=0; bb<min_w.min_weight.size(); ++bb) {
+			std::cout<<"prod_state: "<<bb<<" min cost to goal: "<<std::endl;
+			min_w.min_weight[bb].print();
+		}
+		ret_result.success = true;
+		return ret_result;
 	} else {
 		std::cout<<"Failed space search."<<std::endl;
-		return false;
+		ret_result.success = false;
+		return ret_result;
 	}
 }
 
-
+template<class T>
+bool SymbSearch<T>::generateRisk(TS_EVAL<State>* TS_sps, DFA_EVAL* cosafe_dfa, spaceWeight& spw) {
+	std::vector<DFA_EVAL*> co_safe_dfa_vec = {cosafe_dfa};
+	auto spwFunc = [](float ts_cost_to_goal, unsigned depth_to_goal) {
+		if (depth_to_goal == 0) {
+			return 2.0f;
+		} else {
+			return 1.0f; // Return a value of 1.0 for any state with imminent risk
+		}
+	};
+	bool success = spaceSearch(TS_sps, &co_safe_dfa_vec, spw, spwFunc, 1); // max_depth of 1 determines risk
+	if (!success) {
+		std::cout<<"Error: spaceSearch failed.\n";
+		return false;
+	}
+	return true;
+}
 
 template<class T>
 bool SymbSearch<T>::generateHeuristic() {
@@ -1312,7 +993,10 @@ bool SymbSearch<T>::generateHeuristic() {
 	for (int i=0; i<num_dfas; ++i) {
 		heuristic[i].dfa_ind = i;
 		std::vector<DFA_EVAL*> dfa_list_single = {dfa_list_ordered->operator[](i)};
-		bool success = spaceSearch(TS, &dfa_list_single, heuristic[i]);
+		auto spwFunc = [](float ts_cost_to_goal, unsigned depth_to_goal) {
+			return ts_cost_to_goal;
+		};
+		bool success = spaceSearch(TS, &dfa_list_single, heuristic[i], spwFunc);
 		if (!success) {
 			std::cout<<"Error: spaceSearch failed on dfa: "<<i<<"\n";
 			return false;
@@ -1450,9 +1134,6 @@ typename SymbSearch<T>::PlanResult SymbSearch<T>::BFS(std::function<bool(const s
 	
 	// ATTENTION: "visited" is indexed in the product space
 	std::vector<bool> visited(p_space_size, false);
-	
-	// ATTENTION: "pruned" is indexed in the product space
-	// std::vector<bool> pruned(p_space_size, false);
 	
 	// ATTENTION: "parents" is indexed by the tree size for memory space efficiency
 	std::vector<int> parents(p_space_size, -1);
@@ -2069,7 +1750,7 @@ typename SymbSearch<T>::PlanResult SymbSearch<T>::BFS(std::function<bool(const s
 					finished = true;
 					//std::cout<<"Found a solution!"<<"\n";
 					//std::cout<<"SOLUTION IND: "<<solution_ind<<std::endl;
-					std::cout<<"SOLUTION IND PROD: "<<solution_ind_prod<<std::endl;
+					//std::cout<<"SOLUTION IND PROD: "<<solution_ind_prod<<std::endl;
 					//std::cout<<"   -Iterations: "<<iterations<<"\n";
 					//solution_ind = min_w.prod2node_list.at(pq.top().first);
 					//solution_ind = *(pq.top().first);
@@ -2110,15 +1791,6 @@ typename SymbSearch<T>::PlanResult SymbSearch<T>::BFS(std::function<bool(const s
 		if (extract_path) {
 			extractPath(parents, solution_ind,graph_sizes);
 			int p_space_size = 1;
-			//p_space_size *=
-			//for 
-
-			//end_time = std::chrono::system_clock::now();
-			//double search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-			//std::cout<<"Search time (milliseconds): "<<search_time<<std::endl;
-			//std::cout<<p_space_size<<std::endl;
-			//std::cout<<"Finished. Tree size: "<<tree.size()<<" Iterations: "<<iterations<<" (P space size: "<<p_space_size<<")\n";//<<", Maximum product graph (no pruning) size: "<<
-			//std::cout<<"\n\n ...Finished with plan."<<std::endl;
 		}
 		if (use_benchmark && prune) {
 			benchmark.addCustomTimeAttr("iterations", static_cast<double>(iterations), ""); // no units
@@ -2130,19 +1802,6 @@ typename SymbSearch<T>::PlanResult SymbSearch<T>::BFS(std::function<bool(const s
 		std::cout<<"Failed (no plan)."<<std::endl;
 		return ret_result;
 	}
-	//	} else {
-	//		std::cout<<"in da check"<<std::endl;
-	//		if (!finished) {
-	//			std::cout<<"fixed point: "<<dfs_iterations<<" iterations!\n";
-	//			break;
-	//		}
-	//	}
-	//}
-	//if (ITERATE) {
-	//	std::cout<<"Made it out of dfs in: "<<dfs_iterations<<" iterations!\n";
-	//}
-	//return true;
-
 }
 
 template<class T>
@@ -2153,20 +1812,8 @@ void SymbSearch<T>::extractPath(const std::vector<int>& parents, int accepting_s
 	std::vector<int> reverse_prod_state_sequence;
 	reverse_TS_state_sequence.clear();
 	reverse_prod_state_sequence.clear();
-	//std::cout<<" given accepting state: "<<accepting_state<<std::endl;
-	//reverse_TS_state_sequence.push_back(node_list[accepting_state);
-	//std::cout<<"reverse plan: "<<std::endl;
-	//for (int i=0; i<node_list.size(); ++i) {
-	//	std::cout<<"node list ind: "<<i<<" ts ind: "<<node_list[i]->i<<std::endl;
-	//	node_list[i]->lex_set.print();
-	//}
 	while (curr_node != 0) {
-		//std::cout<<"node list node: "<<curr_node<<", ";
-		//std::cout<<"ts node: "<<node_list[curr_node]->i<<", ";
-		//std::cout<<"lexset: ";
-		//node_list[curr_node]->lex_set.print();
 		reverse_TS_state_sequence.push_back(node_list[curr_node]->i);
-
 		std::vector<int> prod_inds(num_dfas + 1);
 		prod_inds[0] = node_list[curr_node]->i;
 		for (int i=0; i<num_dfas; ++i) {
@@ -2257,6 +1904,23 @@ void SymbSearch<T>::clearNodes() {
 	}
 	node_list.clear();
 }
+
+
+template<class T>
+void SymbSearch<T>::clearSetsLS() {
+	for (int i=0; i<set_list_ls.size(); ++i) {
+		delete set_list_ls[i];
+	}
+	set_list_ls.clear();
+}
+
+//template<class T>
+//void SymbSearch<T>::clearNodesLS() {
+//	for (int i=0; i<node_list_ls.size(); ++i) {
+//		delete node_list_ls[i];
+//	}
+//	node_list_ls.clear();
+//}
 
 template<class T>
 void SymbSearch<T>::clearNodesAndSets() {

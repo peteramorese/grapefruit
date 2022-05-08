@@ -38,6 +38,24 @@ struct IVFlexLex {
 	T lex_set;
 };
 
+template<>
+struct IVFlexLex<LexSet> {
+	IVFlexLex(unsigned int S) : v(S), lex_set(S) {}
+	IVFlexLex(float fill_val, unsigned int S) : v(S), lex_set(fill_val, S) {}
+	int i;
+	std::vector<int> v;
+	LexSet lex_set;
+};
+
+//template<>
+//struct IVLex {
+//	IVLex(unsigned int node_size, unsigned int S) : v(node_size), lex_set(S) {}
+//	IVLex(unsigned int node_size, float fill_val, unsigned int S) : v(node_size), lex_set(fill_val, S) {}
+//	int i;
+//	std::vector<int> v;
+//	LexSet lex_set;
+//};
+
 template<class T>
 class Graph {
 	private:
