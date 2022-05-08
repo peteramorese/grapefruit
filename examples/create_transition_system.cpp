@@ -1,7 +1,6 @@
 #include "graph.h"
 #include "condition.h"
 #include "transitionSystem.h"
-#include "astar.h"
 #include "stateSpace.h"
 #include "state.h"
 

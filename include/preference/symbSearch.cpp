@@ -221,7 +221,7 @@ bool SymbSearch<T>::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* 
 			init_node_inds[0] = TS_sps->getCurrNode();
 			for (int i=0; i<num_dfa_sps; ++i) {
 				init_node_inds[i+1] = dfa_list_sps->operator[](i)->getCurrNode();
-				std::cout<<"setting dfa "<<i<<" to: "<<init_node_inds[i+1] <<std::endl;
+				//std::cout<<"setting dfa "<<i<<" to: "<<init_node_inds[i+1] <<std::endl;
 			}
 			int init_node_prod_ind = Graph<float>::augmentedStateImage(init_node_inds, graph_sizes);
 			//std::cout<<"ROUND 0 INIT NODE IND: "<<init_node_prod_ind<<std::endl;
@@ -1750,7 +1750,7 @@ typename SymbSearch<T>::PlanResult SymbSearch<T>::BFS(std::function<bool(const s
 					finished = true;
 					//std::cout<<"Found a solution!"<<"\n";
 					//std::cout<<"SOLUTION IND: "<<solution_ind<<std::endl;
-					std::cout<<"SOLUTION IND PROD: "<<solution_ind_prod<<std::endl;
+					//std::cout<<"SOLUTION IND PROD: "<<solution_ind_prod<<std::endl;
 					//std::cout<<"   -Iterations: "<<iterations<<"\n";
 					//solution_ind = min_w.prod2node_list.at(pq.top().first);
 					//solution_ind = *(pq.top().first);

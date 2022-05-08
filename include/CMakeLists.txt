@@ -1,16 +1,14 @@
-#add_library(EdgeClass edge.cpp)
-add_library(GraphClass graph.cpp)
-add_library(AstarClass astar.cpp)
-add_library(StateSpaceClass stateSpace.cpp)
-add_library(StateClass state.cpp)
-add_library(ConditionClass condition.cpp)
-add_library(TransitionSystemClass transitionSystem.cpp)
-add_library(BenchmarkClass benchmark.cpp)
 
-target_include_directories(GraphClass PUBLIC ${pref_include_dir})
+# Base:
+add_library(GraphClass base/graph.cpp)
+add_library(StateClass base/state.cpp base/stateSpace.cpp)
+add_library(ConditionClass base/condition.cpp)
+add_library(TransitionSystemClass base/transitionSystem.cpp)
+add_library(BenchmarkClass base/benchmark.cpp)
 
-target_link_libraries(AstarClass GraphClass)
-target_link_libraries(StateClass StateSpaceClass)
-target_link_libraries(ConditionClass StateClass)
-target_link_libraries(GraphClass LexSetClass)
-target_link_libraries(TransitionSystemClass GraphClass StateClass ConditionClass AstarClass)
+# Preference:
+add_library(LexSetClass preference/lexSet.cpp)
+add_library(SymbSearchClass preference/symbSearch.cpp)
+target_link_libraries(SymbSearchClass LexSetClass)
+
+
