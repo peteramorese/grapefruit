@@ -181,7 +181,7 @@ int main() {
 		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
 	}
 
-	SymbSearch<DetourLex> search_obj;
+	SymbSearch search_obj;
 	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	search_obj.setTransitionSystem(&ts_eval);
 	search_obj.setFlexibilityParam(1000.0f);

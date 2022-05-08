@@ -294,7 +294,7 @@ int main(int argc, char *argv[]) {
 		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
 	}
 
-	SymbSearch<DetourLex> search_obj(bm_filename_path, verbose);
+	SymbSearch search_obj(bm_filename_path, verbose);
 	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	search_obj.setTransitionSystem(&ts_eval);
 	if (manual_setup) {

@@ -6,7 +6,6 @@
 #include "transitionSystem.h"
 #include "benchmark.h"
 
-template<class T>
 class SymbSearch {
 	public:
 		struct StrategyResult {
@@ -16,7 +15,7 @@ class SymbSearch {
 			StrategyResult(int graph_size);
 		};
 		struct PlanResult {
-			T pathcost;
+			DetourLex pathcost;
 			bool success;
 			PlanResult(float mu, int num_dfas);
 		};
@@ -73,9 +72,9 @@ class SymbSearch {
 		int num_dfas;
 		TS_EVAL<State>* TS;
 		float mu, pathlength;
-		std::vector<IVFlexLex<T>*> node_list;
+		std::vector<IVFlexLex<DetourLex>*> node_list;
 		//std::vector<IVLex> node_list_ls;
-		std::vector<T*> set_list;
+		std::vector<DetourLex*> set_list;
 		std::vector<LexSet*> set_list_ls;
 		std::vector<std::string> TS_action_sequence;
 		std::vector<int> TS_state_sequence;
@@ -84,10 +83,10 @@ class SymbSearch {
 		std::vector<spaceWeight> heuristic;
 		Benchmark benchmark;
 
-		// TODO remove LS methods
-		IVFlexLex<T>* newNode();
+		// DetourLexODO remove LS methods
+		IVFlexLex<DetourLex>* newNode();
 		//IVLex* newNodeLS(unsigned node_size, unsigned set_size);
-		T* newSet();
+		DetourLex* newSet();
 		LexSet* newSetLS(unsigned set_size);
 		template<typename Q> void printQueue(Q queue);
 		template<typename Q_f> void printQueueFloat(Q_f queue);
@@ -99,7 +98,7 @@ class SymbSearch {
 		void clearNodes();
 		void clearSetsLS();
 		//void clearNodesLS();
-		PlanResult BFS(std::function<bool(const std::pair<int, T*>&, const std::pair<int, T*>&)> compare, std::function<bool(const T&, const T&)> acceptanceCompare, std::function<bool(const T&)> pruneCriterion, bool prune, bool extract_path, bool use_heuristic = false);
+		PlanResult BFS(std::function<bool(const std::pair<int, DetourLex*>&, const std::pair<int, DetourLex*>&)> compare, std::function<bool(const DetourLex&, const DetourLex&)> acceptanceCompare, std::function<bool(const DetourLex&)> pruneCriterion, bool prune, bool extract_path, bool use_heuristic = false);
 		void clearNodesAndSets();
 		//void clearNodesAndSetsLS();
 		void resetSearchParameters();

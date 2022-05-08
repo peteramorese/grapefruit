@@ -14,7 +14,7 @@ class StrategyRTEVAL {
 		DFA_EVAL* cosafe_dfa;
 		DFA_EVAL* live_dfa;
 		const std::string NAME = " [StrategyRTEVAL] ";
-		const SymbSearch<DetourLex>::StrategyResult* strat;
+		const SymbSearch::StrategyResult* strat;
 		std::vector<int> graph_sizes;
 		std::vector<std::string> action_seq;
 		//void environmentAction(const std::string& action);
@@ -23,7 +23,7 @@ class StrategyRTEVAL {
 		bool violating;
 	public:
 		StrategyRTEVAL(TS_EVAL<State>* TS_, DFA_EVAL* cosafe_dfa_, DFA_EVAL* live_dfa_);
-		void setStrategy(const SymbSearch<DetourLex>::StrategyResult* strat_);
+		void setStrategy(const SymbSearch::StrategyResult* strat_);
 		bool run();
 		void writeToFile(const std::string& filename, const std::vector<std::string>& xtra_info);
 };
@@ -87,7 +87,7 @@ void StrategyRTEVAL::reset() {
 	violating = false;
 }
 
-void StrategyRTEVAL::setStrategy(const SymbSearch<DetourLex>::StrategyResult* strat_) {
+void StrategyRTEVAL::setStrategy(const SymbSearch::StrategyResult* strat_) {
 	strat = strat_;
 }
 
@@ -370,7 +370,7 @@ int main() {
 		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
 	}
 
-	SymbSearch<DetourLex> search_obj;
+	SymbSearch search_obj;
 	//search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	//search_obj.setTransitionSystem(&ts_eval);
 	//float mu;
@@ -406,7 +406,7 @@ int main() {
 	//	//std::cout<<"   ret: "<<1.0/static_cast<float>(d)<<std::endl;
 	//	return risk_param/static_cast<float>(d);
 	//};
-	SymbSearch<DetourLex>::StrategyResult S = search_obj.synthesizeRiskStrategy(&ts_eval, dfa_eval_ptrs[0], dfa_eval_ptrs[1]);
+	SymbSearch::StrategyResult S = search_obj.synthesizeRiskStrategy(&ts_eval, dfa_eval_ptrs[0], dfa_eval_ptrs[1]);
 	
 	std::cout<<"\n   Found strategy? "<<S.success<<" action_map size: "<<S.action_map.size()<<std::endl;
 	for (int i=0; i<S.action_map.size(); ++i) {
