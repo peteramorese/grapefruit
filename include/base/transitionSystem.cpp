@@ -58,7 +58,7 @@ bool TransitionSystem<T>::parseLabelAndEval(const std::string* label, const T* s
 				negate_next = !negate_next;
 				break;
 			case '&':
-				sub_eval = TransitionSystem<T>::propositions[temp_name]->evaluate(state);	
+				sub_eval = TransitionSystem<T>::propositions.at(temp_name)->evaluate(state);	
 				if (negate_next) {
 					sub_eval = !sub_eval;
 				}
@@ -73,7 +73,7 @@ bool TransitionSystem<T>::parseLabelAndEval(const std::string* label, const T* s
 				}
 				break;
 			case '|':
-				sub_eval = TransitionSystem<T>::propositions[temp_name]->evaluate(state);	
+				sub_eval = TransitionSystem<T>::propositions.at(temp_name)->evaluate(state);	
 				
 				if (negate_next) {
 					sub_eval = !sub_eval;

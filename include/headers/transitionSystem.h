@@ -27,8 +27,9 @@ class TransitionSystem {
 		std::vector<T*> state_map;
 		std::vector<WL*> node_container;
 		bool generated;
-		bool parseLabelAndEval(const std::string* label, const T* state);
 	public:
+	 	//TODO Move this to protected:
+		bool parseLabelAndEval(const std::string* label, const T* state);
 		TransitionSystem(Graph<WL>* graph_TS_);
 		TransitionSystem(Graph<WL>* graph_TS_, bool DETERMINISTIC_, bool manual_);
 		unsigned int size() const;
