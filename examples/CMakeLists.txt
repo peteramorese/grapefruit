@@ -31,3 +31,9 @@ add_executable(lex_set_comp lex_set_comp.cpp)
 target_link_libraries(lex_set_comp
 	LexSetClass
 	)
+
+#add_executable(test_label_logic test_label_logic.cpp)
+#target_link_libraries(test_label_logic
+#	TransitionSystemClass
+#	)
+#

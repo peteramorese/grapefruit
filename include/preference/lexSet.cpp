@@ -224,7 +224,7 @@ FlexLexSetS::FlexLexSetS(unsigned int S_, float mu_) : mu(mu_), LexSet(S_) {}
 
 FlexLexSetS::FlexLexSetS(unsigned int S_, float mu_, float fill_val) : mu(mu_), LexSet(fill_val, S_)  {}
 
-FlexLexSetS::FlexLexSetS(unsigned int S_, float mu_, const std::vector<float>* fill_set) : mu(mu_), LexSet(fill_set, S_) {}
+FlexLexSetS::FlexLexSetS(unsigned int S_, float mu_, const std::vector<float>* fill_set) : mu(mu_), LexSet(S_, fill_set) {}
 
 void FlexLexSetS::overflow() {
 	float buffer = 0;
@@ -292,9 +292,9 @@ void FlexLexSetS::operator=(const std::vector<float>& arg_vec) {
 
 DetourLex::DetourLex(unsigned int S_, float mu_) : mu(mu_), LexSet(S_) {}
 
-DetourLex::DetourLex(unsigned int S_, float mu_, float fill_val) : mu(mu_), LexSet(fill_val, S_)  {}
+DetourLex::DetourLex(unsigned int S_, float mu_, float fill_val) : mu(mu_), LexSet(S_, fill_val)  {}
 
-DetourLex::DetourLex(unsigned int S_, float mu_, const std::vector<float>* fill_set) : mu(mu_), LexSet(fill_set, S_) {}
+DetourLex::DetourLex(unsigned int S_, float mu_, const std::vector<float>* fill_set) : mu(mu_), LexSet(S_, fill_set) {}
 
 bool DetourLex::withinBounds(const DetourLex& arg_set) const {
 	if (arg_set.size() == S) {
@@ -304,7 +304,8 @@ bool DetourLex::withinBounds(const DetourLex& arg_set) const {
 			}
 		}
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"Error (DetourLex::withinBounds): Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
+		*(char *)0 = 0; 
 	}
 	return true;
 }
@@ -315,7 +316,9 @@ void DetourLex::operator+=(const DetourLex& arg_set) {
 			lex_set[i] += arg_set.lex_set[i];
 		}
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"Error (DetourLex::+=): Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
+		std::vector<int> kill;
+		kill[1];
 	}
 }
 
@@ -325,7 +328,9 @@ void DetourLex::operator+=(const std::vector<float>& arg_vec) {
 			lex_set[i] += arg_vec[i];
 		}
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"Error (DetourLex::+=): Cannot operate on sets of different size ("<<arg_vec.size()<<", "<<lex_set.size()<<").\n";
+		std::vector<int> kill;
+		kill[1];
 	}
 }
 void DetourLex::operator=(const DetourLex& arg_set) {
@@ -337,7 +342,10 @@ void DetourLex::operator=(const DetourLex& arg_set) {
 			lex_set = arg_set.lex_set;
 		}
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"Error (DetourLex::=): Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
+		*(char *)0 = 0; 
+		std::vector<int> kill;
+		kill[1];
 	}
 }
 
@@ -347,7 +355,10 @@ void DetourLex::operator=(const std::vector<float>& arg_vec) {
 		inf_set = false;
 		lex_set = arg_vec;
 	} else {
-		std::cout<<"Error: Cannot operate on sets of different size.\n";
+		std::cout<<"Error (DetourLex::=): Cannot operate on sets of different size ("<<arg_vec.size()<<", "<<lex_set.size()<<").\n";
+		*(char *)0 = 0; 
+		std::vector<int> kill;
+		kill[1];
 	}
 }
 

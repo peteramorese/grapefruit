@@ -8,10 +8,11 @@
 
 using std::cout;
 using std::endl;
-template<class T> using shptr = std::shared_ptr<T>;
-template<class T> using unptr = std::unique_ptr<T>;
+//template<class T> using shptr = std::shared_ptr<T>;
+//template<class T> using unptr = std::unique_ptr<T>;
+//template<class T> using wkptr = std::weak_ptr<T>;
 
-SymbSearch::PlanResult::PlanResult(float mu, int num_dfas) : pathcost(mu, num_dfas) {}
+SymbSearch::PlanResult::PlanResult(int num_dfas, float mu) : pathcost(num_dfas, mu) {}
 
 SymbSearch::StrategyResult::StrategyResult(int graph_size) : reachability(graph_size, false), action_map(graph_size), success(false) {}
 
@@ -38,8 +39,8 @@ SymbSearch::SymbSearch(const std::string& bench_mark_session_, bool verbose_) :
 }
 
 void SymbSearch::setAutomataPrefs(const std::vector<DFA_EVAL*>* dfa_list_ordered_) {
-	node_list.clear();
-	set_list.clear();
+	//node_list.clear();
+	//set_list.clear();
 	dfa_list_ordered = dfa_list_ordered_;
 	num_dfas = dfa_list_ordered->size();
 	dfas_set = true;
@@ -57,10 +58,11 @@ void SymbSearch::setFlexibilityParam(float mu_) {
 
 
 template<typename LS>
-IVFlexLex<LS>* SymbSearch::newNode() {
-	IVFlexLex<LS>* node_i = new IVFlexLex<LS>(mu, num_dfas);
-	node_list.push_back(node_i);
-	return node_i;
+std::weak_ptr<IVFlexLex<LS>> SymbSearch::newNode(unsigned num_dfas, float mu, std::vector<std::shared_ptr<IVFlexLex<LS>>>& node_container) {
+	std::shared_ptr<IVFlexLex<LS>> node_i = std::make_shared<IVFlexLex<LS>>(num_dfas, mu);
+	node_container.push_back(std::move(node_i));
+	std::weak_ptr<IVFlexLex<LS>> ret_node_i = node_container.back();
+	return ret_node_i;
 }
 
 //DetourLex* SymbSearch::newSet() {
@@ -76,9 +78,11 @@ IVFlexLex<LS>* SymbSearch::newNode() {
 //}
 
 template<typename LS>
-shptr<LS> SymbSearch::newSet(unsigned set_size) {
-	shptr<LS> set_i = std::make_shared<LS>(0.0f, set_size);
-	return set_i;
+std::weak_ptr<LS> SymbSearch::newSet(unsigned set_size, std::vector<std::shared_ptr<LS>>& set_container) {
+	std::shared_ptr<LS> set_i = std::make_shared<LS>(set_size, 0.0f);
+	set_container.push_back(std::move(set_i));
+	std::weak_ptr<LS> ret_set_i = set_container.back();
+	return ret_set_i;
 }
 
 template<typename Q>
@@ -157,7 +161,7 @@ bool SymbSearch::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa
 		// Tree to keep history as well as parent node list:
 		bool found_target_state = false;
 		std::vector<bool> visited(p_space_size, false);
-		Graph<float> tree;
+		//Graph<float> tree;
 		
 		// Root tree node has index zero with weight zero
 		std::pair<int, float> curr_leaf;
@@ -199,7 +203,7 @@ bool SymbSearch::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa
 				if (depth_limiting) {
 					depth_map[acc_prod_state] = 0; // Depth of pin states is defined as zero
 				}
-				tree.connect(ROOT_STATE, {acc_prod_state, nullptr}); // the root state is the merged accepting state
+				//tree.connect(ROOT_STATE, {acc_prod_state, nullptr}); // the root state is the merged accepting state
 			}
 		}
 		float min_accepting_cost = -1;
@@ -341,7 +345,7 @@ bool SymbSearch::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa
 					}
 					std::pair<int, float> new_leaf = {connected_node_ind, weight};
 					pq.push(new_leaf); // add to prio queue
-					tree.connect(curr_leaf_ind, {connected_node_ind, &min_w.min_weight[connected_node_ind]});
+					//tree.connect(curr_leaf_ind, {connected_node_ind, &min_w.min_weight[connected_node_ind]});
 				} else {
 					int temp_connected_node_ind = -1;
 					for (auto par_node : parent_node_list) {
@@ -370,7 +374,7 @@ bool SymbSearch::spaceSearch(TS_EVAL<State>* TS_sps, std::vector<DFA_EVAL*>* dfa
 						}
 						std::pair<int, float> new_leaf = {temp_connected_node_ind, weight};
 						pq.push(new_leaf); // add to prio queue
-						tree.connect(curr_leaf_ind, {temp_connected_node_ind, &min_w.min_weight[temp_connected_node_ind]});
+						//tree.connect(curr_leaf_ind, {temp_connected_node_ind, &min_w.min_weight[temp_connected_node_ind]});
 					}
 				}
 
@@ -441,22 +445,23 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 
 	minWeightLS min_w(2, p_space_size);
 
-	auto compare = [](const std::pair<int, LexSet*>& pair1, const std::pair<int, LexSet*>& pair2) {
-		return *(pair1.second) > *(pair2.second);
+	auto compare = [](const std::pair<int, std::weak_ptr<LexSet>>& pair1, const std::pair<int, std::weak_ptr<LexSet>>& pair2) {
+		return *(pair1.second.lock()) > *(pair2.second.lock());
 	};
 
 	bool exit_failure = false;
 	std::pair<bool, std::vector<int>> accepting;
 	for (int round=0; round<2; ++round) {
 		std::string search_type = (round == 0) ? "forward" : "reverse";
-		std::priority_queue<std::pair<int, shptr<LexSet>>, std::vector<std::pair<int, shptr<LexSet>>>, decltype(compare)> pq(compare);
+		std::priority_queue<std::pair<int, std::weak_ptr<LexSet>>, std::vector<std::pair<int, std::weak_ptr<LexSet>>>, decltype(compare)> pq(compare);
 
 		bool found_target_state = false;
 		std::vector<bool> visited(p_space_size, false);
 
-		clearSetsLS();
+		//clearSetsLS();
+		setContainer_t<LexSet> set_container;
 		
-		std::pair<int, shptr<LexSet>> curr_leaf;
+		std::pair<int, std::weak_ptr<LexSet>> curr_leaf;
 		if (round == 0) {
 			TS_sps->reset();
 			cosafe_dfa->reset();
@@ -470,7 +475,7 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 			min_w.min_weight[init_node_prod_ind].fill(0.0f);
 			visited[init_node_prod_ind] = true;
 			curr_leaf.first = init_node_prod_ind;
-			auto new_set_ptr = newSet<LexSet>(num_objectives);
+			auto new_set_ptr = newSet<LexSet>(num_objectives, set_container);
 			curr_leaf.second = new_set_ptr;
 			pq.push(curr_leaf);
 		} else {
@@ -483,7 +488,7 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 				std::vector<int> sol_inds;
 				Graph<float>::augmentedStatePreImage(graph_sizes, acc_prod_state, sol_inds);
 				curr_leaf.first = acc_prod_state;
-				auto new_set_ptr = newSet<LexSet>(num_objectives);
+				auto new_set_ptr = newSet<LexSet>(num_objectives, set_container);
 				curr_leaf.second = new_set_ptr;
 				pq.push(curr_leaf);
 			}
@@ -498,9 +503,9 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 			curr_leaf = pq.top();
 			pq.pop();
 			int curr_leaf_ind = curr_leaf.first;
-			shptr<LexSet> curr_leaf_weight = curr_leaf.second;
+			std::weak_ptr<LexSet> curr_leaf_weight = curr_leaf.second;
 			if (!min_w.is_inf[curr_leaf_ind]) {
-				if ((*curr_leaf_weight) > min_w.min_weight[curr_leaf_ind]) {
+				if ((*curr_leaf_weight.lock()) > min_w.min_weight[curr_leaf_ind]) {
 					continue;
 				}
 			}
@@ -615,7 +620,7 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 					node_inds[1] = cosafe_dfa->getCurrNode();
 					node_inds[2] = live_dfa->getCurrNode();
 					LexSet weight(2);
-					weight = *curr_leaf_weight;
+					weight = *curr_leaf_weight.lock();
 
 					// Get risk values:
 					std::vector<float> risk_vals(2);
@@ -636,9 +641,9 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 						min_w.is_inf[connected_node_ind] = false;
 						min_w.min_weight[connected_node_ind] = weight;
 					}
-					auto tmp_new_set_ptr = newSet<LexSet>(2);
-					*tmp_new_set_ptr = weight;
-					std::pair<int, shptr<LexSet>> new_leaf;
+					auto tmp_new_set_ptr = newSet<LexSet>(2, set_container);
+					*tmp_new_set_ptr.lock() = weight;
+					std::pair<int, std::weak_ptr<LexSet>> new_leaf;
 					new_leaf.first = connected_node_ind;
 					new_leaf.second = tmp_new_set_ptr;
 					pq.push(new_leaf); // add to prio queue
@@ -659,7 +664,7 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 						}
 						// Assign the weights
 						LexSet weight(2);
-						weight = *curr_leaf_weight;
+						weight = *curr_leaf_weight.lock();
 						// Get risk values:
 						std::vector<float> risk_vals(2);
 						risk_vals[0] = curr_risk;
@@ -682,9 +687,9 @@ typename SymbSearch::StrategyResult SymbSearch::synthesizeRiskStrategy(TS_EVAL<S
 							ret_result.reachability[temp_connected_node_ind] = true; // mark the new new as reachable
 							ret_result.action_map[temp_connected_node_ind] = temp_str; 
 						}
-						auto tmp_new_set_ptr = newSet<LexSet>(2);
-						*tmp_new_set_ptr = weight;
-						std::pair<int, shptr<LexSet>> new_leaf;
+						auto tmp_new_set_ptr = newSet<LexSet>(2, set_container);
+						*tmp_new_set_ptr.lock() = weight;
+						std::pair<int, std::weak_ptr<LexSet>> new_leaf;
 						new_leaf.first = temp_connected_node_ind;
 						new_leaf.second = tmp_new_set_ptr;
 						pq.push(new_leaf); // add to prio queue
@@ -787,9 +792,10 @@ std::pair<bool, float> SymbSearch::search(bool use_heuristic) {
 	};
 	auto ___ = [](const DetourLex&) {return true;};
 
-	PlanResult result_LEX(mu, num_dfas);
+	PlanResult result_LEX(num_dfas, mu);
 	if (use_benchmark) {benchmark.pushStartPoint("first_search");}
 	result_LEX = BFS(compareLEX, accCompareLEX, ___, false, false, true); // No pruning criteria, no need for path
+
 	if (use_benchmark) {benchmark.measureMilli("first_search");}
 	if (!result_LEX.success) {
 		ret_vals.second = false;
@@ -813,7 +819,7 @@ std::pair<bool, float> SymbSearch::search(bool use_heuristic) {
 		return curr_sol.getMaxVal() < min_acc_sol.getMaxVal();
 	};
 
-	PlanResult result_solution(mu, num_dfas);
+	PlanResult result_solution(num_dfas, mu);
 	if (use_benchmark) {benchmark.pushStartPoint("second_search");}
 	result_solution = BFS(compareMAX, accCompareMAX, pruneCriterionMAX, true, true, use_heuristic); 
 	if (!result_solution.success) {
@@ -835,7 +841,7 @@ std::pair<bool, float> SymbSearch::search(bool use_heuristic) {
 }
 
 typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pair<int, DetourLex*>&, const std::pair<int, DetourLex*>&)> compare, std::function<bool(const DetourLex&, const DetourLex&)> acceptanceCompare, std::function<bool(const DetourLex&)> pruneCriterion, bool prune, bool extract_path, bool use_heuristic) {	
-	PlanResult ret_result(mu, num_dfas);
+	PlanResult ret_result(num_dfas, mu);
 	ret_result.success = false;
 	std::vector<const std::vector<std::string>*> total_alphabet(num_dfas);
 	std::vector<int> graph_sizes = {static_cast<int>(TS->size())};
@@ -856,7 +862,7 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 
 	TS->mapStatesToLabels(total_alphabet); // This is in efficient with diverse/large alphabet
 
-	DetourLex min_accepting_cost(mu, num_dfas); // Declare here so we can have a return value
+	DetourLex min_accepting_cost(num_dfas, mu); // Declare here so we can have a return value
 	float min_accepting_h_cost;
 
 	if (use_heuristic) {
@@ -868,31 +874,37 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 	int solution_ind;
 	min_w.reset();
 	std::priority_queue<std::pair<int, DetourLex*>, std::vector<std::pair<int, DetourLex*>>, decltype(compare)> pq(compare);
-	Graph<IVFlexLex<DetourLex>> tree;
+	//Graph<IVFlexLex<DetourLex>> tree;
 
-	clearNodes();
+	//clearNodes();
+	nodeContainer_t<DetourLex> node_container;
+	setContainer_t<DetourLex> set_container;
+
 	TS->reset();
 	bool init = true;
-	IVFlexLex<DetourLex>* temp_nodeptr = newNode<DetourLex>();
+	std::weak_ptr<IVFlexLex<DetourLex>> temp_nodeptr = newNode<DetourLex>(num_dfas, mu, node_container);
+	//cout<<"use count: "<<temp_nodeptr.lock().use_count()<<endl;
 	std::vector<float> temp_lex_set_fill(num_dfas);
-	temp_nodeptr->i = TS->getCurrNode();
+	temp_nodeptr.lock()->i = TS->getCurrNode();
 	std::vector<int> init_node_inds(num_dfas + 1);
 	init_node_inds[0] = TS->getCurrNode();
 	for (int i=0; i<num_dfas; ++i) {
 		dfa_list_ordered->operator[](i)->reset();
-		temp_nodeptr->v[i] = dfa_list_ordered->operator[](i)->getCurrNode();
+		temp_nodeptr.lock()->v[i] = dfa_list_ordered->operator[](i)->getCurrNode();
 		init_node_inds[i+1] = dfa_list_ordered->operator[](i)->getCurrNode();
 		// Weights are zero for the root node:
 		temp_lex_set_fill[i] = 0;
 	}
 	int init_node_prod_ind = Graph<float>::augmentedStateImage(init_node_inds, graph_sizes);
-	min_w.prod2node_list[init_node_prod_ind] = node_list.size() - 1; //map the prod node ind to the node in node list
+	min_w.prod2node_list[init_node_prod_ind] = node_container.size() - 1; //map the prod node ind to the node in node list
 	visited[init_node_prod_ind] = true;
 	min_w.is_inf[init_node_prod_ind] = false;
-	temp_nodeptr->lex_set = temp_lex_set_fill;
+	temp_nodeptr.lock()->lex_set = temp_lex_set_fill;
 	std::pair<int, DetourLex*> curr_leaf;
+	//std::weak_ptr<DetourLex> temp_setptr = newSet<DetourLex>(num_dfas, set_container);
+	//*temp_setptr.lock() = (temp_nodeptr.lock()->lex_set);
 	curr_leaf.first = init_node_prod_ind;
-	curr_leaf.second = &(temp_nodeptr->lex_set);
+	curr_leaf.second = &(temp_nodeptr.lock()->lex_set);
 	pq.push(curr_leaf);
 	std::vector<WL*> con_data;
 	std::pair<bool, std::vector<int>> accepting;
@@ -912,11 +924,11 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 		pq.pop();
 		int curr_leaf_prod_ind = curr_leaf.first;
 		int curr_leaf_ind = min_w.prod2node_list.at(curr_leaf_prod_ind);
-		DetourLex* curr_path_weight = &node_list[curr_leaf_ind]->lex_set;
+		DetourLex* curr_path_weight = &node_container[curr_leaf_ind]->lex_set;
 		visited[curr_leaf_prod_ind] = true;
-		TS->set(node_list[curr_leaf_ind]->i);
+		TS->set(node_container[curr_leaf_ind]->i);
 		for (int i=0; i<num_dfas; ++i) {
-			dfa_list_ordered->operator[](i)->set(node_list[curr_leaf_ind]->v[i]);
+			dfa_list_ordered->operator[](i)->set(node_container[curr_leaf_ind]->v[i]);
 		}
 		con_data.clear();
 		TS->getConnectedDataEVAL(con_data);
@@ -924,9 +936,9 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 		con_nodes.clear();
 		TS->getConnectedNodesEVAL(con_nodes);
 		for (int j=0; j<con_data.size(); ++j) {
-			TS->set(node_list[curr_leaf_ind]->i);
+			TS->set(node_container[curr_leaf_ind]->i);
 			for (int i=0; i<num_dfas; ++i) {
-				dfa_list_ordered->operator[](i)->set(node_list[curr_leaf_ind]->v[i]);
+				dfa_list_ordered->operator[](i)->set(node_container[curr_leaf_ind]->v[i]);
 			}
 			std::string temp_str = con_data[j]->label;
 			float temp_weight = con_data[j]->weight;
@@ -979,7 +991,7 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 			}
 			// Only consider non pruned nodes
 			if (prune) {
-				DetourLex temp_prune_check(mu, num_dfas); 
+				DetourLex temp_prune_check(num_dfas, mu); 
 				temp_prune_check = *(curr_path_weight);
 				temp_prune_check += temp_lex_set_fill;
 				if (pruneCriterion(temp_prune_check)) {
@@ -989,20 +1001,20 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 			// Check if node was seen before to see if a shorter path has been found
 			if (!min_w.is_inf[con_node_prod_ind]) { // Node was seen before, non inf weight, but not visited
 				int seen_node_ind = min_w.prod2node_list.at(con_node_prod_ind); // This value will be mapped if weve seen the node before
-				IVFlexLex<DetourLex>* seen_node = node_list[seen_node_ind];
-				DetourLex temp_lex_set(mu, &temp_lex_set_fill, num_dfas);
+				std::weak_ptr<IVFlexLex<DetourLex>> seen_node = node_container[seen_node_ind];
+				DetourLex temp_lex_set(num_dfas, mu, &temp_lex_set_fill);
 				temp_lex_set += *curr_path_weight;
 				bool updated = false;
 				if (prune) {
-					if (seen_node->lex_set.getMaxVal() > temp_lex_set.getMaxVal()) {
-						seen_node->lex_set = temp_lex_set;
+					if (seen_node.lock()->lex_set.getMaxVal() > temp_lex_set.getMaxVal()) {
+						seen_node.lock()->lex_set = temp_lex_set;
 						// UPDATE PARENT HERE:
 						parents[seen_node_ind] = curr_leaf_ind;
 						updated = true;
 					}
 				} else {
-					if (seen_node->lex_set > temp_lex_set) {
-						seen_node->lex_set = temp_lex_set;
+					if (seen_node.lock()->lex_set > temp_lex_set) {
+						seen_node.lock()->lex_set = temp_lex_set;
 						// UPDATE PARENT HERE:
 						parents[seen_node_ind] = curr_leaf_ind;
 						updated = true;
@@ -1012,15 +1024,15 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 					continue;
 				}
 			} 
-			IVFlexLex<DetourLex>* new_temp_nodeptr = newNode<DetourLex>();
-			min_w.prod2node_list[con_node_prod_ind] = node_list.size() - 1; // Make new node, must map the tree and prod indices
-			int con_node_ind = node_list.size() - 1;
-			new_temp_nodeptr->i = TS->getCurrNode();
+			std::weak_ptr<IVFlexLex<DetourLex>> new_temp_nodeptr = newNode<DetourLex>(num_dfas, mu, node_container);
+			min_w.prod2node_list[con_node_prod_ind] = node_container.size() - 1; // Make new node, must map the tree and prod indices
+			int con_node_ind = node_container.size() - 1;
+			new_temp_nodeptr.lock()->i = TS->getCurrNode();
 			for (int i=0; i<num_dfas; ++i) {
-				new_temp_nodeptr->v[i] = dfa_list_ordered->operator[](i)->getCurrNode();
+				new_temp_nodeptr.lock()->v[i] = dfa_list_ordered->operator[](i)->getCurrNode();
 			}
-			new_temp_nodeptr->lex_set = *(curr_path_weight);
-			new_temp_nodeptr->lex_set += temp_lex_set_fill;
+			new_temp_nodeptr.lock()->lex_set = *(curr_path_weight);
+			new_temp_nodeptr.lock()->lex_set += temp_lex_set_fill;
 			// The priority queue includes the heuristic cost, however the tree does not:
 			std::pair<int, DetourLex*> new_leaf;
 			if (use_heuristic) {
@@ -1046,19 +1058,19 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 						}
 					}
 				}
-				DetourLex* new_temp_setptr = newSet();
-				new_temp_setptr->operator=(new_temp_nodeptr->lex_set);
+				std::weak_ptr<DetourLex> new_temp_setptr = newSet(num_dfas, set_container);
+				new_temp_setptr.lock()->operator=(new_temp_nodeptr.lock()->lex_set);
 				if (prune) {
-					new_temp_setptr->addToMax(max_h_val);
+					new_temp_setptr.lock()->addToMax(max_h_val);
 				} else {
-					*new_temp_setptr += lex_h_vals;
+					*new_temp_setptr.lock() += lex_h_vals;
 				}
-				new_leaf = {con_node_prod_ind, new_temp_setptr};
+				new_leaf = {con_node_prod_ind, new_temp_setptr.lock().get()};
 			} else {
-				new_leaf = {con_node_prod_ind, &(new_temp_nodeptr->lex_set)};
+				new_leaf = {con_node_prod_ind, &(new_temp_nodeptr.lock()->lex_set)};
 			}
 			pq.push(new_leaf); // add to prio queue
-			tree.connect(curr_leaf_ind, {con_node_ind, new_temp_nodeptr});
+			//tree.connect(curr_leaf_ind, {con_node_ind, new_temp_nodeptr});
 			min_w.is_inf[con_node_prod_ind] = false; // mark node as seen
 			parents[con_node_ind] = curr_leaf_ind;
 			int solution_ind_prod;
@@ -1084,7 +1096,7 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 	}
 	if (finished && sol_found) {
 		if (extract_path) {
-			extractPath(parents, solution_ind,graph_sizes);
+			extractPath(parents, solution_ind,graph_sizes, node_container);
 			int p_space_size = 1;
 		}
 		if (use_benchmark && prune) {
@@ -1099,7 +1111,7 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 	}
 }
 
-void SymbSearch::extractPath(const std::vector<int>& parents, int accepting_state, const std::vector<int>& graph_sizes) {
+void SymbSearch::extractPath(const std::vector<int>& parents, int accepting_state, const std::vector<int>& graph_sizes, const nodeContainer_t<DetourLex>& node_container) {
 	int curr_node = 0;
 	curr_node = accepting_state;
 	std::vector<int> reverse_TS_state_sequence;
@@ -1107,17 +1119,17 @@ void SymbSearch::extractPath(const std::vector<int>& parents, int accepting_stat
 	reverse_TS_state_sequence.clear();
 	reverse_prod_state_sequence.clear();
 	while (curr_node != 0) {
-		reverse_TS_state_sequence.push_back(node_list[curr_node]->i);
+		reverse_TS_state_sequence.push_back(node_container[curr_node]->i);
 		std::vector<int> prod_inds(num_dfas + 1);
-		prod_inds[0] = node_list[curr_node]->i;
+		prod_inds[0] = node_container[curr_node]->i;
 		for (int i=0; i<num_dfas; ++i) {
-			prod_inds[i+1] = node_list[curr_node]->v[i];
+			prod_inds[i+1] = node_container[curr_node]->v[i];
 		}
 		int prod_ind_out = Graph<float>::augmentedStateImage(prod_inds, graph_sizes);
 		reverse_prod_state_sequence.push_back(prod_ind_out);
 		curr_node = parents[curr_node];
 	}
-	reverse_TS_state_sequence.push_back(node_list[0]->i); // finally add the init state
+	reverse_TS_state_sequence.push_back(node_container[0]->i); // finally add the init state
 	TS_state_sequence.resize(reverse_TS_state_sequence.size());
 	TS_action_sequence.resize(reverse_TS_state_sequence.size()-1);
 	std::vector<int> prod_state_sequence(reverse_prod_state_sequence.size());
@@ -1179,38 +1191,38 @@ void SymbSearch::writePlanToFile(std::string filename, const std::vector<std::st
 	plan_file.close();
 }
 
-void SymbSearch::clearNodes() {
-	for (int i=0; i<node_list.size(); ++i) {
-		delete node_list[i];
-	}
-	node_list.clear();
-}
-
-void SymbSearch::clearSetsLS() {
-	for (int i=0; i<set_list_ls.size(); ++i) {
-		delete set_list_ls[i];
-	}
-	set_list_ls.clear();
-}
-
-void SymbSearch::clearNodesAndSets() {
-	for (int i=0; i<node_list.size(); ++i) {
-		delete node_list[i];
-	}
-	node_list.clear();
-	for (int i=0; i<set_list.size(); ++i) {
-		delete set_list[i];
-	}
-	set_list.clear();
-}
-
-SymbSearch::~SymbSearch() {
-	for (int i=0; i<node_list.size(); ++i) {
-		delete node_list[i];
-	}
-	for (int i=0; i<set_list.size(); ++i) {
-		delete set_list[i];
-	}
-}
+//void SymbSearch::clearNodes() {
+//	for (int i=0; i<node_list.size(); ++i) {
+//		delete node_list[i];
+//	}
+//	node_list.clear();
+//}
+//
+//void SymbSearch::clearSetsLS() {
+//	for (int i=0; i<set_list_ls.size(); ++i) {
+//		delete set_list_ls[i];
+//	}
+//	set_list_ls.clear();
+//}
+//
+//void SymbSearch::clearNodesAndSets() {
+//	for (int i=0; i<node_list.size(); ++i) {
+//		delete node_list[i];
+//	}
+//	node_list.clear();
+//	for (int i=0; i<set_list.size(); ++i) {
+//		delete set_list[i];
+//	}
+//	set_list.clear();
+//}
+//
+//SymbSearch::~SymbSearch() {
+//	for (int i=0; i<node_list.size(); ++i) {
+//		delete node_list[i];
+//	}
+//	for (int i=0; i<set_list.size(); ++i) {
+//		delete set_list[i];
+//	}
+//}
 
 

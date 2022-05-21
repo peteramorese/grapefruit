@@ -31,8 +31,8 @@ struct WIV {
 
 template<class T>
 struct IVFlexLex {
-	IVFlexLex(float mu, unsigned int S) : v(S), lex_set(mu, S) {}
-	IVFlexLex(float mu, float fill_val, unsigned int S) : v(S), lex_set(mu, fill_val, S) {}
+	IVFlexLex(unsigned int S, float mu) : v(S), lex_set(S, mu) {}
+	IVFlexLex(unsigned int S, float mu, float fill_val) : v(S), lex_set(S, mu, fill_val) {}
 	int i;
 	std::vector<int> v;
 	T lex_set;
@@ -41,7 +41,7 @@ struct IVFlexLex {
 template<>
 struct IVFlexLex<LexSet> {
 	IVFlexLex(unsigned int S) : v(S), lex_set(S) {}
-	IVFlexLex(float fill_val, unsigned int S) : v(S), lex_set(fill_val, S) {}
+	IVFlexLex(unsigned int S, float fill_val) : v(S), lex_set(S, fill_val) {}
 	int i;
 	std::vector<int> v;
 	LexSet lex_set;

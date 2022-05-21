@@ -95,7 +95,7 @@ if __name__ == "__main__":
     print("\n\nScaling Flexibility: \n\n")
     for i in range(0, trials_flexibility):
         print("Working on trial {} out of {}...".format(i + 1, trials_flexibility))
-        num_dfas = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=False, verbose=True)
+        num_dfas = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=False, verbose=False)
         if num_dfas <= 2:
             print("Error: Create more than 2 BM formulas")
             break

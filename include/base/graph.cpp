@@ -585,7 +585,7 @@ template class Graph<WLI>;
 template class Graph<WIV>;
 template class Graph<IVFlexLex<LexSet>>;
 template class Graph<IVFlexLex<FlexLexSetS>>;
-template class Graph<IVFlexLex<REQLex>>;
+//template class Graph<IVFlexLex<REQLex>>;
 template class Graph<IVFlexLex<DetourLex>>;
 //template class Graph<IVLex>;
 template class Graph<std::vector<unsigned int>>;
