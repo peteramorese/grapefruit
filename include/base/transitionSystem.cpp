@@ -42,85 +42,128 @@ bool TransitionSystem<T>::parseLabelAndEval(const std::string* label, const T* s
 	if (*label == "1") {
 		return true;
 	}
-	bool negate_next = false;
-	bool is_first = true;
-	bool arg;
+	//bool negate_next = false;
+	//bool is_first = true;
+	//bool arg;
 	//bool arg_conj;
 	//std::vector<bool> propositions;
 	int prop_i = -1;
-	std::string temp_name;
-	char prev_operator = '\0';
+	//bool is_first = true;
+	
+	// Use stack data structures to account for parenthesis:
+	std::vector<std::string> prop_buffer(1);
+	std::vector<bool> bool_buffer(1);
+	//std::vector<bool> is_first_buffer(1);
+	std::vector<bool> negate_next_buffer(1);
+	std::vector<char> prev_operator_buffer(1);
+	//is_first_buffer[0] = true;
+	negate_next_buffer[0] = false;
+	prev_operator_buffer[0] = '\0';
+	//char prev_operator = '\0';
+	bool collapse = false;
 	for (int i=0; i<label->size(); ++i) {
 		char character = (*label)[i];
 		bool sub_eval;
-		switch (character) {
-			case '!':
-				negate_next = !negate_next;
-				break;
-			case '&':
-				sub_eval = TransitionSystem<T>::propositions.at(temp_name)->evaluate(state);	
-				if (negate_next) {
+
+		//std::cout<<"Printing buffers: "<<std::endl;
+		//std::cout<<" bool: ";
+		//for (int bb=0; bb<bool_buffer.size(); bb++) {
+		//	std::cout<<bool_buffer[bb]<<", ";
+		//}
+		//std::cout<<"\n prop: ";
+		//for (int bb=0; bb<prop_buffer.size(); bb++) {
+		//	std::cout<<prop_buffer[bb]<<", ";
+		//}
+		//std::cout<<"\n prev: ";
+		//for (int bb=0; bb<prev_operator_buffer.size(); bb++) {
+		//	std::cout<<prev_operator_buffer[bb]<<", ";
+		//}
+		//std::cout<<"\n neg : ";
+		//for (int bb=0; bb<negate_next_buffer.size(); bb++) {
+		//	std::cout<<negate_next_buffer[bb]<<", ";
+		//}
+		//std::cout<<"\n";
+
+		if (character == '!') {
+			negate_next_buffer.back() = !negate_next_buffer.back();
+			continue;
+		} else if (character == ' ') { 
+			continue;
+		} 
+		if (character == '(') { // Push to stack
+			//is_first_buffer.push_back(true); // First item on stack
+			negate_next_buffer.push_back(false); 
+			prev_operator_buffer.push_back('\0');
+			bool_buffer.push_back(true); 
+			prop_buffer.push_back("");
+		} else {
+			if (character == ')') { // Pop from stack
+				if (bool_buffer.size() <= 1) {
+						std::cout<<"Error (parseLabelAndEval): Found ')' without an opening bracket.\n";
+						return false;
+				}
+				// Evaluate the top of the stack
+				if (!collapse) {
+				//std::cout<<"Evaluating label ')': "<<prop_buffer.back()<<std::endl;
+				sub_eval = TransitionSystem<T>::propositions.at(prop_buffer.back())->evaluate(state);	
+				//std::cout<<"  Result: "<<sub_eval<<std::endl;
+				} 
+				if (negate_next_buffer.back()) {
 					sub_eval = !sub_eval;
 				}
-				temp_name.clear();
-				negate_next = false;
-				prev_operator = '&';
-				if (is_first) {
-					arg = sub_eval;
-					is_first = false;
+				prop_buffer.back().clear();
+				if (prev_operator_buffer.back() == '\0') { // First variable seen
+					bool_buffer.back() = sub_eval;
 				} else {
-					arg = arg && sub_eval;
+					if (prev_operator_buffer.back() == '|') {
+						bool_buffer.back() = bool_buffer.back() || sub_eval;
+					} else if (prev_operator_buffer.back() == '&') {
+						bool_buffer.back() = bool_buffer.back() && sub_eval;
+					} 
 				}
-				break;
-			case '|':
-				sub_eval = TransitionSystem<T>::propositions.at(temp_name)->evaluate(state);	
 				
-				if (negate_next) {
-					sub_eval = !sub_eval;
+				// Pop items off stack
+				negate_next_buffer.pop_back();
+				prev_operator_buffer.pop_back();
+				prop_buffer.pop_back();
+				sub_eval = bool_buffer.back(); // Get the value from the top of the stack
+				bool_buffer.pop_back();
+				collapse = true; // Do not re eval sub_eval, it already has its value
+			} 
+			bool at_end = i == label->size()-1;
+			if (character == '|' || character == '&' || at_end) { // If operator is seen, or at the end of the label
+				if (at_end) {
+					prop_buffer.back().push_back(character);
 				}
-				temp_name.clear();
-				negate_next = false;
-				prev_operator = '|';
-				if (is_first) {
-					arg = sub_eval;
-					is_first = false;
+				if (!collapse) {
+					//std::cout<<"Evaluating label: "<<prop_buffer.back()<<std::endl;
+					sub_eval = TransitionSystem<T>::propositions.at(prop_buffer.back())->evaluate(state);	
+					//std::cout<<"  Result: "<<sub_eval<<std::endl;
 				} else {
-					arg = arg || sub_eval;
+					collapse = false;
 				}
-				break;
-			case ' ':
-				break;
-			default:
-				temp_name.push_back(character);
-				if (i == label->size()-1) {
-					sub_eval = TransitionSystem<T>::propositions[temp_name]->evaluate(state);	
-					if (negate_next) {
-						sub_eval = !sub_eval;
-					}
-					switch (prev_operator) {
-						//case '&':	
-						case '|':	
-							arg = arg || sub_eval;
-							break;
-						default:
-							// Defaults to conjunction because
-							// arg is initialized to 'true'
-							if (is_first) {
-								arg = sub_eval;
-								is_first = false;
-							} else {
-								arg = arg && sub_eval;
-							}
-					}
+				if (negate_next_buffer.back()) {
+					sub_eval = !sub_eval;
+					negate_next_buffer.back() = false;
 				}
+				prop_buffer.back().clear();
+				if (prev_operator_buffer.back() == '\0') { // First variable seen
+					bool_buffer.back() = sub_eval;
+					prev_operator_buffer.back() = character;
+				} else {
+					if (prev_operator_buffer.back() == '|') {
+						bool_buffer.back() = bool_buffer.back() || sub_eval;
+					} else if (prev_operator_buffer.back() == '&') {
+						bool_buffer.back() = bool_buffer.back() && sub_eval;
+					} 
+					prev_operator_buffer.back() = character;
+				}
+			} else {
+				prop_buffer.back().push_back(character);
+			}
 		}
-		/*
-		if (!arg) {
-			break;
-		}
-		*/
 	}
-	return arg;
+	return bool_buffer[0];
 	
 }
 
