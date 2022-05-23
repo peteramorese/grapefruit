@@ -2,15 +2,79 @@ clear; close all; clc;
 
 
 %%%%%%%%%%%%%%%
-animate = true;
+animate = false;
 N_ANIMATE = 25;
 robot_size = 200;
 
-arrow_length = .9;
-arrow_grid_offset = 0.0;
-text_offset_x = .1;
+arrow_length = .7;
+arrow_grid_offset = 0.1;
+text_offset_x = .24;
 text_offset_y = .3;
-no_animate_line_width = 6;
+no_animate_line_width = 5;
+
+custom_aps = true;
+% Fill in custom APs here:
+aps_loc = [2, 0; % Barrier
+    2, 1;
+    2, 2;
+    2, 3;
+    0, 5;
+    1, 5;
+    2, 5;
+    6, 6;
+    6, 7;
+    6, 8;
+    8, 6;
+    9, 6;
+    7, 1; % Water 
+    7, 4;
+    8, 4;
+    7, 3;
+    8, 3;
+    9, 9; % Goal
+    ];
+
+aps_lbls = ["b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "Goal"];
+
+b_clr = [0.6350 0.0780 0.1840];
+w_clr = [0 0.4470 0.7410];
+Goal_clr = [0.4660 0.6740 0.1880];
+aps_clrs = [b_clr;
+    b_clr;
+    b_clr;
+    b_clr;
+    b_clr;
+    b_clr;
+    b_clr;
+    b_clr;
+    b_clr;
+    b_clr;
+    b_clr;
+    b_clr;
+    w_clr;
+    w_clr;
+    w_clr;
+    w_clr;
+    w_clr;
+    Goal_clr];
+
 %%%%%%%%%%%%%%%
 
 plan = importdata("plan_files/strat_traj_execution.txt");
@@ -28,8 +92,11 @@ for i=1:length(plan)
         if (~end_plan_found)
             end_plan_ind = i;
             end_plan_found = true;
-            LOI = zeros(length(plan)-i, 2);
+            if ~custom_aps
+                LOI = zeros(length(plan)-i, 2);
+            end
         end
+        if ~custom_aps
         x_str = extractBetween(plan{i}, "x", "_");
         y_str = extractBetween(plan{i}, "y", "_");
         if contains(plan{i}, "safety")
@@ -40,6 +107,7 @@ for i=1:length(plan)
 %         AP_type = extractAfter(plan{i}, "prio");
         LOI(i-end_plan_ind+1, :) = [str2double(x_str), str2double(y_str)];
         LOI_lbl(i-end_plan_ind+1) = AP_type;
+        end
     elseif contains(plan{i}, "SYS")
         act_clr(i,:) = [0 0.4470 0.7410];
     elseif contains(plan{i}, "ENV")
@@ -82,10 +150,17 @@ for i = 1:end_plan_ind
 end
 states = states + .5;
 directions(:,1:2) = directions(:,1:2) + .5;
-LOI(:,1:2) = LOI(:,1:2) + .5;
 figure(1)
-
 hold on
+axis([0 GRID_SIZE 0 GRID_SIZE])
+if custom_aps
+    LOI = aps_loc;
+    LOI_lbl = aps_lbls;
+end
+if ~isempty(LOI)
+    LOI(:,1:2) = LOI(:,1:2) + .5;
+
+
 % x_vec = 0:GRID_SIZE-1;
 % y_vec = 0:GRID_SIZE-1;
 
@@ -98,30 +173,34 @@ for i=1:length(LOI(:,1))
         [~, I] = ismember([LOI(i,1) + text_offset_x, LOI(i,2) + text_offset_y], text_array{1,1}(1:end, 1:2), 'rows');
     end
     if (I == 0) || (i == 1)
-%         temp_str = sprintf("Prio: %d", LOI(i,3));
+        %         temp_str = sprintf("Prio: %d", LOI(i,3));
         text_array{1,1} = [text_array{1,1}; [LOI(i,1)+text_offset_x, LOI(i,2)+text_offset_y]];
         text_array{1,2} = [text_array{1,2}; LOI_lbl(i)];
     else
-%         temp_str = sprintf(" & %d", LOI(i,3));
+        %         temp_str = sprintf(" & %d", LOI(i,3));
         if (LOI_lbl(i) == "safety")
             temp_str = "BAD";
         elseif (LOI_lbl(i) == "liveness")
             temp_str = "GOAL";
         else
-            temp_str = "unk";
+            temp_str = "";
         end
         text_array{1,2}(I) = text_array{1,2}(I) + temp_str;
     end
 end
-axis([0 GRID_SIZE 0 GRID_SIZE])
+
 for i=2:length(text_array{1,1}(:,1))
-    
-    if (text_array{2}(i) == "Bad")
-        scatter(text_array{1,1}(i,1) - text_offset_x, text_array{1,1}(i,2) - text_offset_y, 400, [1 .6 .6],"filled")
+    if custom_aps
+        scatter(text_array{1,1}(i,1) - text_offset_x, text_array{1,1}(i,2) - text_offset_y, 400, aps_clrs(i-1,:),"filled", 's')
     else
-        scatter(text_array{1,1}(i,1) - text_offset_x, text_array{1,1}(i,2) - text_offset_y, 400, [.5 1 .5],"filled")
+        if (text_array{2}(i) == "Bad")
+            scatter(text_array{1,1}(i,1) - text_offset_x, text_array{1,1}(i,2) - text_offset_y, 400, [1 .6 .6],"filled")
+        else
+            scatter(text_array{1,1}(i,1) - text_offset_x, text_array{1,1}(i,2) - text_offset_y, 400, [.5 1 .5],"filled")
+        end
     end
     text(text_array{1,1}(i,1), text_array{1,1}(i,2), text_array{1,2}(i), "FontSize",12);
+end
 end
 % scatter(LOI(:,1), LOI(:,2), 80, "filled", "color", 'r')
 % scatter(states(:,1), states(:,2),40,'filled', "Color",'k')

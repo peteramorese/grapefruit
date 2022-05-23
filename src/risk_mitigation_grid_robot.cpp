@@ -52,6 +52,7 @@ bool StrategyRTEVAL::executeAction(const std::string& action, bool system_action
 	for (int i=0; i<lbls->size(); ++i) {
 		if (cosafe_dfa->eval(lbls->operator[](i), true)) {
 			found_connection = true;
+			break;
 		}
 	}
 	if (!found_connection) {
@@ -61,6 +62,7 @@ bool StrategyRTEVAL::executeAction(const std::string& action, bool system_action
 	for (int i=0; i<lbls->size(); ++i) {
 		if (live_dfa->eval(lbls->operator[](i), true)) {
 			found_connection = true;
+			break;
 		}
 	}
 	if (!found_connection) {
@@ -103,6 +105,8 @@ bool StrategyRTEVAL::run() {
 		}
 		if (found) {
 			std::cout<<"\n"<<NAME<<"Current State ("<<TS->getCurrNode()<<"): \n";
+			TS->getCurrState()->print();
+			std::cout<<"\n";
 			//TS->getState(TS->getCurrNode());
 			std::cout<<NAME<<"--System's turn--\n";
 			int prod_ind = Graph<float>::augmentedStateImage({TS->getCurrNode(), cosafe_dfa->getCurrNode(), live_dfa->getCurrNode()}, graph_sizes);
@@ -120,6 +124,8 @@ bool StrategyRTEVAL::run() {
 			}
 		}
 		std::cout<<"\n"<<NAME<<"Current State ("<<TS->getCurrNode()<<"): \n";
+		TS->getCurrState()->print();
+		std::cout<<"\n";
 		//TS->getState(TS->getCurrNode());
 		std::cout<<NAME<<"--Environment's turn--\n";
 		std::vector<WL*> con_data;
