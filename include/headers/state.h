@@ -9,37 +9,16 @@ class BlockingStateSpace;
 
 class State {
 	protected:
-		//std::vector<std::vector<std::string>> state_space_named;
-		//std::unordered_map<std::string, unsigned int> index_labels;
-		//std::vector<int> num_vars;
 		std::vector<int> state_space;
-		//unsigned int state_space_dim;
-		//bool is_dimensions_defined;
-		/*
-		struct domain {
-			std::string label;
-			std::vector<std::string> vars;
-		};
-		*/
-		//std::vector<domain> domains;
-		//std::vector<domain> groups;
 		StateSpace* SS;
-		//int ssAccess(int ind) const;
 	public:
 		State(StateSpace* SS_);
 		void resizeAll(unsigned int size);
 		void resizeAll();
-		//void initNewSS();
 		static const std::string UNDEF;
-		//void setStateDimension(const std::vector<std::string>& var_labels, unsigned int dim);
 		void generateAllPossibleStates(std::vector<State>& all_states) ;
 		int getVarOptionsCount(unsigned int dim);
-		//void setStateDimensionLabel(unsigned int dim, const std::string& dimension_label);
-		//void setDomain(const std::string& domain_label, const std::vector<std::string>& vars);
-		//void setDomain(const std::string& domain_label, const std::vector<std::string>& vars, unsigned int index);
 		bool getDomains(const std::string& var, std::vector<std::string>& in_domains) const;
-		//void setLabelGroup(const std::string& group_label, const std::vector<std::string>& dimension_labels);
-		//void setLabelGroup(const std::string& group_label, const std::vector<std::string>& dimension_labels, unsigned int index);
 		void getGroupDimLabels(const std::string& group_label, std::vector<std::string>& group_dim_labels) const;
 		bool argFindGroup(const std::string& var_find, const std::string& group_label, std::string& arg_dimension_label) const; 
 		void setState(const std::vector<std::string>& set_state);
@@ -59,8 +38,6 @@ class State {
 
 class BlockingState : public State {
 	private:
-		//std::vector<bool> blocking_dims;
-		//bool debug;
 		BlockingStateSpace* BSS;
 	public:
 		BlockingState(BlockingStateSpace* BSS_);

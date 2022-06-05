@@ -131,7 +131,7 @@ int main() {
 
 	// Create the transition system:
 	Graph<WL> ts_graph_m(true);
-	TS_EVAL<State> ts_eval(&ts_graph_m, 0); // by default, the init node for the ts is 0
+	TS_EVAL<State> ts_eval(0); // by default, the init node for the ts is 0
 	ts_eval.setConditions(cond_ptrs_m);
 	ts_eval.setPropositions(AP_ptrs_m);
 	ts_eval.setInitState(&init_state);
@@ -181,7 +181,7 @@ int main() {
 		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
 	}
 
-	SymbSearch<DetourLex> search_obj;
+	SymbSearch search_obj;
 	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	search_obj.setTransitionSystem(&ts_eval);
 	search_obj.setFlexibilityParam(1000.0f);

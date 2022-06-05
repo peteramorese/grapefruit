@@ -9,8 +9,8 @@ class LexSet {
 		const unsigned int S;
 	public:
 		LexSet(unsigned int S_);
-		LexSet(float fill_val, unsigned int S_);
-		LexSet(const std::vector<float>* fill_set, unsigned int S_);
+		LexSet(unsigned int S_, float fill_val);
+		LexSet(unsigned int S_, const std::vector<float>* fill_set);
 		unsigned int size() const;
 		void fill(float value);
 		void setInf();
@@ -34,9 +34,9 @@ class FlexLexSetS : public LexSet {
 		float mu;
 		void overflow();
 	public:
-		FlexLexSetS(float mu_, unsigned int S_);
-		FlexLexSetS(float mu_, float fill_val, unsigned int S_);
-		FlexLexSetS(float mu_, const std::vector<float>* fill_set, unsigned int S_);
+		FlexLexSetS(unsigned int S_, float mu_);
+		FlexLexSetS(unsigned int S_, float mu_, float fill_val);
+		FlexLexSetS(unsigned int S_, float mu_, const std::vector<float>* fill_set);
 		void operator+=(const FlexLexSetS& arg_set);
 		void operator+=(const std::vector<float>& arg_vec);
 		void operator=(const FlexLexSetS& arg_set);
@@ -44,29 +44,13 @@ class FlexLexSetS : public LexSet {
 
 };
 
-class REQLex : public LexSet {
-	private:
-		float mu;
-	public:
-		REQLex(float mu_, unsigned int S_);
-		REQLex(float mu_, float fill_val, unsigned int S_);
-		REQLex(float mu_, const std::vector<float>* fill_set, unsigned int S_);
-		void operator=(const REQLex& arg_set);
-		void operator=(const std::vector<float>& arg_vec);
-		bool operator==(const REQLex& arg_set);
-		bool operator<(const REQLex& arg_set);
-		bool operator<=(const REQLex& arg_set);
-		bool operator>(const REQLex& arg_set);
-		bool operator>=(const REQLex& arg_set);
-};
-
 class DetourLex : public LexSet {
 	private: 
 		const float mu;
 	public:
-		DetourLex(float mu_, unsigned int S_);
-		DetourLex(float mu_, float fill_val, unsigned int S_);
-		DetourLex(float mu_, const std::vector<float>* fill_set, unsigned int S_);
+		DetourLex(unsigned int S_, float mu_);
+		DetourLex(unsigned int S_, float mu_, float fill_val);
+		DetourLex(unsigned int S_, float mu_, const std::vector<float>* fill_set);
 		void operator+=(const DetourLex& arg_set);
 		void operator+=(const std::vector<float>& arg_vec);
 		void operator=(const DetourLex& arg_set);

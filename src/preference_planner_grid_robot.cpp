@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
 	init_state.setState(set_state);
 
 	Graph<WL> ts_graph_m(true, true);
-	TS_EVAL<State> ts_eval(&ts_graph_m, true, true, 0); // by default, the init node for the ts is 0
+	TS_EVAL<State> ts_eval(true, true, 0); // by default, the init node for the ts is 0
 	ts_eval.setInitState(&init_state);
 
 	for (int i=0; i<grid_size; ++i) { // x
@@ -294,7 +294,7 @@ int main(int argc, char *argv[]) {
 		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
 	}
 
-	SymbSearch<DetourLex> search_obj(bm_filename_path, verbose);
+	SymbSearch search_obj(bm_filename_path, verbose);
 	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	search_obj.setTransitionSystem(&ts_eval);
 	if (manual_setup) {

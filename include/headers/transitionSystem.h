@@ -3,18 +3,19 @@
 #include<vector>
 #include<iostream>
 #include<unordered_map>
+#include<memory>
 #include "graph.h"
 #include "state.h"
 #include "condition.h"
 
 template <class T>
-class TransitionSystem {
+class TransitionSystem : public Graph<WL> {
 	private:
 		std::vector<Condition*> conditions;
 		bool has_conditions;
 		bool is_blocking;
 		bool has_init_state;
-		const bool DETERMINISTIC;
+		const bool UNIQUE_ACTION;
 		const bool manual;
 		T* init_state;
 		std::vector<T> all_states;
@@ -23,15 +24,14 @@ class TransitionSystem {
 		void safeAddState(int q_i, T* add_state, int add_state_ind, Condition* cond);
 	protected:
 		std::unordered_map<std::string, SimpleCondition*> propositions;
-		Graph<WL>* graph_TS;
 		std::vector<T*> state_map;
-		std::vector<WL*> node_container;
+		std::vector<std::shared_ptr<WL>> node_container;
 		bool generated;
-		bool parseLabelAndEval(const std::string* label, const T* state);
 	public:
-		TransitionSystem(Graph<WL>* graph_TS_);
-		TransitionSystem(Graph<WL>* graph_TS_, bool DETERMINISTIC_, bool manual_);
-		unsigned int size() const;
+	 	//TODO Move this to protected:
+		bool parseLabelAndEval(const std::string& label, const T* state);
+		TransitionSystem(bool UNIQUE_ACTION_ = true, bool manual_ = false);
+		//unsigned int size() const;
 		bool connect(T* src, T* dst, float weight, const std::string& action);
 		void finishConnecting();
 		void addCondition(Condition* condition_);
@@ -42,34 +42,31 @@ class TransitionSystem {
 		const T* getState(int node_index) const;
 		void generate();
 		//T compose(const T* mult_TS) const;
-		void clearTS();
-		void printTS() const;
-		~TransitionSystem();
+		void clear();
+		void printTS();
+		//~TransitionSystem();
 };
 
 template <class T>
 class TS_EVAL : public TransitionSystem<T> {
 	private:
-		//template <class T2>
-		//friend class TransitionSystem<T>;
-
-		//const TransitionSystem<T>* tsptr;
+	 	bool mapped;
 		int curr_node, init_node;
 		std::unordered_map<int, std::vector<std::string>> state_to_label_map;
 	public:
 		//TS_EVAL(const TransitionSystem<T>* tsptr_, int init_node);
-		TS_EVAL(Graph<WL>* graph_TS_, int init_node);
-		TS_EVAL(Graph<WL>* graph_TS_, bool DETERMINISTIC_, bool manual_, int init_node);
-		void mapStatesToLabels(const std::vector<const std::vector<std::string>*>& alphabet);
+		TS_EVAL(int init_node);
+		TS_EVAL(bool UNIQUE_ACTION_, bool manual_, int init_node);
+		void mapStatesToLabels(const std::vector<const DFA::alphabet_t*>& alphabet);
 		bool eval(const std::string& action, bool evolve);
 		bool evalReverse(const std::string& action, bool evolve);
-		bool isReversible() const;
+		//bool isReversible() const;
 		int getCurrNode() const;
 		void getConnectedDataEVAL(std::vector<WL*>& con_data);
 		void getConnectedNodesEVAL(std::vector<int>& con_nodes);
 		void getParentDataEVAL(std::vector<WL*>& con_data);
 		void getParentNodesEVAL(std::vector<int>& con_nodes);
-		const std::vector<std::string>* returnStateLabels(int state_ind);
+		const std::vector<std::string>* returnStateLabels(int state_ind) const;
 		void set(int set_node);
 		void reset();
 		const T* getCurrState() const;
