@@ -142,7 +142,7 @@ int main() {
 	ts.setConditions(cond_ptrs_c);
 	ts.setInitState(&init_state_c);
 	ts.generate();
-	ts.printTS();
+	ts.print();
 
 	
 	//PRODSYS_c.addProposition(&p_p);

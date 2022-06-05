@@ -324,7 +324,7 @@ int main() {
 
 	ts_eval.setPropositions(AP_ptrs);
 	std::cout<<"\n\n Printing the Transition System: \n\n"<<std::endl;
-	ts_eval.printTS();
+	ts_eval.print();
 
 
 

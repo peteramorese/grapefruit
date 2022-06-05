@@ -11,8 +11,6 @@
 template <class T>
 class TransitionSystem : public Graph<WL> {
 	private:
-		std::vector<Condition*> conditions;
-		bool has_conditions;
 		bool is_blocking;
 		bool has_init_state;
 		const bool UNIQUE_ACTION;
@@ -21,12 +19,13 @@ class TransitionSystem : public Graph<WL> {
 		std::vector<T> all_states;
 		std::vector<bool> state_added;
 		//unsigned int q_i;
-		void safeAddState(int q_i, T* add_state, int add_state_ind, Condition* cond);
 	protected:
+		std::vector<Condition*> conditions;
 		std::unordered_map<std::string, SimpleCondition*> propositions;
 		std::vector<T*> state_map;
 		std::vector<std::shared_ptr<WL>> node_container;
 		bool generated;
+		void safeAddState(int q_i, T* add_state, int add_state_ind, Condition* cond);
 	public:
 	 	//TODO Move this to protected:
 		bool parseLabelAndEval(const std::string& label, const T* state);
@@ -40,10 +39,10 @@ class TransitionSystem : public Graph<WL> {
 		void setPropositions(const std::vector<SimpleCondition*>& propositions_);
 		void setInitState(T* init_state_);
 		const T* getState(int node_index) const;
-		void generate();
+		virtual void generate();
 		//T compose(const T* mult_TS) const;
 		void clear();
-		void printTS();
+		void print();
 		//~TransitionSystem();
 };
 

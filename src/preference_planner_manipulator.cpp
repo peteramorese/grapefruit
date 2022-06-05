@@ -137,7 +137,7 @@ int main() {
 	ts_eval.setInitState(&init_state);
 	ts_eval.generate();
 	std::cout<<"\n\n Printing the Transition System: \n\n"<<std::endl;
-	ts_eval.printTS();
+	ts_eval.print();
 
 
 

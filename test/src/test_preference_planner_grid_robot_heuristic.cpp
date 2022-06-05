@@ -189,7 +189,7 @@ int main(int argc, char *argv[]) {
 	ts_eval.setPropositions(AP_ptrs);
 	if (verbose) {
 		std::cout<<"\n\n Printing the Transition System: \n\n"<<std::endl;
-		ts_eval.printTS();
+		ts_eval.print();
 	}
 
 

@@ -10,7 +10,7 @@
 
 
 template <class T>
-TransitionSystem<T>::TransitionSystem(bool UNIQUE_ACTION_, bool manual_) : Graph<WL>(true, true), UNIQUE_ACTION(UNIQUE_ACTION_), manual(manual_), has_conditions(false), generated(false) {}
+TransitionSystem<T>::TransitionSystem(bool UNIQUE_ACTION_, bool manual_) : Graph<WL>(true, true), UNIQUE_ACTION(UNIQUE_ACTION_), manual(manual_), generated(false) {}
 
 
 // This is part of the "Labeling Function"
@@ -140,13 +140,11 @@ bool TransitionSystem<T>::parseLabelAndEval(const std::string& label, const T* s
 template <class T>
 void TransitionSystem<T>::addCondition(Condition* condition_){
 	conditions.push_back(condition_);
-	has_conditions = true;
 }
 
 template <class T>
 void TransitionSystem<T>::setConditions(const std::vector<Condition*>& conditions_) {
 	conditions = conditions_;
-	has_conditions = true;
 }
 
 template <class T>
@@ -318,7 +316,7 @@ const T* TransitionSystem<T>::getState(int node_index) const {
 
 template <class T>
 void TransitionSystem<T>::generate() {
-	if (has_init_state && has_conditions) {
+	if (has_init_state && conditions.size() > 0) {
 		int state_count = all_states.size();
 		int cond_count = conditions.size();
 		/*
@@ -374,7 +372,7 @@ void TransitionSystem<T>::clear() {
 }
 
 template <class T>
-void TransitionSystem<T>::printTS() {
+void TransitionSystem<T>::print() {
 	//graph_TS->print();
 	if (state_map.size() > 1) {
 		for (int i=0; i<state_map.size(); ++i) {
