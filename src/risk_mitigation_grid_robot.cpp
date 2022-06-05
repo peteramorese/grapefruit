@@ -217,7 +217,7 @@ int main() {
 	init_state.setState(set_state);
 
 	Graph<WL> ts_graph_m(true, true);
-	TS_EVAL<State> ts_eval(&ts_graph_m, true, true, 0); // by default, the init node for the ts is 0
+	TS_EVAL<State> ts_eval(true, true, 0); // by default, the init node for the ts is 0
 	ts_eval.setInitState(&init_state);
 
 	for (int i=0; i<grid_size; ++i) { // x

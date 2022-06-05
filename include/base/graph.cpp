@@ -765,12 +765,12 @@ const std::vector<unsigned int>* Automaton<T>::getInitStates() const {
 }
 
 template<class T>
-void Automaton<T>::setAlphabet(const std::vector<std::string>& alphabet_) {
+void Automaton<T>::setAlphabet(const alphabet_t& alphabet_) {
 	alphabet = alphabet_;
 }
 
 template<class T>
-const std::vector<std::string>* Automaton<T>::getAlphabet() const {
+const typename Automaton<T>::alphabet_t* Automaton<T>::getAlphabet() const {
 	return &alphabet;
 }
 
@@ -1099,7 +1099,7 @@ const DFA* DFA_EVAL::getDFA() const {
 	return dfaptr;
 }
 
-const std::vector<std::string>* DFA_EVAL::getAlphabetEVAL() const {
+const DFA::alphabet_t* DFA_EVAL::getAlphabetEVAL() const {
 	return dfaptr->getAlphabet();
 }
 

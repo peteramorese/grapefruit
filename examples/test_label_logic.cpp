@@ -55,7 +55,7 @@ int main(){
     std::string logic_label = "p_in_store | ((p_rich & p_inside) & (p_benji | p_outside))";
 
 	std::cout<<"Parsing Label..."<<std::endl;
-    bool eval = T.parseLabelAndEval(&logic_label, &s);
+    bool eval = T.parseLabelAndEval(logic_label, &s);
 	std::cout<<"Evaluation: "<<eval<<std::endl;
 
 }

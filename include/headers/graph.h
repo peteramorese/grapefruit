@@ -103,7 +103,7 @@ class Graph {
 		static int augmentedStateImage(const std::vector<int>& inds, const std::vector<int>& graph_sizes);
 		static void augmentedStatePreImage(const std::vector<int>& graph_sizes, int ind_prod, std::vector<int>& ret_inds);
 		static void augmentedStateMap(unsigned int ind_product, int n, int m, std::pair<unsigned int, unsigned int>& ret_indices);
-		void clear();
+		virtual void clear();
 		virtual ~Graph(); 
 		//virtual void compose(const Edge &mult_graph, Edge& product_graph);
 
@@ -111,6 +111,8 @@ class Graph {
 
 template<class T>
 class Automaton : public Graph<T> {
+	public:
+		typedef std::vector<std::string> alphabet_t;
 	private:
 		unsigned int max_accepting_state_index;
 		unsigned int max_init_state_index;
@@ -119,7 +121,7 @@ class Automaton : public Graph<T> {
 		std::vector<bool> is_accepting;
 		std::vector<unsigned int> accepting_states;
 		std::vector<unsigned int> init_states;
-		std::vector<std::string> alphabet;
+		alphabet_t alphabet;
 		std::vector<std::string> AP;
 		void addWord(const std::string&);
 		void addAP(const std::string&);
@@ -136,8 +138,8 @@ class Automaton : public Graph<T> {
 		const std::vector<unsigned int>* getAcceptingStates() const;
 		void setInitStates(const std::vector<unsigned int>& init_states_);
 		const std::vector<unsigned int>* getInitStates() const;
-		void setAlphabet(const std::vector<std::string>& alphabet_);
-		const std::vector<std::string>* getAlphabet() const;
+		void setAlphabet(const alphabet_t& alphabet_);
+		const alphabet_t* getAlphabet() const;
 		void setAP(const std::vector<std::string>& aps);
 		const std::vector<std::string>* getAP() const;
 };
@@ -176,7 +178,7 @@ class DFA_EVAL {
 		DFA_EVAL(DFA* dfaptr_);
 		//DFA_EVAL(const DFA* dfaptr_);
 		const DFA* getDFA() const;
-		const std::vector<std::string>* getAlphabetEVAL() const;
+		const DFA::alphabet_t* getAlphabetEVAL() const;
 		bool eval(const std::string& letter, bool evolve);
 		bool evalReverse(const std::string& letter, bool evolve);
 		bool getParentNodesWithLabels(const std::vector<std::string>* lbls, std::vector<int>& parent_node_list);

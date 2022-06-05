@@ -4,51 +4,22 @@
 #include<iostream>
 #include "transitionSystem.h"
 
-template <class T>
-TransitionSystem<T>::TransitionSystem (Graph<WL>* graph_TS_) : DETERMINISTIC(true), manual(false), has_conditions(false), generated(false) {
-	// Transition system uses WL structure: 
-	// W: edge weight (action cost)
-	// L: action
-	if (graph_TS_->isOrdered()) {
-		graph_TS = graph_TS_;	
-	} else {
-		std::cout<<"Error: Transition System must take in an ordered graph\n";
-	}
-	conditions.clear();
-}
+// Transition system uses WL structure: 
+// W: edge weight (action cost)
+// L: action
+
 
 template <class T>
-TransitionSystem<T>::TransitionSystem (Graph<WL>* graph_TS_, bool DETERMINISTIC_, bool manual_) : DETERMINISTIC(DETERMINISTIC_), manual(manual_), has_conditions(false), generated(false) {
-	// Transition system uses WL structure: 
-	// W: edge weight (action cost)
-	// L: action
-	if (graph_TS_->isOrdered()) {
-		graph_TS = graph_TS_;	
-	} else {
-		std::cout<<"Error: Transition System must take in an ordered graph\n";
-	}
-	conditions.clear();
-}
+TransitionSystem<T>::TransitionSystem(bool UNIQUE_ACTION_, bool manual_) : Graph<WL>(true, true), UNIQUE_ACTION(UNIQUE_ACTION_), manual(manual_), has_conditions(false), generated(false) {}
 
-template <class T>
-unsigned int TransitionSystem<T>::size() const {
-	return graph_TS->size();
-}
 
 // This is part of the "Labeling Function"
 template <class T>
-bool TransitionSystem<T>::parseLabelAndEval(const std::string* label, const T* state) {
-	//std::cout<<"received label: "<<*(label)<<std::endl;
-	if (*label == "1") {
+bool TransitionSystem<T>::parseLabelAndEval(const std::string& label, const T* state) {
+	if (label == "1") {
 		return true;
 	}
-	//bool negate_next = false;
-	//bool is_first = true;
-	//bool arg;
-	//bool arg_conj;
-	//std::vector<bool> propositions;
 	int prop_i = -1;
-	//bool is_first = true;
 	
 	// Use stack data structures to account for parenthesis:
 	std::vector<std::string> prop_buffer(1);
@@ -61,8 +32,8 @@ bool TransitionSystem<T>::parseLabelAndEval(const std::string* label, const T* s
 	prev_operator_buffer[0] = '\0';
 	//char prev_operator = '\0';
 	bool collapse = false;
-	for (int i=0; i<label->size(); ++i) {
-		char character = (*label)[i];
+	for (int i=0; i<label.size(); ++i) {
+		char character = label[i];
 		bool sub_eval;
 
 		//std::cout<<"Printing buffers: "<<std::endl;
@@ -130,7 +101,7 @@ bool TransitionSystem<T>::parseLabelAndEval(const std::string* label, const T* s
 				bool_buffer.pop_back();
 				collapse = true; // Do not re eval sub_eval, it already has its value
 			} 
-			bool at_end = i == label->size()-1;
+			bool at_end = i == label.size()-1;
 			if (character == '|' || character == '&' || at_end) { // If operator is seen, or at the end of the label
 				if (at_end) {
 					prop_buffer.back().push_back(character);
@@ -164,7 +135,6 @@ bool TransitionSystem<T>::parseLabelAndEval(const std::string* label, const T* s
 		}
 	}
 	return bool_buffer[0];
-	
 }
 
 template <class T>
@@ -228,30 +198,39 @@ void TransitionSystem<T>::safeAddState(int q_i, T* add_state, int add_state_ind,
 		//graph_TS->Graph<WL>::connect(q_i, new_ind, 1.0f, action);
 		
 		// New state structure: 
-		WL* wl_struct = new WL;
-		node_container.push_back(wl_struct);
-		wl_struct->weight = action_cost;
+		//WL* wl_struct = new WL;
+		//node_container.push_back(wl_struct);
+		std::shared_ptr<WL> wl_struct_shptr = std::make_shared<WL>();
+		std::weak_ptr<WL> wl_struct = wl_struct_shptr;
+		node_container.push_back(std::move(wl_struct_shptr));
+
+
+		wl_struct.lock()->weight = action_cost;
 		//wl_struct->label = action;
-		if (DETERMINISTIC) {
-			wl_struct->label = action + "_" + std::to_string(q_i) + "_" + std::to_string(new_ind);
+		if (UNIQUE_ACTION) {
+			wl_struct.lock()->label = action + "_" + std::to_string(q_i) + "_" + std::to_string(new_ind);
 		} else {
-			wl_struct->label = action;
+			wl_struct.lock()->label = action;
 		}
-		graph_TS->Graph<WL>::connect(q_i, {new_ind, wl_struct});
+		Graph<WL>::connect(q_i, {new_ind, wl_struct.lock().get()});
 	} else {
 		for (int i=0; i<state_map.size(); ++i) {
 			if (add_state == state_map[i]) {
 				// New state structure:
-				WL* wl_struct = new WL;
-				node_container.push_back(wl_struct);
-				wl_struct->weight = action_cost;
+				//WL* wl_struct = new WL;
+				//node_container.push_back(wl_struct);
+				std::shared_ptr<WL> wl_struct_shptr = std::make_shared<WL>();
+				std::weak_ptr<WL> wl_struct = wl_struct_shptr;
+				node_container.push_back(std::move(wl_struct_shptr));
+
+				wl_struct.lock()->weight = action_cost;
 				//std::cout<<"action_cost: "<<action_cost<<std::endl;
-				if (DETERMINISTIC) {
-					wl_struct->label = action + "_" + std::to_string(q_i) + "_" + std::to_string(i);
+				if (UNIQUE_ACTION) {
+					wl_struct.lock()->label = action + "_" + std::to_string(q_i) + "_" + std::to_string(i);
 				} else {
-					wl_struct->label = action;
+					wl_struct.lock()->label = action;
 				}
-				graph_TS->Graph<WL>::connect(q_i, {i, wl_struct});
+				Graph<WL>::connect(q_i, {i, wl_struct.lock().get()});
 
 				//graph_TS->Edge::connect(q_i, i, 1.0f, action);				
 			}
@@ -296,19 +275,24 @@ bool TransitionSystem<T>::connect(T* src, T* dst, float action_cost, const std::
 			//state_map.push_back(&all_states.back());
 			dst_ind = all_states.size() -1;
 		}
-		WL* wl_struct = new WL;
-		node_container.push_back(wl_struct);
-		wl_struct->weight = action_cost;
+
+		std::shared_ptr<WL> wl_struct_shptr = std::make_shared<WL>();
+		std::weak_ptr<WL> wl_struct = wl_struct_shptr;
+		node_container.push_back(std::move(wl_struct_shptr));
+
+		//WL* wl_struct = new WL;
+		//node_container.push_back(wl_struct);
+		wl_struct.lock()->weight = action_cost;
 		//std::cout<<"action_cost: "<<action_cost<<std::endl;
-		if (DETERMINISTIC) {
-			wl_struct->label = action + "_" + std::to_string(src_ind) + "_" + std::to_string(dst_ind);
+		if (UNIQUE_ACTION) {
+			wl_struct.lock()->label = action + "_" + std::to_string(src_ind) + "_" + std::to_string(dst_ind);
 		} else {
-			wl_struct->label = action;
+			wl_struct.lock()->label = action;
 		}
 		dst_node.first = dst_ind;
-		dst_node.second = wl_struct;
+		dst_node.second = wl_struct.lock().get();
 		//std::cout<<"connecting: "<<src_ind<<" to: "<<dst_node.first<<std::endl;
-		graph_TS->Graph<WL>::connect(src_ind, dst_node);
+		Graph<WL>::connect(src_ind, dst_node);
 		generated = true;
 		return true;
 	} else {
@@ -317,7 +301,7 @@ bool TransitionSystem<T>::connect(T* src, T* dst, float action_cost, const std::
 	}
 }
 
-template <class T> // Get rid of this method someday by removing 'state_map'
+template <class T> // TODO: Get rid of this method someday by removing 'state_map'
 void TransitionSystem<T>::finishConnecting() {
 	state_map.clear();
 	state_map.resize(all_states.size());
@@ -329,7 +313,7 @@ void TransitionSystem<T>::finishConnecting() {
 
 template <class T>
 const T* TransitionSystem<T>::getState(int node_index) const {
-	return state_map[node_index];
+	return state_map.at(node_index);
 }
 
 template <class T>
@@ -382,17 +366,15 @@ void TransitionSystem<T>::generate() {
 }
 
 template <class T>
-void TransitionSystem<T>::clearTS() {
-	graph_TS->clear();
+void TransitionSystem<T>::clear() {
 	state_map.clear();	
-	for (int i=0; i<node_container.size(); ++i) {
-		delete node_container[i];
-	}	
+	node_container.clear();
 	generated = false;
+	Graph<WL>::clear();
 }
 
 template <class T>
-void TransitionSystem<T>::printTS() const {
+void TransitionSystem<T>::printTS() {
 	//graph_TS->print();
 	if (state_map.size() > 1) {
 		for (int i=0; i<state_map.size(); ++i) {
@@ -400,8 +382,8 @@ void TransitionSystem<T>::printTS() const {
 			std::vector<int> con_nodes; 
 			//std::vector<std::string> list_actions; 
 			//graph_TS->returnListLabels(i, list_actions);
-			graph_TS->getConnectedData(i, con_data);
-			graph_TS->getConnectedNodes(i, con_nodes);
+			this->getConnectedData(i, con_data);
+			this->getConnectedNodes(i, con_nodes);
 			std::cout<<"State "<<i<<": ";
 			T* curr_state = state_map[i];
 			std::vector<std::string> state_i; 
@@ -425,13 +407,6 @@ void TransitionSystem<T>::printTS() const {
 	}
 }
 
-template <class T>
-TransitionSystem<T>::~TransitionSystem() {
-	for (int i=0; i<node_container.size(); ++i) {
-		delete node_container[i];
-	}	
-}
-
 template class TransitionSystem<State>;
 template class TransitionSystem<BlockingState>;
 
@@ -449,70 +424,66 @@ template class TransitionSystem<BlockingState>;
 
 
 template <class T>
-TS_EVAL<T>::TS_EVAL(Graph<WL>* graph_TS_, int init_node_) : TransitionSystem<T>(graph_TS_), init_node(init_node_) {
+TS_EVAL<T>::TS_EVAL(int init_node_) : TransitionSystem<T>(), init_node(init_node_), mapped(false) {
 	curr_node = init_node; //ts is generated around 0 being init state
 }
 
 template <class T>
-TS_EVAL<T>::TS_EVAL(Graph<WL>* graph_TS_, bool DETERMINISTIC_, bool manual_, int init_node_) : TransitionSystem<T>(graph_TS_, DETERMINISTIC_, manual_), init_node(init_node_) {
+TS_EVAL<T>::TS_EVAL(bool UNIQUE_ACTION_, bool manual_, int init_node_) : TransitionSystem<T>(UNIQUE_ACTION_, manual_), init_node(init_node_), mapped(false) {
 	curr_node = init_node; //ts is generated around 0 being init state
 }
 
 template <class T>
-void TS_EVAL<T>::mapStatesToLabels(const std::vector<const std::vector<std::string>*>& alphabet) {
-	state_to_label_map.clear();
-	//std::cout<<"Info: Mapping states to labels...\n";
-	for (int si=0; si<TransitionSystem<T>::state_map.size(); ++si) {
-		std::vector<std::string> temp_labels;
-		temp_labels.clear();
-		for (int i=0; i<alphabet.size(); ++i) {
-			for (int ii=0; ii<alphabet[i]->size(); ++ii) {
-				bool found = false;
-				// Make sure the label is not already in the set to prevent duplicates
-				//std::cout<<"b4 check"<<std::endl;
-				for (int iii=0; iii<temp_labels.size(); ++iii) {
-					if (temp_labels[iii] == alphabet[i]->operator[](ii)) {
-						found = true;
-						break;
+void TS_EVAL<T>::mapStatesToLabels(const std::vector<const DFA::alphabet_t*>& alphabet) {
+	if (!mapped) {
+		state_to_label_map.clear();
+		//std::cout<<"Info: Mapping states to labels...\n";
+		for (int si=0; si<TransitionSystem<T>::state_map.size(); ++si) {
+			std::vector<std::string> temp_labels;
+			temp_labels.clear();
+			for (int i=0; i<alphabet.size(); ++i) {
+				for (int ii=0; ii<alphabet[i]->size(); ++ii) {
+					bool found = false;
+					// Make sure the label is not already in the set to prevent duplicates
+					//std::cout<<"b4 check"<<std::endl;
+					for (int iii=0; iii<temp_labels.size(); ++iii) {
+						if (temp_labels[iii] == alphabet[i]->operator[](ii)) {
+							found = true;
+							break;
+						}
 					}
-				}
-				//std::cout<<"af check, b4 plneval"<<std::endl;
-				if (!found) {
-					if (TransitionSystem<T>::parseLabelAndEval(&alphabet[i]->operator[](ii), TransitionSystem<T>::state_map[si])) {
-						//std::cout<<"state: "<<si<<" satisfies letter: "<<alphabet[i]->operator[](ii)<<std::endl;
-						temp_labels.push_back(alphabet[i]->operator[](ii));
+					//std::cout<<"af check, b4 plneval"<<std::endl;
+					if (!found) {
+						if (TransitionSystem<T>::parseLabelAndEval(alphabet[i]->operator[](ii), TransitionSystem<T>::state_map[si])) {
+							//std::cout<<"state: "<<si<<" satisfies letter: "<<alphabet[i]->operator[](ii)<<std::endl;
+							temp_labels.push_back(alphabet[i]->operator[](ii));
+						}
 					}
+					//std::cout<<"af plneval"<<std::endl;
 				}
-				//std::cout<<"af plneval"<<std::endl;
 			}
+			//std::cout<<"mapping state: "<<si<<" to: "<<std::endl;
+			//for (int i=0; i<temp_labels.size(); ++i) {
+			//	std::cout<<"  label: "<<temp_labels[i]<<std::endl;
+			//}
+			state_to_label_map[si] = temp_labels;
 		}
-		//std::cout<<"mapping state: "<<si<<" to: "<<std::endl;
-		//for (int i=0; i<temp_labels.size(); ++i) {
-		//	std::cout<<"  label: "<<temp_labels[i]<<std::endl;
-		//}
-		state_to_label_map[si] = temp_labels;
+		//std::cout<<"Info: Done mapping states to labels.\n";
+		mapped = true;
 	}
-	//std::cout<<"Info: Done mapping states to labels.\n";
 }
 
 template <class T>
-const std::vector<std::string>* TS_EVAL<T>::returnStateLabels(int state_ind) {
-	//std::cout<<"\n IN RETURN STATE LABELS"<<std::endl;
-	//TransitionSystem<T>::state_map[state_ind]->print();
-	//std::cout<<"corresponding labels: "<<std::endl;
-	//for (int i=0; i<state_to_label_map[state_ind].size(); ++i) {
-	//	std::cout<<state_to_label_map[state_ind][i]<<std::endl;
-	//}
-	//std::cout<<"RETURN STATE LABELS ind: "<<state_ind<<" size: "<<state_to_label_map[state_ind].size()<<std::endl;
-
-	//	for (int i=0; i<state_to_label_map[state_ind].size(); ++i) {
-	//		std::cout<<"  label: "<<state_to_label_map[state_ind][i]<<std::endl;
-	//	}
+const std::vector<std::string>* TS_EVAL<T>::returnStateLabels(int state_ind) const {
 	if (state_ind > TransitionSystem<T>::state_map.size()-1) {
 		std::cout<<"Error: State ind map out of bounds\n";
 		return nullptr;
+	} else if (!mapped) {
+		std::cout<<"Error: Must call mapStatesToLabels before calling returnStateLabels\n";
+		return nullptr;
 	} else {
-		return &state_to_label_map[state_ind];
+		//mapStatesToLabels();
+		return &state_to_label_map.at(state_ind);
 	}
 }
 
@@ -530,7 +501,7 @@ bool TS_EVAL<T>::eval(const std::string& action, bool evolve) {
 			return false;
 		}
 	};
-	if (TransitionSystem<T>::graph_TS->hopS(curr_node, evalLAM)) {
+	if (this->hopS(curr_node, evalLAM)) {
 		//std::cout<<"new curr_node:"<<curr_node<<std::endl;
 		if (evolve) {
 			curr_node = curr_node_g;
@@ -555,7 +526,7 @@ bool TS_EVAL<T>::evalReverse(const std::string& action, bool evolve) {
 			return false;
 		}
 	};
-	if (TransitionSystem<T>::graph_TS->parentHopS(curr_node, evalLAM)) {
+	if (this->parentHopS(curr_node, evalLAM)) {
 		//std::cout<<"new curr_node:"<<curr_node<<std::endl;
 		if (evolve) {
 			curr_node = curr_node_g;
@@ -568,10 +539,10 @@ bool TS_EVAL<T>::evalReverse(const std::string& action, bool evolve) {
 }
 
 
-template <class T>
-bool TS_EVAL<T>::isReversible() const {
-	return TransitionSystem<T>::graph_TS->isReversible();
-}
+//template <class T>
+//bool TS_EVAL<T>::isReversible() const {
+//	return TransitionSystem<T>::graph_TS->isReversible();
+//}
 
 template <class T>
 int TS_EVAL<T>::getCurrNode() const {
@@ -580,22 +551,22 @@ int TS_EVAL<T>::getCurrNode() const {
 
 template <class T>
 void TS_EVAL<T>::getConnectedDataEVAL(std::vector<WL*>& con_data) {
-	TransitionSystem<T>::graph_TS->getConnectedData(curr_node, con_data);
+	this->getConnectedData(curr_node, con_data);
 }
 
 template <class T>
 void TS_EVAL<T>::getConnectedNodesEVAL(std::vector<int>& con_nodes) {
-	TransitionSystem<T>::graph_TS->getConnectedNodes(curr_node, con_nodes);
+	this->getConnectedNodes(curr_node, con_nodes);
 }
 
 template <class T>
 void TS_EVAL<T>::getParentDataEVAL(std::vector<WL*>& con_data) {
-	TransitionSystem<T>::graph_TS->getParentData(curr_node, con_data);
+	this->getParentData(curr_node, con_data);
 }
 
 template <class T>
 void TS_EVAL<T>::getParentNodesEVAL(std::vector<int>& con_nodes) {
-	TransitionSystem<T>::graph_TS->getParentNodes(curr_node, con_nodes);
+	this->getParentNodes(curr_node, con_nodes);
 }
 
 template <class T>
