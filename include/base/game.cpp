@@ -3,6 +3,7 @@
 #include<array>
 #include<iostream>
 #include "game.h"
+//#include "game.h"
 
 template<class T>
 Game<T>::Game(unsigned num_players_, bool UNIQUE_ACTION_, bool manual_) : TransitionSystem<T>(UNIQUE_ACTION_, manual_), num_players(num_players_), player_conditions(num_players) {}
@@ -36,20 +37,26 @@ void Game<T>::setInitState(T* init_state_, unsigned init_player_) {
 	} else {
 		init_player = init_player_;
 		this->init_state->generateAllPossibleStates(this->all_states);
-		this->state_added.resize(num_players*this->all_states.size());
-		this->state_added_ind.resize(num_players*this->all_states.size());
-		for (int i=0; i<this->state_added.size(); ++i) {
-			this->state_added[i] = false;
-		}
+		this->state_added.resize(num_players*this->all_states.size(), false);
+		this->state_added_ind.resize(num_players*this->all_states.size(), 0);
+		//for (int i=0; i<this->state_added.size(); ++i) {
+		//	this->state_added[i] = false;
+		//}
 	}
 }
 
 template <class T>
-void Game<T>::safeAddState(int q_i, T* add_state, int add_state_ind, unsigned add_state_player, Condition* cond){
+void Game<T>::safeAddState(int q_i, T* add_state, int add_state_ind, int add_state_player, Condition* cond){
 	std::string action = cond->getActionLabel();
 	float action_cost = cond->getActionCost();
-	int p_add_state_ind = augmentedStateImage({add_state_ind, add_state_player}, {this->all_states.size(), num_players});
+	int p_add_state_ind = Graph<int>::augmentedStateImage({add_state_ind, add_state_player}, {static_cast<int>(this->all_states.size()), static_cast<int>(num_players)});
+	//for(int i=0; i<this->state_added.size(); ++i) {
+	//	std::cout<<"     state_added["<<i<<"]: "<<this->state_added[i]<<std::endl;
+	//}
+	//int pause;
+	//std::cin>>pause;
 	if (!this->state_added[p_add_state_ind]) {
+		//std::cout<<"  p_add_state_ind (new): "<<p_add_state_ind<<std::endl;
 		this->state_map.push_back(add_state);
 		player_map.push_back(add_state_player);
 		this->state_added[p_add_state_ind] = true;
@@ -82,7 +89,8 @@ void Game<T>::safeAddState(int q_i, T* add_state, int add_state_ind, unsigned ad
 		//node_container.push_back(wl_struct);
 		unsigned found_state_ind = this->state_added_ind[p_add_state_ind];
 		if (add_state_player != player_map[found_state_ind]) {
-			std::cout<<"Error (safeAddState): Mismatched players \n";
+			//std::cout<<"  p_add_state_ind (found): "<<p_add_state_ind<<std::endl;
+			std::cout<<"Error (safeAddState): Mismatched players: add_state_player: "<<add_state_player<<" player_map player:"<< player_map[found_state_ind]<<" \n";
 		}
 
 		std::shared_ptr<WL> wl_struct_shptr = std::make_shared<WL>();
@@ -119,9 +127,11 @@ bool Game<T>::generate() {
 		bool init_state_found = false;
 		for (int i=0; i<state_count; ++i) {
 			if (this->all_states[i] == this->init_state) {
+				int p_init_state_ind = Graph<int>::augmentedStateImage({i, static_cast<int>(init_player)}, {static_cast<int>(this->all_states.size()), static_cast<int>(num_players)});
 				init_state_in_set = &(this->all_states[i]);
-				this->state_added[i] = true;
+				this->state_added[p_init_state_ind] = true;
 				init_state_found = true;
+				break;
 			}	
 		}
 		if (!init_state_found) {
@@ -149,7 +159,7 @@ bool Game<T>::generate() {
 			
 			// Curr Player state
 			std::string curr_player = std::to_string(player_map[q_i]);
-			T curr_player_state(player_space);
+			T curr_player_state(&player_space);
 			curr_player_state.setState(curr_player, 0);
 
 			for (unsigned int i=0; i<state_count; ++i) {
@@ -162,18 +172,25 @@ bool Game<T>::generate() {
 
 							// New Player state
 							std::string new_player = std::to_string(iii);
-							T new_player_state(player_space);
+							T new_player_state(&player_space);
 							new_player_state.setState(new_player, 0);
 
 							bool p_satisfied; // Player condition
 							if (player_conditions[ii] == nullptr) { // null applies to all
 								p_satisfied = true;
 							} else {
-								p_satisfied = player_conditions[ii]->evaluate(curr_player_state, new_player_state);
+								//std::cout<<"-curr_player_state:"<<std::endl;
+								//curr_player_state.print();
+								//std::cout<<"-new_player_state:"<<std::endl;
+								//new_player_state.print();
+								std::cout<<"  evaluating condition: "<<player_conditions[ii]->getActionLabel()<<std::endl;
+								p_satisfied = player_conditions[ii]->evaluate(&curr_player_state, &new_player_state);
+								//std::cout<<"satisfied? "<<p_satisfied<<std::endl;
 							}
 
 
 							if (c_satisfied && p_satisfied) {
+								std::cout<<"Adding!"<<std::endl;
 								safeAddState(q_i, new_state, i, iii, this->conditions[ii]);
 							}
 
@@ -261,7 +278,7 @@ const std::pair<T*, unsigned> Game<T>::getState(int node_index) const {
 }
 
 template <class T>
-void Graph<T>::print() {
+void Game<T>::print() {
 	//graph_TS->print();
 	if (TransitionSystem<T>::state_map.size() > 1) {
 		for (int i=0; i<TransitionSystem<T>::state_map.size(); ++i) {
@@ -302,3 +319,7 @@ void Game<T>::clear() {
 	TransitionSystem<T>::generated = false;
 	Graph<WL>::clear();
 }
+
+
+template class Game<State>;
+//template class Game<BlockingState>;

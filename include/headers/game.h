@@ -9,7 +9,7 @@ class Game : protected TransitionSystem<T> {
         unsigned init_player;
         std::vector<unsigned> player_map;
         std::vector<Condition*> player_conditions;
-		void safeAddState(int q_i, T* add_state, int add_state_ind, unsigned add_state_player, Condition* cond);
+		void safeAddState(int q_i, T* add_state, int add_state_ind, int add_state_player, Condition* cond);
     public:
         Game(unsigned num_players_, bool UNIQUE_ACTION_ = false, bool manual_ = false);
         void addCondition(Condition* condition_, Condition* player_condition_);
@@ -26,3 +26,4 @@ class Game : protected TransitionSystem<T> {
         void print();
         void clear();
 };
+

@@ -24,7 +24,7 @@ const int Condition::PRE = 12;
 const int Condition::POST = 13;
 const int Condition::SIMPLE = 14;
 
-Condition::Condition(bool tautology_) : tautology(tautology) {
+Condition::Condition(bool tautology_) : tautology(tautology_) {
 	pr_c.clear();
 	ps_c.clear();
 	action_label = FILLER;

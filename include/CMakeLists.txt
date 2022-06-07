@@ -12,6 +12,7 @@ target_link_libraries(TransitionSystemClass
     ConditionClass
 )
 target_link_libraries(GameClass 
+    GraphClass
     TransitionSystemClass
 )
 
