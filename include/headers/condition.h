@@ -6,7 +6,9 @@
 
 class Condition {
 	protected:
-		struct sub_condition {
+	 	const bool tautology;
+		struct subCondition {
+			bool TAUT;
 			bool LOGICAL;
 			int ARG_1_TYPE;
 			std::string arg_1;
@@ -15,8 +17,8 @@ class Condition {
 			std::string arg_2;
 			std::string condition_label;
 		} cond_struct;
-		std::vector<sub_condition> pr_c;
-		std::vector<sub_condition> ps_c;
+		std::vector<subCondition> pr_c;
+		std::vector<subCondition> ps_c;
 		int pre_cond_junct;
 		int post_cond_junct;
 		std::vector<std::pair<bool, std::string>> arg_L;
@@ -25,7 +27,7 @@ class Condition {
 		std::unordered_map<std::string, int> arg_V_labels;
 		std::pair<bool, std::string> arg_L_i;
 		std::pair<bool, std::string> arg_V_i;
-		void sub_print(const std::vector<sub_condition>& p_c) const;
+		void sub_print(const std::vector<subCondition>& p_c) const;
 		std::string action_label;
 		float action_cost;
 		std::string label;
@@ -50,7 +52,7 @@ class Condition {
 		static const int POST;
 		static const int SIMPLE;
 
-		Condition();
+		Condition(bool tautology_ = false);
 		virtual void addCondition(int COND_TYPE_, int ARG_1_TYPE_, std::string arg_1_, int OPERATOR_, int ARG_2_TYPE_, std::string arg_2_);
 		virtual void addCondition(int COND_TYPE_, int ARG_1_TYPE_, std::string arg_1_, int OPERATOR_, int ARG_2_TYPE_, std::string arg_2_, bool LOGICAL_);
 		virtual void addCondition(int COND_TYPE_, int ARG_1_TYPE_, std::string arg_1_, int OPERATOR_, int ARG_2_TYPE_, std::string arg_2_, bool LOGICAL_, std::string condition_label_);
@@ -65,7 +67,7 @@ class Condition {
 		float getActionCost();
 		void setLabel(const std::string& label_);
 		std::string getLabel();
-		bool subEvaluate(const State* state, const sub_condition& cond);
+		bool subEvaluate(const State* state, const subCondition& cond);
 		bool evaluate(const State* pre_state, const State* post_state);
 		void print() const;
 };
@@ -73,7 +75,7 @@ class Condition {
 
 class SimpleCondition : public Condition {
 	private:
-		std::vector<sub_condition> s_c;
+		std::vector<subCondition> s_c;
 		int simple_cond_junct;
 	public:
 		void addCondition(int COND_TYPE_, int ARG_1_TYPE_, std::string arg_1_, int OPERATOR_, int ARG_2_TYPE_, std::string arg_2_);
