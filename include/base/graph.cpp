@@ -453,17 +453,17 @@ void Graph<T>::updateData(unsigned int ind_from, unsigned int ind_to, T* dataptr
 //	}
 //}
 
-template<class T>
-int Graph<T>::augmentedStateFunc(int i, int j, int n, int m) {
-	int ret_ind;
-	ret_ind = m*i+j;
-	if (ret_ind<=n*m){
-		return ret_ind;
-	} else {
-		std::cout<<"Error: augmentedStateFunc mapping out of bounds\n";
-		return -1;
-	}
-}
+//template<class T>
+//int Graph<T>::augmentedStateFunc(int i, int j, int n, int m) {
+//	int ret_ind;
+//	ret_ind = m*i+j;
+//	if (ret_ind<=n*m){
+//		return ret_ind;
+//	} else {
+//		std::cout<<"Error: augmentedStateFunc mapping out of bounds\n";
+//		return -1;
+//	}
+//}
 
 template<class T>
 int Graph<T>::augmentedStateImage(const std::vector<int>& inds, const std::vector<int>& graph_sizes) {
@@ -514,17 +514,17 @@ void Graph<T>::augmentedStatePreImage(const std::vector<int>& graph_sizes, int i
 
 }
 
-template<class T>
-void Graph<T>::augmentedStateMap(unsigned int ind_product, int n, int m, std::pair<unsigned int, unsigned int>& ret_indices) {
-	unsigned int i = 0;
-	unsigned int j;
-	while (m*(i+1)<(ind_product+1)){
-		i++; 
-	}
-	j = ind_product % m; 	
-	ret_indices.first = i;
-	ret_indices.second = j;
-}
+//template<class T>
+//void Graph<T>::augmentedStateMap(unsigned int ind_product, int n, int m, std::pair<unsigned int, unsigned int>& ret_indices) {
+//	unsigned int i = 0;
+//	unsigned int j;
+//	while (m*(i+1)<(ind_product+1)){
+//		i++; 
+//	}
+//	j = ind_product % m; 	
+//	ret_indices.first = i;
+//	ret_indices.second = j;
+//}
 
 template<class T>
 void Graph<T>::clear() {

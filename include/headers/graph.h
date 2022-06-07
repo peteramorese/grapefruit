@@ -99,10 +99,10 @@ class Graph {
 		virtual void print();
 		virtual void printReverse();
 		void updateData(unsigned int ind_from, unsigned int ind_to, T* dataptr_);
-		static int augmentedStateFunc(int i, int j, int n, int m);
+		//static int augmentedStateFunc(int i, int j, int n, int m);
 		static int augmentedStateImage(const std::vector<int>& inds, const std::vector<int>& graph_sizes);
 		static void augmentedStatePreImage(const std::vector<int>& graph_sizes, int ind_prod, std::vector<int>& ret_inds);
-		static void augmentedStateMap(unsigned int ind_product, int n, int m, std::pair<unsigned int, unsigned int>& ret_indices);
+		//static void augmentedStateMap(unsigned int ind_product, int n, int m, std::pair<unsigned int, unsigned int>& ret_indices);
 		virtual void clear();
 		virtual ~Graph(); 
 		//virtual void compose(const Edge &mult_graph, Edge& product_graph);

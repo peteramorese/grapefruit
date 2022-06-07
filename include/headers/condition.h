@@ -7,6 +7,7 @@
 class Condition {
 	protected:
 	 	const bool tautology;
+	 	bool excl_equals;
 		struct subCondition {
 			bool TAUT;
 			bool LOGICAL;
@@ -57,6 +58,7 @@ class Condition {
 		virtual void addCondition(int COND_TYPE_, int ARG_1_TYPE_, std::string arg_1_, int OPERATOR_, int ARG_2_TYPE_, std::string arg_2_, bool LOGICAL_);
 		virtual void addCondition(int COND_TYPE_, int ARG_1_TYPE_, std::string arg_1_, int OPERATOR_, int ARG_2_TYPE_, std::string arg_2_, bool LOGICAL_, std::string condition_label_);
 		virtual void setCondJunctType(int COND_TYPE_, int LOGICAL_OPERATOR);
+		void setExclEq(bool excl_equal_);
 		//void addPostCondition(int ARG_1_TYPE_, std::string arg_1_, int OPERATOR_, int ARG_2_TYPE_, std::string arg_2_);
 		//void addPostCondition(int ARG_1_TYPE_, std::string arg_1_, int OPERATOR_, int ARG_2_TYPE_, std::string arg_2_, bool LOGICAL_);
 		//void addPostCondition(int ARG_1_TYPE_, std::string arg_1_, int OPERATOR_, int ARG_2_TYPE_, std::string arg_2_, bool LOGICAL_, std::string condition_label_);

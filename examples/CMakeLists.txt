@@ -19,6 +19,15 @@ target_link_libraries(graph_eval
 	GraphClass
 	)
 
+add_executable(create_game create_game.cpp)
+target_link_libraries(create_game 
+	StateClass
+	ConditionClass
+	TransitionSystemClass
+	GraphClass
+	GameClass
+	)
+
 add_executable(create_transition_system create_transition_system.cpp)
 target_link_libraries(create_transition_system 
 	StateClass

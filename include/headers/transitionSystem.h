@@ -10,16 +10,15 @@
 
 template <class T>
 class TransitionSystem : public Graph<WL> {
-	private:
+	protected:
 		bool is_blocking;
-		bool has_init_state;
 		const bool UNIQUE_ACTION;
 		const bool manual;
 		T* init_state;
 		std::vector<T> all_states;
 		std::vector<bool> state_added;
+		std::vector<unsigned> state_added_ind;
 		//unsigned int q_i;
-	protected:
 		std::vector<Condition*> conditions;
 		std::unordered_map<std::string, SimpleCondition*> propositions;
 		std::vector<T*> state_map;
@@ -39,7 +38,7 @@ class TransitionSystem : public Graph<WL> {
 		void setPropositions(const std::vector<SimpleCondition*>& propositions_);
 		void setInitState(T* init_state_);
 		const T* getState(int node_index) const;
-		virtual void generate();
+		virtual bool generate();
 		//T compose(const T* mult_TS) const;
 		void clear();
 		void print();

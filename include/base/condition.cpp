@@ -29,6 +29,7 @@ Condition::Condition(bool tautology_) : tautology(tautology) {
 	ps_c.clear();
 	action_label = FILLER;
 	label = FILLER;
+	excl_equals = true;
 }
 
 void Condition::addCondition(int COND_TYPE_, int ARG_1_TYPE_, std::string arg_1_, int OPERATOR_, int ARG_2_TYPE_, std::string arg_2_) {
@@ -95,6 +96,9 @@ void Condition::setCondJunctType(int COND_TYPE_, int LOGICAL_OPERATOR) {
 	}
 }
 
+void Condition::setExclEq(bool excl_equal_) {
+	excl_equals = excl_equal_;
+}
 /*
 void Condition::addPostCondition(int ARG_1_TYPE_, std::string arg_1_, int OPERATOR_, int ARG_2_TYPE_, std::string arg_2_) {
 	cond_struct.LOGICAL = TRUE;
@@ -327,51 +331,55 @@ bool Condition::evaluate(const State* pre_state, const State* post_state) {
 	arg_L.resize(0);
 	arg_V.clear();
 	arg_V.resize(0);
-	switch (pre_cond_junct) {
-		case CONJUNCTION:
-			pre_eval = true;
-			break;
-		case DISJUNCTION:
-			pre_eval = false;
-			break;
-	}
-	for (int i=0; i<pr_c.size(); i++){
-		arg_L_i.second = "no_arg";
-		arg_V_i.second = "no_arg";
-		bool pre_eval_i = subEvaluate(pre_state, pr_c[i]);
-		if (pr_c[i].OPERATOR == ARG_FIND) {
-			switch (pr_c[i].ARG_1_TYPE){
-				case GROUP:
-					arg_L.push_back(arg_L_i);
-					// Map the arguments to the corresponding condition label
-					arg_L_labels[pr_c[i].condition_label] = arg_L.size()-1;
-					break;
-				case LABEL:
-					arg_V.push_back(arg_V_i);
-					arg_V_labels[pr_c[i].condition_label] = arg_V.size()-1;
-					break;
-			}
-			
-		}
+	if (pr_c.size() > 0) {
 		switch (pre_cond_junct) {
 			case CONJUNCTION:
-				pre_eval = pre_eval && pre_eval_i;
-				if (pre_eval) {
-					break;
-				} else {
-					return false;
-				}
+				pre_eval = true;
 				break;
 			case DISJUNCTION:
-				pre_eval = pre_eval || pre_eval_i;
-				if (pre_eval) {
-					exit = true;
-				} 
+				pre_eval = false;
 				break;
-		}	
-		if (exit) {
-			break;
 		}
+		for (int i=0; i<pr_c.size(); i++){
+			arg_L_i.second = "no_arg";
+			arg_V_i.second = "no_arg";
+			bool pre_eval_i = subEvaluate(pre_state, pr_c[i]);
+			if (pr_c[i].OPERATOR == ARG_FIND) {
+				switch (pr_c[i].ARG_1_TYPE){
+					case GROUP:
+						arg_L.push_back(arg_L_i);
+						// Map the arguments to the corresponding condition label
+						arg_L_labels[pr_c[i].condition_label] = arg_L.size()-1;
+						break;
+					case LABEL:
+						arg_V.push_back(arg_V_i);
+						arg_V_labels[pr_c[i].condition_label] = arg_V.size()-1;
+						break;
+				}
+				
+			}
+			switch (pre_cond_junct) {
+				case CONJUNCTION:
+					pre_eval = pre_eval && pre_eval_i;
+					if (pre_eval) {
+						break;
+					} else {
+						return false;
+					}
+					break;
+				case DISJUNCTION:
+					pre_eval = pre_eval || pre_eval_i;
+					if (pre_eval) {
+						exit = true;
+					} 
+					break;
+			}	
+			if (exit) {
+				break;
+			}
+		}
+	} else {
+		pre_eval = true;
 	}
 //postcondition:
 	exit = false;
@@ -446,7 +454,11 @@ bool Condition::evaluate(const State* pre_state, const State* post_state) {
 			break;
 		}
 	}
-	eq_eval = pre_state->exclEquals(post_state, excl_dim_labels);
+	if (excl_equals) {
+		eq_eval = pre_state->exclEquals(post_state, excl_dim_labels);
+	} else {
+		eq_eval = true;
+	}
 	// pre_eval: Are the preconditions satisfied?
 	// post_eval: Are the post conditions satisfied?
 	// eq_eval: Are the other unmentioned dimensions still equal between states?

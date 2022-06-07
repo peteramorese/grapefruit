@@ -10,7 +10,7 @@
 
 
 template <class T>
-TransitionSystem<T>::TransitionSystem(bool UNIQUE_ACTION_, bool manual_) : Graph<WL>(true, true), UNIQUE_ACTION(UNIQUE_ACTION_), manual(manual_), generated(false) {}
+TransitionSystem<T>::TransitionSystem(bool UNIQUE_ACTION_, bool manual_) : Graph<WL>(true, true), UNIQUE_ACTION(UNIQUE_ACTION_), manual(manual_), generated(false), init_state(nullptr) {}
 
 
 // This is part of the "Labeling Function"
@@ -171,7 +171,6 @@ void TransitionSystem<T>::setPropositions(const std::vector<SimpleCondition*>& p
 template <class T>
 void TransitionSystem<T>::setInitState(T* init_state_) {
 	init_state = init_state_;
-	has_init_state = true;
 	all_states.clear();
 	if (manual) {
 		all_states.push_back(*init_state);
@@ -179,6 +178,7 @@ void TransitionSystem<T>::setInitState(T* init_state_) {
 	} else {
 		init_state->generateAllPossibleStates(all_states);
 		state_added.resize(all_states.size());
+		state_added_ind.resize(all_states.size());
 		for (int i=0; i<state_added.size(); ++i) {
 			state_added[i] = false;
 		}
@@ -192,6 +192,7 @@ void TransitionSystem<T>::safeAddState(int q_i, T* add_state, int add_state_ind,
 	if (!state_added[add_state_ind]) {
 		state_map.push_back(add_state);
 		state_added[add_state_ind] = true;
+		state_added_ind[add_state_ind] = state_map.size() - 1;
 		unsigned int new_ind = state_map.size()-1;
 		//graph_TS->Graph<WL>::connect(q_i, new_ind, 1.0f, action);
 		
@@ -212,27 +213,30 @@ void TransitionSystem<T>::safeAddState(int q_i, T* add_state, int add_state_ind,
 		}
 		Graph<WL>::connect(q_i, {new_ind, wl_struct.lock().get()});
 	} else {
-		for (int i=0; i<state_map.size(); ++i) {
-			if (add_state == state_map[i]) {
-				// New state structure:
-				//WL* wl_struct = new WL;
-				//node_container.push_back(wl_struct);
-				std::shared_ptr<WL> wl_struct_shptr = std::make_shared<WL>();
-				std::weak_ptr<WL> wl_struct = wl_struct_shptr;
-				node_container.push_back(std::move(wl_struct_shptr));
+		//for (int i=0; i<state_map.size(); ++i) {
+		//	if (add_state == state_map[i]) {
 
-				wl_struct.lock()->weight = action_cost;
-				//std::cout<<"action_cost: "<<action_cost<<std::endl;
-				if (UNIQUE_ACTION) {
-					wl_struct.lock()->label = action + "_" + std::to_string(q_i) + "_" + std::to_string(i);
-				} else {
-					wl_struct.lock()->label = action;
-				}
-				Graph<WL>::connect(q_i, {i, wl_struct.lock().get()});
+		// New state structure:
+		//WL* wl_struct = new WL;
+		//node_container.push_back(wl_struct);
+		unsigned found_state_ind = state_added_ind[add_state_ind];
 
-				//graph_TS->Edge::connect(q_i, i, 1.0f, action);				
-			}
+		std::shared_ptr<WL> wl_struct_shptr = std::make_shared<WL>();
+		std::weak_ptr<WL> wl_struct = wl_struct_shptr;
+		node_container.push_back(std::move(wl_struct_shptr));
+
+		wl_struct.lock()->weight = action_cost;
+		//std::cout<<"action_cost: "<<action_cost<<std::endl;
+		if (UNIQUE_ACTION) {
+			wl_struct.lock()->label = action + "_" + std::to_string(q_i) + "_" + std::to_string(found_state_ind);
+		} else {
+			wl_struct.lock()->label = action;
 		}
+		Graph<WL>::connect(q_i, {found_state_ind, wl_struct.lock().get()});
+		//graph_TS->Edge::connect(q_i, i, 1.0f, action);				
+
+		//	}
+		//}
 	}
 }
 
@@ -315,8 +319,8 @@ const T* TransitionSystem<T>::getState(int node_index) const {
 }
 
 template <class T>
-void TransitionSystem<T>::generate() {
-	if (has_init_state && conditions.size() > 0) {
+bool TransitionSystem<T>::generate() {
+	if (init_state != nullptr && conditions.size() > 0) {
 		int state_count = all_states.size();
 		int cond_count = conditions.size();
 		/*
