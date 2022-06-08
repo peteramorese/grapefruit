@@ -50,8 +50,8 @@ void Game<T>::safeAddState(int q_i, T* add_state, int add_state_ind, int add_sta
 	std::string action = cond->getActionLabel();
 	float action_cost = cond->getActionCost();
 	int p_add_state_ind = Graph<int>::augmentedStateImage({add_state_ind, add_state_player}, {static_cast<int>(this->all_states.size()), static_cast<int>(num_players)});
-	//for(int i=0; i<this->state_added.size(); ++i) {
-	//	std::cout<<"     state_added["<<i<<"]: "<<this->state_added[i]<<std::endl;
+	//for(int i=0; i<this->player_map.size(); ++i) {
+	//	std::cout<<"     player_map["<<i<<"]: "<<this->player_map[i]<<std::endl;
 	//}
 	//int pause;
 	//std::cin>>pause;
@@ -79,6 +79,11 @@ void Game<T>::safeAddState(int q_i, T* add_state, int add_state_ind, int add_sta
 		} else {
 			wl_struct.lock()->label = action;
 		}
+		//if (player_map[q_i] == add_state_player){
+		//	std::cout<<"ERROR THEY THE SAME"<<std::endl;
+		//	*((char*)0) = 0;
+		//}
+		//std::cout<<"     -connecting: "<<q_i<<" player: "<<player_map[q_i]<<", to: "<<new_ind<<" player: "<<add_state_player<<std::endl;
 		Graph<WL>::connect(q_i, {new_ind, wl_struct.lock().get()});
 	} else {
 		//for (int i=0; i<state_map.size(); ++i) {
@@ -104,6 +109,10 @@ void Game<T>::safeAddState(int q_i, T* add_state, int add_state_ind, int add_sta
 		} else {
 			wl_struct.lock()->label = action;
 		}
+		//if (player_map[q_i] == add_state_player){
+		//	std::cout<<"ERROR THEY THE SAME"<<std::endl;
+		//}
+		//std::cout<<"     -connecting: "<<q_i<<" player: "<<player_map[q_i]<<", to: "<<found_state_ind<<" player: "<<add_state_player<<std::endl;
 		Graph<WL>::connect(q_i, {found_state_ind, wl_struct.lock().get()});
 		//graph_TS->Edge::connect(q_i, i, 1.0f, action);				
 
@@ -161,6 +170,8 @@ bool Game<T>::generate() {
 			std::string curr_player = std::to_string(player_map[q_i]);
 			T curr_player_state(&player_space);
 			curr_player_state.setState(curr_player, 0);
+			//std::cout<<"\n CURR PLAYER STATE: "<<std::endl;
+			//curr_player_state.print();
 
 			for (unsigned int i=0; i<state_count; ++i) {
 				T* new_state = &(this->all_states[i]);
@@ -168,6 +179,10 @@ bool Game<T>::generate() {
 					for (int ii=0; ii<cond_count; ++ii) {
 						bool c_satisfied; // State condition
 						c_satisfied = this->conditions[ii]->evaluate(curr_state, new_state);
+						if (!c_satisfied) {
+							//std::cout<<"C NOT SATISFIED ii: "<<ii<<std::endl;
+							continue;
+						}
 						for (int iii=0; iii<num_players; iii++){
 
 							// New Player state
@@ -183,15 +198,26 @@ bool Game<T>::generate() {
 								//curr_player_state.print();
 								//std::cout<<"-new_player_state:"<<std::endl;
 								//new_player_state.print();
-								std::cout<<"  evaluating condition: "<<player_conditions[ii]->getActionLabel()<<std::endl;
+								//std::cout<<"  evaluating condition: "<<player_conditions[ii]->getActionLabel()<<std::endl;
 								p_satisfied = player_conditions[ii]->evaluate(&curr_player_state, &new_player_state);
 								//std::cout<<"satisfied? "<<p_satisfied<<std::endl;
 							}
 
+							//std::cout<<" c_satisfied: "<<c_satisfied<<", p_satisfied: "<<p_satisfied<<std::endl;
 
 							if (c_satisfied && p_satisfied) {
-								std::cout<<"Adding!"<<std::endl;
+								//std::cout<<"Adding!"<<std::endl;
+								//new_state->print();
+								//std::cout<<"  cur player: "<<player_map[q_i]<<std::endl;
+								//std::cout<<"  new player: "<<iii<<std::endl;
+								//if (player_map[q_i] == iii) {
+								//	std::cout<< "ERROR THEY THE SAME";
+								//	return 1;
+								//}
 								safeAddState(q_i, new_state, i, iii, this->conditions[ii]);
+
+								//int pause;
+								//std::cin>>pause;
 							}
 
 						}
@@ -298,7 +324,7 @@ void Game<T>::print() {
 			std::cout<<"connects to:\n";
 			for (int ii=0; ii<con_data.size(); ++ii) {
 				T* con_state = this->state_map[con_nodes[ii]];
-				std::cout<<"   ~>State "<<con_nodes[ii]<<" (player: "<<this->player_map[ii]<<"): ";
+				std::cout<<"   ~>State "<<con_nodes[ii]<<" (player: "<<this->player_map[con_nodes[ii]]<<"): ";
 				con_state->getState(state_i);
 				for (int iii=0; iii<state_i.size(); ++iii) {
 					std::cout<<state_i[iii]<<", ";
@@ -307,7 +333,7 @@ void Game<T>::print() {
 			}
 		}
 	} else {
-		std::cout<<"Warning: Transition has not been generated, or has failed to generate. Cannot print\n";
+		std::cout<<"Warning: Game has not been generated, or has failed to generate. Cannot print\n";
 	}
 }
 

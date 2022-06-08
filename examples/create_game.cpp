@@ -68,7 +68,7 @@ int main() {
 
 
 	//State test_state_1(&player_space);
-	//test_state_1.setState("1", 0);
+	//test_state_1.setState("0", 0);
 
 	//State test_state_2(&player_space);
 	//test_state_2.setState("1", 0);
@@ -80,8 +80,8 @@ int main() {
 	/* SET CONDITIONS */
 	std::vector<Condition> conds;
 	std::vector<Condition*> cond_ptrs;
-	conds.resize(5);
-	cond_ptrs.resize(5);
+	conds.resize(6);
+	cond_ptrs.resize(6);
 
 	// Grasp 
 	conds[0].addCondition(Condition::PRE, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "false");
@@ -92,7 +92,7 @@ int main() {
 	conds[0].addCondition(Condition::POST, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "true");
 	conds[0].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
 	conds[0].setActionLabel("grasp");
-	conds[0].setActionCost(0);
+	conds[0].setActionCost(1);
 
 	// Transport 
 	conds[1].addCondition(Condition::PRE, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "true");
@@ -116,7 +116,7 @@ int main() {
 	conds[2].addCondition(Condition::POST, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "false");
 	conds[2].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
 	conds[2].setActionLabel("release");
-	conds[2].setActionCost(0);
+	conds[2].setActionCost(1);
 	//conds[2].print();
 
 
@@ -128,21 +128,33 @@ int main() {
 	conds[3].addCondition(Condition::POST, Condition::ARG_V, Condition::FILLER, Condition::ARG_EQUALS, Condition::LABEL, "eeLoc", Condition::NEGATE,"arg");
 	conds[3].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
 	conds[3].setActionLabel("transit");
-	conds[3].setActionCost(0);
+	conds[3].setActionCost(4);
 	//conds[3].print();
 
-	// Intervene (environment action)
+	// Intervene (environment action) (not holding)
+	conds[4].addCondition(Condition::PRE, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "false");
 	conds[4].addCondition(Condition::PRE, Condition::LABEL, "eeLoc", Condition::ARG_FIND, Condition::NONE, Condition::FILLER, Condition::TRUE, "arg1");
-	conds[4].addCondition(Condition::PRE, Condition::LABEL, "holding", Condition::ARG_FIND, Condition::NONE, Condition::FILLER, Condition::TRUE, "arg2");
-	//conds[4].addCondition(Condition::PRE, Condition::LABEL, "eeLoc", Condition::ARG_FIND, Condition::NONE, Condition::FILLER, Condition::TRUE, "arg2");
 	conds[4].setCondJunctType(Condition::PRE, Condition::CONJUNCTION); // Used to store eeLoc pre-state variable
-	conds[4].addCondition(Condition::POST, Condition::ARG_V, Condition::FILLER, Condition::ARG_EQUALS, Condition::LABEL, "eeLoc", Condition::TRUE, "arg2"); // Stored eeLoc pre-state variable is the same as post-state eeLoc 
-	conds[4].addCondition(Condition::POST, Condition::ARG_V, Condition::FILLER, Condition::ARG_EQUALS, Condition::LABEL, "holding", Condition::TRUE, "arg2"); // Stored eeLoc pre-state variable is the same as post-state eeLoc 
+	conds[4].addCondition(Condition::POST, Condition::ARG_V, Condition::FILLER, Condition::ARG_EQUALS, Condition::LABEL, "eeLoc", Condition::TRUE, "arg1"); // Stored eeLoc pre-state variable is the same as post-state eeLoc 
+	conds[4].addCondition(Condition::POST, Condition::GROUP, "object locations", Condition::ARG_FIND, Condition::VAR, "ee",Condition::NEGATE, "na");
+	conds[4].addCondition(Condition::POST, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "false");
 	conds[4].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
 	conds[4].setExclEq(false); // Don't enforce that all other states values must be equal
 	conds[4].setActionLabel("intervene");
 	conds[4].setActionCost(0);
 
+	// Intervene (environment action) (holding)
+	conds[5].addCondition(Condition::PRE, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "true");
+	conds[5].addCondition(Condition::PRE, Condition::LABEL, "eeLoc", Condition::ARG_FIND, Condition::NONE, Condition::FILLER, Condition::TRUE, "arg1");
+	conds[5].addCondition(Condition::PRE, Condition::GROUP, "object locations", Condition::ARG_FIND, Condition::VAR, "ee",Condition::TRUE, "arg3");
+	conds[5].setCondJunctType(Condition::PRE, Condition::CONJUNCTION); // Used to store eeLoc pre-state variable
+	conds[5].addCondition(Condition::POST, Condition::ARG_V, Condition::FILLER, Condition::ARG_EQUALS, Condition::LABEL, "eeLoc", Condition::TRUE, "arg1"); // Stored eeLoc pre-state variable is the same as post-state eeLoc 
+	conds[5].addCondition(Condition::POST, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "true");
+	conds[5].addCondition(Condition::POST, Condition::ARG_L, Condition::FILLER, Condition::ARG_EQUALS, Condition::VAR, "ee", Condition::TRUE, "arg3");
+	conds[5].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
+	conds[5].setExclEq(false); // Don't enforce that all other states values must be equal
+	conds[5].setActionLabel("intervene");
+	conds[5].setActionCost(0);
 
 	for (int i=0; i<conds.size(); ++i){
 		cond_ptrs[i] = &conds[i];
@@ -168,13 +180,13 @@ int main() {
 		AP_ptrs[i] = &AP[i];
 	}
 
-	std::vector<Condition*> player_conditions = {&player_0_turn, &player_0_turn, &player_0_turn, &player_0_turn, &player_1_turn};
+	std::vector<Condition*> player_conditions = {&player_0_turn, &player_0_turn, &player_0_turn, &player_0_turn, &player_1_turn, &player_1_turn};
 
 	// Create the game:
 	Game<State> game(2); // by default, the init node for the ts is 0
 	game.setConditions(cond_ptrs, player_conditions);
 	game.setPropositions(AP_ptrs);
-	game.setInitState(&init_state, 0);
+	game.setInitState(&init_state, 1);
 	game.generate();
 	std::cout<<"\n\n Printing the Game: \n\n"<<std::endl;
 	game.print();
