@@ -17,8 +17,9 @@ target_link_libraries(GameClass
 )
 
 # Preference:
-add_library(LexSetClass preference/lexSet.cpp)
-add_library(SymbSearchClass preference/symbSearch.cpp)
+add_library(LexSetClass research/lexSet.cpp)
+add_library(SymbSearchClass research/symbSearch.cpp)
+add_library(StratSynthesisClass research/stratSynthesis.cpp)
 target_link_libraries(SymbSearchClass LexSetClass)
 
 
