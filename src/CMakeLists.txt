@@ -33,3 +33,14 @@ target_link_libraries(risk_mitigation_grid_robot
 	BenchmarkClass
 	)
 
+add_executable(risk_avoid_manipulator risk_avoid_manipulator.cpp)
+target_link_libraries(risk_avoid_manipulator
+	LexSetClass
+	GraphClass
+	ConditionClass
+	StateClass
+	TransitionSystemClass
+	GameClass
+	StratSynthesisClass
+	BenchmarkClass
+	)

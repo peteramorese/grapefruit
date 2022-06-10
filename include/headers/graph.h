@@ -99,6 +99,7 @@ class Graph {
 		virtual void print();
 		virtual void printReverse();
 		void updateData(unsigned int ind_from, unsigned int ind_to, T* dataptr_);
+		T* getData(unsigned int ind_from, unsigned int ind_to);
 		//static int augmentedStateFunc(int i, int j, int n, int m);
 		static int augmentedStateImage(const std::vector<int>& inds, const std::vector<int>& graph_sizes);
 		static void augmentedStatePreImage(const std::vector<int>& graph_sizes, int ind_prod, std::vector<int>& ret_inds);

@@ -10,7 +10,7 @@
 
 
 template <class T>
-TransitionSystem<T>::TransitionSystem(bool UNIQUE_ACTION_, bool manual_) : Graph<WL>(true, true), UNIQUE_ACTION(UNIQUE_ACTION_), manual(manual_), generated(false), init_state(nullptr) {}
+TransitionSystem<T>::TransitionSystem(bool UNIQUE_ACTION_, bool manual_) : Graph<WL>(true, true), UNIQUE_ACTION(UNIQUE_ACTION_), manual(manual_), generated(false), mapped(false), init_state(nullptr) {}
 
 
 // This is part of the "Labeling Function"
@@ -318,6 +318,62 @@ const T* TransitionSystem<T>::getState(int node_index) const {
 	return state_map.at(node_index);
 }
 
+
+template <class T>
+void TransitionSystem<T>::mapStatesToLabels(const std::vector<const DFA::alphabet_t*>& alphabet) {
+	if (!mapped) {
+		state_to_label_map.clear();
+		//std::cout<<"Info: Mapping states to labels...\n";
+		for (int si=0; si<TransitionSystem<T>::state_map.size(); ++si) {
+			std::vector<std::string> temp_labels;
+			temp_labels.clear();
+			for (int i=0; i<alphabet.size(); ++i) {
+				for (int ii=0; ii<alphabet[i]->size(); ++ii) {
+					bool found = false;
+					// Make sure the label is not already in the set to prevent duplicates
+					//std::cout<<"b4 check"<<std::endl;
+					for (int iii=0; iii<temp_labels.size(); ++iii) {
+						if (temp_labels[iii] == alphabet[i]->operator[](ii)) {
+							found = true;
+							break;
+						}
+					}
+					//std::cout<<"af check, b4 plneval"<<std::endl;
+					if (!found) {
+						if (TransitionSystem<T>::parseLabelAndEval(alphabet[i]->operator[](ii), TransitionSystem<T>::state_map[si])) {
+							//std::cout<<"state: "<<si<<" satisfies letter: "<<alphabet[i]->operator[](ii)<<std::endl;
+							temp_labels.push_back(alphabet[i]->operator[](ii));
+						}
+					}
+					//std::cout<<"af plneval"<<std::endl;
+				}
+			}
+			//std::cout<<"mapping state: "<<si<<" to: "<<std::endl;
+			//for (int i=0; i<temp_labels.size(); ++i) {
+			//	std::cout<<"  label: "<<temp_labels[i]<<std::endl;
+			//}
+			state_to_label_map[si] = temp_labels;
+		}
+		//std::cout<<"Info: Done mapping states to labels.\n";
+		mapped = true;
+	}
+}
+
+template <class T>
+const std::vector<std::string>* TransitionSystem<T>::returnStateLabels(int state_ind) const {
+	if (state_ind > TransitionSystem<T>::state_map.size()-1) {
+		std::cout<<"Error: State ind map out of bounds\n";
+		return nullptr;
+	} else if (!mapped) {
+		std::cout<<"Error: Must call mapStatesToLabels before calling returnStateLabels\n";
+		return nullptr;
+	} else {
+		//mapStatesToLabels();
+		return &state_to_label_map.at(state_ind);
+	}
+}
+
+
 template <class T>
 bool TransitionSystem<T>::generate() {
 	if (init_state != nullptr && conditions.size() > 0) {
@@ -426,67 +482,13 @@ template class TransitionSystem<BlockingState>;
 
 
 template <class T>
-TS_EVAL<T>::TS_EVAL(int init_node_) : TransitionSystem<T>(), init_node(init_node_), mapped(false) {
+TS_EVAL<T>::TS_EVAL(int init_node_) : TransitionSystem<T>(), init_node(init_node_) {
 	curr_node = init_node; //ts is generated around 0 being init state
 }
 
 template <class T>
-TS_EVAL<T>::TS_EVAL(bool UNIQUE_ACTION_, bool manual_, int init_node_) : TransitionSystem<T>(UNIQUE_ACTION_, manual_), init_node(init_node_), mapped(false) {
+TS_EVAL<T>::TS_EVAL(bool UNIQUE_ACTION_, bool manual_, int init_node_) : TransitionSystem<T>(UNIQUE_ACTION_, manual_), init_node(init_node_) {
 	curr_node = init_node; //ts is generated around 0 being init state
-}
-
-template <class T>
-void TS_EVAL<T>::mapStatesToLabels(const std::vector<const DFA::alphabet_t*>& alphabet) {
-	if (!mapped) {
-		state_to_label_map.clear();
-		//std::cout<<"Info: Mapping states to labels...\n";
-		for (int si=0; si<TransitionSystem<T>::state_map.size(); ++si) {
-			std::vector<std::string> temp_labels;
-			temp_labels.clear();
-			for (int i=0; i<alphabet.size(); ++i) {
-				for (int ii=0; ii<alphabet[i]->size(); ++ii) {
-					bool found = false;
-					// Make sure the label is not already in the set to prevent duplicates
-					//std::cout<<"b4 check"<<std::endl;
-					for (int iii=0; iii<temp_labels.size(); ++iii) {
-						if (temp_labels[iii] == alphabet[i]->operator[](ii)) {
-							found = true;
-							break;
-						}
-					}
-					//std::cout<<"af check, b4 plneval"<<std::endl;
-					if (!found) {
-						if (TransitionSystem<T>::parseLabelAndEval(alphabet[i]->operator[](ii), TransitionSystem<T>::state_map[si])) {
-							//std::cout<<"state: "<<si<<" satisfies letter: "<<alphabet[i]->operator[](ii)<<std::endl;
-							temp_labels.push_back(alphabet[i]->operator[](ii));
-						}
-					}
-					//std::cout<<"af plneval"<<std::endl;
-				}
-			}
-			//std::cout<<"mapping state: "<<si<<" to: "<<std::endl;
-			//for (int i=0; i<temp_labels.size(); ++i) {
-			//	std::cout<<"  label: "<<temp_labels[i]<<std::endl;
-			//}
-			state_to_label_map[si] = temp_labels;
-		}
-		//std::cout<<"Info: Done mapping states to labels.\n";
-		mapped = true;
-	}
-}
-
-template <class T>
-const std::vector<std::string>* TS_EVAL<T>::returnStateLabels(int state_ind) const {
-	if (state_ind > TransitionSystem<T>::state_map.size()-1) {
-		std::cout<<"Error: State ind map out of bounds\n";
-		return nullptr;
-	} else if (!mapped) {
-		std::cout<<"Error: Must call mapStatesToLabels before calling returnStateLabels\n";
-		return nullptr;
-	} else {
-		//mapStatesToLabels();
-		return &state_to_label_map.at(state_ind);
-	}
 }
 
 

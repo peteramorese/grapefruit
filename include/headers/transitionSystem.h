@@ -11,7 +11,7 @@
 template <class T>
 class TransitionSystem : public Graph<WL> {
 	protected:
-		bool is_blocking;
+		bool is_blocking, mapped;
 		const bool UNIQUE_ACTION;
 		const bool manual;
 		T* init_state;
@@ -21,6 +21,7 @@ class TransitionSystem : public Graph<WL> {
 		//unsigned int q_i;
 		std::vector<Condition*> conditions;
 		std::unordered_map<std::string, SimpleCondition*> propositions;
+		std::unordered_map<int, std::vector<std::string>> state_to_label_map;
 		std::vector<T*> state_map;
 		std::vector<std::shared_ptr<WL>> node_container;
 		bool generated;
@@ -38,6 +39,8 @@ class TransitionSystem : public Graph<WL> {
 		void setPropositions(const std::vector<SimpleCondition*>& propositions_);
 		void setInitState(T* init_state_);
 		const T* getState(int node_index) const;
+		void mapStatesToLabels(const std::vector<const DFA::alphabet_t*>& alphabet);
+		const std::vector<std::string>* returnStateLabels(int state_ind) const;
 		virtual bool generate();
 		//T compose(const T* mult_TS) const;
 		void clear();
@@ -48,14 +51,11 @@ class TransitionSystem : public Graph<WL> {
 template <class T>
 class TS_EVAL : public TransitionSystem<T> {
 	private:
-	 	bool mapped;
 		int curr_node, init_node;
-		std::unordered_map<int, std::vector<std::string>> state_to_label_map;
 	public:
 		//TS_EVAL(const TransitionSystem<T>* tsptr_, int init_node);
 		TS_EVAL(int init_node);
 		TS_EVAL(bool UNIQUE_ACTION_, bool manual_, int init_node);
-		void mapStatesToLabels(const std::vector<const DFA::alphabet_t*>& alphabet);
 		bool eval(const std::string& action, bool evolve);
 		bool evalReverse(const std::string& action, bool evolve);
 		//bool isReversible() const;
@@ -64,7 +64,6 @@ class TS_EVAL : public TransitionSystem<T> {
 		void getConnectedNodesEVAL(std::vector<int>& con_nodes);
 		void getParentDataEVAL(std::vector<WL*>& con_data);
 		void getParentNodesEVAL(std::vector<int>& con_nodes);
-		const std::vector<std::string>* returnStateLabels(int state_ind) const;
 		void set(int set_node);
 		void reset();
 		const T* getCurrState() const;

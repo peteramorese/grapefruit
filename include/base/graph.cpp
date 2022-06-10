@@ -428,6 +428,22 @@ void Graph<T>::updateData(unsigned int ind_from, unsigned int ind_to, T* dataptr
 	}
 }
 
+template<class T>
+T* Graph<T>::getData(unsigned int ind_from, unsigned int ind_to) {
+	T* ret_ptr;
+	if (ind_from < heads.size()) {
+		auto updDataLAM = [&ret_ptr, &ind_to](Graph<T>::node* dst, Graph<T>::node* prv){
+			if (dst->nodeind == ind_to) {
+				ret_ptr = dst->dataptr;
+				return true;
+			} else {
+				return false;
+			}
+		};
+		hopS(ind_from, updDataLAM);
+		return ret_ptr;
+	}
+}
 //template<class T>
 //void Graph<T>::updateWeight(unsigned int ind_from, unsigned int ind_to, float weight_) {
 //	if (ind_from < heads.size()) {
@@ -656,6 +672,7 @@ void Automaton<T>::addAcceptingState(unsigned int accepting_state) {
 	//std::cout<<"af is_accepting resize, size:"<<is_accepting.size()<<" accepting_state: "<<accepting_state<<std::endl;
 	//std::cout<<"found accepting state: "<<accepting_state<<std::endl;
 	is_accepting[accepting_state] = true;
+	accepting_states.push_back(accepting_state);
 	//std::cout<<"PRINTING IS ACCEPTING IN addAccept:"<<std::endl;
 	//for (int i=0; i<is_accepting.size(); ++i) {
 	//	std::cout<<"i: "<<i<<", is_accepting[i]: "<<is_accepting[i]<<std::endl;

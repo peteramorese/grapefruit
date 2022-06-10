@@ -9,7 +9,7 @@ def remove_dfa_files(dirname_prefix):
         os.remove(file.path)
         #print(file.path)
 
-def create_file(F_arr, dirname_prefix, random_ordering, verbose=False):
+def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose=False, f_complete=False):
     remove_dfa_files(dirname_prefix)
     inds = [i for i in range(0, len(F_arr))]
     if random_ordering:
@@ -17,14 +17,20 @@ def create_file(F_arr, dirname_prefix, random_ordering, verbose=False):
     i = 0
     for F in F_arr: 
         file_ind = inds[i]
-        filename = dirname_prefix + "dfa_{}".format(file_ind) + ".txt"
+        if custom_filename is None:
+            filename = dirname_prefix + "dfa_{}".format(file_ind) + ".txt"
+        else:
+            filename = dirname_prefix + custom_filename + ".txt"
         if verbose:
             print("Writing to: dfa_{}".format(file_ind))
         #filename_list[i] = filename
         i = i + 1
         lines_list = list()
         accepting_list = list()
-        A = spot.formula(F).translate("BA","complete","deterministic","sbacc")
+        if f_complete:
+            A = spot.formula(F).translate("BA","complete","deterministic","sbacc")
+        else:
+            A = spot.formula(F).translate("BA","deterministic","sbacc")
         bdict = A.get_dict()	
         #print("Acceptance: ", A.get_acceptance())
         #print("num states: ", A.num_states())
@@ -77,10 +83,14 @@ def print_automaton(A):
             print("    accepting sets: ", s_con.acc)
 
 
-def read_write(read_file_name, write_file_dir_name_prefix, random_ordering, verbose=False):
+def read_write(read_file_name, write_file_dir_name_prefix, write_file_name, random_ordering, verbose=False, f_complete=False):
     with open(read_file_name, "r") as formula_file:
         lines = formula_file.readlines()
 
+    custom_single = False
+    if write_file_name is not None:
+        custom_single = True
+        
     F_arr = list()
     for line in lines:
         F_i = line.replace("\n","")
@@ -89,19 +99,29 @@ def read_write(read_file_name, write_file_dir_name_prefix, random_ordering, verb
                 if verbose:
                     print("Found formula:     ",F_i)
                 F_arr.append(F_i)
+                if custom_single:
+                    break
 
     if verbose: 
-        print("Number of formulas: ", len(F_arr))
-    create_file(F_arr, write_file_dir_name_prefix, random_ordering, verbose=verbose)
+        if not custom_single:
+            print("Number of formulas: ", len(F_arr))
+        else:
+            print("Running as single custom filename...")
+    create_file(F_arr, write_file_dir_name_prefix, write_file_name, random_ordering, verbose=verbose, f_complete=f_complete)
     return len(F_arr)
 
 if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
     parser.add_argument("-f", "--filepath", default="formulas.txt", help="Specify forumla.txt file")
+    parser.add_argument("-d", "--dfa_filename", default=None, help="Specify custom dfa filename")
+    parser.add_argument("-c", "--complete", action='store_true', default=False, help="DFA is complete (instead of minimal)")
     args = parser.parse_args()
 
 
     print("Reading file: ", args.filepath)
+    if args.filepath is not None:
+        print("DFA file target: ", args.dfa_filename)
     READ_FILE_NAME = args.filepath
     WRITE_FILE_DIR_NAME_PREFIX = "dfas/"
-    read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=False, verbose=True)
+    WRITE_FILE_NAME = args.dfa_filename
+    read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=False, verbose=True, f_complete=args.complete)
