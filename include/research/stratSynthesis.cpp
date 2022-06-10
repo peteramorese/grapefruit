@@ -46,13 +46,17 @@ std::vector<int> RiskAvoidStrategy<T>::pre(Game<T>& game, DFA_EVAL* dfa, const s
         Graph<int>::augmentedStatePreImage(graph_sizes, p, ret_inds);
         int s = ret_inds[0]; // game state
         int q = ret_inds[1]; // automaton state
-        std::cout<<"setting q: "<<q<<std::endl;
+        //std::cout<<"setting q: "<<q<<std::endl;
         dfa->set(q);
         std::vector<int> node_list;
         std::vector<WL*> data_list;
         game.getParentNodes(s, node_list);
         game.getParentData(s, data_list);
+        //std::cout<<"state: "<<s<<std::endl;
         const std::vector<std::string>* lbls = game.returnStateLabels(s);
+        //for (auto& lbl : *lbls) {
+        //    std::cout<<"lbl: " <<lbl<<std::endl;
+        //}
         for (int i = 0; i<node_list.size(); ++i) {
             int sp = node_list[i];
             std::string temp_str = data_list[i]->label;
@@ -63,9 +67,9 @@ std::vector<int> RiskAvoidStrategy<T>::pre(Game<T>& game, DFA_EVAL* dfa, const s
                 dfa->getParentNodesWithLabels(lbls, parent_dfa_nodes);
                 //std::cout<<"par dfa nodes size: "<<parent_dfa_nodes.size()<<std::endl;
                 for (auto& qp : parent_dfa_nodes) {
-                    std::cout<<"qp: "<<qp<<std::endl;
+                    //std::cout<<"qp: "<<qp<<std::endl;
                     if (!dfa->getDFA()->isAccepting(qp)) { // no need to iterate over accepting states
-                        std::cout<<"not accepting!"<<std::endl;
+                        //std::cout<<"not accepting!"<<std::endl;
                         int pp = Graph<int>::augmentedStateImage({sp, qp}, graph_sizes);
                         if (!S_incl[pp]) { //utilize default constructed value (false)
                             pre_set.push_back(pp);
@@ -80,6 +84,8 @@ std::vector<int> RiskAvoidStrategy<T>::pre(Game<T>& game, DFA_EVAL* dfa, const s
             }
         }
     }
+    int pause;
+    std::cin>>pause;
     return pre_set;
 }
 
@@ -193,27 +199,31 @@ typename RiskAvoidStrategy<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>
         for (int j=0; j<game.size(); ++j) {
             //std::cout<<"j: "<<j<<std::endl;
             if (game.getState(j).second == 0) { // accepting states can only be system states
-                int s = Graph<int>::augmentedStateImage({j, static_cast<int>(q_acc)}, graph_sizes);
+                int p = Graph<int>::augmentedStateImage({j, static_cast<int>(q_acc)}, graph_sizes);
                 strategy.region[s] = true;
-                risk[s] = 0;
+                risk[p] = 0;
                 O_init.push_back(s);
-                O[s] = true;
+                O[p] = true;
             }
         }
     } 
 
-    std::cout<<"O init size: "<<O_init.size()<<std::endl;
     std::vector<int> S = pre(game, dfa, graph_sizes, O_init, 0);
-    std::cout<<"S size: "<<S.size()<<std::endl;
-    for (auto& p : S) {
-        std::cout<<"p in S:"<<p<<std::endl;
-    }
+    //std::cout<<"O init size: "<<O_init.size()<<std::endl;
+    //std::cout<<"S size: "<<S.size()<<std::endl;
+    //for (auto& p : S) {
+    //    std::cout<<"p in S:"<<p<<std::endl;
+    //}
     bool updated = true;
     while (updated) {
-        std::cout<<"in loop"<<std::endl;
+        //std::cout<<"in loop"<<std::endl;
         updated = false;
         for (auto& p : S) {
             std::cout<<"in second lolp"<<std::endl;
+            std::vector<int> ret_inds;
+            Graph<int>::augmentedStatePreImage(graph_sizes, p, ret_inds);
+            int s = ret_inds[0];
+            int q = ret_inds[1];
             if (game.getState(p).second == 0) { // system player
                 std::cout<<"system state"<<std::endl;
                 // Compute min(r(Post(p))) 

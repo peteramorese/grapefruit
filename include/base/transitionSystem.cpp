@@ -21,6 +21,14 @@ bool TransitionSystem<T>::parseLabelAndEval(const std::string& label, const T* s
 	}
 	int prop_i = -1;
 	
+	bool debug = false;
+	//if (label=="!obj_1_L3&!obj_2_L2") {
+	//	std::cout<<"INVESTIGATING"<<std::endl;
+	//	state->print();
+	//	std::cout<<"\n";
+	//	debug = true;
+	//}
+
 	// Use stack data structures to account for parenthesis:
 	std::vector<std::string> prop_buffer(1);
 	std::vector<bool> bool_buffer(1);
@@ -107,9 +115,11 @@ bool TransitionSystem<T>::parseLabelAndEval(const std::string& label, const T* s
 					prop_buffer.back().push_back(character);
 				}
 				if (!collapse) {
-					//std::cout<<"Evaluating label: "<<prop_buffer.back()<<std::endl;
 					sub_eval = TransitionSystem<T>::propositions.at(prop_buffer.back())->evaluate(state);	
-					//std::cout<<"  Result: "<<sub_eval<<std::endl;
+					if (debug){
+						std::cout<<"Evaluating label: "<<prop_buffer.back()<<std::endl;
+						std::cout<<"  Result: "<<sub_eval<<std::endl;
+					}
 				} else {
 					collapse = false;
 				}
@@ -133,6 +143,9 @@ bool TransitionSystem<T>::parseLabelAndEval(const std::string& label, const T* s
 				prop_buffer.back().push_back(character);
 			}
 		}
+	}
+	if (debug) {
+		std::cout<<"----returning: "<<bool_buffer[0]<<std::endl;
 	}
 	return bool_buffer[0];
 }
@@ -325,26 +338,35 @@ void TransitionSystem<T>::mapStatesToLabels(const std::vector<const DFA::alphabe
 		state_to_label_map.clear();
 		//std::cout<<"Info: Mapping states to labels...\n";
 		for (int si=0; si<TransitionSystem<T>::state_map.size(); ++si) {
+			std::unordered_map<std::string, bool> incl;
 			std::vector<std::string> temp_labels;
 			temp_labels.clear();
 			for (int i=0; i<alphabet.size(); ++i) {
 				for (int ii=0; ii<alphabet[i]->size(); ++ii) {
-					bool found = false;
 					// Make sure the label is not already in the set to prevent duplicates
-					//std::cout<<"b4 check"<<std::endl;
-					for (int iii=0; iii<temp_labels.size(); ++iii) {
-						if (temp_labels[iii] == alphabet[i]->operator[](ii)) {
-							found = true;
-							break;
-						}
+					if (incl[alphabet[i]->operator[](ii)]) {
+						continue;
 					}
+
+					//bool found = false;
+					////std::cout<<"b4 check"<<std::endl;
+					//for (int iii=0; iii<temp_labels.size(); ++iii) {
+					//	if (temp_labels[iii] == alphabet[i]->operator[](ii)) {
+					//		found = true;
+					//		break;
+					//	}
+					//}
 					//std::cout<<"af check, b4 plneval"<<std::endl;
-					if (!found) {
-						if (TransitionSystem<T>::parseLabelAndEval(alphabet[i]->operator[](ii), TransitionSystem<T>::state_map[si])) {
-							//std::cout<<"state: "<<si<<" satisfies letter: "<<alphabet[i]->operator[](ii)<<std::endl;
-							temp_labels.push_back(alphabet[i]->operator[](ii));
-						}
+
+					//std::cout<<"checking lbl: "<<alphabet[i]->operator[](ii)<<std::endl;
+					//if (!found) {
+					if (TransitionSystem<T>::parseLabelAndEval(alphabet[i]->operator[](ii), TransitionSystem<T>::state_map[si])) {
+						//std::cout<<"state: "<<si<<" satisfies letter: "<<alphabet[i]->operator[](ii)<<std::endl;
+						//state_map[si]->print();
+						temp_labels.push_back(alphabet[i]->operator[](ii));
+						incl[alphabet[i]->operator[](ii)] = true;
 					}
+					//}
 					//std::cout<<"af plneval"<<std::endl;
 				}
 			}
@@ -352,6 +374,10 @@ void TransitionSystem<T>::mapStatesToLabels(const std::vector<const DFA::alphabe
 			//for (int i=0; i<temp_labels.size(); ++i) {
 			//	std::cout<<"  label: "<<temp_labels[i]<<std::endl;
 			//}
+
+			//int pause;
+			//std::cin>>pause;
+
 			state_to_label_map[si] = temp_labels;
 		}
 		//std::cout<<"Info: Done mapping states to labels.\n";

@@ -636,6 +636,7 @@ bool SimpleCondition::evaluate(const State* state) {
 				break;
 		}	
 	}
+	return eval;
 } 
 
 
