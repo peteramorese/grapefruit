@@ -139,6 +139,7 @@ int main() {
 	conds[4].addCondition(Condition::POST, Condition::ARG_V, Condition::FILLER, Condition::ARG_EQUALS, Condition::LABEL, "eeLoc", Condition::TRUE, "arg1"); // Stored eeLoc pre-state variable is the same as post-state eeLoc 
 	conds[4].addCondition(Condition::POST, Condition::GROUP, "object locations", Condition::ARG_FIND, Condition::VAR, "ee",Condition::NEGATE, "na");
 	conds[4].addCondition(Condition::POST, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "false");
+	conds[4].addCondition(Condition::POST, Condition::LABEL, "obj_1", Condition::EQUALS, Condition::LABEL, "obj_2", Condition::NEGATE);
 	conds[4].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
 	conds[4].setExclEq(false); // Don't enforce that all other states values must be equal
 	conds[4].setActionLabel("intervene");
@@ -152,6 +153,7 @@ int main() {
 	conds[5].addCondition(Condition::POST, Condition::ARG_V, Condition::FILLER, Condition::ARG_EQUALS, Condition::LABEL, "eeLoc", Condition::TRUE, "arg1"); // Stored eeLoc pre-state variable is the same as post-state eeLoc 
 	conds[5].addCondition(Condition::POST, Condition::LABEL, "holding", Condition::EQUALS, Condition::VAR, "true");
 	conds[5].addCondition(Condition::POST, Condition::ARG_L, Condition::FILLER, Condition::ARG_EQUALS, Condition::VAR, "ee", Condition::TRUE, "arg3");
+	conds[5].addCondition(Condition::POST, Condition::LABEL, "obj_1", Condition::EQUALS, Condition::LABEL, "obj_2", Condition::NEGATE);
 	conds[5].setCondJunctType(Condition::POST, Condition::CONJUNCTION);
 	conds[5].setExclEq(false); // Don't enforce that all other states values must be equal
 	conds[5].setActionLabel("intervene");
@@ -205,6 +207,16 @@ int main() {
 
 	RiskAvoidStrategy<State> RAS;
 	RiskAvoidStrategy<State>::Strategy strat = RAS.synthesize(game, &A_eval);
+
+	std::vector<int> graph_sizes(2);
+	graph_sizes[0] = game.size();
+	graph_sizes[1] = A.size();
+	for (int i=0; i<strat.policy.size(); ++i) {
+        std::vector<int> ret_inds;
+        Graph<int>::augmentedStatePreImage(graph_sizes, i, ret_inds);
+        int s = ret_inds[0]; // game state
+		std::cout<<"action (Game: "<<s<<"): "<<strat.policy[i]<<std::endl;
+	}
 
 
 }

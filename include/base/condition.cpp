@@ -174,6 +174,8 @@ bool Condition::subEvaluate(const State* state, const subCondition& cond) {
 		case EQUALS: 
 			if (cond.ARG_2_TYPE == VAR){
 				sub_eval = state->getVar(cond.arg_1) == cond.arg_2;
+			} else if (cond.ARG_2_TYPE == LABEL) {
+				sub_eval = state->getVar(cond.arg_1) == state->getVar(cond.arg_2);
 			} else {
 				std::cout<<"Error: Condition Syntax error for operator EQUALS\n";
 			}
@@ -417,6 +419,7 @@ bool Condition::evaluate(const State* pre_state, const State* post_state) {
 		bool post_eval_i = subEvaluate(post_state, ps_c[i]);
 		switch (ps_c[i].ARG_1_TYPE) {
 			case LABEL:
+			// BUG HERE vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 				excl_dim_labels.push_back(ps_c[i].arg_1);
 				break;
 			case ARG_L:

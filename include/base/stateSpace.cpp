@@ -219,7 +219,7 @@ bool StateSpace::argFindGroup_(const std::string& var_find, const std::string& g
 			for (int ii=0; ii<groups[i].vars.size(); ii++){
 				std::string dim_label = groups[i].vars[ii];
 				int ind;
-				ind = index_labels[dim_label];
+				ind = index_labels.at(dim_label);
 				if (state_space_named[ind][state_space[ind]] == var_find) {
 					is_found = true;
 					arg_dimension_label = dim_label;
@@ -286,9 +286,9 @@ void StateSpace::getState_(std::vector<std::string>& ret_state, const std::vecto
 }
 
 std::string StateSpace::getVar_(const std::string& dimension_label, const std::vector<int>& state_space) {
-	unsigned int ind = index_labels[dimension_label];
+	unsigned int ind = index_labels.at(dimension_label);
 	int named_ind = state_space[ind];
-       	return state_space_named[ind][named_ind];
+	return state_space_named[ind][named_ind];
 }
 
 bool StateSpace::isDefined_(const std::vector<int>& state_space) const {
@@ -311,12 +311,10 @@ void StateSpace::print_(const std::vector<int>& state_space) const {
 
 bool StateSpace::exclEquals_(const State* state_ptr_, const std::vector<std::string>& excl_dimension_labels, const std::vector<int>& state_space) {
 	bool ret_bool = true;
-	std::vector<bool> check(state_space_dim);
-	for (int i=0; i<state_space_dim; i++) {
-		check[i] = true;
-	}
+	std::vector<bool> check(state_space_dim, true);
 	for (int i=0; i<excl_dimension_labels.size(); i++){
-		int ind = index_labels[excl_dimension_labels[i]];
+		std::cout<<excl_dimension_labels[i]<<std::endl;
+		int ind = index_labels.at(excl_dimension_labels[i]);
 		check[ind] = false;
 	}
 	for (int i=0; i<state_space_dim; i++){
