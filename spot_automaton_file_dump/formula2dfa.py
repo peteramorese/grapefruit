@@ -19,10 +19,10 @@ def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose
         file_ind = inds[i]
         if custom_filename is None:
             filename = dirname_prefix + "dfa_{}".format(file_ind) + ".txt"
+            if verbose:
+                print("Writing to: dfa_{}".format(file_ind))
         else:
             filename = dirname_prefix + custom_filename + ".txt"
-        if verbose:
-            print("Writing to: dfa_{}".format(file_ind))
         #filename_list[i] = filename
         i = i + 1
         lines_list = list()

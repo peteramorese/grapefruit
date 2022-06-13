@@ -310,22 +310,19 @@ void StateSpace::print_(const std::vector<int>& state_space) const {
 }
 
 bool StateSpace::exclEquals_(const State* state_ptr_, const std::vector<std::string>& excl_dimension_labels, const std::vector<int>& state_space) {
-	bool ret_bool = true;
 	std::vector<bool> check(state_space_dim, true);
 	for (int i=0; i<excl_dimension_labels.size(); i++){
-		std::cout<<excl_dimension_labels[i]<<std::endl;
 		int ind = index_labels.at(excl_dimension_labels[i]);
 		check[ind] = false;
 	}
 	for (int i=0; i<state_space_dim; i++){
 		if (check[i]) {
 			if (state_space[i] != state_ptr_->state_space[i]) {
-				ret_bool = false;
-				break; 
+				return false;
 			}	
 		}
 	}
-	return ret_bool;
+	return true;
 }
 
 /*

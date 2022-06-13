@@ -10,10 +10,5 @@ class RiskAvoidStrategy {
         std::vector<int> post(Game<T>& game, DFA_EVAL* dfa, const std::vector<int>& graph_sizes, const std::vector<int>& set);
         std::vector<int> post(Game<T>& game, DFA_EVAL* dfa, const std::vector<int>& graph_sizes, const std::vector<int>& set, unsigned evolve_player);
     public:
-        struct Strategy {
-            bool success;
-            std::vector<std::string> policy; // Maps state index to action
-            std::vector<bool> region; // Determines if the state is within the attractor 'O'
-        };
-        Strategy synthesize(Game<T>& game, DFA_EVAL* dfa);
+        typename Game<T>::Strategy synthesize(Game<T>& game, DFA_EVAL* dfa);
 };

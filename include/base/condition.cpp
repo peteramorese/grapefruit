@@ -259,8 +259,9 @@ bool Condition::subEvaluate(const State* state, const subCondition& cond) {
 				case LABEL:
 					if (cond.ARG_2_TYPE == NONE){
 						sub_eval = true;
-						arg_V_i.first = true;
-						arg_V_i.second = state->getVar(cond.arg_1);
+						arg_V_i.is_set = true;
+						arg_V_i.var = state->getVar(cond.arg_1);
+						arg_V_i.label = cond.arg_1;
 					} else {
 						std::cout<<"Error: Condition Syntax error for operator ARG_FIND\n";
 					}
@@ -293,14 +294,14 @@ bool Condition::subEvaluate(const State* state, const subCondition& cond) {
 					}
 					break;
 				case ARG_V:
-					if (arg_V_i.first) {
+					if (arg_V_i.is_set) {
 						//if (cond.ARG_2_TYPE == VAR){
 						switch (cond.ARG_2_TYPE){
 							case VAR:
-								sub_eval = arg_V_i.second == cond.arg_2;
+								sub_eval = arg_V_i.var == cond.arg_2;
 								break;
 							case LABEL:
-								sub_eval = arg_V_i.second == state->getVar(cond.arg_2);
+								sub_eval = arg_V_i.var == state->getVar(cond.arg_2);
 								break;
 							default:
 								std::cout<<"Error: Condition Syntax error for operator ARG_EQUALS\n";
@@ -344,7 +345,7 @@ bool Condition::evaluate(const State* pre_state, const State* post_state) {
 		}
 		for (int i=0; i<pr_c.size(); i++){
 			arg_L_i.second = "no_arg";
-			arg_V_i.second = "no_arg";
+			arg_V_i.var = "no_arg";
 			bool pre_eval_i = subEvaluate(pre_state, pr_c[i]);
 			if (pr_c[i].OPERATOR == ARG_FIND) {
 				switch (pr_c[i].ARG_1_TYPE){
@@ -430,8 +431,8 @@ bool Condition::evaluate(const State* pre_state, const State* post_state) {
 				}
 				break;
 			case ARG_V:
-				if (arg_V_i.first) {
-					excl_dim_labels.push_back(arg_V_i.second);
+				if (arg_V_i.is_set) {
+					excl_dim_labels.push_back(arg_V_i.label);
 				} else {
 					std::cout<<"Error: Argument not set\n";
 				}

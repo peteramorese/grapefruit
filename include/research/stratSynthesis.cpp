@@ -53,7 +53,7 @@ std::vector<int> RiskAvoidStrategy<T>::pre(Game<T>& game, DFA_EVAL* dfa, const s
         std::vector<WL*> data_list;
         game.getParentNodes(s, node_list);
         game.getParentData(s, data_list);
-        //std::cout<<"state: "<<s<<std::endl;
+        //std::cout<<"s: "<<s<<" q: "<<q<<std::endl;
         const std::vector<std::string>* lbls = game.returnStateLabels(s);
         //for (auto& lbl : *lbls) {
         //    std::cout<<"lbl: " <<lbl<<std::endl;
@@ -73,6 +73,7 @@ std::vector<int> RiskAvoidStrategy<T>::pre(Game<T>& game, DFA_EVAL* dfa, const s
                         //std::cout<<"not accepting!"<<std::endl;
                         int pp = Graph<int>::augmentedStateImage({sp, qp}, graph_sizes);
                         if (!S_incl[pp]) { //utilize default constructed value (false)
+                            //std::cout<<"  -ADDING s: "<<sp<<" q: "<<qp<<std::endl;
                             pre_set.push_back(pp);
                             S_incl[pp] = true;
                         }
@@ -81,6 +82,7 @@ std::vector<int> RiskAvoidStrategy<T>::pre(Game<T>& game, DFA_EVAL* dfa, const s
             } else  {
                 int pp = Graph<int>::augmentedStateImage({sp, q}, graph_sizes);
                 if (!S_incl[pp]) { //utilize default constructed value (false)
+                    //std::cout<<"ADDING s: "<<sp<<std::endl;
                     pre_set.push_back(pp);
                     S_incl[pp] = true;
                 }
@@ -182,14 +184,16 @@ std::vector<int> RiskAvoidStrategy<T>::post(Game<T>& game, DFA_EVAL* dfa, const 
 }
 
 template<class T>
-typename RiskAvoidStrategy<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_EVAL* dfa) {
-    Strategy strategy;
+typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_EVAL* dfa) {
+    typename Game<T>::Strategy strategy;
     std::vector<DFA_EVAL*> dfas = {dfa}; // Use this for preferences later
     std::vector<int> graph_sizes = {game.size(), dfa->getDFA()->size()};
     unsigned p_space_size = game.size() * dfa->getDFA()->size();
     std::cout<<"p_space_size: "<<p_space_size<<std::endl;
     strategy.policy.resize(p_space_size, "");
     strategy.region.resize(p_space_size, false);
+
+    std::vector<bool> visited(p_space_size, false);
 
     std::vector<int> risk(p_space_size, -1); // infinity
     std::vector<int> O_init; // region set (init)
@@ -212,15 +216,23 @@ typename RiskAvoidStrategy<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>
             } else {
                 strategy.policy[p] = "ENV";
             }
+            visited[p] = true;
         }
     } 
 
     std::vector<int> S = pre(game, dfa, graph_sizes, O_init, 0);
+
+    //int pause;
+    //std::cin>>pause;
+    //for (auto& p : S) {
+    //    std::vector<int> ret_inds;
+    //    Graph<int>::augmentedStatePreImage(graph_sizes, p, ret_inds);
+    //    int s = ret_inds[0];
+    //    std::cout<<"s in S:"<<s<<std::endl;
+    //}
+
     //std::cout<<"O init size: "<<O_init.size()<<std::endl;
     //std::cout<<"S size: "<<S.size()<<std::endl;
-    //for (auto& p : S) {
-    //    std::cout<<"p in S:"<<p<<std::endl;
-    //}
     bool updated = true;
     int iterations = 0;
     while (updated) {
@@ -235,9 +247,23 @@ typename RiskAvoidStrategy<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>
             Graph<int>::augmentedStatePreImage(graph_sizes, p, ret_inds);
             int s = ret_inds[0];
             int q = ret_inds[1];
+
+            //if (p ==192) {
+            //    std::cout<<"                       192 in loop player: "<<game.getState(s).second <<std::endl;
+            //}
+            visited[p] = true;
+
             if (game.getState(s).second == 0) { // system player
                 //std::cout<<"system state"<<std::endl;
                 // Compute min(r(Post(p))) 
+
+                //bool debug = false;
+                //if (p == 526) {
+                //    std::cout<<" FOUND P = 192" <<std::endl;
+                //    debug = true;
+
+                //}
+
                 std::vector<int> post_set = post(game, dfa, graph_sizes, {p}, 0);
                 int min_val = -1;
                 bool begin = true;
@@ -251,21 +277,40 @@ typename RiskAvoidStrategy<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>
                             min_state = pp;
                         }
                     }
+
+                    //std::cout<<" risk["<<pp<<"] "<<risk[pp]<<", MIN VAL: "<<min_val<<std::endl;
+                    //int pause;
+                    //std::cin>>pause;
+
                 }
                 if (min_val == -1) {
                     std::cout<<"Error: Post() set is all infinity\n";
                 }
-                if (min_val <= risk[p] || risk[p] == -1) {
+
+
+                        //if (p == 526) {
+                        //    std::cout<<" found 526 risk[526]: "<< risk[p] <<" min_val: "<< min_val<<std::endl;
+                        //    int pause;
+                        //    std::cin>>pause;
+                        //}
+
+                if (min_val < risk[p] || risk[p] == -1) {
                     updated = true;
-                    risk[p];
+                    risk[p] = min_val;
                     std::vector<int> ret_inds_min_state;
                     Graph<int>::augmentedStatePreImage(graph_sizes, min_state, ret_inds_min_state);
                     int min_state_s = ret_inds_min_state[0];
                     WL* edge = game.getData(s, min_state_s);
                     //std::cout<<"trying edge: "<<std::endl;
-                    //std::cout<<"edge:"<< edge->label<<std::endl;
+                    std::cout<<"    policy(s: "<<s<<", q: "<<q<<", p: "<<p<<"): "<< edge->label<<std::endl;
                     strategy.policy[p] = edge->label;
                 }
+
+                //if (debug) {
+                //    int pause;
+                //    std::cin>>pause;
+                //}
+                
             } else { // environment player
 
                 int r_before = risk[p];
@@ -279,6 +324,14 @@ typename RiskAvoidStrategy<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>
                             max_val = risk[pp];
                         }
                     } else { // Get max post value (min/max game)
+                        //if (p == 526) {
+                        //    std::cout<<" FOUND PSTATE: "<< pp<< "NOT IN O FROM 526"<<std::endl;
+                        //    int pause;
+                        //    std::cin>>pause;
+                        //}
+                        //std::cout<<"found risk state!"<<std::endl;
+                        visited[pp] = true;
+                        strategy.policy[pp] = "VIO";
                         contained = false;
                     }
                 }
@@ -298,11 +351,27 @@ typename RiskAvoidStrategy<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>
             O[p] = true;
         }
         S = pre(game, dfa, graph_sizes, S, 0);
+
+        //pause;
+        //std::cin>>pause;
+        //for (auto& p : S) {
+        //    std::vector<int> ret_inds;
+        //    Graph<int>::augmentedStatePreImage(graph_sizes, p, ret_inds);
+        //    int s = ret_inds[0];
+        //    std::cout<<"s in S:"<<s<<std::endl;
+        //}
+
     }
 
-	for (auto& r : risk) {
-		std::cout<<"risk: "<<r<<std::endl;
-	}
+    for (int i=0; i<risk.size(); ++i) {
+        std::vector<int> ret_inds;
+        Graph<int>::augmentedStatePreImage(graph_sizes, i, ret_inds);
+        int s = ret_inds[0]; // game state
+        std::cout<<" risk (s: "<<s<<", q: "<<ret_inds[1]<<", p: "<<i<<")"<<risk[i]<<std::endl;
+    }
+	//for (auto& r : risk) {
+	//	std::cout<<"risk: "<<r<<std::endl;
+	//}
     return strategy;
 }
 

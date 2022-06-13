@@ -140,4 +140,5 @@
 
 
 # Risk avoidant strategy liveness specification:
-!obj_2_L2 U obj_1_L3
+#!obj_2_L2 U obj_1_L3
+!obj_1_L2 U obj_1_L3 & F obj_1_L2

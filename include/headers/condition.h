@@ -18,16 +18,21 @@ class Condition {
 			std::string arg_2;
 			std::string condition_label;
 		} cond_struct;
+		struct arg_V_struct {
+			std::string var;
+			std::string label;
+			bool is_set;
+		};
 		std::vector<subCondition> pr_c;
 		std::vector<subCondition> ps_c;
 		int pre_cond_junct;
 		int post_cond_junct;
 		std::vector<std::pair<bool, std::string>> arg_L;
 		std::unordered_map<std::string, int> arg_L_labels;
-		std::vector<std::pair<bool, std::string>> arg_V;
+		std::vector<arg_V_struct> arg_V;
 		std::unordered_map<std::string, int> arg_V_labels;
 		std::pair<bool, std::string> arg_L_i;
-		std::pair<bool, std::string> arg_V_i;
+		arg_V_struct arg_V_i;
 		void sub_print(const std::vector<subCondition>& p_c) const;
 		std::string action_label;
 		float action_cost;

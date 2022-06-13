@@ -16,6 +16,11 @@ class Game : public TransitionSystem<T> {
         using TransitionSystem<T>::setConditions;
         using TransitionSystem<T>::setInitState;
     public:
+        struct Strategy {
+            bool success;
+            std::vector<std::string> policy; // Maps state index to action
+            std::vector<bool> region; // Determines if the state is within the attractor 'O'
+        };
         Game(unsigned num_players_, bool UNIQUE_ACTION_ = false, bool manual_ = false);
         void addCondition(Condition* condition_, Condition* player_condition_);
         void setConditions(const std::vector<Condition*>& conditions_, const std::vector<Condition*>& player_conditions_);

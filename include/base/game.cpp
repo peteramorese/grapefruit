@@ -53,8 +53,11 @@ void Game<T>::safeAddState(int q_i, T* add_state, int add_state_ind, int add_sta
 	//for(int i=0; i<this->player_map.size(); ++i) {
 	//	std::cout<<"     player_map["<<i<<"]: "<<this->player_map[i]<<std::endl;
 	//}
+	//std::cout<<"cur state s: "<<q_i<<" adding state: "<<std::endl;
+	//add_state->print();
 	//int pause;
 	//std::cin>>pause;
+
 	if (!this->state_added[p_add_state_ind]) {
 		//std::cout<<"  p_add_state_ind (new): "<<p_add_state_ind<<std::endl;
 		this->state_map.push_back(add_state);
@@ -175,54 +178,54 @@ bool Game<T>::generate() {
 
 			for (unsigned int i=0; i<state_count; ++i) {
 				T* new_state = &(this->all_states[i]);
-				if (!(new_state == curr_state)) {
-					for (int ii=0; ii<cond_count; ++ii) {
-						bool c_satisfied; // State condition
-						c_satisfied = this->conditions[ii]->evaluate(curr_state, new_state);
-						if (!c_satisfied) {
-							//std::cout<<"C NOT SATISFIED ii: "<<ii<<std::endl;
-							continue;
+				//if (!(new_state == curr_state)) {
+				for (int ii=0; ii<cond_count; ++ii) {
+					bool c_satisfied; // State condition
+					c_satisfied = this->conditions[ii]->evaluate(curr_state, new_state);
+					if (!c_satisfied) {
+						//std::cout<<"C NOT SATISFIED ii: "<<ii<<std::endl;
+						continue;
+					}
+					for (int iii=0; iii<num_players; iii++){
+
+						// New Player state
+						std::string new_player = std::to_string(iii);
+						T new_player_state(&player_space);
+						new_player_state.setState(new_player, 0);
+
+						bool p_satisfied; // Player condition
+						if (player_conditions[ii] == nullptr) { // null applies to all
+							p_satisfied = true;
+						} else {
+							//std::cout<<"-curr_player_state:"<<std::endl;
+							//curr_player_state.print();
+							//std::cout<<"-new_player_state:"<<std::endl;
+							//new_player_state.print();
+							//std::cout<<"  evaluating condition: "<<player_conditions[ii]->getActionLabel()<<std::endl;
+							p_satisfied = player_conditions[ii]->evaluate(&curr_player_state, &new_player_state);
+							//std::cout<<"satisfied? "<<p_satisfied<<std::endl;
 						}
-						for (int iii=0; iii<num_players; iii++){
 
-							// New Player state
-							std::string new_player = std::to_string(iii);
-							T new_player_state(&player_space);
-							new_player_state.setState(new_player, 0);
+						//std::cout<<" c_satisfied: "<<c_satisfied<<", p_satisfied: "<<p_satisfied<<std::endl;
 
-							bool p_satisfied; // Player condition
-							if (player_conditions[ii] == nullptr) { // null applies to all
-								p_satisfied = true;
-							} else {
-								//std::cout<<"-curr_player_state:"<<std::endl;
-								//curr_player_state.print();
-								//std::cout<<"-new_player_state:"<<std::endl;
-								//new_player_state.print();
-								//std::cout<<"  evaluating condition: "<<player_conditions[ii]->getActionLabel()<<std::endl;
-								p_satisfied = player_conditions[ii]->evaluate(&curr_player_state, &new_player_state);
-								//std::cout<<"satisfied? "<<p_satisfied<<std::endl;
-							}
+						if (c_satisfied && p_satisfied) {
+							//std::cout<<"Adding!"<<std::endl;
+							//new_state->print();
+							//std::cout<<"  cur player: "<<player_map[q_i]<<std::endl;
+							//std::cout<<"  new player: "<<iii<<std::endl;
+							//if (player_map[q_i] == iii) {
+							//	std::cout<< "ERROR THEY THE SAME";
+							//	return 1;
+							//}
+							safeAddState(q_i, new_state, i, iii, this->conditions[ii]);
 
-							//std::cout<<" c_satisfied: "<<c_satisfied<<", p_satisfied: "<<p_satisfied<<std::endl;
-
-							if (c_satisfied && p_satisfied) {
-								//std::cout<<"Adding!"<<std::endl;
-								//new_state->print();
-								//std::cout<<"  cur player: "<<player_map[q_i]<<std::endl;
-								//std::cout<<"  new player: "<<iii<<std::endl;
-								//if (player_map[q_i] == iii) {
-								//	std::cout<< "ERROR THEY THE SAME";
-								//	return 1;
-								//}
-								safeAddState(q_i, new_state, i, iii, this->conditions[ii]);
-
-								//int pause;
-								//std::cin>>pause;
-							}
-
+							//int pause;
+							//std::cin>>pause;
 						}
+
 					}
 				}
+				//}
 			}
 			q_i++;
 		}
@@ -349,3 +352,5 @@ void Game<T>::clear() {
 
 template class Game<State>;
 //template class Game<BlockingState>;
+
+
