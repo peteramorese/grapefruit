@@ -13,6 +13,7 @@ class State {
 		StateSpace* SS;
 	public:
 		State(StateSpace* SS_);
+		StateSpace* getSS();
 		void resizeAll(unsigned int size);
 		void resizeAll();
 		static const std::string UNDEF;

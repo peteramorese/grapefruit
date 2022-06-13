@@ -190,6 +190,7 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
     std::vector<int> graph_sizes = {game.size(), dfa->getDFA()->size()};
     unsigned p_space_size = game.size() * dfa->getDFA()->size();
     std::cout<<"p_space_size: "<<p_space_size<<std::endl;
+    strategy.success = false;
     strategy.policy.resize(p_space_size, "");
     strategy.region.resize(p_space_size, false);
 
@@ -203,6 +204,10 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
 	std::vector<const std::vector<std::string>*> total_alphabet(1);
     total_alphabet[0] = dfa->getAlphabetEVAL();
 
+    //int p_init = Graph<int>::augmentedStateImage({0, dfa->getDFA()->getInitState()}, graph_sizes);
+    //strategy.region[p] = 
+
+    
     game.mapStatesToLabels(total_alphabet);
     for (auto q_acc : *accepting_states) {
         for (int j=0; j<game.size(); ++j) {
@@ -285,6 +290,7 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
                 }
                 if (min_val == -1) {
                     std::cout<<"Error: Post() set is all infinity\n";
+                    return strategy;
                 }
 
 
@@ -349,6 +355,7 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
         }
         for (auto& p : S) {
             O[p] = true;
+            strategy.region[p] = true;
         }
         S = pre(game, dfa, graph_sizes, S, 0);
 
@@ -372,6 +379,7 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
 	//for (auto& r : risk) {
 	//	std::cout<<"risk: "<<r<<std::endl;
 	//}
+    strategy.success = O[game.getInitStateInd()]; // Is the init state included in O?
     return strategy;
 }
 

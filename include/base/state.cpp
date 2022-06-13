@@ -13,6 +13,10 @@ State::State(StateSpace* SS_) : SS(SS_) {
 	state_space.resize(SS->getDim());
 }
 
+StateSpace* State::getSS() {
+	return SS;
+}
+
 void State::resizeAll(unsigned int size) {
 	SS->resizeAll_(size);
 }

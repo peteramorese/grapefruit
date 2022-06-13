@@ -38,6 +38,7 @@ class TransitionSystem : public Graph<WL> {
 		void addProposition(SimpleCondition* proposition_);
 		void setPropositions(const std::vector<SimpleCondition*>& propositions_);
 		void setInitState(T* init_state_);
+		int getInitStateInd();
 		const T* getState(int node_index) const;
 		void mapStatesToLabels(const std::vector<const DFA::alphabet_t*>& alphabet);
 		const std::vector<std::string>* returnStateLabels(int state_ind) const;

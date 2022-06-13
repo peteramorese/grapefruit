@@ -199,6 +199,11 @@ void TransitionSystem<T>::setInitState(T* init_state_) {
 }
 
 template <class T>
+int TransitionSystem<T>::getInitStateInd() {
+	return 0; //Based off of generate
+}
+
+template <class T>
 void TransitionSystem<T>::safeAddState(int q_i, T* add_state, int add_state_ind, Condition* cond){
 	std::string action = cond->getActionLabel();
 	float action_cost = cond->getActionCost();

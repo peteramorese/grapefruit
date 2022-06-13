@@ -42,5 +42,5 @@ target_link_libraries(risk_avoid_manipulator
 	TransitionSystemClass
 	GameClass
 	StratSynthesisClass
-	BenchmarkClass
+	MockGamePlayClass
 	)

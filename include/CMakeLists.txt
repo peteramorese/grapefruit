@@ -6,6 +6,7 @@ add_library(ConditionClass base/condition.cpp)
 add_library(TransitionSystemClass base/transitionSystem.cpp)
 add_library(GameClass base/game.cpp)
 add_library(BenchmarkClass base/benchmark.cpp)
+add_library(MockGamePlayClass base/mockGamePlay.cpp)
 target_link_libraries(TransitionSystemClass 
     GraphClass
     StateClass

@@ -4,6 +4,7 @@
 #include "state.h"
 #include "game.h"
 #include "stratSynthesis.h"
+#include "mockGamePlay.h"
 
 int main() {
 
@@ -238,6 +239,14 @@ int main() {
         int s = ret_inds[0]; // game state
 		std::cout<<"action (s: "<<s<<", q: "<<ret_inds[1]<<", p: "<<i<<"): "<<strat.policy[i]<<std::endl;
 	}
+
+	auto violatingState = [](unsigned s, unsigned q){
+		return (q == 2) ? true : false;
+	};
+
+	MockGamePlay<State> mock(&game, &A_eval, violatingState, 0);
+	mock.setStrategy(&strat);
+	mock.run();
 
 
 }
