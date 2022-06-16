@@ -7,8 +7,7 @@
 
 
 int main(){
-    Graph<WL> G(true);
-    TransitionSystem<State> T(&G);
+    TransitionSystem<State> T;
     StateSpace SS;
     std::vector<std::string> labs_location = {"store", "bank", "road", "park"};
     std::vector<std::string> labs_money = {"5", "10", "50", "100"};

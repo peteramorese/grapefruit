@@ -86,7 +86,7 @@ bool MockGamePlay<T>::run() {
 	reset();
 	while (!finished) {
 		if (violatingCondition(s_curr, dfa->getCurrNode())) {
-			std::cout<<NAME<<"Violated safety specification!"<<std::endl;
+			std::cout<<NAME<<"Violated!"<<std::endl;
 			return false;
 		}
         std::cout<<"\n"<<NAME<<"Current State (s: "<<s_curr<<", q: "<<dfa->getCurrNode()<<"): \n";
@@ -107,6 +107,7 @@ bool MockGamePlay<T>::run() {
 				}
 			} else {
 				std::cout<<NAME<<"Error: Prod state unreachable. Game: "<<s_curr<<" DFA: "<<dfa->getCurrNode()<<std::endl;
+                return false;
 			}
 		} else {
             std::vector<int> con_nodes;

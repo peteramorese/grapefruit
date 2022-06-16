@@ -252,6 +252,9 @@ void StateSpace::setState_(const std::vector<std::string>& set_state, std::vecto
 		}	
 		if (!names_found) {
 			std::cout<<"Error: Unrecognized label in set state\n";
+			for(auto& state : set_state) {
+				std::cout<<state<<std::endl;
+			}
 		}
 	} else {
 		std::cout<<"Error: Set state must have same dimension as state space\n";

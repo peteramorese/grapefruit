@@ -442,6 +442,8 @@ T* Graph<T>::getData(unsigned int ind_from, unsigned int ind_to) {
 		};
 		hopS(ind_from, updDataLAM);
 		return ret_ptr;
+	} else {
+		return nullptr;
 	}
 }
 //template<class T>

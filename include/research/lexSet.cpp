@@ -305,7 +305,6 @@ bool DetourLex::withinBounds(const DetourLex& arg_set) const {
 		}
 	} else {
 		std::cout<<"Error (DetourLex::withinBounds): Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
-		*(char *)0 = 0; 
 	}
 	return true;
 }
@@ -343,9 +342,6 @@ void DetourLex::operator=(const DetourLex& arg_set) {
 		}
 	} else {
 		std::cout<<"Error (DetourLex::=): Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
-		*(char *)0 = 0; 
-		std::vector<int> kill;
-		kill[1];
 	}
 }
 
@@ -356,9 +352,6 @@ void DetourLex::operator=(const std::vector<float>& arg_vec) {
 		lex_set = arg_vec;
 	} else {
 		std::cout<<"Error (DetourLex::=): Cannot operate on sets of different size ("<<arg_vec.size()<<", "<<lex_set.size()<<").\n";
-		*(char *)0 = 0; 
-		std::vector<int> kill;
-		kill[1];
 	}
 }
 

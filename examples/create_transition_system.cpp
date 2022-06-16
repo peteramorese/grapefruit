@@ -137,8 +137,7 @@ int main() {
 	//PRODSYS_c.setInitState(&init_state_c);
 	//PRODSYS_c.generate();
 
-	Graph<WL> TS_c(true);
-	TransitionSystem<State> ts(&TS_c);
+	TransitionSystem<State> ts;
 	ts.setConditions(cond_ptrs_c);
 	ts.setInitState(&init_state_c);
 	ts.generate();

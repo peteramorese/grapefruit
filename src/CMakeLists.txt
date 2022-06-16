@@ -44,3 +44,15 @@ target_link_libraries(risk_avoid_manipulator
 	StratSynthesisClass
 	MockGamePlayClass
 	)
+
+add_executable(risk_avoid_grid_robot risk_avoid_grid_robot.cpp)
+target_link_libraries(risk_avoid_grid_robot
+	LexSetClass
+	GraphClass
+	ConditionClass
+	StateClass
+	TransitionSystemClass
+	GameClass
+	StratSynthesisClass
+	MockGamePlayClass
+	)

@@ -163,6 +163,7 @@ void TransitionSystem<T>::setConditions(const std::vector<Condition*>& condition
 template <class T>
 void TransitionSystem<T>::addProposition(SimpleCondition* proposition_) {
 	if (proposition_->getLabel() != Condition::FILLER) {
+		//std::cout<<"Info: Found proposition: "<<propositions_[i]->getLabel()<<std::endl;
 		propositions[proposition_->getLabel()] = proposition_;
 	} else {
 		std::cout<<"Error: Must name proposition before including in Product System\n";

@@ -207,7 +207,6 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
     //int p_init = Graph<int>::augmentedStateImage({0, dfa->getDFA()->getInitState()}, graph_sizes);
     //strategy.region[p] = 
 
-    
     game.mapStatesToLabels(total_alphabet);
     for (auto q_acc : *accepting_states) {
         for (int j=0; j<game.size(); ++j) {
