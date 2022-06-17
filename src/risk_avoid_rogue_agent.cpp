@@ -64,15 +64,6 @@ int main() {
 
 	bool manual_setup = true;
 	int grid_size = 3;
-	
-	// Limits the number of times the environment can intervene:
-	bool limit_intervention = false;
-	int k = 3;
-
-	// Directions: "push_left", "push_right", "push_down", "push_up"
-	std::unordered_map<std::string, bool> accepted_directions;
-	accepted_directions["push_left"] = true;
-	accepted_directions["push_right"] = true;
 	bool verbose = false;
 	bool use_benchmark = false;
 	//std::string bm_filename_path = "./benchmark_data/preference_planner_bm.txt";
@@ -106,98 +97,68 @@ int main() {
 		y_labels.push_back(temp_string);
 	}
 
-	std::vector<std::string> k_labels;
-	for (int i=0; i<k; ++i) {
-		std::string temp_string;
-		temp_string =  std::to_string(i);
-		k_labels.push_back(temp_string);
-	}
 	// Create state space:
 	SS_GRID_ROBOT.setStateDimension(x_labels, 0); // x_agent
 	SS_GRID_ROBOT.setStateDimension(y_labels, 1); // y_agent
+	SS_GRID_ROBOT.setStateDimension(x_labels, 2); // x_rogue
+	SS_GRID_ROBOT.setStateDimension(y_labels, 3); // y_rogue
 
 	// Label state space:
-	SS_GRID_ROBOT.setStateDimensionLabel(0, "x");
-	SS_GRID_ROBOT.setStateDimensionLabel(1, "y");
-	if (limit_intervention) {
-		SS_GRID_ROBOT.setStateDimension(k_labels, 2); // k
-		SS_GRID_ROBOT.setStateDimensionLabel(2, "k");
-	}
+	SS_GRID_ROBOT.setStateDimensionLabel(0, "x_agent");
+	SS_GRID_ROBOT.setStateDimensionLabel(1, "y_agent");
+	SS_GRID_ROBOT.setStateDimensionLabel(2, "x_rogue");
+	SS_GRID_ROBOT.setStateDimensionLabel(3, "y_rogue");
 
 	// Create object location group:
-	SS_GRID_ROBOT.setLabelGroup("coords", {"x", "y"});
+	SS_GRID_ROBOT.setLabelGroup("agent_coords", {"x_agent", "y_agent"});
+	SS_GRID_ROBOT.setLabelGroup("rogue_coords", {"x_rogue", "y_rogue"});
 
 	// Set the initial state:
 	State init_state(&SS_GRID_ROBOT);	
-	if (limit_intervention) {
-		init_state.setState({"x0", "y0", k_labels.back()});
-	} else {
-		init_state.setState({"x0", "y0"});
-	}
+	init_state.setState({"x0", "y0", "x1", "y1"});
 
 	Game<State> game(2, true, true); 
 	game.setInitState(&init_state, 1);
 
-	std::array<std::string, 4> direction_labels = {"move_left", "move_right", "move_down", "move_up"};
-	std::array<std::string, 4> intervene_direction_labels = {"push_left", "push_right", "push_down", "push_up"};
+	std::array<std::string, 4> agent_direction_labels = {"move_left", "move_right", "move_down", "move_up"};
+	std::array<std::string, 4> rogue_direction_labels = {"r_move_left", "r_move_right", "r_move_down", "r_move_up"};
 	int iters = 0;
 	for (int i=0; i<grid_size; ++i) { // x_agent
 	 	std::cout<<"Iterations: "<<iters<<std::endl;
 		for (int ii=0; ii<grid_size; ++ii) { // y_agent
-		  	if (limit_intervention) {
-				for (int iii=0; iii<k; ++iii) {
-					//for (int iii=0; iii<grid_size; ++iii) { // x_rogue
-					//	for (int iv=0; iv<grid_size; ++iv) { // y_rogue
+			for (int iii=0; iii<grid_size; ++iii) { // x_rogue
+				for (int iv=0; iv<grid_size; ++iv) { // y_rogue
 					iters++;
 					State src(&SS_GRID_ROBOT);
 					State dst(&SS_GRID_ROBOT);
 					//std::cout<<"b4 set src"<<std::endl;
-					src.setState({x_labels[i], y_labels[ii], k_labels[iii]});
+					src.setState({x_labels[i], y_labels[ii], x_labels[iii], y_labels[iv]});
 					bool stay_put_incl = false;
 					for (int agent_dir=0; agent_dir<4; ++agent_dir) {
 						std::vector<std::string> new_coords;
 						bool stay_put = !cardinalState(i, ii, grid_size, new_coords, agent_dir, x_labels, y_labels);
 						if (!stay_put) {
 							//std::cout<<"b4 set dst new_coords[0]: "<<new_coords[0]<<" new_coords[1]: "<<new_coords[1]<<std::endl;
-							dst.setState({new_coords[0], new_coords[1], k_labels[iii]});
-							game.connect(&src, 0, &dst, 1, 5.0f, direction_labels[agent_dir]);
-							if (iii > 0 && accepted_directions[intervene_direction_labels[agent_dir]]) {
-								dst.setState({new_coords[0], new_coords[1], k_labels[iii - 1]});
-								game.connect(&src, 1, &dst, 0, 0.0f, intervene_direction_labels[agent_dir]);
-							}
+							dst.setState({new_coords[0], new_coords[1], x_labels[iii], y_labels[iv]});
+							game.connect(&src, 0, &dst, 1, 5.0f, agent_direction_labels[agent_dir]);
 						} else if (!stay_put_incl) {
-							game.connect(&src, 0, &src, 1, 1.0f, "stay_put");
+							game.connect(&src, 0, &src, 1, 0.0f, "stay_put");
 							stay_put_incl = true;
 						}
 					}
+					//int pause;
+					//std::cin>>pause;
+					stay_put_incl = false;
 					game.connect(&src, 1, &src, 0, 0.0f, "no_intervention");
-				}
-			} else {
-				//for (int iii=0; iii<grid_size; ++iii) { // x_rogue
-				//	for (int iv=0; iv<grid_size; ++iv) { // y_rogue
-				iters++;
-				State src(&SS_GRID_ROBOT);
-				State dst(&SS_GRID_ROBOT);
-				//std::cout<<"b4 set src"<<std::endl;
-				src.setState({x_labels[i], y_labels[ii]});
-				bool stay_put_incl = false;
-				for (int agent_dir=0; agent_dir<4; ++agent_dir) {
-					std::vector<std::string> new_coords;
-					bool stay_put = !cardinalState(i, ii, grid_size, new_coords, agent_dir, x_labels, y_labels);
-					if (!stay_put) {
-						//std::cout<<"b4 set dst new_coords[0]: "<<new_coords[0]<<" new_coords[1]: "<<new_coords[1]<<std::endl;
-						dst.setState({new_coords[0], new_coords[1]});
-						game.connect(&src, 0, &dst, 1, 5.0f, direction_labels[agent_dir]);
-						if (accepted_directions[intervene_direction_labels[agent_dir]]) {
-							dst.setState({new_coords[0], new_coords[1]});
-							game.connect(&src, 1, &dst, 0, 0.0f, intervene_direction_labels[agent_dir]);
-						}
-					} else if (!stay_put_incl) {
-						game.connect(&src, 0, &src, 1, 1.0f, "stay_put");
-						stay_put_incl = true;
+					for (int rogue_dir=0; rogue_dir<4; ++rogue_dir) {
+						std::vector<std::string> new_coords;
+						bool stay_put = !cardinalState(iii, iv, grid_size, new_coords, rogue_dir, x_labels, y_labels);
+						if (!stay_put) {
+							dst.setState({x_labels[i], y_labels[ii], new_coords[0], new_coords[1]});
+							game.connect(&src, 1, &dst, 0, 0.0f, rogue_direction_labels[rogue_dir]);
+						} 
 					}
 				}
-				game.connect(&src, 1, &src, 0, 0.0f, "no_intervention");
 			}
 		}
 	}
@@ -211,8 +172,8 @@ int main() {
 	for (int i=0; i<grid_size; ++i) {
 		for (int ii=0; ii<grid_size; ++ii) {
 			SimpleCondition temp_AP;
-			temp_AP.addCondition(Condition::SIMPLE, Condition::LABEL, "x", Condition::EQUALS, Condition::VAR, x_labels[i]);
-			temp_AP.addCondition(Condition::SIMPLE, Condition::LABEL, "y", Condition::EQUALS, Condition::VAR, y_labels[ii]);
+			temp_AP.addCondition(Condition::SIMPLE, Condition::LABEL, "x_agent", Condition::EQUALS, Condition::VAR, x_labels[i]);
+			temp_AP.addCondition(Condition::SIMPLE, Condition::LABEL, "y_agent", Condition::EQUALS, Condition::VAR, y_labels[ii]);
 			temp_AP.setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
 			temp_AP.setLabel("ap_" + x_labels[i] + "_" + y_labels[ii]);
 			std::cout<<"made ap: "<<"ap_" + x_labels[i] + "_" + y_labels[ii]<<std::endl;
@@ -220,6 +181,13 @@ int main() {
 		}
 	}
 
+	SimpleCondition AP_same_cell;
+	AP_same_cell.addCondition(Condition::SIMPLE, Condition::LABEL, "x_agent", Condition::EQUALS, Condition::LABEL, "x_rogue");
+	AP_same_cell.addCondition(Condition::SIMPLE, Condition::LABEL, "y_agent", Condition::EQUALS, Condition::LABEL, "y_rogue");
+	AP_same_cell.setCondJunctType(Condition::SIMPLE, Condition::CONJUNCTION);
+	AP_same_cell.setLabel("ap_same_cell");
+
+	APs.push_back(AP_same_cell);
 
 	// Get pointers after vector addresses wont be invalidated
 	AP_ptrs.resize(APs.size());

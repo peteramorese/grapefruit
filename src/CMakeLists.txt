@@ -45,6 +45,18 @@ target_link_libraries(risk_avoid_manipulator
 	MockGamePlayClass
 	)
 
+add_executable(risk_avoid_rogue_agent risk_avoid_rogue_agent.cpp)
+target_link_libraries(risk_avoid_rogue_agent 
+	LexSetClass
+	GraphClass
+	ConditionClass
+	StateClass
+	TransitionSystemClass
+	GameClass
+	StratSynthesisClass
+	MockGamePlayClass
+	)
+
 add_executable(risk_avoid_grid_robot risk_avoid_grid_robot.cpp)
 target_link_libraries(risk_avoid_grid_robot
 	LexSetClass
