@@ -1,5 +1,4 @@
 #include<array>
-
 #include "graph.h"
 #include "condition.h"
 #include "stateSpace.h"

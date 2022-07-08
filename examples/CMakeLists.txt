@@ -51,3 +51,9 @@ target_link_libraries(test_label_logic
 	TransitionSystemClass
 	GraphClass
 	)
+
+add_executable(test_risk_values test_risk_values.cpp)
+target_link_libraries(test_risk_values 
+	GameClass
+	StratSynthesisClass
+	)
