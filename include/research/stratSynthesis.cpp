@@ -281,9 +281,7 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
                 int min_val = -1;
                 bool begin = true;
                 int min_state = -1;
-                //for (int i = 0; i<post_set.size(); ++i) {
                 for (auto& pp : post_set) {
-
                     std::vector<int> ret_inds_pp;
                     Graph<int>::augmentedStatePreImage(graph_sizes, pp, ret_inds_pp);
                     std::cout<<" -Post (s: "<<ret_inds_pp[0]<<", q: "<<ret_inds_pp[1]<<", p: "<<pp<<")"<<risk[pp]<<std::endl;
@@ -301,23 +299,14 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
                     //std::cin>>pause;
 
                 }
-                //if (p == 201) {
-                //    int pause;
-                //    std::cin>> pause;
-                //}
                 if (min_val == -1) {
                     std::cout<<"Error: Post() set is all infinity\n";
                     return strategy;
                 }
 
 
-                        //if (p == 526) {
-                        //    std::cout<<" found 526 risk[526]: "<< risk[p] <<" min_val: "<< min_val<<std::endl;
-                        //    int pause;
-                        //    std::cin>>pause;
-                        //}
-
                 if (min_val < risk[p] || risk[p] == -1) {
+                    //int pause; std::cin>>pause;
                     updated = true;
                     risk[p] = min_val;
                     std::vector<int> ret_inds_min_state;

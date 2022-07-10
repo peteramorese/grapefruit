@@ -153,4 +153,4 @@
 #F(ap_x1_y1)
 
 # Test risk values
-!d U a & F(a)
+F(a)
