@@ -117,8 +117,8 @@ std::vector<int> RiskAvoidStrategy<T>::post(Game<T>& game, DFA_EVAL* dfa, const 
             dfa->set(q);
             const std::vector<std::string>* lbls = game.returnStateLabels(sp);
             std::string temp_str = data_list[i]->label;
-            for (int j = 0; j<lbls->size(); ++j) {
-                if (dfa->eval((*lbls)[i], true)) {
+            for (auto& lbl : (*lbls)) {
+                if (dfa->eval(lbl, true)) {
                     found_connection = true;
                     break;
                 }
