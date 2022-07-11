@@ -14,7 +14,7 @@ int main() {
 	/* CREATE ENVIRONMENT FOR GRID ROBOT */
 	StateSpace SS;
 
-	std::vector<std::string> states = {"a", "b", "c", "d", "e", "f", "g", "h"};
+	std::vector<std::string> states = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"};
 
 	// Create state space:
 	SS.setStateDimension(states, 0); // x
@@ -25,7 +25,7 @@ int main() {
 	// Create object location group:
 
 
-	Game<State> game(2, true, true); // by default, the init node for the ts is 0
+	Game<State> game(2, true, true); 
 
     // Make the graph here: ///////////
     State a(&SS);
@@ -45,13 +45,13 @@ int main() {
     State h(&SS);
     h.setState({"h"});
     State i(&SS);
-    i.setState({"h"});
+    i.setState({"i"});
     State j(&SS);
-    j.setState({"h"});
+    j.setState({"j"});
     State k(&SS);
-    k.setState({"h"});
+    k.setState({"k"});
     State l(&SS);
-    l.setState({"h"});
+    l.setState({"l"});
 
 	game.setInitState(&j, 1);
 

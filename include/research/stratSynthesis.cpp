@@ -118,7 +118,7 @@ std::vector<int> RiskAvoidStrategy<T>::post(Game<T>& game, DFA_EVAL* dfa, const 
             const std::vector<std::string>* lbls = game.returnStateLabels(sp);
             std::string temp_str = data_list[i]->label;
             for (int j = 0; j<lbls->size(); ++j) {
-                if (dfa->eval((*lbls)[i], true)) {
+                if (dfa->eval((*lbls)[j], true)) {
                     found_connection = true;
                     break;
                 }
@@ -271,8 +271,8 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
                 // Compute min(r(Post(p))) 
 
                 //bool debug = false;
-                //if (p == 526) {
-                //    std::cout<<" FOUND P = 192" <<std::endl;
+                //if (p == 200) {
+                //    std::cout<<" FOUND P " <<std::endl;
                 //    debug = true;
 
                 //}
@@ -306,7 +306,11 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
 
 
                 if (min_val < risk[p] || risk[p] == -1) {
+
+                    //if (debug) {
                     //int pause; std::cin>>pause;
+                    //}
+
                     updated = true;
                     risk[p] = min_val;
                     std::vector<int> ret_inds_min_state;
@@ -314,7 +318,7 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
                     int min_state_s = ret_inds_min_state[0];
                     WL* edge = game.getData(s, min_state_s);
                     //std::cout<<"trying edge: "<<std::endl;
-                    std::cout<<"    policy(s: "<<s<<", q: "<<q<<", p: "<<p<<"): "<< edge->label<<std::endl;
+                    std::cout<<"    policy(s: "<<s<<", q: "<<q<<", p: "<<p<<"): "<< edge->label<<" with min risk val: "<<min_val<<std::endl;
                     strategy.policy[p] = edge->label;
                 }
 
