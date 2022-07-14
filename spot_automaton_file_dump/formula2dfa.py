@@ -112,10 +112,13 @@ def read_write(read_file_name, write_file_dir_name_prefix, write_file_name, rand
 
 if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
-    parser.add_argument("-f", "--filepath", default="formulas.txt", help="Specify forumla.txt file")
+    parser.add_argument("-p", "--filepath", default="formulas.txt", help="Specify forumla.txt file")
     parser.add_argument("-d", "--dfa_filename", default=None, help="Specify custom dfa filename")
     parser.add_argument("-c", "--complete", action='store_true', default=False, help="DFA is complete (instead of minimal)")
+    parser.add_argument("--formulas", action="extend", nargs="+", type=str, help="DFA is complete (instead of minimal)")
     args = parser.parse_args()
+    if args.formulas:
+        print(args.formulas)
 
 
     print("Reading file: ", args.filepath)
@@ -124,4 +127,7 @@ if __name__ == "__main__":
     READ_FILE_NAME = args.filepath
     WRITE_FILE_DIR_NAME_PREFIX = "dfas/"
     WRITE_FILE_NAME = args.dfa_filename
-    read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=False, verbose=True, f_complete=args.complete)
+    if args.formulas:
+        create_file(args.formulas, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=False, verbose=True, f_complete=args.complete)
+    else:
+        read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=False, verbose=True, f_complete=args.complete)
