@@ -3,14 +3,21 @@ from posixpath import dirname
 import spot, os, glob, random
 import argparse
 
-def remove_dfa_files(dirname_prefix):
+def remove_dfa_files(dirname_prefix, file_prefix, verbose=False):
     # Remove all dfa files in directory:
     for file in os.scandir(dirname_prefix):
-        os.remove(file.path)
+        if (str(file).startswith(file_prefix)):
+            os.remove(file.path)
+            if verbose:
+                print("Removing: ", str(file))
         #print(file.path)
 
 def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose=False, f_complete=False):
-    remove_dfa_files(dirname_prefix)
+    if custom_filename == None:
+        remove_dfa_files(dirname_prefix, "dfa", verbose)
+    else:
+        remove_dfa_files(dirname_prefix, custom_filename, verbose)
+
     inds = [i for i in range(0, len(F_arr))]
     if random_ordering:
         random.shuffle(inds)
@@ -114,6 +121,7 @@ if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
     parser.add_argument("-p", "--filepath", default="formulas.txt", help="Specify forumla.txt file")
     parser.add_argument("-d", "--dfa_filename", default=None, help="Specify custom dfa filename")
+    parser.add_argument("--dfa_path", default="dfas/", type=str, help="Specify custom path for dfa files")
     parser.add_argument("-c", "--complete", action='store_true', default=False, help="DFA is complete (instead of minimal)")
     parser.add_argument("--formulas", action="extend", nargs="+", type=str, help="DFA is complete (instead of minimal)")
     args = parser.parse_args()
@@ -125,7 +133,13 @@ if __name__ == "__main__":
     if args.filepath is not None:
         print("DFA file target: ", args.dfa_filename)
     READ_FILE_NAME = args.filepath
-    WRITE_FILE_DIR_NAME_PREFIX = "dfas/"
+
+    if not args.dfa_path.endswith("/"):
+        WRITE_FILE_DIR_NAME_PREFIX = args.dfa_path + "/"
+    else:
+        WRITE_FILE_DIR_NAME_PREFIX = args.dfa_path
+
+    print("Writing dfa files to: ", WRITE_FILE_DIR_NAME_PREFIX)
     WRITE_FILE_NAME = args.dfa_filename
     if args.formulas:
         create_file(args.formulas, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=False, verbose=True, f_complete=args.complete)
