@@ -13,6 +13,7 @@ def remove_dfa_files(dirname_prefix, file_prefix, verbose=False):
         #print(file.path)
 
 def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose=False, f_complete=False):
+    print("DIRNAME PREFIX: ", dirname_prefix)
     if custom_filename == None:
         remove_dfa_files(dirname_prefix, "dfa", verbose)
     else:
@@ -71,10 +72,15 @@ def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose
         for a_s in accepting_list:
             lines_list.append("- " + a_s)
         lines_list.append("")
-        with open(filename, "w") as file:
-            for line in lines_list:
-                file.write(line)
-                file.write("\n")
+        print("  FILENAME: ", filename)
+        try:
+            with open(filename, "w") as file:
+                for line in lines_list:
+                    file.write(line)
+                    file.write("\n")
+        except Exception as e:
+            print("Open filename failed with error:", e)
+        
 
 def print_automaton(A):
     bdict = A.get_dict()	

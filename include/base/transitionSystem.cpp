@@ -191,7 +191,6 @@ void TransitionSystem<T>::setInitState(T* init_state_) {
 		state_map.push_back(init_state);
 	} else {
 		init_state->generateAllPossibleStates(all_states);
-		std::cout<<"af generate all states "<<all_states.size()<<std::endl;
 		state_added.resize(all_states.size());
 		state_added_ind.resize(all_states.size());
 		for (int i=0; i<state_added.size(); ++i) {

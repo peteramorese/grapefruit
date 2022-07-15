@@ -114,5 +114,7 @@ class SymbSearch {
 		std::pair<bool, float> search(bool use_heuristic = false);
 		StrategyResult synthesizeRiskStrategy(TS_EVAL<State>* TS_sps, DFA_EVAL* cosafe_dfa, DFA_EVAL* live_dfa);
 		void writePlanToFile(std::string filename, const std::vector<std::string>& xtra_info);
+		const std::vector<const State*> getStateSequence();
+		const std::vector<std::string>& getActionSequence();
 		//~SymbSearch();
 };
