@@ -187,6 +187,55 @@ std::vector<int> RiskAvoidStrategy<T>::post(Game<T>& game, DFA_EVAL* dfa, const 
 }
 
 template<class T>
+std::vector<int> RiskAvoidStrategy<T>::post(Game<T>& game, DFA_EVAL* dfa, const std::vector<int>& graph_sizes, const std::vector<int>& set, unsigned evolve_player, std::vector<float>& transition_costs) {
+    std::unordered_map<int, bool> S_incl;
+    std::vector<int> post_set;
+    transition_costs.clear();
+    for (auto& p : set) {
+        std::vector<int> ret_inds;
+        Graph<int>::augmentedStatePreImage(graph_sizes, p, ret_inds);
+        int s = ret_inds[0]; // game state
+        int q = ret_inds[1]; // automaton state
+        std::vector<int> node_list;
+        std::vector<WL*> data_list;
+        game.getConnectedNodes(s, node_list);
+        game.getConnectedData(s, data_list);
+        bool found_connection = false;
+        for (int i = 0; i<node_list.size(); ++i) {
+            int sp = node_list[i];
+            int pp;
+            if (game.getState(sp).second == evolve_player) {
+                dfa->set(q);
+                const std::vector<std::string>* lbls = game.returnStateLabels(sp);
+                std::string temp_str = data_list[i]->label;
+                for (auto& lbl : (*lbls)) {
+                    if (dfa->eval(lbl, true)) {
+                        found_connection = true;
+                        break;
+                    }
+
+                }
+                if (!found_connection) {
+                    std::cout<<"Error (post): Did not find connectivity in DFA.\n";
+                    return post_set;
+                }
+                pp = Graph<int>::augmentedStateImage({sp, dfa->getCurrNode()}, graph_sizes);
+            } else {
+                pp = Graph<int>::augmentedStateImage({sp, q}, graph_sizes);
+
+            }
+            if (!S_incl[pp]) { //utilize default constructed value (false)
+                transition_costs.push_back(data_list[i]->weight);
+                post_set.push_back(pp);
+                S_incl[pp] = true;
+            }
+        }
+    }
+    return post_set;
+}
+
+
+template<class T>
 typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_EVAL* dfa) {
     typename Game<T>::Strategy strategy;
     std::vector<DFA_EVAL*> dfas = {dfa}; // Use this for preferences later
@@ -199,7 +248,10 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
 
     std::vector<bool> visited(p_space_size, false);
 
-    std::vector<int> risk(p_space_size, -1); // infinity
+    std::vector<int> risk(p_space_size, -1); // First priority: Risk value (infinity) 
+    std::vector<float> cost(p_space_size, -1.0f); // Second priority: Min cost to-go (infinity)
+    std::vector<int> steps(p_space_size, -1); // Third priority: Min steps to-go (infinity)
+
     std::vector<int> O_init; // region set (init)
     std::unordered_map<int, bool> O; // region set (inclusion map)
 
@@ -224,6 +276,8 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
 
                 std::cout<<"   > setting O to 0 (s: "<<j<<", q: "<<q_acc<<", p: "<<p<<")"<<std::endl;
                 risk[p] = 0;
+                cost[p] = 0.0f;
+                steps[p] = 0;
                 O_init.push_back(p);
                 O[p] = true;
             } else {
@@ -266,6 +320,8 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
             //}
             visited[p] = true;
 
+            std::vector<float> post_set_transition_costs;
+            std::vector<int> post_set = post(game, dfa, graph_sizes, {p}, 0, post_set_transition_costs);
             if (game.getState(s).second == 0) { // system player
                 std::cout<<"System state"<<std::endl;
                 // Compute min(r(Post(p))) 
@@ -277,21 +333,41 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
 
                 //}
 
-                std::vector<int> post_set = post(game, dfa, graph_sizes, {p}, 0);
-                int min_val = -1;
+                //int min_val = -1;
+                //int min_cost = -1.0f;
                 bool begin = true;
                 int min_state = -1;
-                for (auto& pp : post_set) {
+                LexSet min_vals(3, -1.0f); // (min_val, min_cost, min_state)
+                for (int i=0; i<post_set.size(); ++i) {
+                    int pp = post_set[i];
                     std::vector<int> ret_inds_pp;
                     Graph<int>::augmentedStatePreImage(graph_sizes, pp, ret_inds_pp);
                     std::cout<<" -Post (s: "<<ret_inds_pp[0]<<", q: "<<ret_inds_pp[1]<<", p: "<<pp<<")"<<risk[pp]<<std::endl;
 
                     if (risk[pp] != -1) {
-                        if (begin || risk[pp] < min_val) {
+                        float cost_to_next = cost[pp] + post_set_transition_costs[i];
+                        float steps_to_next = static_cast<float>(steps[pp]) + 1.0f;
+                        LexSet test_vals(3, {static_cast<float>(risk[pp]), cost_to_next, steps_to_next});
+                        if (begin) {
                             begin = false;
-                            min_val = risk[pp];
+                            min_vals = test_vals;
+                            min_state = pp;
+                        } else if (test_vals < min_vals) {
+                            min_vals = test_vals;
                             min_state = pp;
                         }
+                        //if (begin) {
+                        //    begin = false;
+                        //    min_val = risk[pp];
+                        //    min_cost = cost_to_next;
+                        //} else if (risk[pp] == min_val && cost_to_next < min_cost) {
+                        //    min_cost = cost_to_next;
+                        //    min_state = pp;
+                        //} else if (risk[pp] < min_val) {
+                        //    min_val = risk[pp];
+                        //    min_cost = cost_to_next;
+                        //    min_state = pp;
+                        //}
                     }
 
                     //std::cout<<" risk["<<pp<<"] "<<risk[pp]<<", MIN VAL: "<<min_val<<std::endl;
@@ -299,16 +375,18 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
                     //std::cin>>pause;
 
                 }
-                if (min_val == -1) {
+                if (min_vals[0] == -1.0f) {
                     std::cout<<"Error: Post() set is all infinity\n";
                     return strategy;
                 }
 
-
-                if (min_val < risk[p] || risk[p] == -1) {
+                LexSet curr_vals(3, {static_cast<float>(risk[p]), cost[p], static_cast<float>(steps[p])});
+                if (risk[p] == -1 || min_vals < curr_vals ) {
                     //int pause; std::cin>>pause;
                     updated = true;
-                    risk[p] = min_val;
+                    risk[p] = static_cast<int>(min_vals[0]);
+                    cost[p] = min_vals[1];
+                    steps[p] = static_cast<int>(min_vals[2]);
                     std::vector<int> ret_inds_min_state;
                     Graph<int>::augmentedStatePreImage(graph_sizes, min_state, ret_inds_min_state);
                     int min_state_s = ret_inds_min_state[0];
@@ -326,24 +404,29 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
             } else { // environment player
                 std::cout<<"Environment state: "<<std::endl;
                 int r_before = risk[p];
-                std::vector<int> post_set = post(game, dfa, graph_sizes, {p}, 0);
+                float c_before = cost[p];
+                int s_before = steps[p];
                 // Check if Post(p) is contained in O
                 bool contained = true;
-                int max_val = 0;
-                for (auto& pp : post_set) {
-
+                //int max_val = 0;
+                LexSet max_vals(3, 0.0f); // (min_val, min_cost, min_state)
+                for (int i=0; i<post_set.size(); ++i) {
+                    int pp = post_set[i];
                     std::vector<int> ret_inds_pp;
                     Graph<int>::augmentedStatePreImage(graph_sizes, pp, ret_inds_pp);
                     std::cout<<" -Post (s: "<<ret_inds_pp[0]<<", q: "<<ret_inds_pp[1]<<", p: "<<pp<<")"<<risk[pp]<<std::endl;
 
                     if (O[pp]) { // Determine if p is a risk state
+                        float cost_to_next = cost[pp] + post_set_transition_costs[i];
+                        float steps_to_next = static_cast<float>(steps[pp]) + 1.0f;
+                        LexSet test_vals(3, {static_cast<float>(risk[pp]), cost_to_next, steps_to_next});
                         //if (risk[pp] == -1) {
                         //    std::cout<<"FOUND AN INF IN O ";
                         //    int pause;
                         //    std::cin;
                         //}
-                        if (risk[pp] > max_val) {
-                            max_val = risk[pp];
+                        if (test_vals > max_vals) {
+                            max_vals = test_vals;
                         }
                     } else { // Get max post value (min/max game)
                         //if (p == 526) {
@@ -359,14 +442,18 @@ typename Game<T>::Strategy RiskAvoidStrategy<T>::synthesize(Game<T>& game, DFA_E
                 }
                 if (contained) {
                     // Risk state
-                    std::cout<<"    (contained) Setting r["<<p<<"] = "<<max_val<<std::endl;
-                    risk[p] = max_val;
+                    risk[p] = static_cast<int>(max_vals[0]);
+                    std::cout<<"    (contained) Setting r["<<p<<"] = "<<risk[p]<<std::endl;
+                    cost[p] = max_vals[1];
+                    steps[p] = static_cast<int>(max_vals[2]);
                 } else {
                     // Non risk state:
-                    std::cout<<"    (NOT contained) Setting r["<<p<<"] = "<<max_val + 1<<std::endl;
-                    risk[p] = max_val + 1;
+                    risk[p] = static_cast<int>(max_vals[0]) + 1;
+                    std::cout<<"    (NOT contained) Setting r["<<p<<"] = "<<risk[p]<<std::endl;
+                    cost[p] = max_vals[1];
+                    steps[p] = static_cast<int>(max_vals[2]);
                 }
-                if (r_before != risk[p]) {
+                if (r_before != risk[p] || c_before != cost[p] || s_before != steps[p]) {
                     updated = true;
                 }
             }

@@ -62,7 +62,7 @@ bool cardinalState(const int i, const int j, const int grid_size, std::vector<st
 int main() {
 
 	bool manual_setup = true;
-	int grid_size = 3;
+	int grid_size = 10;
 	
 	// Limits the number of times the environment can intervene:
 	bool limit_intervention = false;

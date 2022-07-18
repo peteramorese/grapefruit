@@ -453,6 +453,7 @@ bool TransitionSystem<T>::generate() {
 	} else {
 		std::cout<<"Error: Must set init state and conditions before calling generate()\n";
 	}
+	return true;
 }
 
 template <class T>

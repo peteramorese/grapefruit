@@ -17,10 +17,11 @@ target_link_libraries(GameClass
     TransitionSystemClass
 )
 
-# Preference:
+# Research:
 add_library(LexSetClass research/lexSet.cpp)
 add_library(SymbSearchClass research/symbSearch.cpp)
 add_library(StratSynthesisClass research/stratSynthesis.cpp)
 target_link_libraries(SymbSearchClass LexSetClass)
+target_link_libraries(StratSynthesisClass LexSetClass)
 
 

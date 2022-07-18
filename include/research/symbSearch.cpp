@@ -1002,7 +1002,7 @@ typename SymbSearch::PlanResult SymbSearch::BFS(std::function<bool(const std::pa
 			if (!min_w.is_inf[con_node_prod_ind]) { // Node was seen before, non inf weight, but not visited
 				int seen_node_ind = min_w.prod2node_list.at(con_node_prod_ind); // This value will be mapped if weve seen the node before
 				std::weak_ptr<IVFlexLex<DetourLex>> seen_node = node_container[seen_node_ind];
-				DetourLex temp_lex_set(num_dfas, mu, &temp_lex_set_fill);
+				DetourLex temp_lex_set(num_dfas, mu, temp_lex_set_fill);
 				temp_lex_set += *curr_path_weight;
 				bool updated = false;
 				if (prune) {

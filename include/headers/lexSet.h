@@ -10,7 +10,7 @@ class LexSet {
 	public:
 		LexSet(unsigned int S_);
 		LexSet(unsigned int S_, float fill_val);
-		LexSet(unsigned int S_, const std::vector<float>* fill_set);
+		LexSet(unsigned int S_, const std::vector<float>& fill_set);
 		unsigned int size() const;
 		void fill(float value);
 		void setInf();
@@ -26,7 +26,9 @@ class LexSet {
 		virtual bool operator<=(const LexSet& arg_set) const;
 		virtual bool operator>(const LexSet& arg_set) const;
 		virtual bool operator>=(const LexSet& arg_set) const;
+		virtual float operator[](unsigned ind) const;
 		void print() const;
+		virtual ~LexSet();
 };
 
 class FlexLexSetS : public LexSet {
@@ -36,7 +38,7 @@ class FlexLexSetS : public LexSet {
 	public:
 		FlexLexSetS(unsigned int S_, float mu_);
 		FlexLexSetS(unsigned int S_, float mu_, float fill_val);
-		FlexLexSetS(unsigned int S_, float mu_, const std::vector<float>* fill_set);
+		FlexLexSetS(unsigned int S_, float mu_, const std::vector<float>& fill_set);
 		void operator+=(const FlexLexSetS& arg_set);
 		void operator+=(const std::vector<float>& arg_vec);
 		void operator=(const FlexLexSetS& arg_set);
@@ -50,7 +52,7 @@ class DetourLex : public LexSet {
 	public:
 		DetourLex(unsigned int S_, float mu_);
 		DetourLex(unsigned int S_, float mu_, float fill_val);
-		DetourLex(unsigned int S_, float mu_, const std::vector<float>* fill_set);
+		DetourLex(unsigned int S_, float mu_, const std::vector<float>& fill_set);
 		void operator+=(const DetourLex& arg_set);
 		void operator+=(const std::vector<float>& arg_vec);
 		void operator=(const DetourLex& arg_set);

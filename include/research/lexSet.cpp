@@ -4,8 +4,8 @@ LexSet::LexSet(unsigned int S_) : S(S_), lex_set(S_,0), inf_set(false) {}
 
 LexSet::LexSet(unsigned int S_, float fill_val) : S(S_), lex_set(S_, fill_val), inf_set(false) {}
 
-LexSet::LexSet(unsigned int S_, const std::vector<float>* fill_set) : S(S_), inf_set(false) {
-	lex_set = *fill_set;
+LexSet::LexSet(unsigned int S_, const std::vector<float>& fill_set) : S(S_), inf_set(false) {
+	lex_set = fill_set;
 }
 
 unsigned int LexSet::size() const {
@@ -77,7 +77,6 @@ void LexSet::operator=(const LexSet& arg_set) {
 			lex_set = arg_set.lex_set;
 		}
 	} else {
-		std::cout<<"skobi"<<std::endl;
 		std::cout<<"Error: Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
 		std::vector<int> kill;
 		kill[2] = 1;
@@ -197,6 +196,10 @@ bool LexSet::operator>=(const LexSet& arg_set) const {
 	}
 }
 
+float LexSet::operator[](unsigned int ind) const {
+	return lex_set[ind];
+}
+
 void LexSet::print() const {
 	std::cout<<"{";
 	if (inf_set) {
@@ -213,6 +216,8 @@ void LexSet::print() const {
 	}
 }
 
+LexSet::~LexSet() {}
+
 
 		/////////////////////////
 		/* FlexLexSetS CLASSES */
@@ -224,7 +229,7 @@ FlexLexSetS::FlexLexSetS(unsigned int S_, float mu_) : mu(mu_), LexSet(S_) {}
 
 FlexLexSetS::FlexLexSetS(unsigned int S_, float mu_, float fill_val) : mu(mu_), LexSet(fill_val, S_)  {}
 
-FlexLexSetS::FlexLexSetS(unsigned int S_, float mu_, const std::vector<float>* fill_set) : mu(mu_), LexSet(S_, fill_set) {}
+FlexLexSetS::FlexLexSetS(unsigned int S_, float mu_, const std::vector<float>& fill_set) : mu(mu_), LexSet(S_, fill_set) {}
 
 void FlexLexSetS::overflow() {
 	float buffer = 0;
@@ -294,7 +299,7 @@ DetourLex::DetourLex(unsigned int S_, float mu_) : mu(mu_), LexSet(S_) {}
 
 DetourLex::DetourLex(unsigned int S_, float mu_, float fill_val) : mu(mu_), LexSet(S_, fill_val)  {}
 
-DetourLex::DetourLex(unsigned int S_, float mu_, const std::vector<float>* fill_set) : mu(mu_), LexSet(S_, fill_set) {}
+DetourLex::DetourLex(unsigned int S_, float mu_, const std::vector<float>& fill_set) : mu(mu_), LexSet(S_, fill_set) {}
 
 bool DetourLex::withinBounds(const DetourLex& arg_set) const {
 	if (arg_set.size() == S) {
