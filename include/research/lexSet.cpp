@@ -77,7 +77,6 @@ void LexSet::operator=(const LexSet& arg_set) {
 			lex_set = arg_set.lex_set;
 		}
 	} else {
-		std::cout<<"skobi"<<std::endl;
 		std::cout<<"Error: Cannot operate on sets of different size ("<<arg_set.size()<<", "<<lex_set.size()<<").\n";
 		std::vector<int> kill;
 		kill[2] = 1;
