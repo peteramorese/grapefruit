@@ -1,4 +1,5 @@
 #include<functional>
+#include<list>
 #include "transitionSystem.h"
 #include "graph.h"
 
@@ -15,18 +16,19 @@ class OrderedPlanner {
     public:
         struct Plan {
             std::vector<State> state_sequence;
-            std::vector<std::string> state_sequence;
+            std::vector<std::string> action_sequence;
         };
         class Result {
+            public:
+                struct ParetoPoint {float mu; float path_length; Plan plan;};
             private:
-                std::vector<float> mu_vals;
-                std::vector<float> path_lengths;
-                std::vector<Plan> plans;
+                std::list<ParetoPoint> pareto_front; // x: mu, y: pathlengths
             public:
                 const Plan* getPlan(float mu_max) const;
                 const Plan* getPlan(unsigned ind) const;
-                std::vector<std::pair<float, float>> getParetoFront() const;
-                void pushParetoPoint(float mu, float path_length, const Plan& plan);
+                const std::list<ParetoPoint>* getParetoFront() const;
+                bool addParetoPoint(float mu, float path_length, const Plan& plan);
+                void printParetoFront();
         };
     private:
         bool success;

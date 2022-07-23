@@ -234,17 +234,109 @@ std::vector<int> SymbolicMethods::pre(TransitionSystem<State>& ts, const std::ve
 ///////////// ORDERED PLANNER ///////////// 
 
 const OrderedPlanner::Plan* OrderedPlanner::Result::getPlan(float mu_max) const {
-
+    for (const auto& pt : pareto_front) {
+        if (pt.mu <= mu_max) {
+            return &pt.plan;
+        }
+    }
+    return nullptr;
 }
 
 const OrderedPlanner::Plan* OrderedPlanner::Result::getPlan(unsigned ind) const {
-
+    int i = 0;
+    for (const auto& pt : pareto_front) {
+        if (i == ind) {
+            return &pt.plan;
+        }
+        i++;
+    }
+    return nullptr;
 }
 
-std::vector<std::pair<float, float>> OrderedPlanner::Result::getParetoFront() const {
-
+const std::list<OrderedPlanner::Result::ParetoPoint>* OrderedPlanner::Result::getParetoFront() const {
+    return &pareto_front;
 }
 
-void OrderedPlanner::Result::pushParetoPoint(float mu, float path_length, const Plan& plan) {
+bool OrderedPlanner::Result::addParetoPoint(float mu, float path_length, const Plan& plan) {
+    auto iter = pareto_front.begin();
+    if (pareto_front.size() == 0) {
+        pareto_front.push_back({mu, path_length, plan});
+        return true;
+    }
+    while (1) {
+        // Check if a more optimal pareto point is found:
+        auto& pt = *iter;
+        if (mu == pt.mu) {
+            if (path_length < pt.path_length) {
+                pt.path_length = path_length;
+                pt.plan = plan;
+                return true;
+            } else {
+                return false;
+            }
+        } 
+        if (path_length == pt.path_length) {
+            if (mu < pt.mu) {
+                pt.mu = mu;
+                pt.plan = plan;
+                return true;
+            } else {
+                return false;
+            }
+        }
+        auto it_before = std::next(iter, -1);
+        bool check_before = false;
+        bool check_after = false;
+        if (iter != pareto_front.begin()) {
+            if (mu > (*it_before).mu && path_length < (*it_before).path_length) {
+                check_before = true;
+            }
+        } else {
+            check_before = true;
+        }
+        if (iter != pareto_front.end()) {
+            if (mu < pt.mu)  {
+                if (path_length > pt.path_length) {
+                    check_after = true;
+                } else {
+                    pareto_front.insert(iter, {mu, path_length, plan});
+                    auto it_remove = iter;
+                    while (path_length <= (*it_remove).path_length) {
+                        std::advance(iter, 1);
+                        pareto_front.erase(it_remove);
+                        it_remove = iter;
+                    }
+                    return true;
+                }
+            } 
+        } else {
+            check_after = true;
+        }
+        ParetoPoint new_pt = {mu, path_length, plan};
+        if (check_before && check_after) {
+            pareto_front.insert(iter, new_pt);
+            return true;
+        } 
+        if (iter == pareto_front.end()) {
+            break;
+        }
+        std::advance(iter, 1);
+    } 
+    return false;
+}
+
+void OrderedPlanner::Result::printParetoFront() {
+    std::cout<<"Printing Pareto Front ("<<pareto_front.size()<<" elements):\n";
+    for (const auto& pt : pareto_front) {
+        std::cout<<" - mu: "<<pt.mu<<"   path_length: "<<pt.path_length<<"\n";
+    }
+}
+
+bool OrderedPlanner::search(TransitionSystem<State>& ts, const std::vector<DFA_EVAL*>& dfas, const std::function<float(std::vector<int>)>& setToMu) {
+	std::vector<const std::vector<std::string>*> total_alphabet(dfas.size());
+	for (int i=0; i<dfas.size(); ++i) {
+		total_alphabet[i] = dfas[i]->getAlphabetEVAL();
+	}
+    ts.mapStatesToLabels(total_alphabet);
 
 }

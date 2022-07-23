@@ -40,3 +40,8 @@ target_link_libraries(test_risk_values
 	GameClass
 	StratSynthesisClass
 	)
+
+add_executable(test_create_pareto_front test_create_pareto_front.cpp)
+target_link_libraries(test_create_pareto_front
+	OrderedPlannerClass
+	)
