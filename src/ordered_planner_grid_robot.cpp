@@ -327,11 +327,20 @@ int main(int argc, char *argv[]) {
 		std::vector<bool> skip(set.size(), false);
 		bool sorted = false;
 		int mu = 0;
-		for (int prio = set.size()-1; prio >= 0; --prio) {
+		// Determine max prio val:
+		int max_prio = set.size() - 1;
+		std::unordered_map<float, bool> seen;
+		for (auto val : set) {
+			if (seen[val]) {
+				max_prio--;
+			}
+			seen[val] = true;
+		}
+		for (int prio = max_prio; prio >= 0; --prio) {
 			float max_val = 0.0f;
 			int max_ind;
 			for (int i=0; i<set.size(); ++i) {
-				if (!skip[i] && set[i] > max_val) {
+				if (!skip[i] && set[i] >= max_val) {
 					max_val = set[i];
 					max_ind = i;
 				}
@@ -343,7 +352,7 @@ int main(int argc, char *argv[]) {
 		return static_cast<float>(mu); 
 	};
 
-	//float g_mu = setToMuDelay({0, 10, 15, 20});
+	//float g_mu = setToMuDelay({10, 20, 20, 10});
 	//std::cout<<"Got the mu: "<<g_mu<<std::endl;
 	//return 0;
 

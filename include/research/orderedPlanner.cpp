@@ -542,8 +542,8 @@ bool OrderedPlanner::search(TransitionSystem<State>& ts, const std::vector<DFA_E
             }
         }
         if (all_accepting) {
-            std::cout<<"set: "<<std::endl;
-            for (auto item : curr_leaf->cost_set) std::cout<<" cost set: "<<item<<std::endl;
+            //std::cout<<"set: "<<std::endl;
+            //for (auto item : curr_leaf->cost_set) std::cout<<" cost set: "<<item<<std::endl;
             float new_mu = setToMu(curr_leaf->cost_set);  
             if (new_mu < mu_max || !success) {
                 mu_max = new_mu;
@@ -552,6 +552,7 @@ bool OrderedPlanner::search(TransitionSystem<State>& ts, const std::vector<DFA_E
                 result.addParetoPoint(mu_max, curr_leaf->cost, pl);
                 success = true;
             }
+            continue;
         }
 
         // Get connected product nodes:
@@ -581,7 +582,7 @@ bool OrderedPlanner::search(TransitionSystem<State>& ts, const std::vector<DFA_E
 
             // Prune nodes:
             float mu = setToMu(node_candidate.cost_set);
-            if (success && mu < mu_max) {
+            if (success && mu > mu_max) {
                 continue;
             } 
 
