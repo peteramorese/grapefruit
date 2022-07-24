@@ -49,8 +49,8 @@
 #F(ap_x2_y2)
 
 # simple 5 x 5 test case 
-#F(ap_x4_y4)
-#F(ap_x2_y2)
+F(ap_x4_y4)
+F(ap_x2_y2)
 
 # equal optimal paths, zero flexibility:
 #F(ap_x1_y8)
@@ -133,9 +133,9 @@
 
 
 # debug:
-F(ap_x1_y1)
-F(ap_x0_y1)
-F(ap_x1_y1 & F(ap_x2_y2))
+#F(ap_x1_y1)
+#F(ap_x0_y1)
+#F(ap_x1_y1 & F(ap_x2_y2))
 
 
 # Risk avoidant strategy liveness specification (manipulator):
