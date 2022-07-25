@@ -36,6 +36,14 @@ class OrderedPlanner {
                 bool addParetoPoint(float mu, float path_length, const Plan& plan);
                 void printParetoFront() const;
         };
+        struct CostToGoal {
+            CostToGoal(unsigned sz = 0);
+            void resize(unsigned sz);
+            void clear();
+            std::vector<float> cost;
+            std::vector<bool> reachable;
+            bool success;
+        };
     private:
         struct Node {
             Node(); 
@@ -45,21 +53,27 @@ class OrderedPlanner {
             float f_cost; 
             std::vector<float> cost_set;
         };
-        TransitionSystem<State>* ts_ptr;
+        TransitionSystem<State>& ts;
         const bool verbose;
         bool success;
         Result result;
-        std::vector<int> graph_sizes;
+        std::pair<bool, std::vector<CostToGoal>> heuristic;
+        using gsz = const std::vector<int>&;
+        //std::vector<int> graph_sizes;
         std::unique_ptr<Node> newNode();
         std::unique_ptr<Node> newNode(const Node& node);
-        std::unique_ptr<Node> newNode(const std::vector<int>& inds, float cost, float f_cost, const std::vector<float>& cost_set);
-        int newNode(const std::vector<int>& inds, float cost, float f_cost, const std::vector<float>& cost_set, std::unordered_map<int, std::unique_ptr<Node>>& node_map);
+        std::unique_ptr<Node> newNode(gsz graph_sizes, const std::vector<int>& inds, float cost, float f_cost, const std::vector<float>& cost_set);
+        int newNode(gsz graph_sizes, const std::vector<int>& inds, float cost, float f_cost, const std::vector<float>& cost_set, std::unordered_map<int, std::unique_ptr<Node>>& node_map);
         Node* newNode(const Node& node, std::unordered_map<int, std::unique_ptr<Node>>& node_map);
-        //std::vector<float> addCostSets(const std::vector<float>& set_1, const std::vector<float> set_2);
-        Plan extractPlan(int p_acc, int p_init, const std::unordered_map<int, std::pair<int, std::string>>& parents);
+        static bool allAccepting(gsz graph_sizes, int p, const std::vector<DFA_EVAL*>& dfas);
+        Plan extractPlan(gsz graph_sizes, int p_acc, int p_init, const std::unordered_map<int, std::pair<int, std::string>>& parents);
+        bool generateHeuristic(const std::vector<DFA_EVAL*>& dfas);
+        float getH(gsz graph_sizes, unsigned p) const;
     public:
-        OrderedPlanner(bool verbose_ = false);
-        bool search(TransitionSystem<State>& ts, const std::vector<DFA_EVAL*>& dfas, const std::function<float(const std::vector<float>&)>& setToMu, bool use_heuristic);
+        OrderedPlanner(TransitionSystem<State>& ts_, bool verbose_ = false);
+        bool search(const std::vector<DFA_EVAL*>& dfas, const std::function<float(const std::vector<float>&)>& setToMu, bool use_heuristic);
+        std::vector<int> BFS(const std::vector<DFA_EVAL*>& dfas);
+        void searchBackwards(const std::vector<DFA_EVAL*>& dfas, const std::vector<int>& root_acc_nodes, CostToGoal& cost_to_goal);
         const Result* getResult() const;
 };
 

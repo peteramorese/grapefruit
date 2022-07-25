@@ -443,10 +443,25 @@ void OrderedPlanner::Result::printParetoFront() const {
     }
 }
 
+OrderedPlanner::CostToGoal::CostToGoal(unsigned sz) : cost(sz, 0.0f), reachable(sz, false) {}
+
+void OrderedPlanner::CostToGoal::resize(unsigned sz) {
+    cost.resize(sz);
+    reachable.resize(sz);
+}
+
+void OrderedPlanner::CostToGoal::clear() {
+    cost.clear();
+    reachable.clear();
+}
+
 OrderedPlanner::Node::Node() {}
+
 OrderedPlanner::Node::Node(int ind_, float cost_, float f_cost_, const std::vector<float>& cost_set_) : ind(ind_), cost(cost_), f_cost(f_cost_), cost_set(cost_set_) {}
 
-OrderedPlanner::OrderedPlanner(bool verbose_) : verbose(verbose_) {}
+OrderedPlanner::OrderedPlanner(TransitionSystem<State>& ts_, bool verbose_) : ts(ts_), verbose(verbose_) {
+    heuristic.first = false; // Heuristic is not generated
+}
 
 std::unique_ptr<OrderedPlanner::Node> OrderedPlanner::newNode() {
     return std::make_unique<Node>();
@@ -458,12 +473,12 @@ std::unique_ptr<OrderedPlanner::Node> OrderedPlanner::newNode(const Node& node) 
     return new_node;
 }
 
-std::unique_ptr<OrderedPlanner::Node> OrderedPlanner::newNode(const std::vector<int>& inds, float cost, float f_cost, const std::vector<float>& cost_set) {
+std::unique_ptr<OrderedPlanner::Node> OrderedPlanner::newNode(gsz graph_sizes, const std::vector<int>& inds, float cost, float f_cost, const std::vector<float>& cost_set) {
     int p = Graph<float>::augmentedStateImage(inds, graph_sizes);
     return std::make_unique<Node>(p, cost, f_cost, cost_set);
 }
 
-int OrderedPlanner::newNode(const std::vector<int>& inds, float cost, float f_cost, const std::vector<float>& cost_set, std::unordered_map<int, std::unique_ptr<Node>>& node_map) {
+int OrderedPlanner::newNode(gsz graph_sizes, const std::vector<int>& inds, float cost, float f_cost, const std::vector<float>& cost_set, std::unordered_map<int, std::unique_ptr<Node>>& node_map) {
     int p = Graph<float>::augmentedStateImage(inds, graph_sizes);
     std::unique_ptr<Node> node = std::make_unique<Node>(p, cost, f_cost, cost_set);
     node_map[p] = std::move(node);
@@ -471,24 +486,102 @@ int OrderedPlanner::newNode(const std::vector<int>& inds, float cost, float f_co
 }
 
 OrderedPlanner::Node* OrderedPlanner::newNode(const Node& node, std::unordered_map<int, std::unique_ptr<Node>>& node_map) {
-    std::unique_ptr<Node> new_node = std::make_unique<Node>();
-    *new_node = node;
-    node_map[node.ind] = std::move(new_node);
-    return node_map[node.ind].get(); // Return moved ptr
+    node_map.insert(std::make_pair(node.ind, std::make_unique<Node>(node.ind, node.cost, node.f_cost, node.cost_set)));
+    //std::unique_ptr<Node> new_node = std::make_unique<Node>(node.ind, node.cost, node.f_cost, node.cost_set);
+    //*new_node = node;
+    //new_node->ind = node.ind;
+    //new_node->cost = node.cost;
+    //new_node->f_cost = node.f_cost;
+    //new_node->cost_set = node.cost_set;
+    //node_map[p] = std::move(new_node);
+    return node_map.at(node.ind).get(); // Return moved ptr
 }
 
-bool OrderedPlanner::search(TransitionSystem<State>& ts, const std::vector<DFA_EVAL*>& dfas, const std::function<float(const std::vector<float>&)>& setToMu, bool use_heuristic) {
+bool OrderedPlanner::allAccepting(gsz graph_sizes, int p, const std::vector<DFA_EVAL*>& dfas) {
+
+    // Get individual graph node indices and set curr node:
+    std::vector<int> ret_inds;
+    Graph<float>::augmentedStatePreImage(graph_sizes, p, ret_inds);
+    
+    // If the popped node is accepting, it is a solution:
+    bool all_accepting = true;
+    for (int i=0; i<dfas.size(); ++i) {
+        if (!dfas[i]->getDFA()->isAccepting(ret_inds[i+1])) {
+            all_accepting = false;
+            break;
+        }
+    }
+    return all_accepting;
+}
+
+bool OrderedPlanner::generateHeuristic(const std::vector<DFA_EVAL*>& dfas) {
+    heuristic.second.clear();
+    heuristic.second.resize(dfas.size());
+    for (int i=0; i<dfas.size(); ++i) {
+        std::vector<DFA_EVAL*> dfa = {dfas[i]};
+
+        std::vector<int> single_graph_sizes = SymbolicMethods::getGraphSizes(ts, dfa);
+        std::vector<int> acc_nodes = BFS(dfa);
+        searchBackwards(dfa, acc_nodes, heuristic.second[i]);
+        if (!heuristic.second[i].success) {
+            std::cout<<"Error (generateHeuristic): Backwards search for dfa "<<i<<" failed!\n";
+            return false;
+        }
+    }
+    heuristic.first = true;
+    return true;
+}
+
+
+float OrderedPlanner::getH(gsz graph_sizes, unsigned p) const {
+    if (graph_sizes.size() - 1 == heuristic.second.size()) {
+        std::vector<int> ret_inds;
+        Graph<float>::augmentedStatePreImage(graph_sizes, p, ret_inds);
+
+        // Determine the maximum min-cost-to-goal for each single product:
+        float max_h_val = 0.0f;
+        for (int i=0; i<graph_sizes.size()-1; ++i) {
+            int p_i = Graph<float>::augmentedStateImage({ret_inds[0], ret_inds[i+1]}, {graph_sizes[0], graph_sizes[i+1]});
+            if (heuristic.second[i].reachable[p_i]) {
+                float c_h_val = heuristic.second[i].cost.at(p_i); // Check bounds
+                if (max_h_val < c_h_val) {
+                    max_h_val = c_h_val;
+                }
+            } else {
+                std::cout<<"Error (getH): h-val for state: (ts: "<<ret_inds[0]<<", dfa "<<i<<": "<<ret_inds[i+1]<<" is not reachable!\n";
+            }
+        }
+        return max_h_val;
+    } else {
+        std::cout<<"Error (getH): Heuristic was either not generated or scenario is mismatched\n";
+        return 0.0f;
+    }
+}
+
+bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::function<float(const std::vector<float>&)>& setToMu, bool use_heuristic) {
+    /*
+    Generates a pareto front between priority order and total path cost for a given planning scenario
+    */
+
     // Set up the transition system:
-    ts_ptr = &ts;
 	std::vector<const std::vector<std::string>*> total_alphabet(dfas.size());
 	for (int i=0; i<dfas.size(); ++i) {
 		total_alphabet[i] = dfas[i]->getAlphabetEVAL();
 	}
     ts.mapStatesToLabels(total_alphabet);
-    graph_sizes = SymbolicMethods::getGraphSizes(ts, dfas);
+    std::vector<int> graph_sizes = SymbolicMethods::getGraphSizes(ts, dfas);
     int p_space_size = 1;
     for (auto sz : graph_sizes) {
         p_space_size *= sz;
+    }
+
+    // If using heuristic, generate it:
+    if (use_heuristic) {
+        bool h_success = generateHeuristic(dfas);
+        if (!h_success) {
+            std::cout<<"Error (search): Heuristic failed to generate\n";
+            return false; 
+        }
     }
 
     // Node check and pq structures:
@@ -508,11 +601,19 @@ bool OrderedPlanner::search(TransitionSystem<State>& ts, const std::vector<DFA_E
 		dfas[i]->reset();
 		init_node_inds[i+1] = dfas[i]->getCurrNode();
 	}
-    int p_init = newNode(init_node_inds, 0.0f, 0.0f, init_cost_set, node_map);
+    int p_init = newNode(graph_sizes, init_node_inds, 0.0f, 0.0f, init_cost_set, node_map);
     visited[p_init] = true;
     seen[p_init] = true; // No parent for init node
     parents[p_init] = {-1, "none"}; // No parent for init node
     min_cost[p_init] = 0.0f; 
+
+    std::cout<<"init node ind: "<<node_map[p_init].get()->ind<<std::endl;
+    if (node_map[p_init].get()->ind > p_space_size) {
+        int pause;
+        std::cin>>pause;
+    }
+
+    std::cout<<"pushing init: "<<node_map[p_init].get()<<std::endl;
     pq.push(node_map[p_init].get());
 
     // Init parameters used in search:
@@ -522,33 +623,22 @@ bool OrderedPlanner::search(TransitionSystem<State>& ts, const std::vector<DFA_E
     float mu_max = -1.0f; // Unset
 
     while (!pq.empty()) {
-        //std::cout<<"pq size: "<<pq.size()<<std::endl;
         iterations++;
         Node* curr_leaf = pq.top();
         int p = curr_leaf->ind;
         pq.pop();
         visited[p] = true;
 
-        // Get individual graph node indices and set curr node:
-        std::vector<int> ret_inds;
-        Graph<float>::augmentedStatePreImage(graph_sizes, p, ret_inds);
-        
-        // If the popped node is accepting, it is a solution:
-        bool all_accepting = true;
-        for (int i=0; i<dfas.size(); ++i) {
-            if (!dfas[i]->getDFA()->isAccepting(ret_inds[i+1])) {
-                all_accepting = false;
-                break;
-            }
-        }
+        // Check if current node is a solution:
+        bool all_accepting = allAccepting(graph_sizes, p, dfas);
         if (all_accepting) {
             //std::cout<<"set: "<<std::endl;
             //for (auto item : curr_leaf->cost_set) std::cout<<" cost set: "<<item<<std::endl;
             float new_mu = setToMu(curr_leaf->cost_set);  
             if (new_mu < mu_max || !success) {
                 mu_max = new_mu;
-                if (verbose) std::cout<<"Found solution! mu: "<<mu_max<<", path length: "<<curr_leaf->cost<<std::endl;
-                Plan pl = extractPlan(p, p_init, parents);
+                if (verbose) std::cout<<"Found solution! mu: "<<mu_max<<", path length: "<<curr_leaf->cost<<", iteration: "<<iterations<<std::endl;
+                Plan pl = extractPlan(graph_sizes, p, p_init, parents);
                 result.addParetoPoint(mu_max, curr_leaf->cost, pl);
                 success = true;
             }
@@ -573,7 +663,7 @@ bool OrderedPlanner::search(TransitionSystem<State>& ts, const std::vector<DFA_E
 
             // Check if all nodes are accepting, if not add appropriate costs:
             float new_cost = curr_leaf->cost + edge->weight;
-            Node node_candidate = {pp, new_cost, new_cost, curr_leaf->cost_set};
+            Node node_candidate(pp, new_cost, new_cost, curr_leaf->cost_set);
             for (int i=0; i<dfas.size(); ++i) {
                 if (!dfas[i]->getDFA()->isAccepting(con_ret_inds[i+1])) {
                     node_candidate.cost_set[i] += edge->weight;
@@ -586,7 +676,7 @@ bool OrderedPlanner::search(TransitionSystem<State>& ts, const std::vector<DFA_E
                 continue;
             } 
 
-            // Check if node was seen and a short path was found:
+            // Check if node was seen and a shorter path was found:
             bool updated = false;
             if (seen[pp]) {
                 if (node_candidate.cost < min_cost[pp]) {
@@ -600,22 +690,25 @@ bool OrderedPlanner::search(TransitionSystem<State>& ts, const std::vector<DFA_E
             }
 
             if (use_heuristic) {
-                // TODO: get 'h_cost' value (A*) and add it to 'cost'
+                // Get 'h_cost' value (A*) and add it to 'cost'
+                node_candidate.f_cost += getH(graph_sizes, pp);
             } 
 
             // Made it thru all checks, add the node to the graph and queue
             // (store nodes on the heap to handle massive graphs):
             Node* new_node = newNode(node_candidate, node_map);
+
             pq.push(new_node);
             seen[pp] = true;
             min_cost[pp] = node_candidate.cost;
             parents[pp] = {p, edge->label};
         }    
     }
+    std::cout<<"Iterations: "<<iterations<<std::endl;
     return success;
 }
 
-OrderedPlanner::Plan OrderedPlanner::extractPlan(int p_acc, int p_init, const std::unordered_map<int, std::pair<int, std::string>>& parents) {
+OrderedPlanner::Plan OrderedPlanner::extractPlan(gsz graph_sizes, int p_acc, int p_init, const std::unordered_map<int, std::pair<int, std::string>>& parents) {
     int curr_ind = p_acc;
     Plan plan; 
     Plan reverse_plan;
@@ -626,13 +719,13 @@ OrderedPlanner::Plan OrderedPlanner::extractPlan(int p_acc, int p_init, const st
         Graph<float>::augmentedStatePreImage(graph_sizes, curr_ind, ret_inds);
 
         reverse_plan.action_sequence.push_back(parents.at(curr_ind).second);
-        reverse_plan.state_sequence.push_back(ts_ptr->getState(ret_inds[0]));
+        reverse_plan.state_sequence.push_back(ts.getState(ret_inds[0]));
         reverse_state_inds.push_back(ret_inds[0]);
         curr_ind = parents.at(curr_ind).first;
     }
     std::vector<int> ret_inds;
     Graph<float>::augmentedStatePreImage(graph_sizes, curr_ind, ret_inds);
-    reverse_plan.state_sequence.push_back(ts_ptr->getState(ret_inds[0])); // Init state
+    reverse_plan.state_sequence.push_back(ts.getState(ret_inds[0])); // Init state
     
     // Reverse the plan:
     plan.action_sequence.resize(reverse_plan.action_sequence.size());
@@ -663,3 +756,149 @@ OrderedPlanner::Plan OrderedPlanner::extractPlan(int p_acc, int p_init, const st
 const OrderedPlanner::Result* OrderedPlanner::getResult() const {
     return (success) ? &result : nullptr;
 }
+
+std::vector<int> OrderedPlanner::BFS(const std::vector<DFA_EVAL*>& dfas) {
+    /*
+    Breath first search that finds and returns all accepting reachable product states
+    */
+
+    std::vector<int> accepting_states;
+
+    std::vector<int> graph_sizes = SymbolicMethods::getGraphSizes(ts, dfas);
+
+    // Node check and pq structures:
+    std::unordered_map<int, bool> visited; // Checks if the node has been visited (checked for acceptance)
+    std::unordered_map<int, bool> seen; // Checks if the node has been encountered
+
+    // Create the init root node:
+	std::vector<int> init_node_inds(dfas.size() + 1);
+	init_node_inds[0] = ts.getInitStateInd();
+	for (int i=0; i<dfas.size(); ++i) {
+		dfas[i]->reset();
+		init_node_inds[i+1] = dfas[i]->getCurrNode();
+	}
+    int p_init = Graph<float>::augmentedStateImage(init_node_inds, graph_sizes);
+    visited[p_init] = true;
+    seen[p_init] = true;
+
+    std::queue<int> q;
+    q.push(p_init);
+    while (!q.empty()) {
+        int p = q.front();
+        q.pop();
+
+        // Check if current node is accepting, if so add to solution pool
+
+        if (allAccepting(graph_sizes, p, dfas)) {
+            accepting_states.push_back(p);
+        }
+        
+        visited[p] = true;
+
+        // Get connected product nodes:
+        auto inclMe = [&seen](int pp) {
+            // If node was already seen, dont include it:
+            return (seen[pp]) ? false : true;
+        }; 
+        std::vector<int> post_set = SymbolicMethods::post(ts, dfas, {p}, inclMe);
+        
+        // Add new nodes to queue and mark as seen:
+        for (auto pp : post_set) {
+            seen[pp] = true;
+            q.push(pp);
+        }
+    }
+    return accepting_states;
+}
+
+void OrderedPlanner::searchBackwards(const std::vector<DFA_EVAL*>& dfas, const std::vector<int>& root_acc_nodes, CostToGoal& cost_to_goal) {
+    /*
+    Generates min-cost-to-goal weighting for each backwards reachable product state in scenario
+    */
+
+    // Assume transition labels were already mapped:
+    std::vector<int> graph_sizes = SymbolicMethods::getGraphSizes(ts, dfas);
+    int p_space_size = 1;
+    for (auto sz : graph_sizes) {
+        p_space_size *= sz;
+    }
+    cost_to_goal.clear();
+    cost_to_goal.resize(p_space_size); // Incorperates 'seen' and 'min_cost'
+    cost_to_goal.success = false;
+
+    // Node check and pq structures (use arrays since the entire backwards-reachable graph will be searched):
+    std::vector<bool> visited(p_space_size, false); // Checks if the node has been visited
+    std::vector<std::pair<int, std::string>> children(p_space_size); // Holds parent node and action
+    auto compare  = [](const Node* p1, const Node* p2) {return p1->f_cost > p2->f_cost;};
+    std::priority_queue<Node*, std::vector<Node*>, decltype(compare)> pq(compare);
+    std::unordered_map<int, std::unique_ptr<Node>> node_map;
+
+    // Create the init root accepting nodes:
+    Node init_fill_node;
+    init_fill_node.cost = 0.0f;
+    init_fill_node.cost_set = {};
+    init_fill_node.f_cost = 0.0f;
+    for (auto p_acc : root_acc_nodes) {
+        init_fill_node.ind = p_acc;
+        Node* init_node_ptr = newNode(init_fill_node, node_map);
+        visited[p_acc] = true;
+        children[p_acc] = {-1, "none"}; // No child for init node
+        cost_to_goal.cost[p_acc] = 0.0f;
+        cost_to_goal.reachable[p_acc] = true;
+        pq.push(init_node_ptr);
+    }
+
+    // Init parameters used in search:
+    bool solution_found = false;
+    int iterations = 0;
+    success = false; // member variable
+
+    while (!pq.empty()) {
+        iterations++;
+        Node* curr_leaf = pq.top();
+        int pp = curr_leaf->ind;
+        pq.pop();
+        visited[pp] = true;
+
+        // Get pre connected product nodes:
+        auto inclMe = [&visited](int p) {
+            // Dont consider visited nodes:
+            return (visited[p]) ? false : true;
+        }; 
+        SymbolicMethods::ConnectedNodes con_nodes = SymbolicMethods::preNodes(ts, dfas, {pp}, inclMe);
+
+        // Cycle through all connected nodes:
+        for (int i=0; i<con_nodes.nodes.size(); ++i) {
+            int p = con_nodes.nodes[i];
+            WL* edge = con_nodes.data[i];
+            
+            // Get individual graph node indices and set curr node:
+            std::vector<int> con_ret_inds;
+            Graph<float>::augmentedStatePreImage(graph_sizes, p, con_ret_inds);
+
+            // Check if all nodes are accepting, if not add appropriate costs:
+            float new_cost = curr_leaf->cost + edge->weight;
+            Node node_candidate = {p, new_cost, new_cost, {}};
+
+            // Check if node was seen and a shorter path was found:
+            bool updated = false;
+            if (cost_to_goal.reachable[p]) {
+                if (node_candidate.cost < cost_to_goal.cost[p]) {
+                    children[p] = {pp, edge->label};
+                    updated = true;
+                } 
+                continue;
+            }
+
+            // Made it thru all checks, add the node to the graph and queue
+            // (store nodes on the heap to handle massive graphs):
+            Node* new_node = newNode(node_candidate, node_map);
+            pq.push(new_node);
+            cost_to_goal.reachable[p] = true;
+            cost_to_goal.cost[p] = node_candidate.cost;
+            children[p] = {pp, edge->label};
+        }    
+    }
+    cost_to_goal.success = true;
+}
+

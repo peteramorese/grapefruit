@@ -294,7 +294,7 @@ int main(int argc, char *argv[]) {
 		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
 	}
 
-	OrderedPlanner planner(verbose);
+	OrderedPlanner planner(ts, verbose);
 	if (manual_setup) {
 		std::cout<<"\n------------------------------\n";
 		std::cout<<"Enter flexibility parameter: ";
@@ -356,7 +356,7 @@ int main(int argc, char *argv[]) {
 	//std::cout<<"Got the mu: "<<g_mu<<std::endl;
 	//return 0;
 
-	bool success = planner.search(ts, dfa_eval_ptrs, setToMuDelay, false);
+	bool success = planner.search(dfa_eval_ptrs, setToMuDelay, use_h_flag);
 	const OrderedPlanner::Result* result  = planner.getResult();
 	//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
 	if (result) {
