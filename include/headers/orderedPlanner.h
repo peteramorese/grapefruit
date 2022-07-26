@@ -47,10 +47,11 @@ class OrderedPlanner {
     private:
         struct Node {
             Node(); 
-            Node(int ind_, float cost_, float f_cost_, const std::vector<float>& cost_set_); 
+            Node(int ind_, float cost_, float f_cost_, float mu, const std::vector<float>& cost_set_); 
             int ind; 
             float cost; 
             float f_cost; 
+            float mu; 
             std::vector<float> cost_set;
         };
         TransitionSystem<State>& ts;
@@ -62,8 +63,8 @@ class OrderedPlanner {
         //std::vector<int> graph_sizes;
         std::unique_ptr<Node> newNode();
         std::unique_ptr<Node> newNode(const Node& node);
-        std::unique_ptr<Node> newNode(gsz graph_sizes, const std::vector<int>& inds, float cost, float f_cost, const std::vector<float>& cost_set);
-        int newNode(gsz graph_sizes, const std::vector<int>& inds, float cost, float f_cost, const std::vector<float>& cost_set, std::unordered_map<int, std::unique_ptr<Node>>& node_map);
+        std::unique_ptr<Node> newNode(gsz graph_sizes, const std::vector<int>& inds, float cost, float f_cost, float mu_, const std::vector<float>& cost_set);
+        int newNode(gsz graph_sizes, const std::vector<int>& inds, float cost, float f_cost, float mu, const std::vector<float>& cost_set, std::unordered_map<int, std::unique_ptr<Node>>& node_map);
         Node* newNode(const Node& node, std::unordered_map<int, std::unique_ptr<Node>>& node_map);
         static bool allAccepting(gsz graph_sizes, int p, const std::vector<DFA_EVAL*>& dfas);
         Plan extractPlan(gsz graph_sizes, int p_acc, int p_init, const std::unordered_map<int, std::pair<int, std::string>>& parents);
