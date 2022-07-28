@@ -330,29 +330,33 @@ int main(int argc, char *argv[]) {
 		// Determine max prio val:
 		int max_prio = set.size() - 1;
 		std::unordered_map<float, bool> seen;
-		for (auto val : set) {
-			if (seen[val]) {
+		for (int i=0; i<set.size(); ++i) {
+			if (seen[set[i]]) {
 				max_prio--;
+				skip[i] = true;
 			}
-			seen[val] = true;
+			seen[set[i]] = true;
 		}
+		//std::cout<<"max prio: "<<max_prio<<std::endl;
 		for (int prio = max_prio; prio >= 0; --prio) {
 			float max_val = 0.0f;
 			int max_ind;
 			for (int i=0; i<set.size(); ++i) {
-				if (!skip[i] && set[i] >= max_val) {
+				if (!skip[i] && set[i] > max_val) {
 					max_val = set[i];
 					max_ind = i;
-				}
+				} 
 			}
+			//std::cout<<"Max ind: "<<max_ind<<" curr prio: "<<prio<<std::endl;
 			skip[max_ind] = true;
 			int delay = prio - max_ind;
+			//if (delay > 0) std::cout<<"Adding: "<<delay<<" delay..."<<std::endl;
 			if (delay > 0) mu += delay;
 		}
 		return static_cast<float>(mu); 
 	};
 
-	//float g_mu = setToMuDelay({10, 20, 20, 10});
+	//float g_mu = setToMuDelay({11, 1, 25, 25});
 	//std::cout<<"Got the mu: "<<g_mu<<std::endl;
 	//return 0;
 

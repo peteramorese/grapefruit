@@ -613,6 +613,24 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
     //int p_test;
     //std::cout<<"Enter p_test: "<<std::endl;
     //std::cin>>p_test;
+    ////p_test = Graph<float>::augmentedStateImage({18, 1, 1, 1, 1}, graph_sizes);
+
+    //// TESTING POST: 
+    //auto inclMe = [use_heuristic, mu_max, &visited, &node_map](int pp) {
+    //    // If Djkstra's, dont consider visited nodes, but do include pruned nodes:
+    //    //return (!use_heuristic && visited[pp] && (node_map[pp]->mu < mu_max)) ? false : true;
+    //    return true;
+    //}; 
+    //SymbolicMethods::ConnectedNodes con_nodes_test = SymbolicMethods::postNodes(ts, dfas, {839}, inclMe);
+    //for (auto n : con_nodes_test.nodes) std::cout<<n<<std::endl;
+    //return true; 
+
+    // TESTING SET TO MU:
+    //std::vector<float> set = {9, 16, 11, 16};
+    //std::cout<<"got mu: "<<setToMu(set)<<std::endl;
+    //return true;
+
+    //success = true; mu_max = 1.0f;
 
     while (!pq.empty()) {
         iterations++;
@@ -622,46 +640,77 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
         visited[p] = true;
 
 
+
         float mu_p = setToMu(curr_leaf->cost_set);  
 
         //bool test_found_p = false;
         //if (p == p_test) {
-        //    std::cout<<"FOUND!!! mu: "<<mu_p<<" mu max: "<<mu_max<<std::endl;
+        //    std::cout<<"FOUND "<<p<<"!!! mu: "<<mu_p<<" mu max: "<<mu_max<<std::endl;
         //    std::cout<<"  visited? "<<visited[p]<<std::endl;
         //    for (auto item : curr_leaf->cost_set) std::cout<<" cost set: "<<item<<std::endl;
         //    test_found_p = true;
+        //    int pause; std::cin>>pause;
         //    //return true;
+        //}
+
+        //// DEBUG: Get individual graph node indices and set curr node:
+        //std::vector<int> ret_inds;
+        //Graph<float>::augmentedStatePreImage(graph_sizes, p, ret_inds);
+        //int n_acc = 0;
+        //for (int i=0; i<dfas.size(); ++i) {
+        //    if (dfas[i]->getDFA()->isAccepting(ret_inds[i+1])) {
+        //        n_acc++;
+        //    }
+        //}
+        ////bool debug = n_acc >= 1 && mu_max == 1.0f;
+        //bool debug = test_found_p;
+        //if (debug) {
+        //std::vector<int> ret_inds;
+        //Graph<float>::augmentedStatePreImage(graph_sizes, p, ret_inds);
+        //std::cout<<"Curr s: "<<ret_inds[0]<<" (p:"<<p<<") c: ";
+        //for (auto item : curr_leaf->cost_set) std::cout<<" "<<item;
+        //std::cout<<" mu: "<<mu_p<<"\n";
+        //for (int i=0; i<dfas.size(); ++i) {
+        //    std::cout<<" dfa "<<i<<": "<<ret_inds[i+1]<<std::endl;
+        //}
         //}
 
 
         if (mu_p >= mu_max && success) {
             visited[p] = false;
+            //if (debug) std::cout<<"continue in by prune..."<<std::endl;
             continue;
         }
-        if (mu_p != 0) continue;
 
 
 
         // Check if current node is a solution:
         bool all_accepting = allAccepting(graph_sizes, p, dfas);
         if (all_accepting) {
-            std::cout<<"Accepting p: "<<p<<" set: "<<std::endl;
-            for (auto item : curr_leaf->cost_set) std::cout<<" cost set: "<<item<<std::endl;
+            //std::cout<<"Accepting p: "<<p<<" set: "<<std::endl;
+            //for (auto item : curr_leaf->cost_set) std::cout<<" cost set: "<<item<<std::endl;
             //if (new_mu == 0.0f) std::cout<<"FOUND 0 SOLN"<<std::endl;
             mu_max = mu_p;
             if (verbose) std::cout<<"Found solution! mu: "<<mu_max<<", path length: "<<curr_leaf->cost<<", iteration: "<<iterations<<std::endl;
             Plan pl = extractPlan(graph_sizes, p, p_init, parents);
             result.addParetoPoint(mu_max, curr_leaf->cost, pl);
             success = true;
+            //if (debug) std::cout<<"continue in acc..."<<std::endl;
             continue;
         }
+        //if (mu_p != 0) {
+        //    if (debug) std::cout<<"continue in mu not eq 0..."<<std::endl;
+        //continue;
+        //}
 
         // Get connected product nodes:
         auto inclMe = [use_heuristic, mu_max, &visited, &node_map](int pp) {
             // If Djkstra's, dont consider visited nodes, but do include pruned nodes:
             //return (!use_heuristic && visited[pp] && (node_map[pp]->mu < mu_max)) ? false : true;
-            return (!use_heuristic && visited[pp] && (node_map[pp]->mu < mu_max)) ? false : true;
+            return true;
         }; 
+        
+        //if (debug) std::cout<<"Feeding p: "<<p<<std::endl;
         SymbolicMethods::ConnectedNodes con_nodes = SymbolicMethods::postNodes(ts, dfas, {p}, inclMe);
 
         // Cycle through all connected nodes:
@@ -669,20 +718,26 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
             int pp = con_nodes.nodes[i];
             WL* edge = con_nodes.data[i];
             
-        // DEBUG: Get individual graph node indices and set curr node:
-        std::vector<int> ret_inds;
-        Graph<float>::augmentedStatePreImage(graph_sizes, pp, ret_inds);
-        //std::cout<<"Curr s: "<<ret_inds[0]<<" mu_p: "<<mu_p<<std::endl;
-        int n_acc = 0;
-        for (int i=0; i<dfas.size(); ++i) {
-            if (dfas[i]->getDFA()->isAccepting(ret_inds[i+1])) {
-                n_acc++;
-            }
-        }
-        int n_acc_des = 3;
-        if (n_acc == n_acc_des) {
-            std::cout<<"FOUND "<<n_acc_des<<" accepting! (n_acc = "<<n_acc<<") mu: "<<mu_p<<std::endl; 
-        }
+            // DEBUG: Get individual graph node indices and set curr node:
+
+            //std::vector<int> ret_inds;
+            //Graph<float>::augmentedStatePreImage(graph_sizes, pp, ret_inds);
+            //std::cout<<"Curr s: "<<ret_inds[0]<<" mu_p: "<<mu_p<<std::endl;
+            //int n_acc = 0;
+            //for (int i=0; i<dfas.size(); ++i) {
+            //    if (dfas[i]->getDFA()->isAccepting(ret_inds[i+1])) {
+            //        n_acc++;
+            //    }
+            //}
+            //int n_acc_des = 3;
+            //if (n_acc == n_acc_des) {
+            //    std::cout<<"FOUND "<<n_acc_des<<" accepting! (n_acc = "<<n_acc<<") mu: "<<mu_p<<std::endl; 
+            //    std::cout<<"sp: "<<ret_inds[0];
+            //    for (int i=0; i<dfas.size(); ++i) {
+            //        std::cout<<" dfa "<<i<<": "<<ret_inds[i+1];
+            //    }
+            //    std::cout<<"\n";
+            //}
 
 
             // Get individual graph node indices and set curr node:
@@ -698,19 +753,40 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
                 }
             }
 
+
+
+            //// DEBUG:
+            //if (debug || test_found_p) {
+            //std::vector<int> ret_inds;
+            //Graph<float>::augmentedStatePreImage(graph_sizes, pp, ret_inds);
+            //std::cout<<"    Curr s: "<<ret_inds[0]<<" (pp:"<<pp<<") c: ";
+            //for (auto item : node_candidate.cost_set) std::cout<<" "<<item;
+            //std::cout<<" mu:"<<setToMu(node_candidate.cost_set)<<" \n";
+            //std::cout<<"    Con sp: "<<ret_inds[0]<<std::endl;
+            //for (int i=0; i<dfas.size(); ++i) {
+            //    std::cout<<"     dfa "<<i<<": "<<ret_inds[i+1]<<std::endl;
+            //}
+            ////int pause; std::cin>>pause;
+            //if (test_found_p) {int pause; std::cin>>pause;};
+            //}
+            
+
+
             // Prune nodes:
             node_candidate.mu = setToMu(node_candidate.cost_set);
-            bool prune;
             if (success && node_candidate.mu > mu_max) {
                 visited[pp] = false;
+                //if (debug) std::cout<<"     continue by prune..."<<std::endl;
                 continue;
             }
 
+            //// DEBUG:
             //bool test_found = false;
             //if (pp == p_test) {
-            //    std::cout<<"  --(pp) FOUND! mu: "<<node_candidate.mu<<" mu max: "<<mu_max<<std::endl;
+            //    std::cout<<"  --(pp) FOUND "<<pp<<"! (p: "<<p<<") mu: "<<node_candidate.mu<<" mu max: "<<mu_max<<std::endl;
             //    for (auto item : node_candidate.cost_set) std::cout<<"     cost set: "<<item<<std::endl;
             //    test_found = true;
+            //    debug = true;
             //    //return true;
             //}
 
@@ -723,7 +799,8 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
             std::pair<bool, Node*> updated = {false, nullptr};
             if (seen[pp]) {
                 //if (node_candidate.cost < node_map[pp]->cost || (success && (node_map[pp]->mu >= mu_max))) {
-                if (node_candidate.cost < node_map[pp]->cost) {
+                if (node_candidate.cost < node_map[pp]->cost || (success && (node_candidate.mu < node_map[pp]->mu))) {
+                //if (node_candidate.cost < node_map[pp]->cost) {
                     parents[pp] = {p, edge->label};
                     (*node_map[pp]) = node_candidate;
                     updated.first = true;
@@ -732,6 +809,12 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
                 // Do not continue if 1) using A*, and 2) the node was updated:
                 //if (!updated.first || !use_heuristic) {
                 if (!updated.first) {
+                    //if (debug || test_found) std::cout<<"     continue by seen..."<<std::endl;
+                    //if (debug || test_found) {
+                    //    std::cout<<"     printing existing set: ";
+                    //    for (auto item : node_map[pp]->cost_set) std::cout<<" "<<item;
+                    //    std::cout<<" mu:"<<node_map[pp]->mu<<" \n";
+                    //}
                     continue;
                 }
             }
@@ -739,16 +822,16 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
             // Made it thru all checks, add the node to the graph and queue
             // (store nodes on the heap to handle massive graphs):
             if (!updated.first) { // If not updated, name a new node
-                //if (test_found) std::cout<<"        b4 adding ... mu: "<<node_candidate.mu<<std::endl;
+                //if (test_found || debug) std::cout<<"        b4 adding ... mu: "<<node_candidate.mu<<std::endl;
                 Node* new_node = newNode(node_candidate, node_map);
                 pq.push(new_node);
                 seen[pp] = true;
                 parents[pp] = {p, edge->label};
-                //if (test_found) std::cout<<"        adding new... mu: "<<new_node->mu<<std::endl;
+                //if (test_found || debug) std::cout<<"        adding new... mu: "<<new_node->mu<<std::endl;
             } else { // If updated (A*) push the seen node back into the queue
                 visited[pp] = false;
                 pq.push(updated.second);
-                //if (test_found) std::cout<<"        pushing... "<<std::endl;
+                //if (test_found || debug) std::cout<<"        pushing... "<<std::endl;
             }
         }    
     }
@@ -761,7 +844,6 @@ OrderedPlanner::Plan OrderedPlanner::extractPlan(gsz graph_sizes, int p_acc, int
     Plan plan; 
     Plan reverse_plan;
     std::vector<int> reverse_state_inds;
-    std::cout<<" Printing rev prod seq: ";
     while (curr_ind != p_init) {
         // Get individual graph node indices and set curr node:
         std::vector<int> ret_inds;
@@ -771,9 +853,7 @@ OrderedPlanner::Plan OrderedPlanner::extractPlan(gsz graph_sizes, int p_acc, int
         reverse_plan.state_sequence.push_back(ts.getState(ret_inds[0]));
         reverse_state_inds.push_back(ret_inds[0]);
         curr_ind = parents.at(curr_ind).first;
-        std::cout<<" -> "<<curr_ind;
     }
-    std::cout<<"\n";
 
     std::vector<int> ret_inds;
     Graph<float>::augmentedStatePreImage(graph_sizes, curr_ind, ret_inds);
