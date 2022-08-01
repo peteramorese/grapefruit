@@ -330,17 +330,20 @@ int main(int argc, char *argv[]) {
 		// Determine max prio val:
 		int max_prio = set.size() - 1;
 		std::unordered_map<float, bool> seen;
+		float set_sum = 0.0f; // Check if the set is non-zero (all quantities have to be positive)
 		for (int i=0; i<set.size(); ++i) {
 			if (seen[set[i]]) {
 				max_prio--;
 				skip[i] = true;
 			}
 			seen[set[i]] = true;
+			set_sum += set[i];
 		}
+		if (set_sum == 0.0f) return 0.0f;
 		//std::cout<<"max prio: "<<max_prio<<std::endl;
 		for (int prio = max_prio; prio >= 0; --prio) {
 			float max_val = 0.0f;
-			int max_ind;
+			int max_ind = -1;
 			for (int i=0; i<set.size(); ++i) {
 				if (!skip[i] && set[i] > max_val) {
 					max_val = set[i];
@@ -348,7 +351,11 @@ int main(int argc, char *argv[]) {
 				} 
 			}
 			//std::cout<<"Max ind: "<<max_ind<<" curr prio: "<<prio<<std::endl;
-			skip[max_ind] = true;
+			if (max_ind == -1) {
+				std::cout<<"ERROR -1!!!"<<std::endl;
+				for (auto item : set) std::cout<<"set item: "<<item<<std::endl;
+			}
+			skip.at(max_ind) = true;
 			int delay = prio - max_ind;
 			//if (delay > 0) std::cout<<"Adding: "<<delay<<" delay..."<<std::endl;
 			if (delay > 0) mu += delay;

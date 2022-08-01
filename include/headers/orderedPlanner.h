@@ -45,6 +45,7 @@ class OrderedPlanner {
             bool success;
         };
     private:
+        // Member types:
         struct Node {
             Node(); 
             Node(int ind_, float cost_, float f_cost_, float mu, const std::vector<float>& cost_set_); 
@@ -54,20 +55,36 @@ class OrderedPlanner {
             float mu; 
             std::vector<float> cost_set;
         };
+        struct ParentNode {
+            int par_ind;
+            std::string par_action;
+        };
+        struct VisitedNode {
+            VisitedNode();
+            VisitedNode(int ind_,  float mu_max_);
+            bool operator==(const VisitedNode& vn_in) const;
+            int ind;
+            float mu_max;
+        };
+        friend std::hash<VisitedNode>; // Hash fxn
+        using gsz = const std::vector<int>&;
+
+        // Member variables:
         TransitionSystem<State>& ts;
         const bool verbose;
         bool success;
         Result result;
         std::pair<bool, std::vector<CostToGoal>> heuristic;
-        using gsz = const std::vector<int>&;
-        //std::vector<int> graph_sizes;
+        
+        // Member functions:
         std::unique_ptr<Node> newNode();
         std::unique_ptr<Node> newNode(const Node& node);
         std::unique_ptr<Node> newNode(gsz graph_sizes, const std::vector<int>& inds, float cost, float f_cost, float mu_, const std::vector<float>& cost_set);
         int newNode(gsz graph_sizes, const std::vector<int>& inds, float cost, float f_cost, float mu, const std::vector<float>& cost_set, std::unordered_map<int, std::unique_ptr<Node>>& node_map);
         Node* newNode(const Node& node, std::unordered_map<int, std::unique_ptr<Node>>& node_map);
+        Node* pruneBranch(std::unordered_map<VisitedNode, bool>& visited, std::unordered_map<int, bool>& seen, std::unordered_map<int, ParentNode>& parents, std::unordered_map<int, std::unique_ptr<Node>>& node_map, int curr_node, float mu_max, float prev_mu_max);
         static bool allAccepting(gsz graph_sizes, int p, const std::vector<DFA_EVAL*>& dfas);
-        Plan extractPlan(gsz graph_sizes, int p_acc, int p_init, const std::unordered_map<int, std::pair<int, std::string>>& parents);
+        Plan extractPlan(gsz graph_sizes, int p_acc, int p_init, const std::unordered_map<int, ParentNode>& parents);
         bool generateHeuristic(const std::vector<DFA_EVAL*>& dfas);
         float getH(gsz graph_sizes, unsigned p) const;
     public:
