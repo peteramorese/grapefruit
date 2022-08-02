@@ -513,9 +513,10 @@ OrderedPlanner::Node* OrderedPlanner::newNode(const Node& node, std::unordered_m
 
 OrderedPlanner::Node* OrderedPlanner::pruneBranch(std::unordered_map<VisitedNode, bool>& visited, std::unordered_map<int, bool>& seen, std::unordered_map<int, ParentNode>& parents, std::unordered_map<int, std::unique_ptr<Node>>& node_map, int curr_node, float mu_max, float prev_mu_max) {
     int p_curr = curr_node;
+    std::cout<<"            Starting prune... pruning: ";
     while (node_map.at(p_curr)->mu >= mu_max) {
+        std::cout<<" "<<p_curr;
         //std::cout<<" in while..."<<std::endl;
-        std::cout<<"p_curr: "<<p_curr<<std::endl;
         int p_pre = parents.at(p_curr).par_ind;
         auto it = visited.find({p_curr, prev_mu_max});
         if (it != visited.end()) {
@@ -523,18 +524,20 @@ OrderedPlanner::Node* OrderedPlanner::pruneBranch(std::unordered_map<VisitedNode
         }
         seen.erase(p_curr);
         parents.erase(p_curr);
-        node_map.erase(p_curr);
-        if (p_curr == 419) std::cout<<"--------------------ERASED 419"<<std::endl;
         if (p_pre == -1) {
             //std::cout<<"root parent"<<std::endl;
+    std::cout<<"\n";
             return node_map.at(p_curr).get();
         }
+        node_map.erase(p_curr);
         if (node_map.find(p_pre) == node_map.end()) {
             //std::cout<<"not found in nm p_pre: "<<p_pre<<std::endl;
+    std::cout<<"\n";
             return nullptr;
         }
         p_curr = p_pre;
     }
+    std::cout<<"\n";
     return (visited[{p_curr, mu_max}]) ? nullptr : node_map.at(p_curr).get();
 }
 
@@ -759,9 +762,26 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
             Plan pl = extractPlan(graph_sizes, p, p_init, parents);
             result.addParetoPoint(mu_max, curr_leaf->cost, pl);
             success = true;
-            if (debug) std::cout<<"continue in acc..."<<std::endl;
+            //if (debug) std::cout<<"continue in acc..."<<std::endl;
 
-            continue;
+            Node* root = pruneBranch(visited, seen, parents, node_map, p, mu_max, prev_mu_max);
+            if (mu_max == 1.0f) {
+                std::cout<<"Root p: "<<root->ind<<std::endl;
+                test_found_p = true;
+                //return true;
+            }
+            if (root) {
+                curr_leaf = root;
+                p = root->ind;
+                if (debug) std::cout<<"  ACC prune result p: "<<p<<" ";
+            } else {
+                if (debug) std::cout<<"  ACC continue loose branch "<<std::endl;
+                continue; // Loose branch (root was pruned previously)
+            }
+            debug = mu_max == 1.0f;
+            if (debug) std::cout<<"ACC Considering p = "<<p<<" mu: "<<curr_leaf->mu<<" mu_max: "<<mu_max;
+
+            //continue;
         }
         //if (mu_p != 0) {
         //    if (debug) std::cout<<"continue in mu not eq 0..."<<std::endl;
@@ -853,6 +873,15 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
                 debug = true;
                 //return true;
             }
+            if (test_found_p) {
+                std::cout<<"        CONNECTED NODE pp: "<<pp<<std::endl;
+                for (auto item : node_candidate.cost_set) std::cout<<"     cost set: "<<item<<std::endl;
+                std::vector<int> ret_inds;
+                Graph<float>::augmentedStatePreImage(graph_sizes, pp, ret_inds);
+                std::cout<<"        Curr s: "<<ret_inds[0]<<" (pp:"<<pp<<") "<<std::endl;
+                int pause; std::cin>>pause;
+                test_found = true;
+            } 
 
             if (use_heuristic) {
                 // Get 'h_cost' value (A*) and add it to 'cost'
@@ -895,7 +924,6 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
                 seen[pp] = true;
                 parents[pp] = {p, edge->label};
                 //if (test_found || debug) std::cout<<"        adding new... mu: "<<new_node->mu<<std::endl;
-                if (pp == 419) std::cout<<"-----------ALLOC 419"<<std::endl;
             } else { // If updated (A*) push the seen node back into the queue
                 visited[{pp, mu_max}] = false;
                 pq.push(updated.second);
