@@ -514,7 +514,7 @@ OrderedPlanner::Node* OrderedPlanner::newNode(const Node& node, std::unordered_m
 OrderedPlanner::Node* OrderedPlanner::pruneBranch(std::unordered_map<VisitedNode, bool>& visited, std::unordered_map<int, bool>& seen, std::unordered_map<int, ParentNode>& parents, std::unordered_map<int, std::unique_ptr<Node>>& node_map, int curr_node, float mu_max, float prev_mu_max) {
     int p_curr = curr_node;
     std::cout<<"            Starting prune... pruning: ";
-    while (node_map.at(p_curr)->mu >= mu_max) {
+    while (node_map.at(p_curr)->mu >= mu_max || p_curr == 76) {
         std::cout<<" "<<p_curr;
         //std::cout<<" in while..."<<std::endl;
         int p_pre = parents.at(p_curr).par_ind;
@@ -599,6 +599,15 @@ float OrderedPlanner::getH(gsz graph_sizes, unsigned p) const {
     }
 }
 
+template<typename Q>
+void printQ(Q queue) {
+	while (!queue.empty()) {
+		std::cout<<" --Ind: "<<queue.top()->ind<<" mu: "<<queue.top()->mu<<" cost_set: ";
+        for (auto item : queue.top()->cost_set) std::cout<<" "<<item;
+        std::cout<<"\n";
+		queue.pop();
+	}
+}
 
 bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::function<float(const std::vector<float>&)>& setToMu, bool use_heuristic) {
     /*
@@ -662,7 +671,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
     int p_test;
     std::cout<<"Enter p_test: "<<std::endl;
     std::cin>>p_test;
-    ////p_test = Graph<float>::augmentedStateImage({18, 1, 1, 1, 1}, graph_sizes);
+    //p_test = Graph<float>::augmentedStateImage({8, 0, 0, 1, 1}, graph_sizes);
 
     //// TESTING POST: 
     //auto inclMe = [use_heuristic, mu_max, &visited, &node_map](int pp) {
@@ -762,6 +771,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
             Plan pl = extractPlan(graph_sizes, p, p_init, parents);
             result.addParetoPoint(mu_max, curr_leaf->cost, pl);
             success = true;
+            printQ(pq);
             //if (debug) std::cout<<"continue in acc..."<<std::endl;
 
             Node* root = pruneBranch(visited, seen, parents, node_map, p, mu_max, prev_mu_max);
@@ -779,7 +789,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
                 continue; // Loose branch (root was pruned previously)
             }
             debug = mu_max == 1.0f;
-            if (debug) std::cout<<"ACC Considering p = "<<p<<" mu: "<<curr_leaf->mu<<" mu_max: "<<mu_max;
+            if (debug) std::cout<<"ACC Considering p = "<<p<<" mu: "<<curr_leaf->mu<<" mu_max: "<<mu_max<<std::endl;
 
             //continue;
         }
@@ -797,6 +807,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
         
         if (debug) std::cout<<"Feeding p: "<<p<<std::endl;
         SymbolicMethods::ConnectedNodes con_nodes = SymbolicMethods::postNodes(ts, dfas, {p}, inclMe);
+        if (debug) std::cout<<"Num of con nodes: "<<con_nodes.nodes.size()<<std::endl;
 
         // Cycle through all connected nodes:
         for (int i=0; i<con_nodes.nodes.size(); ++i) {
@@ -854,13 +865,18 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
             ////int pause; std::cin>>pause;
             //if (test_found_p) {int pause; std::cin>>pause;};
             //}
+            if (debug || test_found_p) {
+                std::cout<<"CON pp:"<<pp;
+                for (auto item : node_candidate.cost_set) std::cout<<" "<<item;
+                std::cout<<"\n";
+            }
             
 
 
             // Prune nodes:
             node_candidate.mu = setToMu(node_candidate.cost_set);
             if (success && node_candidate.mu >= mu_max) {
-                //if (debug) std::cout<<"     continue by prune..."<<std::endl;
+                if (debug) std::cout<<"     continue by prune..."<<std::endl;
                 continue;
             }
 
