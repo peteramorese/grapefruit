@@ -74,4 +74,5 @@ target_link_libraries(ordered_planner_grid_robot
 	TransitionSystemClass
 	OrderedPlannerClass
 	BenchmarkClass
+	WriteToFileClass
 	)

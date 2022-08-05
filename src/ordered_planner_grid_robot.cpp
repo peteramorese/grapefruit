@@ -3,13 +3,9 @@
 #include<chrono>
 #include<ctime>
 #include<fstream>
-#include "graph.h"
-#include "condition.h"
-#include "transitionSystem.h"
-#include "stateSpace.h"
-#include "state.h"
 #include "orderedPlanner.h"
 #include "benchmark.h"
+#include "writeToFile.h"
 
 int main(int argc, char *argv[]) {
 	//std::cout<<"time init: "<<time_init<<std::endl;
@@ -43,7 +39,7 @@ int main(int argc, char *argv[]) {
 				std::string::size_type size_t;
 				grid_size = std::stoi(argv[i_arg + 1], &size_t);
 				i_arg++;
-			} else if (arg == "--numdfas") {
+			} else if (arg == "--num-dfas") {
 				std::string::size_type size_t;
 				N_DFAs = std::stoi(argv[i_arg + 1], &size_t);
 				i_arg++;
@@ -390,8 +386,11 @@ int main(int argc, char *argv[]) {
 		//	}
 		//}
 	}
+
+	if (write_file_flag) MatlabDemoFiles::GridRobot::writeFlexibilityPlanList(*result, nullptr);
+
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {
 		delete dfa_eval_ptrs[i];
 	}
-	return 1;
+	return 0;
 }

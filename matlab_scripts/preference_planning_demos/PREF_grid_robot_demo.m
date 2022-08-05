@@ -5,8 +5,34 @@ GRID_SIZE = 10;
 animate = false;
 %%%%%%%%%%%%%%%
 
-plan = importdata("plan_files/plan.txt");
 
+plan_f = importdata("plan_files/plan.txt");
+N_plans = 0;
+type = "none";
+mu_arr = [];
+plan_values = {};
+if contains(plan_f.textdata{1,1}, "Type:" ) && plan_f.textdata{1,2} == "single_plan"
+    N_plans = 1;
+    type = "single_plan";
+elseif contains(plan_f.textdata{1,1}, "Type:" ) && plan_f.textdata{1,2} == "flexibility_plan_list"
+    for i=2:size(plan_f.textdata, 1)
+        if (contains(plan_f.textdata{i}, "Flexibility"))
+            N_plans = N_plans + 1;
+            mu_arr(N_plans) = plan_f.data(i-1, 1);
+            j = 0;
+            plan_values{N_plans} = strings;
+        else
+            j = j + 1;
+            plan_values{N_plans}(j) = plan_f.textdata{i, 1};
+        end
+
+    end
+else 
+    error("Plan file does not contain type!")
+end
+
+for plan_ind = 1:N_plans
+    plan = plan_values{plan_ind};
 end_plan_found = false;
 end_plan_ind = -1;
 LOI = [];
@@ -63,7 +89,10 @@ for i = 1:end_plan_ind
 end
 states = states + .5;
 directions(:,1:2) = directions(:,1:2) + .5;
-LOI(:,1:2) = LOI(:,1:2) + .5;
+if ~isempty(LOI)
+    LOI(:,1:2) = LOI(:,1:2) + .5;
+end
+
 figure()
 
 hold on
@@ -125,4 +154,4 @@ yticks(0:GRID_SIZE)
 title("Grid Robot Trajectory")
 xlabel("X")
 ylabel("Y")
-
+end

@@ -979,7 +979,7 @@ OrderedPlanner::Plan OrderedPlanner::extractPlan(gsz graph_sizes, int p_acc, int
     Plan plan; 
     Plan reverse_plan;
     std::vector<int> reverse_state_inds;
-    std::cout<<"REVERSE PROD SEQUENCE: "<<curr_ind;
+    //std::cout<<"REVERSE PROD SEQUENCE: "<<curr_ind;
     while (curr_ind != p_init) {
         // Get individual graph node indices and set curr node:
         std::vector<int> ret_inds;
@@ -989,9 +989,9 @@ OrderedPlanner::Plan OrderedPlanner::extractPlan(gsz graph_sizes, int p_acc, int
         reverse_plan.state_sequence.push_back(ts.getState(ret_inds[0]));
         reverse_state_inds.push_back(ret_inds[0]);
         curr_ind = parents.at(curr_ind).par_ind;
-        std::cout<<" <-"<<curr_ind;
+        //std::cout<<" <-"<<curr_ind;
     }
-    std::cout<<"\n";
+    //std::cout<<"\n";
 
     std::vector<int> ret_inds;
     Graph<float>::augmentedStatePreImage(graph_sizes, curr_ind, ret_inds);
@@ -1007,6 +1007,7 @@ OrderedPlanner::Plan OrderedPlanner::extractPlan(gsz graph_sizes, int p_acc, int
     for (auto rit = reverse_plan.action_sequence.rbegin(); rit != reverse_plan.action_sequence.rend(); ++rit) {
         plan.action_sequence[i] = *rit;
         if (verbose) std::cout<<" -> "<<*rit;
+        i++;
     }
     if (verbose) std::cout<<"\n";
 
@@ -1017,9 +1018,13 @@ OrderedPlanner::Plan OrderedPlanner::extractPlan(gsz graph_sizes, int p_acc, int
             std::cout<<" -> "<<*rit;
         }
         std::cout<<"\n";
+        i++;
     }
+    
+    i = 0;
     for (auto rit = reverse_plan.state_sequence.rbegin(); rit != reverse_plan.state_sequence.rend(); ++rit) {
         plan.state_sequence[i] = *rit;
+        i++;
     }
     return plan;
 }
