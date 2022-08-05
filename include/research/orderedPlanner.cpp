@@ -676,9 +676,9 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
     pq.push(node_map[p_init].get());
 
 
-    int p_test;
-    std::cout<<"Enter p_test: "<<std::endl;
-    std::cin>>p_test;
+    //int p_test;
+    //std::cout<<"Enter p_test: "<<std::endl;
+    //std::cin>>p_test;
     //p_test = Graph<float>::augmentedStateImage({8, 0, 0, 1, 1}, graph_sizes);
 
     //// TESTING POST: 
@@ -696,7 +696,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
     //std::cout<<"got mu: "<<setToMu(set)<<std::endl;
     //return true;
 
-    if (p_test == -1) {success = true; mu_max = 1.0f; }
+    //if (p_test == -1) {success = true; mu_max = 1.0f; }
     
 
     while (!pq.empty()) {
@@ -722,14 +722,14 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
 
 
 
-        bool test_found_p = false;
-        if (p == p_test) {
-            std::cout<<"FOUND "<<p<<"!!! mu: "<<mu_p<<" mu max: "<<mu_max<<std::endl;
-            for (auto item : curr_leaf->cost_set) std::cout<<" cost set: "<<item<<std::endl;
-            test_found_p = true;
-            int pause; std::cin>>pause;
-            //return true;
-        }
+        //bool test_found_p = false;
+        //if (p == p_test) {
+        //    std::cout<<"FOUND "<<p<<"!!! mu: "<<mu_p<<" mu max: "<<mu_max<<std::endl;
+        //    for (auto item : curr_leaf->cost_set) std::cout<<" cost set: "<<item<<std::endl;
+        //    test_found_p = true;
+        //    int pause; std::cin>>pause;
+        //    //return true;
+        //}
 
         //// DEBUG: Get individual graph node indices and set curr node:
         //std::vector<int> ret_inds;
@@ -764,18 +764,18 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
             //if (new_mu == 0.0f) std::cout<<"FOUND 0 SOLN"<<std::endl;
             prev_mu_max = mu_max;
             mu_max = mu_p;
-            if (true) std::cout<<"Found solution! mu: "<<mu_max<<", path length: "<<curr_leaf->cost<<", iteration: "<<iterations<<std::endl;
-            for (auto item : curr_leaf->cost_set) std::cout<<" cost set: "<<item<<std::endl;
+            //if (true) std::cout<<"Found solution! mu: "<<mu_max<<", path length: "<<curr_leaf->cost<<", iteration: "<<iterations<<std::endl;
+            //for (auto item : curr_leaf->cost_set) std::cout<<" cost set: "<<item<<std::endl;
             Plan pl = extractPlan(graph_sizes, p, p_init, parents);
             result.addParetoPoint(mu_max, curr_leaf->cost, pl);
             success = true;
             bool f_debug = mu_max == 2.0f;
             
             // Add all frontier nodes to the queue, then restart search from frontier:
-            if (f_debug) std::cout<<"        FRONTIER SIZE: "<<frontier.size()<<std::endl;
+            //if (f_debug) std::cout<<"        FRONTIER SIZE: "<<frontier.size()<<std::endl;
             while (!frontier.empty()) {
                 if (frontier.back().mu_lower < mu_max) {
-                    if (frontier.back().node->ind == p_test && f_debug) std::cout<<"pushing frontier p: "<<frontier.back().node->ind<<std::endl;
+                    //if (frontier.back().node->ind == p_test && f_debug) std::cout<<"pushing frontier p: "<<frontier.back().node->ind<<std::endl;
                     pq.push(frontier.back().node);
                     frontier.pop_back();
                 } else {
@@ -862,24 +862,24 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
                 continue;
             }
 
-            // DEBUG:
-            bool test_found = false;
-            if (pp == p_test) {
-                std::cout<<"  --(pp) FOUND "<<pp<<"! (p: "<<p<<") mu: "<<node_candidate.mu<<" mu max: "<<mu_max<<std::endl;
-                for (auto item : node_candidate.cost_set) std::cout<<"     cost set: "<<item<<std::endl;
-                test_found = true;
-                debug = true;
-                //return true;
-            }
-            if (test_found_p) {
-                std::cout<<"        CONNECTED NODE pp: "<<pp<<std::endl;
-                for (auto item : node_candidate.cost_set) std::cout<<"     cost set: "<<item<<std::endl;
-                std::vector<int> ret_inds;
-                Graph<float>::augmentedStatePreImage(graph_sizes, pp, ret_inds);
-                std::cout<<"        Curr s: "<<ret_inds[0]<<" (pp:"<<pp<<") "<<std::endl;
-                int pause; std::cin>>pause;
-                test_found = true;
-            } 
+            //// DEBUG:
+            //bool test_found = false;
+            //if (pp == p_test) {
+            //    std::cout<<"  --(pp) FOUND "<<pp<<"! (p: "<<p<<") mu: "<<node_candidate.mu<<" mu max: "<<mu_max<<std::endl;
+            //    for (auto item : node_candidate.cost_set) std::cout<<"     cost set: "<<item<<std::endl;
+            //    test_found = true;
+            //    debug = true;
+            //    //return true;
+            //}
+            //if (test_found_p) {
+            //    std::cout<<"        CONNECTED NODE pp: "<<pp<<std::endl;
+            //    for (auto item : node_candidate.cost_set) std::cout<<"     cost set: "<<item<<std::endl;
+            //    std::vector<int> ret_inds;
+            //    Graph<float>::augmentedStatePreImage(graph_sizes, pp, ret_inds);
+            //    std::cout<<"        Curr s: "<<ret_inds[0]<<" (pp:"<<pp<<") "<<std::endl;
+            //    int pause; std::cin>>pause;
+            //    test_found = true;
+            //} 
 
             if (use_heuristic) {
                 // Get 'h_cost' value (A*) and add it to 'cost'
@@ -901,7 +901,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
                     if (fn.mu_lower > node_candidate.mu || fn.mu_lower == -1.0f) fn.mu_lower = node_candidate.mu;
                     continue;
                 } else if ((node_candidate.cost <= node_map.at(pp)->cost && node_candidate.mu <= node_map.at(pp)->mu) &&
-                        (node_candidate.cost != node_map.at(pp)->cost && node_candidate.mu != node_map.at(pp)->mu)) {
+                        (node_candidate.cost != node_map.at(pp)->cost || node_candidate.mu != node_map.at(pp)->mu)) {
                     // A lower-cost and/or lower-mu candidate was found, making the candidate strictly better, thus update:
                     updated.first = true;
                 } else if (node_candidate.cost < node_map.at(pp)->cost && node_candidate.mu > node_map.at(pp)->mu) {
@@ -927,17 +927,21 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
                         }
                         if (setToMu(test_set) < min_mu) min_mu = node_map.at(pp_par)->mu;
                     }
-                    if (test_found_p) std::cout<<"> pushing to frontier: "<<node_map.at(p_par)->ind<<" with lower bound: "<<min_mu<<std::endl;
+                    //if (test_found_p) std::cout<<"> pushing to frontier: "<<node_map.at(p_par)->ind<<" with lower bound: "<<min_mu<<std::endl;
                     frontier.emplace_back(node_map.at(p_par).get(), min_mu);
                     //FrontierNode fn_par = {node_map.at(parents[pp].par_ind), node_candidate.mu};
                     
                 } else {
-                    if (test_found) {
-                        std::cout<<"   |seen continue..."<<std::endl;
-                        std::cout<<"   |pp:"<<pp;
-                        for (auto item : node_map.at(pp)->cost_set) std::cout<<" "<<item;
-                        std::cout<<"\n";
-                    }
+                    //if (test_found) {
+                    //    std::cout<<"   |seen continue..."<<std::endl;
+                    //    std::cout<<"   |nc.mu:"<<node_candidate.mu<<std::endl;
+                    //    std::cout<<"   |nc.cost:"<<node_candidate.cost<<std::endl;
+                    //    std::cout<<"   |pp:"<<pp<<", seen set: ";
+                    //    for (auto item : node_map.at(pp)->cost_set) std::cout<<" "<<item;
+                    //    std::cout<<"\n";
+                    //    std::cout<<"   |seen.mu:"<<node_map.at(pp)->mu<<std::endl;
+                    //    std::cout<<"   |seen.cost:"<<node_map.at(pp)->cost<<std::endl;
+                    //}
                     continue;
                 }
                 if (updated.first) {
@@ -963,7 +967,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
                 //if (test_found) std::cout<<"        pushing... "<<std::endl;
             }
         }    
-        if (test_found_p && is_on_frontier) std::cout<<"> pushing to frontier: "<<fn.node->ind<<" with lower bound: "<<fn.mu_lower<<std::endl;
+        //if (test_found_p && is_on_frontier) std::cout<<"> pushing to frontier: "<<fn.node->ind<<" with lower bound: "<<fn.mu_lower<<std::endl;
         if (is_on_frontier) frontier.push_back(fn);
     }
     std::cout<<"Iterations: "<<iterations<<std::endl;

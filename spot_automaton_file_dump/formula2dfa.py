@@ -115,13 +115,17 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--filepath", default="formulas.txt", help="Specify forumla.txt file")
     parser.add_argument("-d", "--dfa_filename", default=None, help="Specify custom dfa filename")
     parser.add_argument("-c", "--complete", action='store_true', default=False, help="DFA is complete (instead of minimal)")
+    parser.add_argument("-r", "--random_ordering", action='store_true', default=False, help="Randomly the order of the input formulas")
     args = parser.parse_args()
 
 
     print("Reading file: ", args.filepath)
     if args.filepath is not None:
         print("DFA file target: ", args.dfa_filename)
+    if args.dfa_filename is not None and args.random_ordering:
+        raise Exception("Cannot use 'random_ordering' with a 'dfa_filename'")
+
     READ_FILE_NAME = args.filepath
     WRITE_FILE_DIR_NAME_PREFIX = "dfas/"
     WRITE_FILE_NAME = args.dfa_filename
-    read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=False, verbose=True, f_complete=args.complete)
+    read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete)
