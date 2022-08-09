@@ -371,23 +371,20 @@ int main(int argc, char *argv[]) {
 		//benchmark.measureMilli("total_search");
 		//benchmark.pushAttributesToFile();
 		//benchmark.finishSessionInFile();
-		////std::cout<<"Found plan? "<<success<<std::endl;
-		//if (result.second > 0.0) {
-		//	std::vector<std::string> xtra_info;
-		//	for (int i=0; i<dfa_arr.size(); ++i) {
-		//		const std::vector<std::string>* ap_ptr = dfa_arr[i].getAP();
-		//		for (int ii=0; ii<ap_ptr->size(); ++ii) {
-		//			xtra_info.push_back(ap_ptr->operator[](ii));
-		//			xtra_info.back() = xtra_info.back() + "_prio" + std::to_string(i);
-		//		}
-		//	}
-		//	if (write_file_flag) {
-		//		search_obj.writePlanToFile(plan_filename_path, xtra_info);
-		//	}
-		//}
+		if (write_file_flag) {
+			std::vector<std::string> xtra_info;
+			for (int i=0; i<dfa_arr.size(); ++i) {
+				const std::vector<std::string>* ap_ptr = dfa_arr[i].getAP();
+				for (int ii=0; ii<ap_ptr->size(); ++ii) {
+					xtra_info.push_back(ap_ptr->operator[](ii));
+					xtra_info.back() = xtra_info.back() + "_prio" + std::to_string(i);
+				}
+			}
+			MatlabDemoFiles::GridRobot::writeFlexibilityPlanList(*result, nullptr, &xtra_info);
+			MatlabDemoFiles::ParetoFront::writeFlexibilityParetoFront(*result, nullptr);
+		}
 	}
 
-	if (write_file_flag) MatlabDemoFiles::GridRobot::writeFlexibilityPlanList(*result, nullptr);
 
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {
 		delete dfa_eval_ptrs[i];
