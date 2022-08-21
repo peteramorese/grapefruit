@@ -83,7 +83,7 @@ def print_automaton(A):
             print("    accepting sets: ", s_con.acc)
 
 
-def read_write(read_file_name, write_file_dir_name_prefix, write_file_name, random_ordering, verbose=False, f_complete=False):
+def read_write(read_file_name, write_file_dir_name_prefix, write_file_name=None, random_ordering=False, verbose=False, f_complete=False):
     with open(read_file_name, "r") as formula_file:
         lines = formula_file.readlines()
 

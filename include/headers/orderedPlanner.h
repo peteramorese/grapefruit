@@ -7,6 +7,7 @@
 #include<memory>
 #include "transitionSystem.h"
 #include "graph.h"
+#include "benchmark.h"
 
 namespace SymbolicMethods {
     struct ConnectedNodes {std::vector<int> nodes; std::vector<WL*> data;};
@@ -76,6 +77,9 @@ class OrderedPlanner {
         bool success;
         Result result;
         std::pair<bool, std::vector<CostToGoal>> heuristic;
+        // Benchmark:
+        const std::string* bm_filepath;
+        Benchmark bm;
         
         // Member functions:
         std::unique_ptr<Node> newNode();
@@ -89,7 +93,7 @@ class OrderedPlanner {
         bool generateHeuristic(const std::vector<DFA_EVAL*>& dfas);
         float getH(gsz graph_sizes, unsigned p) const;
     public:
-        OrderedPlanner(TransitionSystem<State>& ts_, bool verbose_ = false);
+        OrderedPlanner(TransitionSystem<State>& ts_, bool verbose_ = false, const std::string* bm_filepath_ = nullptr);
         bool search(const std::vector<DFA_EVAL*>& dfas, const std::function<float(const std::vector<float>&)>& setToMu, bool use_heuristic);
         std::vector<int> BFS(const std::vector<DFA_EVAL*>& dfas);
         void searchBackwards(const std::vector<DFA_EVAL*>& dfas, const std::vector<int>& root_acc_nodes, CostToGoal& cost_to_goal);

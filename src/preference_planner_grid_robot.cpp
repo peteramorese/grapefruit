@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 				std::string::size_type size_t;
 				grid_size = std::stoi(argv[i_arg + 1], &size_t);
 				i_arg++;
-			} else if (arg == "--numdfas") {
+			} else if (arg == "--num-dfas") {
 				std::string::size_type size_t;
 				N_DFAs = std::stoi(argv[i_arg + 1], &size_t);
 				i_arg++;
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	Benchmark benchmark(bm_filename_path);
+	Benchmark benchmark(&bm_filename_path);
 	
 	if (use_benchmark) {
 		benchmark.addAttribute("num_dfas", std::to_string(N_DFAs));
@@ -294,7 +294,7 @@ int main(int argc, char *argv[]) {
 		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
 	}
 
-	SymbSearch search_obj(bm_filename_path, verbose);
+	SymbSearch search_obj(&bm_filename_path, verbose);
 	search_obj.setAutomataPrefs(&dfa_eval_ptrs);
 	search_obj.setTransitionSystem(&ts_eval);
 	if (manual_setup) {

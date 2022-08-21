@@ -2,12 +2,8 @@ import os
 import struct
 import sys
 import subprocess
-#print(sys.executable)
-#print(sys.path)
-
 
 sys.path.append(os.path.join(os.path.dirname(__file__),"../spot_automaton_file_dump"))
-#print(os.path.join(os.path.dirname(__file__),"../spot_automaton_file_dump"))
 
 import formula2dfa 
 
@@ -17,8 +13,9 @@ def exec_pref_plan_grid_robot(exec_file_name, num_dfas, mu, use_h_flag, write_fi
     exec_file_path = exec_dir_name + exec_file_name
     #print("Executable file path: ",exec_file_path)
     exec_cmd = os.path.join(os.path.dirname(__file__), exec_file_path)
-    exec_cmd += ' --numdfas ' + str(num_dfas) 
-    exec_cmd += ' --mu ' + str(mu) 
+    exec_cmd += ' --num-dfas ' + str(num_dfas) 
+    if mu is not None:
+        exec_cmd += ' --mu ' + str(mu) 
     if use_h_flag:
         exec_cmd += ' --use-h' 
     if verbose:
@@ -43,7 +40,7 @@ def clear_file(file_name):
 if __name__ == "__main__":
     print("Starting benchmark: preference_planner_grid_robot")
 
-    READ_FILE_NAME = "benchmark_formulas.txt"
+    READ_FILE_NAME = "preference_planner_benchmark_formulas.txt"
     WRITE_FILE_DIR_NAME_PREFIX = "../spot_automaton_file_dump/dfas/"
     EXEC_FILE_NAME = "preference_planner_grid_robot"
     BM_DATA_FILE_NAME_NO_H = "benchmark_data/bm_preference_planner.txt"

@@ -80,7 +80,7 @@ class SymbSearch {
 		//std::vector<LexSet*> set_list_ls;
 		std::vector<std::string> TS_action_sequence;
 		std::vector<int> TS_state_sequence;
-		const std::string bench_mark_session;
+		//const std::string* bench_mark_session;
 		bool verbose, dfas_set, TS_set, mu_set, plan_found, use_benchmark;
 		std::vector<spaceWeight> heuristic;
 		Benchmark benchmark;
@@ -107,7 +107,7 @@ class SymbSearch {
 		void resetSearchParameters();
 	public:
 		SymbSearch();
-		SymbSearch(const std::string& bench_mark_session_, bool verbose_);
+		SymbSearch(const std::string* bench_mark_session_, bool verbose_);
 		void setAutomataPrefs(const std::vector<DFA_EVAL*>* dfa_list_ordered_);
 		void setTransitionSystem(TS_EVAL<State>* TS_);
 		void setFlexibilityParam(float mu_);

@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
 	int grid_size = 10;
 	bool verbose = false;
 	bool use_benchmark = false;
-	std::string bm_filename_path = "./benchmark_data/preference_planner_bm.txt";
+	std::string bm_filename_path = "/benchmark_data/bm_ordered_planner.txt";
 	std::string plan_filename_path = "../../matlab_scripts/preference_planning_demos/plan_files/plan.txt";
 	std::string dfa_filename_path_prefix = "../../spot_automaton_file_dump/dfas/";
 
@@ -73,11 +73,11 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	Benchmark benchmark(bm_filename_path);
+	Benchmark benchmark(&bm_filename_path);
 	
 	if (use_benchmark) {
 		benchmark.addAttribute("num_dfas", std::to_string(N_DFAs));
-		benchmark.addAttribute("flexibility", std::to_string(mu));
+		//benchmark.addAttribute("flexibility", std::to_string(mu));
 	}
 
 	//std::cout<<"PRINTING ARGS:"<<argv[1]<<std::endl;
@@ -290,7 +290,9 @@ int main(int argc, char *argv[]) {
 		dfa_eval_ptrs.push_back(temp_dfa_eval_ptr);
 	}
 
-	OrderedPlanner planner(ts, verbose);
+	const std::string* bm_filepath_ptr = nullptr;
+	if (use_benchmark) bm_filepath_ptr = &bm_filename_path;
+	OrderedPlanner planner(ts, verbose, bm_filepath_ptr);
 	if (manual_setup) {
 		std::cout<<"\n------------------------------\n";
 		std::cout<<"Enter flexibility parameter: ";
@@ -367,10 +369,10 @@ int main(int argc, char *argv[]) {
 	const OrderedPlanner::Result* result  = planner.getResult();
 	//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
 	if (result) {
-		result->printParetoFront();
+		if (verbose) result->printParetoFront();
 		//benchmark.measureMilli("total_search");
-		//benchmark.pushAttributesToFile();
-		//benchmark.finishSessionInFile();
+		benchmark.pushAttributesToFile();
+		benchmark.finishSessionInFile();
 		if (write_file_flag) {
 			std::vector<std::string> xtra_info;
 			for (int i=0; i<dfa_arr.size(); ++i) {

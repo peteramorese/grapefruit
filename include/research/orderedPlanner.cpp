@@ -474,7 +474,7 @@ bool OrderedPlanner::VisitedNode::operator==(const VisitedNode& vn_in) const {
     return ind == vn_in.ind && mu_max == vn_in.mu_max;
 }
 
-OrderedPlanner::OrderedPlanner(TransitionSystem<State>& ts_, bool verbose_) : ts(ts_), verbose(verbose_) {
+OrderedPlanner::OrderedPlanner(TransitionSystem<State>& ts_, bool verbose_, const std::string* bm_filepath_) : ts(ts_), verbose(verbose_), bm_filepath(bm_filepath_), bm(bm_filepath) {
     heuristic.first = false; // Heuristic is not generated
 }
 
@@ -628,11 +628,13 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
 
     // If using heuristic, generate it:
     if (use_heuristic) {
+        if (bm_filepath) bm.pushStartPoint("heuristic");
         bool h_success = generateHeuristic(dfas);
         if (!h_success) {
             std::cout<<"Error (search): Heuristic failed to generate\n";
             return false; 
         }
+        if (bm_filepath) bm.measureMilli("heuristic");
     }
 
     // Node check and pq structures:
@@ -698,6 +700,12 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
 
     //if (p_test == -1) {success = true; mu_max = 1.0f; }
     
+
+    // Benchmark the entire search time:
+    if (bm_filepath) {
+        bm.pushStartPoint("search");
+        bm.pushStartPoint("single_point_search");
+    }
 
     while (!pq.empty()) {
         iterations++;
@@ -768,6 +776,10 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
             //for (auto item : curr_leaf->cost_set) std::cout<<" cost set: "<<item<<std::endl;
             Plan pl = extractPlan(graph_sizes, p, p_init, parents);
             result.addParetoPoint(mu_max, curr_leaf->cost, pl);
+            if (bm_filepath) {
+                bm.measureMilli("single_point_search", std::to_string(mu_max));
+                bm.addAttribute("single_point_search_iterations", std::to_string(iterations), std::to_string(mu_max));
+            }
             success = true;
             bool f_debug = mu_max == 2.0f;
             
@@ -970,7 +982,12 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
         //if (test_found_p && is_on_frontier) std::cout<<"> pushing to frontier: "<<fn.node->ind<<" with lower bound: "<<fn.mu_lower<<std::endl;
         if (is_on_frontier) frontier.push_back(fn);
     }
-    std::cout<<"Iterations: "<<iterations<<std::endl;
+    if (verbose) std::cout<<"Iterations: "<<iterations<<std::endl;
+    if (bm_filepath) {
+        bm.measureMilli("search");
+        bm.addCustomTimeAttr("iterations", static_cast<double>(iterations), ""); // No units
+        bm.pushAttributesToFile();
+    }
     return success;
 }
 
