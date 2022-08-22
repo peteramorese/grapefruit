@@ -644,7 +644,6 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
     // Benchmark the entire search time:
     if (bm_filepath) {
         bm.pushStartPoint("search");
-        //bm.pushStartPoint("single_point_search");
     }
     std::map<float, std::pair<double, int>> bm_cost_to_time;
 
@@ -669,10 +668,10 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
             // If single query search, return after first solution is found:
             if (single_query) {
                 result.iterations = iterations;
-                if (verbose) std::cout<<"Iterations: "<<iterations<<std::endl;
+                if (verbose) std::cout<<"Single query iterations: "<<iterations<<std::endl;
                 if (bm_filepath) {
                     bm.measureMilli("search");
-                    bm.addCustomTimeAttr("iterations", static_cast<double>(iterations), ""); // No units
+                    bm.addCustomTimeAttr("sq_iterations", static_cast<double>(iterations), ""); // No units
                     bm.pushAttributesToFile();
                 }
                 success = true;
