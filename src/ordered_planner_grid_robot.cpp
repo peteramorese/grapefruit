@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
 	float mu = 0;
 	bool use_h_flag = false;
 	bool write_file_flag = false;
+	bool single_query_flag = false;
 
 	// Parse arguments:
 	if (argc > 1){
@@ -65,6 +66,8 @@ int main(int argc, char *argv[]) {
 				bm_filename_path = argv[i_arg + 1];
 				i_arg++;
 				//std::cout<<"BM FILE NAME PREF: "<<bm_filename_path<<std::endl;
+			} else if (arg == "--single-query") {
+				single_query_flag = true;
 			} else {
 				std::cout<<"Unrecognized argument: "<<argv[i_arg]<<"\n";
 				return 0;
@@ -365,7 +368,7 @@ int main(int argc, char *argv[]) {
 	//std::cout<<"Got the mu: "<<g_mu<<std::endl;
 	//return 0;
 
-	bool success = planner.search(dfa_eval_ptrs, setToMuDelay, use_h_flag);
+	bool success = planner.search(dfa_eval_ptrs, setToMuDelay, use_h_flag, single_query_flag, mu);
 	const OrderedPlanner::Result* result  = planner.getResult();
 	//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
 	if (result) {

@@ -35,11 +35,13 @@ class OrderedPlanner {
                 static const unsigned NEGLECTED = 0;
                 static const unsigned ADDED = 1;
                 static const unsigned UPDATED = 2;
+                unsigned iterations;
                 const Plan* getPlan(float mu_max) const;
                 const Plan* getPlan(unsigned ind) const;
                 const std::list<ParetoPoint>* getParetoFront() const;
                 unsigned addParetoPoint(float mu, float path_length, const Plan& plan);
                 void printParetoFront() const;
+                void clear();
         };
         struct CostToGoal {
             CostToGoal(unsigned sz = 0);
@@ -97,7 +99,7 @@ class OrderedPlanner {
         float getH(gsz graph_sizes, unsigned p) const;
     public:
         OrderedPlanner(TransitionSystem<State>& ts_, bool verbose_ = false, const std::string* bm_filepath_ = nullptr);
-        bool search(const std::vector<DFA_EVAL*>& dfas, const std::function<float(const std::vector<float>&)>& setToMu, bool use_heuristic);
+        bool search(const std::vector<DFA_EVAL*>& dfas, const std::function<float(const std::vector<float>&)>& setToMu, bool use_heuristic, bool single_query = false, float mu_sq = -1.0f);
         std::vector<int> BFS(const std::vector<DFA_EVAL*>& dfas);
         void searchBackwards(const std::vector<DFA_EVAL*>& dfas, const std::vector<int>& root_acc_nodes, CostToGoal& cost_to_goal);
         const Result* getResult() const;
