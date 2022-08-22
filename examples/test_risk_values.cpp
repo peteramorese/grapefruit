@@ -53,23 +53,35 @@ int main() {
     State l(&SS);
     l.setState({"h"});
 
-	game.setInitState(&j, 1);
+	//game.setInitState(&j, 1);
 
-    game.connect(&j, 1, &g, 0, 1.0f, "to_g");
-    game.connect(&j, 1, &h, 0, 1.0f, "to_h");
-    game.connect(&g, 0, &b, 1, 1.0f, "to_b");
-    game.connect(&g, 0, &c, 1, 1.0f, "to_c");
-    game.connect(&h, 0, &d, 1, 1.0f, "to_d");
-    game.connect(&h, 0, &e, 1, 1.0f, "to_e");
-    game.connect(&e, 1, &i, 0, 1.0f, "to_i");
-    game.connect(&e, 1, &a, 0, 1.0f, "to_a");
-    game.connect(&i, 0, &j, 1, 1.0f, "to_j");
-    game.connect(&d, 1, &a, 0, 1.0f, "to_a");
-    game.connect(&b, 1, &b, 1, 1.0f, "to_b");
-    game.connect(&b, 1, &a, 0, 1.0f, "to_a");
-    game.connect(&c, 1, &a, 0, 1.0f, "to_a");
-    game.connect(&c, 1, &f, 0, 1.0f, "to_f");
+    //game.connect(&j, 1, &g, 0, 1.0f, "to_g");
+    //game.connect(&j, 1, &h, 0, 1.0f, "to_h");
+    //game.connect(&g, 0, &b, 1, 1.0f, "to_b");
+    //game.connect(&g, 0, &c, 1, 1.0f, "to_c");
+    //game.connect(&h, 0, &d, 1, 1.0f, "to_d");
+    //game.connect(&h, 0, &e, 1, 1.0f, "to_e");
+    //game.connect(&e, 1, &i, 0, 1.0f, "to_i");
+    //game.connect(&e, 1, &a, 0, 1.0f, "to_a");
+    //game.connect(&i, 0, &j, 1, 1.0f, "to_j");
+    //game.connect(&d, 1, &a, 0, 1.0f, "to_a");
+    //game.connect(&b, 1, &b, 1, 1.0f, "to_b");
+    //game.connect(&b, 1, &a, 0, 1.0f, "to_a");
+    //game.connect(&c, 1, &a, 0, 1.0f, "to_a");
+    //game.connect(&c, 1, &f, 0, 1.0f, "to_f");
     //game.connect(&c, 1, &e, 0, 1.0f, "to_e");
+    
+    game.setInitState(&h, 1);
+    game.connect(&h, 1, &d, 0, 1.0f, "to_h");
+    game.connect(&h, 1, &e, 0, 1.0f, "to_e");
+    game.connect(&e, 0, &b, 1, 1.0f, "to_b");
+    game.connect(&e, 0, &f, 1, 2.0f, "to_f");
+    game.connect(&f, 1, &g, 0, 2.0f, "to_g");
+    game.connect(&b, 1, &a, 0, 1.0f, "to_a");
+    game.connect(&b, 1, &d, 0, 1.0f, "to_d");
+    game.connect(&g, 0, &c, 1, 2.0f, "to_c");
+    game.connect(&c, 1, &e, 0, 2.0f, "to_e");
+    game.connect(&c, 1, &a, 0, 1.0f, "to_a");
 
 
     ///////////////////////////////////

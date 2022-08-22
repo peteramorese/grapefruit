@@ -147,10 +147,10 @@
 #!ap_same_cell U ap_x2_y2 & F ap_x2_y2
 
 # Risk avoidant strategy liveness specification (gwr):
-!(ap_x1_y5 | ap_x3_y5 | ap_x5_y5 | ap_x7_y5 | ap_x9_y5) U ap_x0_y9 
+#!(ap_x1_y5 | ap_x3_y5 | ap_x5_y5 | ap_x7_y5 | ap_x9_y5) U ap_x0_y9 
 #!ap_x1_y1 U ap_x0_y2 & F(ap_x0_y2)
 #F(ap_x0_y2)
 #F(ap_x1_y1)
 
 # Test risk values
-#F(a)
+F(a)
