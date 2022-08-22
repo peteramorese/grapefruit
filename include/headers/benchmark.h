@@ -23,10 +23,10 @@ class Benchmark {
 		void pushStartPoint(const std::string& name);
 		double measureMilli(const std::string& name);
 		double measureMilli(const std::string& name, const std::string& attr_val2);
-		double measureMilli();
+		double measureMilli(bool add_attr = true);
 		double measureMicro(const std::string& name);
 		double measureMicro(const std::string& name, const std::string& attr_val2);
-		double measureMicro();
+		double measureMicro(bool add_attr = true);
 		void pushAttributesToFile();
 		void finishSessionInFile();
 		void wipeAttributesFromFile();

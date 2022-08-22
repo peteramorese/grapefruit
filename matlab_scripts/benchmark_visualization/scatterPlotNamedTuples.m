@@ -1,5 +1,7 @@
 function scatterPlotNamedTuples(filepath, tuple_name)
     data = manualParseTuples(filepath, tuple_name);
+    figure()
+    scatter(data(:,2), data(:,1), 'filled', 'd')
 end
 
 function data = manualParseTuples(filepath, tuple_name)

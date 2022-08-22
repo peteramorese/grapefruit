@@ -32,10 +32,13 @@ class OrderedPlanner {
             private:
                 std::list<ParetoPoint> pareto_front; // x: mu, y: pathlengths
             public:
+                static const unsigned NEGLECTED = 0;
+                static const unsigned ADDED = 1;
+                static const unsigned UPDATED = 2;
                 const Plan* getPlan(float mu_max) const;
                 const Plan* getPlan(unsigned ind) const;
                 const std::list<ParetoPoint>* getParetoFront() const;
-                bool addParetoPoint(float mu, float path_length, const Plan& plan);
+                unsigned addParetoPoint(float mu, float path_length, const Plan& plan);
                 void printParetoFront() const;
         };
         struct CostToGoal {

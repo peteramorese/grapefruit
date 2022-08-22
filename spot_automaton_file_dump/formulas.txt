@@ -88,9 +88,9 @@
 #F(ap_x8_y14 & F(ap_x15_y28) & F(ap_x12_y9))
 
 # push this baby to the limits 10x10
-F(ap_x6_y6 & F(ap_x1_y8) & F(ap_x5_y1))
 F(ap_x2_y8 & F(ap_x8_y1) & F(ap_x7_y3))
 F(ap_x3_y2 & F(ap_x2_y8) & F(ap_x9_y5))
+F(ap_x6_y6 & F(ap_x1_y8) & F(ap_x5_y1))
 #F(ap_x6_y6 & F(ap_x2_y8) & F(ap_x2_y2))
 #F(ap_x8_y8 & F(ap_x0_y9) & F(ap_x9_y6))
 #F(ap_x3_y1 & F(ap_x2_y8) & F(ap_x7_y7))

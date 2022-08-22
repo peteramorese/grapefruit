@@ -55,12 +55,12 @@ double Benchmark::measureMilli(const std::string& name, const std::string& attr_
 	return dt;
 }
 
-double Benchmark::measureMilli() {
+double Benchmark::measureMilli(bool add_attr) {
 	if (!filename) return -1.0f;
 	tp_t time_measure;
 	time_measure = std::chrono::system_clock::now();
 	double dt = std::chrono::duration_cast<std::chrono::milliseconds>(time_measure - time_start_init).count();
-	attributes.push_back(time_attr_marker + "init (ms): " + std::to_string(dt));
+	if (add_attr) attributes.push_back(time_attr_marker + "init (ms): " + std::to_string(dt));
 	return dt;
 }
 
@@ -84,12 +84,12 @@ double Benchmark::measureMicro(const std::string& name, const std::string& attr_
 	return dt;
 }
 
-double Benchmark::measureMicro() {
+double Benchmark::measureMicro(bool add_attr) {
 	if (!filename) return -1.0f;
 	tp_t time_measure;
 	time_measure = std::chrono::system_clock::now();
 	double dt = std::chrono::duration_cast<std::chrono::microseconds>(time_measure - time_start_init).count();
-	attributes.push_back(time_attr_marker + "init (us): " + std::to_string(dt));
+	if (add_attr) attributes.push_back(time_attr_marker + "init (us): " + std::to_string(dt));
 	return dt;
 }
 

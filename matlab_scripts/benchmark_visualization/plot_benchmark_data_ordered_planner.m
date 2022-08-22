@@ -8,7 +8,7 @@ title("Total Search Time")
 ylabel("Time ("+units+")")
 xlabel("Number of DFAs")
 
-scatterPlotNamedTuples("../../benchmark/benchmark_data/bm_ordered_planner.txt", "single_point_search")
+scatterPlotNamedTuples("../../benchmark/benchmark_data/bm_ordered_planner_flex.txt", "single_point_search_iterations")
 
 % % Plot 'first_search' and 'total_search' time vs flexibility
 % % time_data_lbls = ["first_search"];

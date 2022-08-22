@@ -377,7 +377,7 @@ const std::list<OrderedPlanner::Result::ParetoPoint>* OrderedPlanner::Result::ge
     return &pareto_front;
 }
 
-bool OrderedPlanner::Result::addParetoPoint(float mu, float path_length, const Plan& plan) {
+unsigned OrderedPlanner::Result::addParetoPoint(float mu, float path_length, const Plan& plan) {
     auto iter = pareto_front.begin();
     if (pareto_front.size() == 0) {
         pareto_front.push_back({mu, path_length, plan});
@@ -390,18 +390,18 @@ bool OrderedPlanner::Result::addParetoPoint(float mu, float path_length, const P
             if (path_length < pt.path_length) {
                 pt.path_length = path_length;
                 pt.plan = plan;
-                return true;
+                return OrderedPlanner::Result::UPDATED;
             } else {
-                return false;
+                return OrderedPlanner::Result::NEGLECTED;
             }
         } 
         if (path_length == pt.path_length) {
             if (mu < pt.mu) {
                 pt.mu = mu;
                 pt.plan = plan;
-                return true;
+                return OrderedPlanner::Result::UPDATED;
             } else {
-                return false;
+                return OrderedPlanner::Result::NEGLECTED;
             }
         }
         auto it_before = std::next(iter, -1);
@@ -426,7 +426,7 @@ bool OrderedPlanner::Result::addParetoPoint(float mu, float path_length, const P
                         pareto_front.erase(it_remove);
                         it_remove = iter;
                     }
-                    return true;
+                    return OrderedPlanner::Result::ADDED;
                 }
             } 
         } else {
@@ -435,14 +435,14 @@ bool OrderedPlanner::Result::addParetoPoint(float mu, float path_length, const P
         ParetoPoint new_pt = {mu, path_length, plan};
         if (check_before && check_after) {
             pareto_front.insert(iter, new_pt);
-            return true;
+            return OrderedPlanner::Result::ADDED;
         } 
         if (iter == pareto_front.end()) {
             break;
         }
         std::advance(iter, 1);
     } 
-    return false;
+    return OrderedPlanner::Result::NEGLECTED;
 }
 
 void OrderedPlanner::Result::printParetoFront() const {
@@ -704,8 +704,9 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
     // Benchmark the entire search time:
     if (bm_filepath) {
         bm.pushStartPoint("search");
-        bm.pushStartPoint("single_point_search");
+        //bm.pushStartPoint("single_point_search");
     }
+    std::map<float, std::pair<double, int>> bm_cost_to_time;
 
     while (!pq.empty()) {
         iterations++;
@@ -777,8 +778,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
             Plan pl = extractPlan(graph_sizes, p, p_init, parents);
             result.addParetoPoint(mu_max, curr_leaf->cost, pl);
             if (bm_filepath) {
-                bm.measureMilli("single_point_search", std::to_string(mu_max));
-                bm.addAttribute("single_point_search_iterations", std::to_string(iterations), std::to_string(mu_max));
+                bm_cost_to_time[curr_leaf->cost] = {bm.measureMilli(false), iterations};
             }
             success = true;
             bool f_debug = mu_max == 2.0f;
@@ -984,6 +984,10 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
     }
     if (verbose) std::cout<<"Iterations: "<<iterations<<std::endl;
     if (bm_filepath) {
+        for (const auto& pt : *(result.getParetoFront())) {
+            bm.addAttribute("single_point_search", std::to_string(bm_cost_to_time.at(pt.path_length).first), std::to_string(pt.mu));
+            bm.addAttribute("single_point_search_iterations", std::to_string(bm_cost_to_time.at(pt.path_length).second), std::to_string(pt.mu));
+        }
         bm.measureMilli("search");
         bm.addCustomTimeAttr("iterations", static_cast<double>(iterations), ""); // No units
         bm.pushAttributesToFile();
