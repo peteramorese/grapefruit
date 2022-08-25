@@ -30,9 +30,6 @@ if __name__ == "__main__":
 
     bm_preference_planner_grid_robot.clear_file(BM_DATA_FILE_NAME_NO_H) # Clear the bm session file
     bm_preference_planner_grid_robot.clear_file(BM_DATA_FILE_NAME_H) # Clear the bm session file
-    num_dfas = 9 # Max number of dfas
-    grid_size = 10
-    mu = 10000
     for i in range(0, trials):
         print("Working on trial {} out of {}...".format(i + 1, trials))
         num_dfas_found = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=args.verbose)
@@ -46,7 +43,7 @@ if __name__ == "__main__":
             # Run without the heuristic:
             bm_preference_planner_grid_robot.exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
                 num_dfas=j, 
-                mu=mu, 
+                mu=None, 
                 use_h_flag=False, 
                 write_file_flag=False, 
                 verbose=False, 
@@ -58,7 +55,7 @@ if __name__ == "__main__":
             # Run with the heuristic:
             bm_preference_planner_grid_robot.exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
                 num_dfas=j, 
-                mu=mu, 
+                mu=None, 
                 use_h_flag=True, 
                 write_file_flag=False, 
                 verbose=False, 
