@@ -625,6 +625,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
     int iterations = 0;
     success = false; // member variable
     float mu_max = (single_query) ? mu_sq : -1.0f;
+    bool is_inf = (mu_max == -1.0f) ? true : false;
 
 
     // Create the init root node:
@@ -654,7 +655,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
 
         // If the popped node does not satisfy mu constraint, simply remove from queue:
         float mu_p = curr_leaf->mu;
-        if ((single_query || success) && mu_p >= mu_max) continue;
+        if (!is_inf && mu_p >= mu_max) continue;
         iterations++;
 
         // Check if current node is a solution:
@@ -663,6 +664,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
             mu_max = mu_p;
             Plan pl = extractPlan(graph_sizes, p, p_init, parents);
             result.addParetoPoint(mu_max, curr_leaf->cost, pl);
+            is_inf = false;
             success = true;
             
             // If single query search, return after first solution is found:
@@ -679,7 +681,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
             }
             
             if (bm_filepath) {
-                bm_cost_to_time[curr_leaf->cost] = {bm.measureMilli(false), iterations};
+                bm_cost_to_time[curr_leaf->cost] = {bm.measureMilli("search", false), iterations};
             }
             
             // Add all frontier nodes to the queue, then restart search from frontier:
@@ -722,7 +724,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
 
             // Prune nodes:
             node_candidate.mu = setToMu(node_candidate.cost_set);
-            if ((single_query || success) && node_candidate.mu >= mu_max) {
+            if (!is_inf && node_candidate.mu >= mu_max) {
                 continue;
             }
 
@@ -734,7 +736,7 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
             // Check if node was seen and a shorter path was found:
             std::pair<bool, Node*> updated = {false, nullptr};
             if (seen[pp]) {
-                if ((single_query || success) && node_map.at(pp)->mu >= mu_max) {
+                if (!is_inf && node_map.at(pp)->mu >= mu_max) {
                     updated.first = true;
                 } else if (node_candidate.cost > node_map.at(pp)->cost && node_candidate.mu < node_map.at(pp)->mu) {
                     // A higher-cost, lower-mu candidate was found, making the parent node on the frontier:

@@ -35,13 +35,13 @@ void Benchmark::pushStartPoint(const std::string& name) {
 	time_points_start[name] = time_pt;
 }
 
-double Benchmark::measureMilli(const std::string& name) {
+double Benchmark::measureMilli(const std::string& name, bool add_attr) {
 	if (!filename) return -1.0f;
 	tp_t time_measure, time_start;
 	time_measure = std::chrono::system_clock::now();
 	time_start = time_points_start.at(name);
 	double dt = std::chrono::duration_cast<std::chrono::milliseconds>(time_measure - time_start).count();
-	attributes.push_back(time_attr_marker + name + " (ms): " + std::to_string(dt));
+	if (add_attr) attributes.push_back(time_attr_marker + name + " (ms): " + std::to_string(dt));
 	return dt;
 }
 
@@ -55,22 +55,22 @@ double Benchmark::measureMilli(const std::string& name, const std::string& attr_
 	return dt;
 }
 
-double Benchmark::measureMilli(bool add_attr) {
+double Benchmark::measureMilli() {
 	if (!filename) return -1.0f;
 	tp_t time_measure;
 	time_measure = std::chrono::system_clock::now();
 	double dt = std::chrono::duration_cast<std::chrono::milliseconds>(time_measure - time_start_init).count();
-	if (add_attr) attributes.push_back(time_attr_marker + "init (ms): " + std::to_string(dt));
+	attributes.push_back(time_attr_marker + "init (ms): " + std::to_string(dt));
 	return dt;
 }
 
-double Benchmark::measureMicro(const std::string& name) {
+double Benchmark::measureMicro(const std::string& name, bool add_attr) {
 	if (!filename) return -1.0f;
 	tp_t time_measure, time_start;
 	time_measure = std::chrono::system_clock::now();
 	time_start = time_points_start.at(name);
 	double dt = std::chrono::duration_cast<std::chrono::microseconds>(time_measure - time_start).count();
-	attributes.push_back(time_attr_marker + name + " (us): " + std::to_string(dt));
+	if (add_attr) attributes.push_back(time_attr_marker + name + " (us): " + std::to_string(dt));
 	return dt;
 }
 
@@ -84,12 +84,12 @@ double Benchmark::measureMicro(const std::string& name, const std::string& attr_
 	return dt;
 }
 
-double Benchmark::measureMicro(bool add_attr) {
+double Benchmark::measureMicro() {
 	if (!filename) return -1.0f;
 	tp_t time_measure;
 	time_measure = std::chrono::system_clock::now();
 	double dt = std::chrono::duration_cast<std::chrono::microseconds>(time_measure - time_start_init).count();
-	if (add_attr) attributes.push_back(time_attr_marker + "init (us): " + std::to_string(dt));
+	attributes.push_back(time_attr_marker + "init (us): " + std::to_string(dt));
 	return dt;
 }
 

@@ -21,12 +21,12 @@ class Benchmark {
 		void addAttribute(const std::string& attr, const std::string& attr_val1, const std::string& attr_val2);
 		void addCustomTimeAttr(const std::string& attr, double custom_time, const std::string& units);
 		void pushStartPoint(const std::string& name);
-		double measureMilli(const std::string& name);
+		double measureMilli(const std::string& name, bool add_attr = true);
 		double measureMilli(const std::string& name, const std::string& attr_val2);
-		double measureMilli(bool add_attr = true);
-		double measureMicro(const std::string& name);
+		double measureMilli();
+		double measureMicro(const std::string& name, bool add_attr = true);
 		double measureMicro(const std::string& name, const std::string& attr_val2);
-		double measureMicro(bool add_attr = true);
+		double measureMicro();
 		void pushAttributesToFile();
 		void finishSessionInFile();
 		void wipeAttributesFromFile();

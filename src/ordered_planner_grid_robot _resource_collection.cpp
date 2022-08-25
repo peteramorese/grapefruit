@@ -8,6 +8,11 @@
 #include "writeToFile.h"
 
 int main(int argc, char *argv[]) {
+	//std::cout<<"time init: "<<time_init<<std::endl;
+	//for (int i=0; i<argc; ++i) {
+	//	std::cout<<argv[i]<<std::endl;
+	//}
+	//std::cout<<"time init: "<<benchmark.measureMicro()<<std::endl;
 	// Set default arguments:
 
 	bool manual_setup = true;
@@ -24,7 +29,6 @@ int main(int argc, char *argv[]) {
 	bool use_h_flag = false;
 	bool write_file_flag = false;
 	bool single_query_flag = false;
-	bool bm_manual_iterations = false;
 
 	// Parse arguments:
 	if (argc > 1){
@@ -33,8 +37,9 @@ int main(int argc, char *argv[]) {
 		while (i_arg < argc) {
 			std::string arg = argv[i_arg];
 			if (arg == "--gridsize") {
-				std::string::size_type size_t;
-				grid_size = std::stoi(argv[i_arg + 1], &size_t);
+				//std::string::size_type size_t;
+				//grid_size = std::stoi(argv[i_arg + 1], &size_t);
+				std::cout<<"Cannot reset gridsize for this example (10x10)"<<std::endl;
 				i_arg++;
 			} else if (arg == "--num-dfas") {
 				std::string::size_type size_t;
@@ -52,8 +57,6 @@ int main(int argc, char *argv[]) {
 				verbose = true;
 			} else if (arg == "--benchmark") {
 				use_benchmark = true;
-			} else if (arg == "--bm-manual-iterations") {
-				bm_manual_iterations = true;
 			} else if (arg == "--plan-file") {
 				plan_filename_path = argv[i_arg + 1];
 				i_arg++;
@@ -68,7 +71,7 @@ int main(int argc, char *argv[]) {
 				single_query_flag = true;
 			} else {
 				std::cout<<"Unrecognized argument: "<<argv[i_arg]<<"\n";
-				return 1;
+				return 0;
 			}
 			i_arg++;
 		}
@@ -79,11 +82,6 @@ int main(int argc, char *argv[]) {
 	if (use_benchmark) {
 		benchmark.addAttribute("num_dfas", std::to_string(N_DFAs));
 		//benchmark.addAttribute("flexibility", std::to_string(mu));
-	}
-	
-	if (bm_manual_iterations && !use_benchmark) {
-		std::cout<<"Error (ordered_planner_grid_robot): Cannot use bm_manual_iterations without benchmarking\n";
-		return 1;
 	}
 
 	//std::cout<<"PRINTING ARGS:"<<argv[1]<<std::endl;
@@ -225,6 +223,17 @@ int main(int argc, char *argv[]) {
 	if (verbose) {
 		std::cout<<"Setting Atomic Propositions... "<<std::endl;
 	}
+
+	std::vector<std::pair<int, int>> water_locations = {
+		{},
+		{},
+		{},
+		{},
+		{},
+		{},
+		{},
+	};
+
 	std::vector<SimpleCondition> APs;
 	std::vector<SimpleCondition*> AP_ptrs;
 	for (int i=0; i<grid_size; ++i) {
@@ -371,61 +380,25 @@ int main(int argc, char *argv[]) {
 	//std::cout<<"Got the mu: "<<g_mu<<std::endl;
 	//return 0;
 
-	if (bm_manual_iterations) {
-		bool success = true;
-		bool found_one = false;
-		float mu_i = -1.0f;
-		float d_mu = .0001; // Make sure mu_i < mu_{i-1}
-		int iterations = 0;
-		while(success || mu_i > 0.0f) {
-			success = planner.search(dfa_eval_ptrs, setToMuDelay, use_h_flag, true, mu_i);
-			if (!success) {
-				continue;
-			} else {
-				found_one = true;
-			}
-			if (planner.getResult()->getParetoFront()->size() != 1) {
-				std::cout<<"Error (manual iterations): Number of solutions not equal to 1\n";
-				return 1;
-			}
-			mu_i = planner.getResult()->getParetoFront()->begin()->mu - d_mu;
-			iterations += planner.getResult()->iterations;
-		}
-		if (found_one) {
-			benchmark.addCustomTimeAttr("manual_iterations", static_cast<double>(iterations), ""); // No units
-			success = planner.search(dfa_eval_ptrs, setToMuDelay, use_h_flag);
-			if (success) {
-				benchmark.addCustomTimeAttr("auto_iterations", static_cast<double>(planner.getResult()->iterations), ""); // No units
-			}
-			benchmark.pushAttributesToFile();
-		} else {
-			std::cout<<"Error (manual iterations): Did not find a solution!\n";
-			return 1;
-		}
+	bool success = planner.search(dfa_eval_ptrs, setToMuDelay, use_h_flag, single_query_flag, mu);
+	const OrderedPlanner::Result* result  = planner.getResult();
+	//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
+	if (result) {
+		if (verbose) result->printParetoFront();
+		//benchmark.measureMilli("total_search");
+		benchmark.pushAttributesToFile();
 		benchmark.finishSessionInFile();
-	} else {
-		bool success = planner.search(dfa_eval_ptrs, setToMuDelay, use_h_flag, single_query_flag, mu);
-		const OrderedPlanner::Result* result  = planner.getResult();
-		//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
-		if (result) {
-			if (verbose) result->printParetoFront();
-			//benchmark.measureMilli("total_search");
-			if (use_benchmark) {
-				benchmark.pushAttributesToFile();
-				benchmark.finishSessionInFile();
-			}
-			if (write_file_flag) {
-				std::vector<std::string> xtra_info;
-				for (int i=0; i<dfa_arr.size(); ++i) {
-					const std::vector<std::string>* ap_ptr = dfa_arr[i].getAP();
-					for (int ii=0; ii<ap_ptr->size(); ++ii) {
-						xtra_info.push_back(ap_ptr->operator[](ii));
-						xtra_info.back() = xtra_info.back() + "_prio" + std::to_string(i);
-					}
+		if (write_file_flag) {
+			std::vector<std::string> xtra_info;
+			for (int i=0; i<dfa_arr.size(); ++i) {
+				const std::vector<std::string>* ap_ptr = dfa_arr[i].getAP();
+				for (int ii=0; ii<ap_ptr->size(); ++ii) {
+					xtra_info.push_back(ap_ptr->operator[](ii));
+					xtra_info.back() = xtra_info.back() + "_prio" + std::to_string(i);
 				}
-				MatlabDemoFiles::GridRobot::writeFlexibilityPlanList(*result, nullptr, &xtra_info);
-				MatlabDemoFiles::ParetoFront::writeFlexibilityParetoFront(*result, nullptr);
 			}
+			MatlabDemoFiles::GridRobot::writeFlexibilityPlanList(*result, nullptr, &xtra_info);
+			MatlabDemoFiles::ParetoFront::writeFlexibilityParetoFront(*result, nullptr);
 		}
 	}
 

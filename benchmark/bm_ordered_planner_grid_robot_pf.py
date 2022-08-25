@@ -12,52 +12,54 @@ import bm_preference_planner_grid_robot
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-N", "--num_dfas", nargs='?', type=int, default=None, help="Number of formulas (default to the number of found formulas")
-    parser.add_argument("-t", "--trials", nargs='?', type=int, default=10, help="Number of randomized trials")
+    parser.add_argument("-t", "--trials", nargs='?', type=int, default=5, help="Number of randomized trials")
     parser.add_argument("-s", "--grid_size", nargs='?', type=int, default=10)
     parser.add_argument("-v", "--verbose", action='store_true', default=False, help="Display the formula ordering")
     args = parser.parse_args()
-    trials_flexibility = args.trials #Number of random orderings
+    trials = args.trials 
     grid_size = args.grid_size
     num_dfas = args.num_dfas
 
-    print("Starting benchmark: ordered_planner_grid_robot_flex")
+    print("Starting benchmark: ordered_planner_grid_robot_pf")
 
     READ_FILE_NAME = "ordered_planner_bm_formulas.txt"
     WRITE_FILE_DIR_NAME_PREFIX = "../spot_automaton_file_dump/dfas/"
     EXEC_FILE_NAME = "ordered_planner_grid_robot"
-    BM_DATA_FILE_NAME_FLEX_NO_H = "benchmark_data/bm_ordered_planner_flex.txt"
-    BM_DATA_FILE_NAME_FLEX_H = "benchmark_data/bm_ordered_planner_heuristic_flex.txt"
+    BM_DATA_FILE_NAME_FLEX_NO_H = "benchmark_data/bm_ordered_planner_pf.txt"
+    BM_DATA_FILE_NAME_FLEX_H = "benchmark_data/bm_ordered_planner_heuristic_pf.txt"
 
     bm_preference_planner_grid_robot.clear_file(BM_DATA_FILE_NAME_FLEX_NO_H) # Clear the bm session file
     bm_preference_planner_grid_robot.clear_file(BM_DATA_FILE_NAME_FLEX_H) # Clear the bm session file
-    for i in range(0, trials_flexibility):
-        print("Working on trial {} out of {}...".format(i + 1, trials_flexibility))
+    for i in range(0, trials):
+        print("Working on trial {} out of {}...".format(i + 1, trials))
         num_dfas_found = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=True, verbose=args.verbose)
         if not num_dfas:
             num_dfas = num_dfas_found
         if num_dfas <= 2:
             print("Error: Create more than 2 BM formulas")
             break
-        else:
+        for j in range(2, num_dfas):
             #print("\nDijkstra's:")
             bm_preference_planner_grid_robot.exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
-                num_dfas=num_dfas, 
+                num_dfas=j, 
                 mu=None, 
                 use_h_flag=False, 
                 write_file_flag=False, 
                 verbose=False, 
                 benchmark=True, 
+                bm_manual_iterations=True, 
                 dfas_filepath=WRITE_FILE_DIR_NAME_PREFIX,
                 bm_file=BM_DATA_FILE_NAME_FLEX_NO_H,
                 grid_size=grid_size)
             ##print("\nAstar:")
             bm_preference_planner_grid_robot.exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
-                num_dfas=num_dfas, 
+                num_dfas=j, 
                 mu=None, 
                 use_h_flag=True, 
                 write_file_flag=False, 
                 verbose=False, 
                 benchmark=True, 
+                bm_manual_iterations=True, 
                 dfas_filepath=WRITE_FILE_DIR_NAME_PREFIX,
                 bm_file=BM_DATA_FILE_NAME_FLEX_H,
                 grid_size=grid_size)

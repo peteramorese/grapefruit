@@ -83,6 +83,9 @@ for j = 1:length(filepaths)
     for i=1:length(box_time_data_lbls)
         box_time_data_inds = [box_time_data_inds find(deblank(seg_data.time_lbls)==deblank(box_time_data_lbls(i)), 1)];
     end
+    if isempty(box_time_data_inds)
+        error("Did not find any benchmarks matching input box time data labels")
+    end
 
     x_attr_ind = find(seg_data.attr_lbls==x_attr_lbl, 1);
     un_attrs = getUniqueAttrs(seg_data.attr_data{x_attr_ind});
