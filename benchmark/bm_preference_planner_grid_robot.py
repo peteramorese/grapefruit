@@ -42,7 +42,7 @@ def clear_file(file_name):
 if __name__ == "__main__":
     print("Starting benchmark: preference_planner_grid_robot")
 
-    READ_FILE_NAME = "preference_planner_benchmark_formulas.txt"
+    READ_FILE_NAME = "preference_planner_benchmark_formulas.json"
     WRITE_FILE_DIR_NAME_PREFIX = "../spot_automaton_file_dump/dfas/"
     EXEC_FILE_NAME = "preference_planner_grid_robot"
     BM_DATA_FILE_NAME_NO_H = "benchmark_data/bm_preference_planner.txt"
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     print("\n\nScaling Formulas: \n\n")
     for i in range(0, trials_formulas):
         print("Working on trial {} out of {}...".format(i + 1, trials_formulas))
-        num_dfas = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=True)
+        num_dfas = formula2dfa.read_write_json(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=True)
         if num_dfas <= 2:
             print("Error: Create more than 2 BM formulas")
             break

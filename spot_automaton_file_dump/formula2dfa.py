@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from posixpath import dirname
-import spot, os, glob, random
+import spot, os, glob, random, json
 import argparse
 
 def remove_dfa_files(dirname_prefix):
@@ -43,22 +43,12 @@ def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose
         lines_list.append("- {}".format(A.get_init_state_number()))
         lines_list.append("Graph:")
         for s in range(0, A.num_states()):
-            #print("state {}".format(s))
             lines_list.append("- {}".format(s))
             for s_con in A.out(s):
-                #print("  edge({} -> {})".format(s_con.src, s_con.dst))
-                #print("    label: ", spot.bdd_format_formula(bdict, s_con.cond))
-                #print("    accepting sets: ", s_con.acc)
                 temp_str = "   - {} -> {}".format(s_con.src, s_con.dst)
                 temp_str = temp_str + " : " + spot.bdd_format_formula(bdict, s_con.cond)
                 lines_list.append(temp_str)
                 if "{}".format(s_con.acc) != "{}":
-                    #temp_str_2 = "{}".format(s_con.acc)
-                    #print(" temp str 2 before: ", temp_str_2)
-                    #temp_str_2 = temp_str_2.replace("{","")	
-                    #temp_str_2 = temp_str_2.replace("}","")	
-                    #print(" temp str 2 after: ", temp_str_2)
-                    #accepting_list.append(temp_str_2)
                     accepting_list.append("{}".format(s))
         lines_list.append("Accepting States:")	
         for a_s in accepting_list:
@@ -83,7 +73,7 @@ def print_automaton(A):
             print("    accepting sets: ", s_con.acc)
 
 
-def read_write(read_file_name, write_file_dir_name_prefix, write_file_name=None, random_ordering=False, verbose=False, f_complete=False):
+def read_write_txt(read_file_name, write_file_dir_name_prefix, write_file_name=None, random_ordering=False, verbose=False, f_complete=False):
     with open(read_file_name, "r") as formula_file:
         lines = formula_file.readlines()
 
@@ -110,12 +100,39 @@ def read_write(read_file_name, write_file_dir_name_prefix, write_file_name=None,
     create_file(F_arr, write_file_dir_name_prefix, write_file_name, random_ordering, verbose=verbose, f_complete=f_complete)
     return len(F_arr)
 
+def read_write_json(read_json_name, formula_list_name, write_file_dir_name_prefix, write_file_name=None, random_ordering=False, verbose=False, f_complete=False):
+    with open(read_json_name) as f:
+        formulas = json.load(f)
+
+    custom_single = False
+    if write_file_name is not None:
+        custom_single = True
+        
+    F_arr = list()
+    for F_i in formulas[formula_list_name]:
+        if not F_i[0]=="#":
+            if verbose:
+                print("Found formula:     ",F_i)
+            F_arr.append(F_i)
+            if custom_single:
+                break
+
+    if verbose: 
+        if not custom_single:
+            print("Number of formulas: ", len(F_arr))
+        else:
+            print("Running as single custom filename...")
+    create_file(F_arr, write_file_dir_name_prefix, write_file_name, random_ordering, verbose=verbose, f_complete=f_complete)
+    return len(F_arr)
+
 if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
-    parser.add_argument("-f", "--filepath", default="formulas.txt", help="Specify forumla.txt file")
-    parser.add_argument("-d", "--dfa_filename", default=None, help="Specify custom dfa filename")
+    parser.add_argument("-f", "--filepath", default="formulas.json", help="Specify forumla file")
+    parser.add_argument("-l", "--formula-list", default="default", help="Specify formula list inside json formula file")
+    parser.add_argument("-d", "--dfa-filename", default=None, help="Specify custom dfa filename")
     parser.add_argument("-c", "--complete", action='store_true', default=False, help="DFA is complete (instead of minimal)")
-    parser.add_argument("-r", "--random_ordering", action='store_true', default=False, help="Randomly the order of the input formulas")
+    parser.add_argument("-x", "--use-txt", action='store_true', default=False, help="Use '.txt' interpretation instead of '.json'")
+    parser.add_argument("-r", "--random-ordering", action='store_true', default=False, help="Randomly the order of the input formulas")
     args = parser.parse_args()
 
 
@@ -128,4 +145,7 @@ if __name__ == "__main__":
     READ_FILE_NAME = args.filepath
     WRITE_FILE_DIR_NAME_PREFIX = "dfas/"
     WRITE_FILE_NAME = args.dfa_filename
-    read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete)
+    if not args.use_txt:
+        read_write_json(READ_FILE_NAME, args.formula_list, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete)
+    else: 
+        read_write_txt(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete)

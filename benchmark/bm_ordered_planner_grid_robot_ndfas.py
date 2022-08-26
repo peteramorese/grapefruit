@@ -11,9 +11,10 @@ import bm_preference_planner_grid_robot
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-N", "--num_dfas", nargs='?', type=int, default=None, help="Number of formulas (default to the number of found formulas")
+    parser.add_argument("-N", "--num-dfas", nargs='?', type=int, default=None, help="Number of formulas (default to the number of found formulas")
+    parser.add_argument("-l", "--formula-list", default="default", help="Specify formula list inside json formula file")
     parser.add_argument("-t", "--trials", nargs='?', type=int, default=5, help="Number of randomized trials")
-    parser.add_argument("-s", "--grid_size", nargs='?', type=int, default=10)
+    parser.add_argument("-s", "--grid-size", nargs='?', type=int, default=10)
     parser.add_argument("-v", "--verbose", action='store_true', default=False, help="Display the formula ordering")
     args = parser.parse_args()
     trials = args.trials 
@@ -22,7 +23,7 @@ if __name__ == "__main__":
 
     print("Starting benchmark: ordered_planner_grid_robot_ndfas")
 
-    READ_FILE_NAME = "ordered_planner_bm_formulas.txt"
+    READ_FILE_NAME = "ordered_planner_bm_formulas.json"
     WRITE_FILE_DIR_NAME_PREFIX = "../spot_automaton_file_dump/dfas/"
     EXEC_FILE_NAME = "ordered_planner_grid_robot"
     BM_DATA_FILE_NAME_NO_H = "benchmark_data/bm_ordered_planner.txt"
@@ -32,7 +33,7 @@ if __name__ == "__main__":
     bm_preference_planner_grid_robot.clear_file(BM_DATA_FILE_NAME_H) # Clear the bm session file
     for i in range(0, trials):
         print("Working on trial {} out of {}...".format(i + 1, trials))
-        num_dfas_found = formula2dfa.read_write(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=args.verbose)
+        num_dfas_found = formula2dfa.read_write_json(READ_FILE_NAME, args.formula_list, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=args.verbose)
         if not num_dfas:
             num_dfas = num_dfas_found
         if num_dfas <= 2:
