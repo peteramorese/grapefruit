@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /root/miniconda3/envs/tpenv/bin/python
 from posixpath import dirname
 import spot, os, glob, random, json
 import argparse
