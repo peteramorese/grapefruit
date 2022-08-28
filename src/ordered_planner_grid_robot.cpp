@@ -376,9 +376,13 @@ int main(int argc, char *argv[]) {
 		bool found_one = false;
 		float mu_i = -1.0f;
 		float d_mu = .0001; // Make sure mu_i < mu_{i-1}
-		int iterations = 0;
+		int naive_iterations = 0;
+		double naive_time = 0;
+
 		while(success || mu_i > 0.0f) {
+			benchmark.pushStartPoint("naive_search");
 			success = planner.search(dfa_eval_ptrs, setToMuDelay, use_h_flag, true, mu_i);
+			naive_time += benchmark.measureMilli("naive_search", false);
 			if (!success) {
 				continue;
 			} else {
@@ -389,13 +393,16 @@ int main(int argc, char *argv[]) {
 				return 1;
 			}
 			mu_i = planner.getResult()->getParetoFront()->begin()->mu - d_mu;
-			iterations += planner.getResult()->iterations;
+			naive_iterations += planner.getResult()->iterations;
 		}
 		if (found_one) {
-			benchmark.addCustomTimeAttr("manual_iterations", static_cast<double>(iterations), ""); // No units
+			benchmark.addCustomTimeAttr("naive_iterations", static_cast<double>(naive_iterations), ""); // No units
+			benchmark.addCustomTimeAttr("naive_time", static_cast<double>(naive_time), "ms"); // No units
+			benchmark.pushStartPoint("smart_time");
 			success = planner.search(dfa_eval_ptrs, setToMuDelay, use_h_flag);
+			benchmark.measureMilli("smart_time");
 			if (success) {
-				benchmark.addCustomTimeAttr("auto_iterations", static_cast<double>(planner.getResult()->iterations), ""); // No units
+				benchmark.addCustomTimeAttr("smart_iterations", static_cast<double>(planner.getResult()->iterations), ""); // No units
 			}
 			benchmark.pushAttributesToFile();
 		} else {

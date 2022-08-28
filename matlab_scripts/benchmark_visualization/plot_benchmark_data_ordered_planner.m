@@ -15,33 +15,29 @@ ylabel("Iterations")
 xlabel("Number of DFAs")
 
 figure()
-plotAttrVsTimeData(["../../benchmark/benchmark_data/bm_ordered_planner_pf.txt"], "num_dfas", ["manual_iterations", "auto_iterations"], ["No Heuristic: ", "Heuristic: "]);
-title("Manual vs. Single PF Iterations")
+plotAttrVsTimeData(["../../benchmark/benchmark_data/bm_ordered_planner_pf.txt"], "num_dfas", ["naive_iterations", "smart_iterations"], ["No Heuristic: ", "Heuristic: "]);
+title("Naive vs. Smart Iterations")
 ylabel("Iterations")
 xlabel("Number of DFAs")
 
-scatterPlotNamedTuples("../../benchmark/benchmark_data/bm_ordered_planner_flex.txt", "single_point_search_iterations")
+figure()
+plotAttrVsTimeData(["../../benchmark/benchmark_data/bm_ordered_planner_pf.txt"], "num_dfas", ["naive_time", "smart_time"], ["No Heuristic: ", "Heuristic: "]);
+title("Naive vs. Smart Search Time")
+ylabel("Iterations")
+xlabel("Number of DFAs")
 
-% % Plot 'first_search' and 'total_search' time vs flexibility
-% % time_data_lbls = ["first_search"];
-% figure()
-% units = plotAttrVsTimeData(["../../benchmark/benchmark_data/bm_preference_planner_flex.txt", "../../benchmark/benchmark_data/bm_preference_planner_heuristic_flex.txt"], "flexibility", time_data_lbls, ["No Heuristic: ", "Heuristic: "]);
-% title("Total Search Time")
-% ylabel("Time ("+units+")")
-% xlabel("Flexibility")
-% 
-% % Plot 'iterations' vs flexibility
-% figure()
-% time_data_lbls = ["iterations"];
-% units = plotAttrVsTimeData(["../../benchmark/benchmark_data/bm_preference_planner_flex.txt", "../../benchmark/benchmark_data/bm_preference_planner_heuristic_flex.txt"], "flexibility", time_data_lbls, ["No Heuristic: ", "Heuristic: "]);
-% title("Total Search Iterations")
-% ylabel("Iterations")
-% xlabel("Flexibility")
+% scatterPlotNamedTuples("../../benchmark/benchmark_data/bm_ordered_planner_flex.txt", "single_point_search_iterations")
 
-% % Plot 'iterations' vs flexibility for just A*
-% figure()
-% time_data_lbls = ["iterations"];
-% units = plotAttrVsTimeData(["../../benchmark/benchmark_data/bm_preference_planner_heuristic_flex.txt"], "flexibility", time_data_lbls, ["No Heuristic: ", "Heuristic: "]);
-% title("Total Search Iterations")
-% ylabel("Iterations")
-% xlabel("Flexibility")
+binPlotNamedTuples(["../../benchmark/benchmark_data/bm_ordered_planner_flex.txt", "../../benchmark/benchmark_data/bm_ordered_planner_heuristic_flex.txt"], "single_point_search_iterations", 16)
+legend(["No heuristic", "Heuristic"])
+title("Mean Cumulative Iterations per Pareto Point")
+ylabel("Iterations")
+xlabel("\mu")
+
+binPlotNamedTuples(["../../benchmark/benchmark_data/bm_ordered_planner_flex.txt", "../../benchmark/benchmark_data/bm_ordered_planner_heuristic_flex.txt"], "single_point_search", 16)
+legend(["No heuristic", "Heuristic"])
+title("Mean Cumulative Search Time per Pareto Point")
+ylabel("Search Time (ms)")
+xlabel("\mu")
+
+
