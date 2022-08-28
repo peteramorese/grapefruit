@@ -18,4 +18,4 @@ COPY . /root/task_planner
 RUN conda init bash
 RUN conda create --name tpenv python=3.8
 RUN conda install -n tpenv -c conda-forge spot
-ENTRYPOINT ["/root/task_planner/python_scripts_up.sh"]
+RUN /root/task_planner/python_scripts_up.sh
