@@ -2,7 +2,6 @@ function binPlotNamedTuples(filepaths, tuple_names, bins)
     if length(tuple_names) > 1 && length(filepaths) ~= length(tuple_names)
         error("Number of tuple names must be single or match the number of filepaths")
     end
-    figure()
     hold on
     % data(:,2) is the mu values that need to be discretized
     for j=1:length(filepaths)

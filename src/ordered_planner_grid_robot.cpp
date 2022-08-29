@@ -76,10 +76,6 @@ int main(int argc, char *argv[]) {
 
 	Benchmark benchmark(&bm_filename_path);
 	
-	if (use_benchmark) {
-		benchmark.addAttribute("num_dfas", std::to_string(N_DFAs));
-		//benchmark.addAttribute("flexibility", std::to_string(mu));
-	}
 	
 	if (bm_manual_iterations && !use_benchmark) {
 		std::cout<<"Error (ordered_planner_grid_robot): Cannot use bm_manual_iterations without benchmarking\n";
@@ -249,6 +245,10 @@ int main(int argc, char *argv[]) {
 		ts.print();
 	}
 
+	if (use_benchmark) {
+		benchmark.addAttribute("num_dfas", std::to_string(N_DFAs));
+		benchmark.addAttribute("model_size", std::to_string(ts.size()));
+	}
 
 
 	/////////////////////////////////////////////////
