@@ -35,6 +35,6 @@ RUN /root/task_planner/python_scripts_up.sh
 
 # Make the build directory if it doesnt exist, then remove it to make sure a no previous build files exist:
 RUN mkdir -p /root/task_planner/build && rm -r /root/task_planner/build
-RUN mkdir -p /root/task_planner/benchmark/benchmark_data && mkdir /root/task_planner/build
+RUN mkdir -p /root/task_planner/benchmark/benchmark_data && mkdir /root/task_planner/build && mkdir -p /root/task_planner/spot_automaton_file_dump/dfas
 #RUN cmake -S /root/task_planner -B /root/task_planner/build && make --directory /root/task_planner/build
 RUN cd /root/task_planner/build && cmake ./.. && make
