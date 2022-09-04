@@ -37,7 +37,7 @@ class OrderedPlanner {
                 static const unsigned UPDATED = 2;
                 unsigned iterations;
                 const Plan* getPlan(float mu_max) const;
-                const Plan* getPlan(unsigned ind) const;
+                const Plan* getPlan(unsigned ind = 0) const;
                 const std::list<ParetoPoint>* getParetoFront() const;
                 unsigned addParetoPoint(float mu, float path_length, const Plan& plan);
                 void printParetoFront() const;
