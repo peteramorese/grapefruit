@@ -1,0 +1,2606 @@
+[Tup] single_point_search: {9512.000000, 0.000000}
+[Tup] single_point_search_iterations: {160179, 0.000000}
+[Tup] single_point_search: {9305.000000, 1.000000}
+[Tup] single_point_search_iterations: {156550, 1.000000}
+[Tup] single_point_search: {7799.000000, 2.000000}
+[Tup] single_point_search_iterations: {129855, 2.000000}
+[Tup] single_point_search: {6769.000000, 3.000000}
+[Tup] single_point_search_iterations: {111378, 3.000000}
+[Tup] single_point_search: {6441.000000, 4.000000}
+[Tup] single_point_search_iterations: {105496, 4.000000}
+[T] search (ms): 9512.000000
+[T] iterations (): 160179.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {81626.000000, 0.000000}
+[Tup] single_point_search_iterations: {1251358, 0.000000}
+[Tup] single_point_search: {80189.000000, 1.000000}
+[Tup] single_point_search_iterations: {1228481, 1.000000}
+[Tup] single_point_search: {77130.000000, 2.000000}
+[Tup] single_point_search_iterations: {1176148, 2.000000}
+[Tup] single_point_search: {74942.000000, 3.000000}
+[Tup] single_point_search_iterations: {1136914, 3.000000}
+[T] search (ms): 81626.000000
+[T] iterations (): 1251358.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {190277.000000, 0.000000}
+[Tup] single_point_search_iterations: {2894950, 0.000000}
+[Tup] single_point_search: {182897.000000, 2.000000}
+[Tup] single_point_search_iterations: {2769591, 2.000000}
+[Tup] single_point_search: {180244.000000, 3.000000}
+[Tup] single_point_search_iterations: {2722085, 3.000000}
+[Tup] single_point_search: {169038.000000, 4.000000}
+[Tup] single_point_search_iterations: {2521390, 4.000000}
+[T] search (ms): 190278.000000
+[T] iterations (): 2894950.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {303353.000000, 0.000000}
+[Tup] single_point_search_iterations: {4639844, 0.000000}
+[Tup] single_point_search: {297455.000000, 1.000000}
+[Tup] single_point_search_iterations: {4539728, 1.000000}
+[Tup] single_point_search: {243058.000000, 2.000000}
+[Tup] single_point_search_iterations: {3617539, 2.000000}
+[T] search (ms): 303354.000000
+[T] iterations (): 4639844.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {523073.000000, 0.000000}
+[Tup] single_point_search_iterations: {7978497, 0.000000}
+[Tup] single_point_search: {515714.000000, 1.000000}
+[Tup] single_point_search_iterations: {7863285, 1.000000}
+[Tup] single_point_search: {503227.000000, 2.000000}
+[Tup] single_point_search_iterations: {7648940, 2.000000}
+[Tup] single_point_search: {488688.000000, 3.000000}
+[Tup] single_point_search_iterations: {7388257, 3.000000}
+[Tup] single_point_search: {478339.000000, 5.000000}
+[Tup] single_point_search_iterations: {7204411, 5.000000}
+[T] search (ms): 523073.000000
+[T] iterations (): 7978497.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {769553.000000, 0.000000}
+[Tup] single_point_search_iterations: {11710546, 0.000000}
+[Tup] single_point_search: {766278.000000, 1.000000}
+[Tup] single_point_search_iterations: {11660160, 1.000000}
+[Tup] single_point_search: {724873.000000, 2.000000}
+[Tup] single_point_search_iterations: {10973218, 2.000000}
+[Tup] single_point_search: {717231.000000, 4.000000}
+[Tup] single_point_search_iterations: {10825847, 4.000000}
+[Tup] single_point_search: {559840.000000, 6.000000}
+[Tup] single_point_search_iterations: {8251547, 6.000000}
+[T] search (ms): 769554.000000
+[T] iterations (): 11710546.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1037450.000000, 0.000000}
+[Tup] single_point_search_iterations: {15535854, 0.000000}
+[Tup] single_point_search: {1028825.000000, 1.000000}
+[Tup] single_point_search_iterations: {15398139, 1.000000}
+[Tup] single_point_search: {991795.000000, 2.000000}
+[Tup] single_point_search_iterations: {14768277, 2.000000}
+[Tup] single_point_search: {965616.000000, 3.000000}
+[Tup] single_point_search_iterations: {14287493, 3.000000}
+[T] search (ms): 1037451.000000
+[T] iterations (): 15535854.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1425726.000000, 0.000000}
+[Tup] single_point_search_iterations: {21615083, 0.000000}
+[Tup] single_point_search: {1406243.000000, 1.000000}
+[Tup] single_point_search_iterations: {21315341, 1.000000}
+[Tup] single_point_search: {1348200.000000, 2.000000}
+[Tup] single_point_search_iterations: {20340577, 2.000000}
+[Tup] single_point_search: {1207863.000000, 4.000000}
+[Tup] single_point_search_iterations: {17944864, 4.000000}
+[Tup] single_point_search: {1184058.000000, 6.000000}
+[Tup] single_point_search_iterations: {17551876, 6.000000}
+[T] search (ms): 1425726.000000
+[T] iterations (): 21615083.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1680106.000000, 0.000000}
+[Tup] single_point_search_iterations: {25084919, 0.000000}
+[Tup] single_point_search: {1668144.000000, 1.000000}
+[Tup] single_point_search_iterations: {24892119, 1.000000}
+[Tup] single_point_search: {1496559.000000, 3.000000}
+[Tup] single_point_search_iterations: {22183650, 3.000000}
+[T] search (ms): 1680107.000000
+[T] iterations (): 25084919.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2018488.000000, 0.000000}
+[Tup] single_point_search_iterations: {30545480, 0.000000}
+[Tup] single_point_search: {1947352.000000, 4.000000}
+[Tup] single_point_search_iterations: {29206260, 4.000000}
+[Tup] single_point_search: {1807670.000000, 6.000000}
+[Tup] single_point_search_iterations: {26770705, 6.000000}
+[T] search (ms): 2018517.000000
+[T] iterations (): 30545480.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {16948.000000, 0.000000}
+[Tup] single_point_search_iterations: {253799, 0.000000}
+[Tup] single_point_search: {16422.000000, 1.000000}
+[Tup] single_point_search_iterations: {245771, 1.000000}
+[Tup] single_point_search: {14905.000000, 2.000000}
+[Tup] single_point_search_iterations: {220477, 2.000000}
+[T] search (ms): 16949.000000
+[T] iterations (): 253799.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {83114.000000, 0.000000}
+[Tup] single_point_search_iterations: {1264301, 0.000000}
+[Tup] single_point_search: {80431.000000, 2.000000}
+[Tup] single_point_search_iterations: {1218796, 2.000000}
+[Tup] single_point_search: {68983.000000, 4.000000}
+[Tup] single_point_search_iterations: {1014507, 4.000000}
+[T] search (ms): 83114.000000
+[T] iterations (): 1264301.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {182546.000000, 0.000000}
+[Tup] single_point_search_iterations: {2808544, 0.000000}
+[Tup] single_point_search: {176317.000000, 2.000000}
+[Tup] single_point_search_iterations: {2700424, 2.000000}
+[Tup] single_point_search: {174541.000000, 4.000000}
+[Tup] single_point_search_iterations: {2667611, 4.000000}
+[Tup] single_point_search: {168732.000000, 5.000000}
+[Tup] single_point_search_iterations: {2563878, 5.000000}
+[T] search (ms): 182546.000000
+[T] iterations (): 2808544.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {342909.000000, 0.000000}
+[Tup] single_point_search_iterations: {5254909, 0.000000}
+[Tup] single_point_search: {335433.000000, 1.000000}
+[Tup] single_point_search_iterations: {5137107, 1.000000}
+[Tup] single_point_search: {326111.000000, 2.000000}
+[Tup] single_point_search_iterations: {4977615, 2.000000}
+[Tup] single_point_search: {318058.000000, 3.000000}
+[Tup] single_point_search_iterations: {4825728, 3.000000}
+[Tup] single_point_search: {312758.000000, 5.000000}
+[Tup] single_point_search_iterations: {4725258, 5.000000}
+[T] search (ms): 342909.000000
+[T] iterations (): 5254909.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {545331.000000, 0.000000}
+[Tup] single_point_search_iterations: {8255107, 0.000000}
+[Tup] single_point_search: {535059.000000, 1.000000}
+[Tup] single_point_search_iterations: {8095892, 1.000000}
+[Tup] single_point_search: {520588.000000, 2.000000}
+[Tup] single_point_search_iterations: {7853574, 2.000000}
+[Tup] single_point_search: {514759.000000, 3.000000}
+[Tup] single_point_search_iterations: {7744734, 3.000000}
+[Tup] single_point_search: {508962.000000, 5.000000}
+[Tup] single_point_search_iterations: {7633854, 5.000000}
+[T] search (ms): 545331.000000
+[T] iterations (): 8255107.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {773704.000000, 0.000000}
+[Tup] single_point_search_iterations: {11824159, 0.000000}
+[Tup] single_point_search: {763151.000000, 1.000000}
+[Tup] single_point_search_iterations: {11662950, 1.000000}
+[Tup] single_point_search: {733715.000000, 3.000000}
+[Tup] single_point_search_iterations: {11151135, 3.000000}
+[Tup] single_point_search: {717356.000000, 4.000000}
+[Tup] single_point_search_iterations: {10829160, 4.000000}
+[T] search (ms): 773704.000000
+[T] iterations (): 11824159.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1064222.000000, 0.000000}
+[Tup] single_point_search_iterations: {16079254, 0.000000}
+[Tup] single_point_search: {1053075.000000, 1.000000}
+[Tup] single_point_search_iterations: {15897945, 1.000000}
+[Tup] single_point_search: {1021902.000000, 2.000000}
+[Tup] single_point_search_iterations: {15356423, 2.000000}
+[Tup] single_point_search: {962846.000000, 4.000000}
+[Tup] single_point_search_iterations: {14278613, 4.000000}
+[T] search (ms): 1064223.000000
+[T] iterations (): 16079254.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1256636.000000, 0.000000}
+[Tup] single_point_search_iterations: {18762364, 0.000000}
+[Tup] single_point_search: {1251152.000000, 1.000000}
+[Tup] single_point_search_iterations: {18676052, 1.000000}
+[Tup] single_point_search: {1187368.000000, 2.000000}
+[Tup] single_point_search_iterations: {17632932, 2.000000}
+[Tup] single_point_search: {1061878.000000, 4.000000}
+[Tup] single_point_search_iterations: {15481977, 4.000000}
+[T] search (ms): 1256640.000000
+[T] iterations (): 18762364.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1743291.000000, 0.000000}
+[Tup] single_point_search_iterations: {26444110, 0.000000}
+[Tup] single_point_search: {1710210.000000, 1.000000}
+[Tup] single_point_search_iterations: {25928411, 1.000000}
+[Tup] single_point_search: {1658716.000000, 2.000000}
+[Tup] single_point_search_iterations: {25051918, 2.000000}
+[Tup] single_point_search: {1620946.000000, 4.000000}
+[Tup] single_point_search_iterations: {24479325, 4.000000}
+[T] search (ms): 1743291.000000
+[T] iterations (): 26444110.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2216382.000000, 0.000000}
+[Tup] single_point_search_iterations: {33599534, 0.000000}
+[Tup] single_point_search: {2184205.000000, 1.000000}
+[Tup] single_point_search_iterations: {33102869, 1.000000}
+[Tup] single_point_search: {2096643.000000, 2.000000}
+[Tup] single_point_search_iterations: {31631026, 2.000000}
+[Tup] single_point_search: {2070637.000000, 3.000000}
+[Tup] single_point_search_iterations: {31158969, 3.000000}
+[Tup] single_point_search: {2012093.000000, 4.000000}
+[Tup] single_point_search_iterations: {30055899, 4.000000}
+[T] search (ms): 2216383.000000
+[T] iterations (): 33599534.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {18318.000000, 0.000000}
+[Tup] single_point_search_iterations: {294285, 0.000000}
+[Tup] single_point_search: {18008.000000, 1.000000}
+[Tup] single_point_search_iterations: {289135, 1.000000}
+[Tup] single_point_search: {16573.000000, 2.000000}
+[Tup] single_point_search_iterations: {263100, 2.000000}
+[T] search (ms): 18318.000000
+[T] iterations (): 294285.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {79155.000000, 0.000000}
+[Tup] single_point_search_iterations: {1208208, 0.000000}
+[Tup] single_point_search: {78406.000000, 1.000000}
+[Tup] single_point_search_iterations: {1195774, 1.000000}
+[Tup] single_point_search: {75466.000000, 2.000000}
+[Tup] single_point_search_iterations: {1146430, 2.000000}
+[T] search (ms): 79155.000000
+[T] iterations (): 1208208.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {182832.000000, 0.000000}
+[Tup] single_point_search_iterations: {2759417, 0.000000}
+[Tup] single_point_search: {177579.000000, 1.000000}
+[Tup] single_point_search_iterations: {2679707, 1.000000}
+[Tup] single_point_search: {169297.000000, 2.000000}
+[Tup] single_point_search_iterations: {2546537, 2.000000}
+[Tup] single_point_search: {160605.000000, 3.000000}
+[Tup] single_point_search_iterations: {2403564, 3.000000}
+[Tup] single_point_search: {156304.000000, 4.000000}
+[Tup] single_point_search_iterations: {2331104, 4.000000}
+[Tup] single_point_search: {138843.000000, 5.000000}
+[Tup] single_point_search_iterations: {2043269, 5.000000}
+[T] search (ms): 182833.000000
+[T] iterations (): 2759417.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {333693.000000, 0.000000}
+[Tup] single_point_search_iterations: {5105150, 0.000000}
+[Tup] single_point_search: {327774.000000, 1.000000}
+[Tup] single_point_search_iterations: {5013082, 1.000000}
+[Tup] single_point_search: {312309.000000, 2.000000}
+[Tup] single_point_search_iterations: {4750335, 2.000000}
+[Tup] single_point_search: {290088.000000, 3.000000}
+[Tup] single_point_search_iterations: {4358530, 3.000000}
+[T] search (ms): 333693.000000
+[T] iterations (): 5105150.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {504282.000000, 0.000000}
+[Tup] single_point_search_iterations: {7645617, 0.000000}
+[Tup] single_point_search: {496947.000000, 1.000000}
+[Tup] single_point_search_iterations: {7532561, 1.000000}
+[Tup] single_point_search: {431491.000000, 2.000000}
+[Tup] single_point_search_iterations: {6465124, 2.000000}
+[Tup] single_point_search: {393236.000000, 4.000000}
+[Tup] single_point_search_iterations: {5853539, 4.000000}
+[T] search (ms): 504283.000000
+[T] iterations (): 7645617.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {740968.000000, 0.000000}
+[Tup] single_point_search_iterations: {11231285, 0.000000}
+[Tup] single_point_search: {734319.000000, 1.000000}
+[Tup] single_point_search_iterations: {11130505, 1.000000}
+[Tup] single_point_search: {722812.000000, 3.000000}
+[Tup] single_point_search_iterations: {10913275, 3.000000}
+[T] search (ms): 740969.000000
+[T] iterations (): 11231285.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1073400.000000, 0.000000}
+[Tup] single_point_search_iterations: {16495016, 0.000000}
+[Tup] single_point_search: {1056396.000000, 1.000000}
+[Tup] single_point_search_iterations: {16239470, 1.000000}
+[Tup] single_point_search: {1018953.000000, 2.000000}
+[Tup] single_point_search_iterations: {15612853, 2.000000}
+[Tup] single_point_search: {1001674.000000, 3.000000}
+[Tup] single_point_search_iterations: {15292993, 3.000000}
+[Tup] single_point_search: {963537.000000, 4.000000}
+[Tup] single_point_search_iterations: {14615774, 4.000000}
+[Tup] single_point_search: {922240.000000, 6.000000}
+[Tup] single_point_search_iterations: {13939542, 6.000000}
+[T] search (ms): 1073402.000000
+[T] iterations (): 16495016.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1348212.000000, 0.000000}
+[Tup] single_point_search_iterations: {20573065, 0.000000}
+[Tup] single_point_search: {1333426.000000, 1.000000}
+[Tup] single_point_search_iterations: {20343636, 1.000000}
+[Tup] single_point_search: {1304954.000000, 2.000000}
+[Tup] single_point_search_iterations: {19844848, 2.000000}
+[Tup] single_point_search: {1271972.000000, 3.000000}
+[Tup] single_point_search_iterations: {19249160, 3.000000}
+[Tup] single_point_search: {972163.000000, 6.000000}
+[Tup] single_point_search_iterations: {14199217, 6.000000}
+[T] search (ms): 1348212.000000
+[T] iterations (): 20573065.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1748278.000000, 0.000000}
+[Tup] single_point_search_iterations: {26545521, 0.000000}
+[Tup] single_point_search: {1719954.000000, 1.000000}
+[Tup] single_point_search_iterations: {26109368, 1.000000}
+[Tup] single_point_search: {1671087.000000, 2.000000}
+[Tup] single_point_search_iterations: {25299368, 2.000000}
+[Tup] single_point_search: {1610141.000000, 3.000000}
+[Tup] single_point_search_iterations: {24354934, 3.000000}
+[T] search (ms): 1748279.000000
+[T] iterations (): 26545521.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2137937.000000, 0.000000}
+[Tup] single_point_search_iterations: {32600298, 0.000000}
+[Tup] single_point_search: {2095816.000000, 1.000000}
+[Tup] single_point_search_iterations: {31947832, 1.000000}
+[Tup] single_point_search: {2050233.000000, 2.000000}
+[Tup] single_point_search_iterations: {31171110, 2.000000}
+[Tup] single_point_search: {2006749.000000, 3.000000}
+[Tup] single_point_search_iterations: {30368758, 3.000000}
+[Tup] single_point_search: {1988317.000000, 4.000000}
+[Tup] single_point_search_iterations: {30014286, 4.000000}
+[T] search (ms): 2137937.000000
+[T] iterations (): 32600298.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {20622.000000, 0.000000}
+[Tup] single_point_search_iterations: {323092, 0.000000}
+[Tup] single_point_search: {20236.000000, 1.000000}
+[Tup] single_point_search_iterations: {316985, 1.000000}
+[Tup] single_point_search: {19529.000000, 2.000000}
+[Tup] single_point_search_iterations: {304864, 2.000000}
+[Tup] single_point_search: {18834.000000, 4.000000}
+[Tup] single_point_search_iterations: {291571, 4.000000}
+[T] search (ms): 20622.000000
+[T] iterations (): 323092.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {79074.000000, 0.000000}
+[Tup] single_point_search_iterations: {1239554, 0.000000}
+[Tup] single_point_search: {77746.000000, 1.000000}
+[Tup] single_point_search_iterations: {1216986, 1.000000}
+[Tup] single_point_search: {73555.000000, 3.000000}
+[Tup] single_point_search_iterations: {1134718, 3.000000}
+[T] search (ms): 79075.000000
+[T] iterations (): 1239554.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {197059.000000, 0.000000}
+[Tup] single_point_search_iterations: {3102246, 0.000000}
+[Tup] single_point_search: {195094.000000, 1.000000}
+[Tup] single_point_search_iterations: {3070493, 1.000000}
+[Tup] single_point_search: {185030.000000, 2.000000}
+[Tup] single_point_search_iterations: {2896551, 2.000000}
+[Tup] single_point_search: {182575.000000, 3.000000}
+[Tup] single_point_search_iterations: {2850945, 3.000000}
+[Tup] single_point_search: {179678.000000, 4.000000}
+[Tup] single_point_search_iterations: {2793151, 4.000000}
+[Tup] single_point_search: {175474.000000, 5.000000}
+[Tup] single_point_search_iterations: {2713522, 5.000000}
+[T] search (ms): 197059.000000
+[T] iterations (): 3102246.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {354492.000000, 0.000000}
+[Tup] single_point_search_iterations: {5436193, 0.000000}
+[Tup] single_point_search: {347550.000000, 1.000000}
+[Tup] single_point_search_iterations: {5328361, 1.000000}
+[Tup] single_point_search: {335696.000000, 2.000000}
+[Tup] single_point_search_iterations: {5125284, 2.000000}
+[Tup] single_point_search: {331386.000000, 3.000000}
+[Tup] single_point_search_iterations: {5045650, 3.000000}
+[Tup] single_point_search: {320983.000000, 5.000000}
+[Tup] single_point_search_iterations: {4847653, 5.000000}
+[T] search (ms): 354492.000000
+[T] iterations (): 5436193.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {541773.000000, 0.000000}
+[Tup] single_point_search_iterations: {8315440, 0.000000}
+[Tup] single_point_search: {531635.000000, 1.000000}
+[Tup] single_point_search_iterations: {8157322, 1.000000}
+[Tup] single_point_search: {508193.000000, 2.000000}
+[Tup] single_point_search_iterations: {7764401, 2.000000}
+[Tup] single_point_search: {499128.000000, 3.000000}
+[Tup] single_point_search_iterations: {7600746, 3.000000}
+[Tup] single_point_search: {495864.000000, 5.000000}
+[Tup] single_point_search_iterations: {7540831, 5.000000}
+[Tup] single_point_search: {486206.000000, 6.000000}
+[Tup] single_point_search_iterations: {7364496, 6.000000}
+[T] search (ms): 541773.000000
+[T] iterations (): 8315440.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {778239.000000, 0.000000}
+[Tup] single_point_search_iterations: {11925924, 0.000000}
+[Tup] single_point_search: {771268.000000, 1.000000}
+[Tup] single_point_search_iterations: {11815644, 1.000000}
+[Tup] single_point_search: {738797.000000, 2.000000}
+[Tup] single_point_search_iterations: {11259158, 2.000000}
+[Tup] single_point_search: {702887.000000, 3.000000}
+[Tup] single_point_search_iterations: {10622777, 3.000000}
+[Tup] single_point_search: {699437.000000, 6.000000}
+[Tup] single_point_search_iterations: {10560735, 6.000000}
+[T] search (ms): 778239.000000
+[T] iterations (): 11925924.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1039464.000000, 0.000000}
+[Tup] single_point_search_iterations: {15459778, 0.000000}
+[Tup] single_point_search: {1008653.000000, 2.000000}
+[Tup] single_point_search_iterations: {14967466, 2.000000}
+[Tup] single_point_search: {999844.000000, 5.000000}
+[Tup] single_point_search_iterations: {14809686, 5.000000}
+[T] search (ms): 1039473.000000
+[T] iterations (): 15459778.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1383231.000000, 0.000000}
+[Tup] single_point_search_iterations: {20919138, 0.000000}
+[Tup] single_point_search: {1361178.000000, 1.000000}
+[Tup] single_point_search_iterations: {20581647, 1.000000}
+[Tup] single_point_search: {1332264.000000, 2.000000}
+[Tup] single_point_search_iterations: {20094877, 2.000000}
+[Tup] single_point_search: {1316684.000000, 3.000000}
+[Tup] single_point_search_iterations: {19808137, 3.000000}
+[Tup] single_point_search: {1190903.000000, 4.000000}
+[Tup] single_point_search_iterations: {17542150, 4.000000}
+[T] search (ms): 1383232.000000
+[T] iterations (): 20919138.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1789410.000000, 0.000000}
+[Tup] single_point_search_iterations: {27409190, 0.000000}
+[Tup] single_point_search: {1777456.000000, 1.000000}
+[Tup] single_point_search_iterations: {27212796, 1.000000}
+[Tup] single_point_search: {1706026.000000, 2.000000}
+[Tup] single_point_search_iterations: {25996934, 2.000000}
+[Tup] single_point_search: {1624072.000000, 4.000000}
+[Tup] single_point_search_iterations: {24598842, 4.000000}
+[Tup] single_point_search: {1545420.000000, 5.000000}
+[Tup] single_point_search_iterations: {23238309, 5.000000}
+[Tup] single_point_search: {1467526.000000, 6.000000}
+[Tup] single_point_search_iterations: {21929218, 6.000000}
+[T] search (ms): 1789410.000000
+[T] iterations (): 27409190.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2081654.000000, 0.000000}
+[Tup] single_point_search_iterations: {31483164, 0.000000}
+[Tup] single_point_search: {2049562.000000, 1.000000}
+[Tup] single_point_search_iterations: {30999189, 1.000000}
+[Tup] single_point_search: {2037778.000000, 3.000000}
+[Tup] single_point_search_iterations: {30792579, 3.000000}
+[Tup] single_point_search: {1974293.000000, 4.000000}
+[Tup] single_point_search_iterations: {29667573, 4.000000}
+[Tup] single_point_search: {1889331.000000, 5.000000}
+[Tup] single_point_search_iterations: {28222269, 5.000000}
+[T] search (ms): 2081656.000000
+[T] iterations (): 31483164.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {9173.000000, 0.000000}
+[Tup] single_point_search_iterations: {156417, 0.000000}
+[Tup] single_point_search: {9119.000000, 1.000000}
+[Tup] single_point_search_iterations: {155452, 1.000000}
+[Tup] single_point_search: {8639.000000, 3.000000}
+[Tup] single_point_search_iterations: {146012, 3.000000}
+[T] search (ms): 9173.000000
+[T] iterations (): 156417.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {83969.000000, 0.000000}
+[Tup] single_point_search_iterations: {1293437, 0.000000}
+[Tup] single_point_search: {82377.000000, 1.000000}
+[Tup] single_point_search_iterations: {1268471, 1.000000}
+[Tup] single_point_search: {80052.000000, 2.000000}
+[Tup] single_point_search_iterations: {1228880, 2.000000}
+[Tup] single_point_search: {79079.000000, 5.000000}
+[Tup] single_point_search_iterations: {1211094, 5.000000}
+[T] search (ms): 83969.000000
+[T] iterations (): 1293437.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {187842.000000, 0.000000}
+[Tup] single_point_search_iterations: {2913710, 0.000000}
+[Tup] single_point_search: {185933.000000, 1.000000}
+[Tup] single_point_search_iterations: {2882534, 1.000000}
+[Tup] single_point_search: {180447.000000, 2.000000}
+[Tup] single_point_search_iterations: {2788626, 2.000000}
+[Tup] single_point_search: {174439.000000, 4.000000}
+[Tup] single_point_search_iterations: {2673258, 4.000000}
+[T] search (ms): 187843.000000
+[T] iterations (): 2913710.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {311460.000000, 0.000000}
+[Tup] single_point_search_iterations: {4697704, 0.000000}
+[Tup] single_point_search: {308233.000000, 1.000000}
+[Tup] single_point_search_iterations: {4646460, 1.000000}
+[Tup] single_point_search: {290771.000000, 2.000000}
+[Tup] single_point_search_iterations: {4351514, 2.000000}
+[T] search (ms): 311461.000000
+[T] iterations (): 4697704.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {537904.000000, 0.000000}
+[Tup] single_point_search_iterations: {8259914, 0.000000}
+[Tup] single_point_search: {535571.000000, 1.000000}
+[Tup] single_point_search_iterations: {8221462, 1.000000}
+[Tup] single_point_search: {514335.000000, 2.000000}
+[Tup] single_point_search_iterations: {7862265, 2.000000}
+[Tup] single_point_search: {499523.000000, 3.000000}
+[Tup] single_point_search_iterations: {7586877, 3.000000}
+[Tup] single_point_search: {492818.000000, 6.000000}
+[Tup] single_point_search_iterations: {7464491, 6.000000}
+[T] search (ms): 537905.000000
+[T] iterations (): 8259914.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {755710.000000, 0.000000}
+[Tup] single_point_search_iterations: {11629412, 0.000000}
+[Tup] single_point_search: {747008.000000, 1.000000}
+[Tup] single_point_search_iterations: {11489949, 1.000000}
+[Tup] single_point_search: {727745.000000, 2.000000}
+[Tup] single_point_search_iterations: {11163055, 2.000000}
+[Tup] single_point_search: {710018.000000, 3.000000}
+[Tup] single_point_search_iterations: {10834064, 3.000000}
+[T] search (ms): 755711.000000
+[T] iterations (): 11629412.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1089743.000000, 0.000000}
+[Tup] single_point_search_iterations: {16437059, 0.000000}
+[Tup] single_point_search: {1073724.000000, 1.000000}
+[Tup] single_point_search_iterations: {16184837, 1.000000}
+[Tup] single_point_search: {1017964.000000, 2.000000}
+[Tup] single_point_search_iterations: {15249204, 2.000000}
+[Tup] single_point_search: {998131.000000, 4.000000}
+[Tup] single_point_search_iterations: {14870922, 4.000000}
+[T] search (ms): 1089743.000000
+[T] iterations (): 16437059.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1313387.000000, 0.000000}
+[Tup] single_point_search_iterations: {19802302, 0.000000}
+[Tup] single_point_search: {1292994.000000, 1.000000}
+[Tup] single_point_search_iterations: {19476169, 1.000000}
+[Tup] single_point_search: {1205473.000000, 3.000000}
+[Tup] single_point_search_iterations: {17912556, 3.000000}
+[T] search (ms): 1313388.000000
+[T] iterations (): 19802302.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1682176.000000, 0.000000}
+[Tup] single_point_search_iterations: {25369522, 0.000000}
+[Tup] single_point_search: {1650030.000000, 1.000000}
+[Tup] single_point_search_iterations: {24870879, 1.000000}
+[Tup] single_point_search: {1625716.000000, 3.000000}
+[Tup] single_point_search_iterations: {24426689, 3.000000}
+[Tup] single_point_search: {1516966.000000, 4.000000}
+[Tup] single_point_search_iterations: {22426603, 4.000000}
+[T] search (ms): 1682176.000000
+[T] iterations (): 25369522.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2053157.000000, 0.000000}
+[Tup] single_point_search_iterations: {30802475, 0.000000}
+[Tup] single_point_search: {2025019.000000, 1.000000}
+[Tup] single_point_search_iterations: {30352872, 1.000000}
+[Tup] single_point_search: {1954756.000000, 2.000000}
+[Tup] single_point_search_iterations: {29168438, 2.000000}
+[T] search (ms): 2053157.000000
+[T] iterations (): 30802475.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {20428.000000, 0.000000}
+[Tup] single_point_search_iterations: {330917, 0.000000}
+[Tup] single_point_search: {19896.000000, 1.000000}
+[Tup] single_point_search_iterations: {321369, 1.000000}
+[Tup] single_point_search: {18902.000000, 2.000000}
+[Tup] single_point_search_iterations: {303432, 2.000000}
+[Tup] single_point_search: {18124.000000, 4.000000}
+[Tup] single_point_search_iterations: {288288, 4.000000}
+[Tup] single_point_search: {16410.000000, 5.000000}
+[Tup] single_point_search_iterations: {257173, 5.000000}
+[T] search (ms): 20429.000000
+[T] iterations (): 330917.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {81156.000000, 0.000000}
+[Tup] single_point_search_iterations: {1242726, 0.000000}
+[Tup] single_point_search: {80490.000000, 1.000000}
+[Tup] single_point_search_iterations: {1231869, 1.000000}
+[Tup] single_point_search: {75782.000000, 2.000000}
+[Tup] single_point_search_iterations: {1152930, 2.000000}
+[Tup] single_point_search: {71591.000000, 3.000000}
+[Tup] single_point_search_iterations: {1081440, 3.000000}
+[T] search (ms): 81156.000000
+[T] iterations (): 1242726.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {198121.000000, 0.000000}
+[Tup] single_point_search_iterations: {3074592, 0.000000}
+[Tup] single_point_search: {194093.000000, 1.000000}
+[Tup] single_point_search_iterations: {3011120, 1.000000}
+[Tup] single_point_search: {185082.000000, 2.000000}
+[Tup] single_point_search_iterations: {2857674, 2.000000}
+[Tup] single_point_search: {180017.000000, 3.000000}
+[Tup] single_point_search_iterations: {2763646, 3.000000}
+[Tup] single_point_search: {177741.000000, 4.000000}
+[Tup] single_point_search_iterations: {2720436, 4.000000}
+[Tup] single_point_search: {175704.000000, 5.000000}
+[Tup] single_point_search_iterations: {2682877, 5.000000}
+[Tup] single_point_search: {174232.000000, 6.000000}
+[Tup] single_point_search_iterations: {2656286, 6.000000}
+[T] search (ms): 198121.000000
+[T] iterations (): 3074592.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {340536.000000, 0.000000}
+[Tup] single_point_search_iterations: {5230953, 0.000000}
+[Tup] single_point_search: {337213.000000, 1.000000}
+[Tup] single_point_search_iterations: {5178174, 1.000000}
+[Tup] single_point_search: {327893.000000, 2.000000}
+[Tup] single_point_search_iterations: {5020612, 2.000000}
+[Tup] single_point_search: {324860.000000, 3.000000}
+[Tup] single_point_search_iterations: {4963353, 3.000000}
+[T] search (ms): 340537.000000
+[T] iterations (): 5230953.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {530230.000000, 0.000000}
+[Tup] single_point_search_iterations: {8124776, 0.000000}
+[Tup] single_point_search: {521161.000000, 1.000000}
+[Tup] single_point_search_iterations: {7981915, 1.000000}
+[Tup] single_point_search: {513688.000000, 3.000000}
+[Tup] single_point_search_iterations: {7838611, 3.000000}
+[Tup] single_point_search: {504842.000000, 4.000000}
+[Tup] single_point_search_iterations: {7664712, 4.000000}
+[T] search (ms): 530231.000000
+[T] iterations (): 8124776.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {692392.000000, 0.000000}
+[Tup] single_point_search_iterations: {10426518, 0.000000}
+[Tup] single_point_search: {671809.000000, 1.000000}
+[Tup] single_point_search_iterations: {10112026, 1.000000}
+[T] search (ms): 692393.000000
+[T] iterations (): 10426518.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1071256.000000, 0.000000}
+[Tup] single_point_search_iterations: {16223161, 0.000000}
+[Tup] single_point_search: {1059941.000000, 1.000000}
+[Tup] single_point_search_iterations: {16041644, 1.000000}
+[Tup] single_point_search: {999323.000000, 2.000000}
+[Tup] single_point_search_iterations: {15033081, 2.000000}
+[Tup] single_point_search: {926117.000000, 4.000000}
+[Tup] single_point_search_iterations: {13781990, 4.000000}
+[T] search (ms): 1071256.000000
+[T] iterations (): 16223161.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1239511.000000, 0.000000}
+[Tup] single_point_search_iterations: {18553413, 0.000000}
+[Tup] single_point_search: {1210314.000000, 1.000000}
+[Tup] single_point_search_iterations: {18108586, 1.000000}
+[Tup] single_point_search: {1179915.000000, 2.000000}
+[Tup] single_point_search_iterations: {17601671, 2.000000}
+[Tup] single_point_search: {1106348.000000, 4.000000}
+[Tup] single_point_search_iterations: {16332789, 4.000000}
+[T] search (ms): 1239513.000000
+[T] iterations (): 18553413.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1713763.000000, 0.000000}
+[Tup] single_point_search_iterations: {25727990, 0.000000}
+[Tup] single_point_search: {1687848.000000, 1.000000}
+[Tup] single_point_search_iterations: {25328111, 1.000000}
+[Tup] single_point_search: {1638831.000000, 2.000000}
+[Tup] single_point_search_iterations: {24651651, 2.000000}
+[Tup] single_point_search: {1623510.000000, 3.000000}
+[Tup] single_point_search_iterations: {24366237, 3.000000}
+[T] search (ms): 1713764.000000
+[T] iterations (): 25727990.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2106611.000000, 0.000000}
+[Tup] single_point_search_iterations: {31579457, 0.000000}
+[Tup] single_point_search: {2062923.000000, 2.000000}
+[Tup] single_point_search_iterations: {30837526, 2.000000}
+[Tup] single_point_search: {1941727.000000, 3.000000}
+[Tup] single_point_search_iterations: {28687691, 3.000000}
+[Tup] single_point_search: {1859269.000000, 5.000000}
+[Tup] single_point_search_iterations: {27253329, 5.000000}
+[T] search (ms): 2106614.000000
+[T] iterations (): 31579457.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {19225.000000, 0.000000}
+[Tup] single_point_search_iterations: {305062, 0.000000}
+[Tup] single_point_search: {18868.000000, 1.000000}
+[Tup] single_point_search_iterations: {299374, 1.000000}
+[Tup] single_point_search: {18184.000000, 2.000000}
+[Tup] single_point_search_iterations: {287602, 2.000000}
+[Tup] single_point_search: {17619.000000, 3.000000}
+[Tup] single_point_search_iterations: {277032, 3.000000}
+[Tup] single_point_search: {17186.000000, 4.000000}
+[Tup] single_point_search_iterations: {268985, 4.000000}
+[T] search (ms): 19225.000000
+[T] iterations (): 305062.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {26339.000000, 0.000000}
+[Tup] single_point_search_iterations: {466455, 0.000000}
+[Tup] single_point_search: {26053.000000, 1.000000}
+[Tup] single_point_search_iterations: {461157, 1.000000}
+[Tup] single_point_search: {24781.000000, 2.000000}
+[Tup] single_point_search_iterations: {437643, 2.000000}
+[Tup] single_point_search: {23977.000000, 3.000000}
+[Tup] single_point_search_iterations: {421331, 3.000000}
+[Tup] single_point_search: {22536.000000, 4.000000}
+[Tup] single_point_search_iterations: {392132, 4.000000}
+[T] search (ms): 26339.000000
+[T] iterations (): 466455.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {184242.000000, 0.000000}
+[Tup] single_point_search_iterations: {2813845, 0.000000}
+[Tup] single_point_search: {180766.000000, 2.000000}
+[Tup] single_point_search_iterations: {2754760, 2.000000}
+[Tup] single_point_search: {178705.000000, 6.000000}
+[Tup] single_point_search_iterations: {2714506, 6.000000}
+[T] search (ms): 184244.000000
+[T] iterations (): 2813845.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {188655.000000, 0.000000}
+[Tup] single_point_search_iterations: {3060841, 0.000000}
+[Tup] single_point_search: {186972.000000, 1.000000}
+[Tup] single_point_search_iterations: {3033037, 1.000000}
+[Tup] single_point_search: {181953.000000, 2.000000}
+[Tup] single_point_search_iterations: {2944094, 2.000000}
+[Tup] single_point_search: {178997.000000, 3.000000}
+[Tup] single_point_search_iterations: {2887147, 3.000000}
+[T] search (ms): 188655.000000
+[T] iterations (): 3060841.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {512337.000000, 0.000000}
+[Tup] single_point_search_iterations: {7819486, 0.000000}
+[Tup] single_point_search: {498349.000000, 2.000000}
+[Tup] single_point_search_iterations: {7577088, 2.000000}
+[T] search (ms): 512338.000000
+[T] iterations (): 7819486.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {727853.000000, 0.000000}
+[Tup] single_point_search_iterations: {11042914, 0.000000}
+[Tup] single_point_search: {723607.000000, 1.000000}
+[Tup] single_point_search_iterations: {10970719, 1.000000}
+[Tup] single_point_search: {683433.000000, 2.000000}
+[Tup] single_point_search_iterations: {10299764, 2.000000}
+[T] search (ms): 727853.000000
+[T] iterations (): 11042914.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1047322.000000, 0.000000}
+[Tup] single_point_search_iterations: {15843432, 0.000000}
+[Tup] single_point_search: {1030106.000000, 1.000000}
+[Tup] single_point_search_iterations: {15572659, 1.000000}
+[Tup] single_point_search: {998585.000000, 2.000000}
+[Tup] single_point_search_iterations: {15035935, 2.000000}
+[Tup] single_point_search: {948473.000000, 4.000000}
+[Tup] single_point_search_iterations: {14079266, 4.000000}
+[T] search (ms): 1047322.000000
+[T] iterations (): 15843432.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1299395.000000, 0.000000}
+[Tup] single_point_search_iterations: {19957092, 0.000000}
+[Tup] single_point_search: {1278147.000000, 1.000000}
+[Tup] single_point_search_iterations: {19623532, 1.000000}
+[Tup] single_point_search: {1255736.000000, 5.000000}
+[Tup] single_point_search_iterations: {19203955, 5.000000}
+[Tup] single_point_search: {1054414.000000, 6.000000}
+[Tup] single_point_search_iterations: {15686726, 6.000000}
+[T] search (ms): 1299395.000000
+[T] iterations (): 19957092.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1768994.000000, 0.000000}
+[Tup] single_point_search_iterations: {26581085, 0.000000}
+[Tup] single_point_search: {1745920.000000, 1.000000}
+[Tup] single_point_search_iterations: {26228043, 1.000000}
+[Tup] single_point_search: {1694688.000000, 2.000000}
+[Tup] single_point_search_iterations: {25387407, 2.000000}
+[Tup] single_point_search: {1668721.000000, 4.000000}
+[Tup] single_point_search_iterations: {24871351, 4.000000}
+[Tup] single_point_search: {1612166.000000, 6.000000}
+[Tup] single_point_search_iterations: {24004596, 6.000000}
+[T] search (ms): 1768996.000000
+[T] iterations (): 26581085.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2067633.000000, 0.000000}
+[Tup] single_point_search_iterations: {31104992, 0.000000}
+[Tup] single_point_search: {2054413.000000, 1.000000}
+[Tup] single_point_search_iterations: {30893731, 1.000000}
+[Tup] single_point_search: {1983947.000000, 2.000000}
+[Tup] single_point_search_iterations: {29711136, 2.000000}
+[T] search (ms): 2067634.000000
+[T] iterations (): 31104992.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {20887.000000, 0.000000}
+[Tup] single_point_search_iterations: {326075, 0.000000}
+[Tup] single_point_search: {20614.000000, 1.000000}
+[Tup] single_point_search_iterations: {321793, 1.000000}
+[Tup] single_point_search: {19453.000000, 2.000000}
+[Tup] single_point_search_iterations: {301991, 2.000000}
+[Tup] single_point_search: {17949.000000, 4.000000}
+[Tup] single_point_search_iterations: {274473, 4.000000}
+[T] search (ms): 20887.000000
+[T] iterations (): 326075.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {69275.000000, 0.000000}
+[Tup] single_point_search_iterations: {1131937, 0.000000}
+[Tup] single_point_search: {66747.000000, 1.000000}
+[Tup] single_point_search_iterations: {1087505, 1.000000}
+[Tup] single_point_search: {62930.000000, 2.000000}
+[Tup] single_point_search_iterations: {1018598, 2.000000}
+[Tup] single_point_search: {57767.000000, 3.000000}
+[Tup] single_point_search_iterations: {921338, 3.000000}
+[T] search (ms): 69276.000000
+[T] iterations (): 1131937.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {193233.000000, 0.000000}
+[Tup] single_point_search_iterations: {2945277, 0.000000}
+[Tup] single_point_search: {189559.000000, 1.000000}
+[Tup] single_point_search_iterations: {2888817, 1.000000}
+[Tup] single_point_search: {183552.000000, 2.000000}
+[Tup] single_point_search_iterations: {2788751, 2.000000}
+[Tup] single_point_search: {181038.000000, 3.000000}
+[Tup] single_point_search_iterations: {2743506, 3.000000}
+[Tup] single_point_search: {154232.000000, 6.000000}
+[Tup] single_point_search_iterations: {2287771, 6.000000}
+[T] search (ms): 193234.000000
+[T] iterations (): 2945277.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {326298.000000, 0.000000}
+[Tup] single_point_search_iterations: {4941343, 0.000000}
+[Tup] single_point_search: {315295.000000, 2.000000}
+[Tup] single_point_search_iterations: {4752513, 2.000000}
+[Tup] single_point_search: {307321.000000, 3.000000}
+[Tup] single_point_search_iterations: {4604145, 3.000000}
+[T] search (ms): 326300.000000
+[T] iterations (): 4941343.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {527971.000000, 0.000000}
+[Tup] single_point_search_iterations: {7993864, 0.000000}
+[Tup] single_point_search: {520404.000000, 1.000000}
+[Tup] single_point_search_iterations: {7879291, 1.000000}
+[Tup] single_point_search: {510725.000000, 3.000000}
+[Tup] single_point_search_iterations: {7700426, 3.000000}
+[Tup] single_point_search: {483947.000000, 4.000000}
+[Tup] single_point_search_iterations: {7223600, 4.000000}
+[Tup] single_point_search: {446468.000000, 5.000000}
+[Tup] single_point_search_iterations: {6603718, 5.000000}
+[Tup] single_point_search: {423709.000000, 6.000000}
+[Tup] single_point_search_iterations: {6236692, 6.000000}
+[T] search (ms): 527972.000000
+[T] iterations (): 7993864.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {741159.000000, 0.000000}
+[Tup] single_point_search_iterations: {11281233, 0.000000}
+[Tup] single_point_search: {729474.000000, 1.000000}
+[Tup] single_point_search_iterations: {11101284, 1.000000}
+[Tup] single_point_search: {719820.000000, 3.000000}
+[Tup] single_point_search_iterations: {10925938, 3.000000}
+[T] search (ms): 741160.000000
+[T] iterations (): 11281233.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1036067.000000, 0.000000}
+[Tup] single_point_search_iterations: {15959079, 0.000000}
+[Tup] single_point_search: {1021867.000000, 1.000000}
+[Tup] single_point_search_iterations: {15733293, 1.000000}
+[Tup] single_point_search: {989005.000000, 2.000000}
+[Tup] single_point_search_iterations: {15158144, 2.000000}
+[Tup] single_point_search: {963724.000000, 3.000000}
+[Tup] single_point_search_iterations: {14684755, 3.000000}
+[T] search (ms): 1036067.000000
+[T] iterations (): 15959079.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1282447.000000, 0.000000}
+[Tup] single_point_search_iterations: {19037839, 0.000000}
+[Tup] single_point_search: {1267839.000000, 1.000000}
+[Tup] single_point_search_iterations: {18809750, 1.000000}
+[T] search (ms): 1282447.000000
+[T] iterations (): 19037839.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1685187.000000, 0.000000}
+[Tup] single_point_search_iterations: {25448252, 0.000000}
+[Tup] single_point_search: {1677237.000000, 1.000000}
+[Tup] single_point_search_iterations: {25317003, 1.000000}
+[Tup] single_point_search: {1650507.000000, 2.000000}
+[Tup] single_point_search_iterations: {24871981, 2.000000}
+[Tup] single_point_search: {1550421.000000, 3.000000}
+[Tup] single_point_search_iterations: {23232796, 3.000000}
+[T] search (ms): 1685187.000000
+[T] iterations (): 25448252.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2161277.000000, 0.000000}
+[Tup] single_point_search_iterations: {32845742, 0.000000}
+[Tup] single_point_search: {2142220.000000, 1.000000}
+[Tup] single_point_search_iterations: {32552774, 1.000000}
+[Tup] single_point_search: {2041793.000000, 3.000000}
+[Tup] single_point_search_iterations: {30839899, 3.000000}
+[Tup] single_point_search: {1901035.000000, 6.000000}
+[Tup] single_point_search_iterations: {28298139, 6.000000}
+[T] search (ms): 2161277.000000
+[T] iterations (): 32845742.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {17860.000000, 0.000000}
+[Tup] single_point_search_iterations: {281330, 0.000000}
+[T] search (ms): 17863.000000
+[T] iterations (): 281330.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {83567.000000, 0.000000}
+[Tup] single_point_search_iterations: {1301659, 0.000000}
+[Tup] single_point_search: {81586.000000, 3.000000}
+[Tup] single_point_search_iterations: {1264301, 3.000000}
+[Tup] single_point_search: {79747.000000, 4.000000}
+[Tup] single_point_search_iterations: {1229321, 4.000000}
+[Tup] single_point_search: {77310.000000, 5.000000}
+[Tup] single_point_search_iterations: {1184333, 5.000000}
+[T] search (ms): 83568.000000
+[T] iterations (): 1301659.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {178922.000000, 0.000000}
+[Tup] single_point_search_iterations: {2761782, 0.000000}
+[Tup] single_point_search: {176084.000000, 1.000000}
+[Tup] single_point_search_iterations: {2716411, 1.000000}
+[T] search (ms): 178922.000000
+[T] iterations (): 2761782.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {346387.000000, 0.000000}
+[Tup] single_point_search_iterations: {5376962, 0.000000}
+[Tup] single_point_search: {339297.000000, 1.000000}
+[Tup] single_point_search_iterations: {5264801, 1.000000}
+[Tup] single_point_search: {328799.000000, 2.000000}
+[Tup] single_point_search_iterations: {5085320, 2.000000}
+[Tup] single_point_search: {323816.000000, 3.000000}
+[Tup] single_point_search_iterations: {4989135, 3.000000}
+[Tup] single_point_search: {296524.000000, 4.000000}
+[Tup] single_point_search_iterations: {4483101, 4.000000}
+[T] search (ms): 346387.000000
+[T] iterations (): 5376962.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {515466.000000, 0.000000}
+[Tup] single_point_search_iterations: {7795654, 0.000000}
+[Tup] single_point_search: {507125.000000, 1.000000}
+[Tup] single_point_search_iterations: {7668448, 1.000000}
+[Tup] single_point_search: {498232.000000, 2.000000}
+[Tup] single_point_search_iterations: {7522791, 2.000000}
+[Tup] single_point_search: {480504.000000, 6.000000}
+[Tup] single_point_search_iterations: {7185340, 6.000000}
+[T] search (ms): 515467.000000
+[T] iterations (): 7795654.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {791198.000000, 0.000000}
+[Tup] single_point_search_iterations: {12336681, 0.000000}
+[Tup] single_point_search: {781195.000000, 1.000000}
+[Tup] single_point_search_iterations: {12182093, 1.000000}
+[Tup] single_point_search: {748888.000000, 2.000000}
+[Tup] single_point_search_iterations: {11632230, 2.000000}
+[Tup] single_point_search: {739113.000000, 3.000000}
+[Tup] single_point_search_iterations: {11445010, 3.000000}
+[Tup] single_point_search: {723559.000000, 4.000000}
+[Tup] single_point_search_iterations: {11136396, 4.000000}
+[Tup] single_point_search: {709329.000000, 5.000000}
+[Tup] single_point_search_iterations: {10877912, 5.000000}
+[Tup] single_point_search: {698169.000000, 6.000000}
+[Tup] single_point_search_iterations: {10678921, 6.000000}
+[T] search (ms): 791198.000000
+[T] iterations (): 12336681.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1009169.000000, 0.000000}
+[Tup] single_point_search_iterations: {15265793, 0.000000}
+[Tup] single_point_search: {947809.000000, 2.000000}
+[Tup] single_point_search_iterations: {14255708, 2.000000}
+[Tup] single_point_search: {909787.000000, 5.000000}
+[Tup] single_point_search_iterations: {13607203, 5.000000}
+[T] search (ms): 1009175.000000
+[T] iterations (): 15265793.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1412660.000000, 0.000000}
+[Tup] single_point_search_iterations: {21468336, 0.000000}
+[Tup] single_point_search: {1380380.000000, 1.000000}
+[Tup] single_point_search_iterations: {20974664, 1.000000}
+[Tup] single_point_search: {1321433.000000, 2.000000}
+[Tup] single_point_search_iterations: {19998325, 2.000000}
+[Tup] single_point_search: {1282071.000000, 4.000000}
+[Tup] single_point_search_iterations: {19266487, 4.000000}
+[T] search (ms): 1412660.000000
+[T] iterations (): 21468336.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1729676.000000, 0.000000}
+[Tup] single_point_search_iterations: {25938178, 0.000000}
+[Tup] single_point_search: {1693926.000000, 1.000000}
+[Tup] single_point_search_iterations: {25383334, 1.000000}
+[Tup] single_point_search: {1642596.000000, 2.000000}
+[Tup] single_point_search_iterations: {24671459, 2.000000}
+[Tup] single_point_search: {1533537.000000, 3.000000}
+[Tup] single_point_search_iterations: {22743238, 3.000000}
+[T] search (ms): 1729676.000000
+[T] iterations (): 25938178.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2141510.000000, 0.000000}
+[Tup] single_point_search_iterations: {32368569, 0.000000}
+[Tup] single_point_search: {2098830.000000, 1.000000}
+[Tup] single_point_search_iterations: {31721240, 1.000000}
+[Tup] single_point_search: {2050934.000000, 2.000000}
+[Tup] single_point_search_iterations: {30910878, 2.000000}
+[Tup] single_point_search: {2032106.000000, 3.000000}
+[Tup] single_point_search_iterations: {30560670, 3.000000}
+[Tup] single_point_search: {2005869.000000, 4.000000}
+[Tup] single_point_search_iterations: {30053862, 4.000000}
+[T] search (ms): 2141511.000000
+[T] iterations (): 32368569.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {17831.000000, 0.000000}
+[Tup] single_point_search_iterations: {284412, 0.000000}
+[Tup] single_point_search: {16876.000000, 2.000000}
+[Tup] single_point_search_iterations: {267726, 2.000000}
+[Tup] single_point_search: {15737.000000, 3.000000}
+[Tup] single_point_search_iterations: {247413, 3.000000}
+[T] search (ms): 17832.000000
+[T] iterations (): 284412.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {70021.000000, 0.000000}
+[Tup] single_point_search_iterations: {1040570, 0.000000}
+[Tup] single_point_search: {66071.000000, 1.000000}
+[Tup] single_point_search_iterations: {980455, 1.000000}
+[Tup] single_point_search: {62160.000000, 3.000000}
+[Tup] single_point_search_iterations: {915513, 3.000000}
+[T] search (ms): 70022.000000
+[T] iterations (): 1040570.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {172039.000000, 0.000000}
+[Tup] single_point_search_iterations: {2552233, 0.000000}
+[Tup] single_point_search: {166945.000000, 1.000000}
+[Tup] single_point_search_iterations: {2472394, 1.000000}
+[Tup] single_point_search: {151468.000000, 3.000000}
+[Tup] single_point_search_iterations: {2206220, 3.000000}
+[T] search (ms): 172039.000000
+[T] iterations (): 2552233.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {303584.000000, 0.000000}
+[Tup] single_point_search_iterations: {4587245, 0.000000}
+[T] search (ms): 303606.000000
+[T] iterations (): 4587245.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {475930.000000, 0.000000}
+[Tup] single_point_search_iterations: {7471154, 0.000000}
+[Tup] single_point_search: {466577.000000, 1.000000}
+[Tup] single_point_search_iterations: {7319425, 1.000000}
+[Tup] single_point_search: {451482.000000, 2.000000}
+[Tup] single_point_search_iterations: {7058673, 2.000000}
+[Tup] single_point_search: {406346.000000, 3.000000}
+[Tup] single_point_search_iterations: {6284697, 3.000000}
+[Tup] single_point_search: {342572.000000, 5.000000}
+[Tup] single_point_search_iterations: {5265101, 5.000000}
+[T] search (ms): 475930.000000
+[T] iterations (): 7471154.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {791165.000000, 0.000000}
+[Tup] single_point_search_iterations: {12282169, 0.000000}
+[Tup] single_point_search: {778890.000000, 1.000000}
+[Tup] single_point_search_iterations: {12091357, 1.000000}
+[Tup] single_point_search: {747705.000000, 2.000000}
+[Tup] single_point_search_iterations: {11551318, 2.000000}
+[Tup] single_point_search: {738151.000000, 3.000000}
+[Tup] single_point_search_iterations: {11368413, 3.000000}
+[Tup] single_point_search: {727594.000000, 4.000000}
+[Tup] single_point_search_iterations: {11153757, 4.000000}
+[Tup] single_point_search: {716314.000000, 6.000000}
+[Tup] single_point_search_iterations: {10938069, 6.000000}
+[T] search (ms): 791165.000000
+[T] iterations (): 12282169.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1003049.000000, 0.000000}
+[Tup] single_point_search_iterations: {15160636, 0.000000}
+[Tup] single_point_search: {988223.000000, 1.000000}
+[Tup] single_point_search_iterations: {14929487, 1.000000}
+[Tup] single_point_search: {956235.000000, 2.000000}
+[Tup] single_point_search_iterations: {14366163, 2.000000}
+[T] search (ms): 1003049.000000
+[T] iterations (): 15160636.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1338174.000000, 0.000000}
+[Tup] single_point_search_iterations: {20010847, 0.000000}
+[Tup] single_point_search: {1326477.000000, 1.000000}
+[Tup] single_point_search_iterations: {19829154, 1.000000}
+[Tup] single_point_search: {1307272.000000, 2.000000}
+[Tup] single_point_search_iterations: {19512515, 2.000000}
+[T] search (ms): 1338174.000000
+[T] iterations (): 20010847.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1749405.000000, 0.000000}
+[Tup] single_point_search_iterations: {26307839, 0.000000}
+[Tup] single_point_search: {1719081.000000, 1.000000}
+[Tup] single_point_search_iterations: {25835570, 1.000000}
+[Tup] single_point_search: {1652282.000000, 2.000000}
+[Tup] single_point_search_iterations: {24838965, 2.000000}
+[Tup] single_point_search: {1635752.000000, 3.000000}
+[Tup] single_point_search_iterations: {24539249, 3.000000}
+[Tup] single_point_search: {1625130.000000, 4.000000}
+[Tup] single_point_search_iterations: {24335870, 4.000000}
+[Tup] single_point_search: {1574744.000000, 5.000000}
+[Tup] single_point_search_iterations: {23425130, 5.000000}
+[T] search (ms): 1749405.000000
+[T] iterations (): 26307839.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2131814.000000, 0.000000}
+[Tup] single_point_search_iterations: {31798173, 0.000000}
+[Tup] single_point_search: {2082562.000000, 1.000000}
+[Tup] single_point_search_iterations: {31058745, 1.000000}
+[Tup] single_point_search: {1973316.000000, 2.000000}
+[Tup] single_point_search_iterations: {29317310, 2.000000}
+[Tup] single_point_search: {1942580.000000, 3.000000}
+[Tup] single_point_search_iterations: {28787281, 3.000000}
+[Tup] single_point_search: {1773307.000000, 5.000000}
+[Tup] single_point_search_iterations: {25943160, 5.000000}
+[Tup] single_point_search: {1713755.000000, 6.000000}
+[Tup] single_point_search_iterations: {24948556, 6.000000}
+[T] search (ms): 2131815.000000
+[T] iterations (): 31798173.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {10898.000000, 0.000000}
+[Tup] single_point_search_iterations: {181132, 0.000000}
+[Tup] single_point_search: {9866.000000, 2.000000}
+[Tup] single_point_search_iterations: {161747, 2.000000}
+[T] search (ms): 10898.000000
+[T] iterations (): 181132.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {67406.000000, 0.000000}
+[Tup] single_point_search_iterations: {1100840, 0.000000}
+[Tup] single_point_search: {66046.000000, 1.000000}
+[Tup] single_point_search_iterations: {1077444, 1.000000}
+[Tup] single_point_search: {62964.000000, 2.000000}
+[Tup] single_point_search_iterations: {1020705, 2.000000}
+[Tup] single_point_search: {56944.000000, 3.000000}
+[Tup] single_point_search_iterations: {906917, 3.000000}
+[T] search (ms): 67406.000000
+[T] iterations (): 1100840.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {194685.000000, 0.000000}
+[Tup] single_point_search_iterations: {3018647, 0.000000}
+[Tup] single_point_search: {186738.000000, 2.000000}
+[Tup] single_point_search_iterations: {2884235, 2.000000}
+[Tup] single_point_search: {183416.000000, 3.000000}
+[Tup] single_point_search_iterations: {2823678, 3.000000}
+[Tup] single_point_search: {180667.000000, 4.000000}
+[Tup] single_point_search_iterations: {2770169, 4.000000}
+[Tup] single_point_search: {179003.000000, 5.000000}
+[Tup] single_point_search_iterations: {2739747, 5.000000}
+[Tup] single_point_search: {170291.000000, 6.000000}
+[Tup] single_point_search_iterations: {2585884, 6.000000}
+[T] search (ms): 194688.000000
+[T] iterations (): 3018647.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {329043.000000, 0.000000}
+[Tup] single_point_search_iterations: {5012598, 0.000000}
+[Tup] single_point_search: {326560.000000, 1.000000}
+[Tup] single_point_search_iterations: {4974006, 1.000000}
+[Tup] single_point_search: {318677.000000, 2.000000}
+[Tup] single_point_search_iterations: {4841766, 2.000000}
+[Tup] single_point_search: {302000.000000, 3.000000}
+[Tup] single_point_search_iterations: {4554679, 3.000000}
+[T] search (ms): 329044.000000
+[T] iterations (): 5012598.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {539235.000000, 0.000000}
+[Tup] single_point_search_iterations: {8232139, 0.000000}
+[Tup] single_point_search: {527812.000000, 1.000000}
+[Tup] single_point_search_iterations: {8054578, 1.000000}
+[Tup] single_point_search: {505810.000000, 2.000000}
+[Tup] single_point_search_iterations: {7685925, 2.000000}
+[Tup] single_point_search: {445087.000000, 3.000000}
+[Tup] single_point_search_iterations: {6652873, 3.000000}
+[T] search (ms): 539236.000000
+[T] iterations (): 8232139.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {727596.000000, 0.000000}
+[Tup] single_point_search_iterations: {11117242, 0.000000}
+[Tup] single_point_search: {704643.000000, 3.000000}
+[Tup] single_point_search_iterations: {10690095, 3.000000}
+[T] search (ms): 727603.000000
+[T] iterations (): 11117242.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1067120.000000, 0.000000}
+[Tup] single_point_search_iterations: {16269069, 0.000000}
+[Tup] single_point_search: {1044372.000000, 1.000000}
+[Tup] single_point_search_iterations: {15909988, 1.000000}
+[Tup] single_point_search: {1000416.000000, 2.000000}
+[Tup] single_point_search_iterations: {15168516, 2.000000}
+[Tup] single_point_search: {958999.000000, 3.000000}
+[Tup] single_point_search_iterations: {14403584, 3.000000}
+[Tup] single_point_search: {939039.000000, 5.000000}
+[Tup] single_point_search_iterations: {14040654, 5.000000}
+[T] search (ms): 1067120.000000
+[T] iterations (): 16269069.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1269572.000000, 0.000000}
+[Tup] single_point_search_iterations: {18985055, 0.000000}
+[Tup] single_point_search: {1247055.000000, 1.000000}
+[Tup] single_point_search_iterations: {18645212, 1.000000}
+[T] search (ms): 1269579.000000
+[T] iterations (): 18985055.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1738202.000000, 0.000000}
+[Tup] single_point_search_iterations: {26773700, 0.000000}
+[Tup] single_point_search: {1721723.000000, 1.000000}
+[Tup] single_point_search_iterations: {26508067, 1.000000}
+[Tup] single_point_search: {1663572.000000, 2.000000}
+[Tup] single_point_search_iterations: {25524682, 2.000000}
+[Tup] single_point_search: {1630914.000000, 3.000000}
+[Tup] single_point_search_iterations: {24924034, 3.000000}
+[Tup] single_point_search: {1602056.000000, 5.000000}
+[Tup] single_point_search_iterations: {24549950, 5.000000}
+[Tup] single_point_search: {1547614.000000, 6.000000}
+[Tup] single_point_search_iterations: {23596776, 6.000000}
+[T] search (ms): 1738203.000000
+[T] iterations (): 26773700.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2164300.000000, 0.000000}
+[Tup] single_point_search_iterations: {32988630, 0.000000}
+[Tup] single_point_search: {2152507.000000, 1.000000}
+[Tup] single_point_search_iterations: {32802526, 1.000000}
+[Tup] single_point_search: {2088674.000000, 2.000000}
+[Tup] single_point_search_iterations: {31707920, 2.000000}
+[Tup] single_point_search: {2053995.000000, 3.000000}
+[Tup] single_point_search_iterations: {31054042, 3.000000}
+[Tup] single_point_search: {2011095.000000, 4.000000}
+[Tup] single_point_search_iterations: {30255447, 4.000000}
+[T] search (ms): 2164301.000000
+[T] iterations (): 32988630.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {15143.000000, 0.000000}
+[Tup] single_point_search_iterations: {250283, 0.000000}
+[Tup] single_point_search: {14373.000000, 1.000000}
+[Tup] single_point_search_iterations: {237407, 1.000000}
+[Tup] single_point_search: {12884.000000, 2.000000}
+[Tup] single_point_search_iterations: {210846, 2.000000}
+[Tup] single_point_search: {12062.000000, 3.000000}
+[Tup] single_point_search_iterations: {195797, 3.000000}
+[Tup] single_point_search: {10409.000000, 6.000000}
+[Tup] single_point_search_iterations: {166620, 6.000000}
+[T] search (ms): 15144.000000
+[T] iterations (): 250283.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {79316.000000, 0.000000}
+[Tup] single_point_search_iterations: {1196030, 0.000000}
+[Tup] single_point_search: {78291.000000, 1.000000}
+[Tup] single_point_search_iterations: {1179857, 1.000000}
+[Tup] single_point_search: {64953.000000, 3.000000}
+[Tup] single_point_search_iterations: {947185, 3.000000}
+[T] search (ms): 79316.000000
+[T] iterations (): 1196030.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {186455.000000, 0.000000}
+[Tup] single_point_search_iterations: {2861926, 0.000000}
+[Tup] single_point_search: {182912.000000, 1.000000}
+[Tup] single_point_search_iterations: {2806082, 1.000000}
+[Tup] single_point_search: {164383.000000, 3.000000}
+[Tup] single_point_search_iterations: {2484472, 3.000000}
+[Tup] single_point_search: {160657.000000, 4.000000}
+[Tup] single_point_search_iterations: {2420542, 4.000000}
+[T] search (ms): 186455.000000
+[T] iterations (): 2861926.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {331799.000000, 0.000000}
+[Tup] single_point_search_iterations: {5087225, 0.000000}
+[Tup] single_point_search: {326842.000000, 1.000000}
+[Tup] single_point_search_iterations: {5009269, 1.000000}
+[Tup] single_point_search: {313819.000000, 2.000000}
+[Tup] single_point_search_iterations: {4793456, 2.000000}
+[Tup] single_point_search: {298431.000000, 3.000000}
+[Tup] single_point_search_iterations: {4533240, 3.000000}
+[Tup] single_point_search: {254860.000000, 5.000000}
+[Tup] single_point_search_iterations: {3811457, 5.000000}
+[Tup] single_point_search: {246315.000000, 6.000000}
+[Tup] single_point_search_iterations: {3671941, 6.000000}
+[T] search (ms): 331799.000000
+[T] iterations (): 5087225.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {547653.000000, 0.000000}
+[Tup] single_point_search_iterations: {8385876, 0.000000}
+[Tup] single_point_search: {520166.000000, 2.000000}
+[Tup] single_point_search_iterations: {7920497, 2.000000}
+[Tup] single_point_search: {511662.000000, 3.000000}
+[Tup] single_point_search_iterations: {7767446, 3.000000}
+[Tup] single_point_search: {492496.000000, 4.000000}
+[Tup] single_point_search_iterations: {7420031, 4.000000}
+[Tup] single_point_search: {469044.000000, 6.000000}
+[Tup] single_point_search_iterations: {7019397, 6.000000}
+[T] search (ms): 547654.000000
+[T] iterations (): 8385876.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {775513.000000, 0.000000}
+[Tup] single_point_search_iterations: {11822672, 0.000000}
+[Tup] single_point_search: {758297.000000, 1.000000}
+[Tup] single_point_search_iterations: {11557482, 1.000000}
+[Tup] single_point_search: {728436.000000, 2.000000}
+[Tup] single_point_search_iterations: {11059500, 2.000000}
+[Tup] single_point_search: {720172.000000, 5.000000}
+[Tup] single_point_search_iterations: {10897355, 5.000000}
+[T] search (ms): 775513.000000
+[T] iterations (): 11822672.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {978379.000000, 0.000000}
+[Tup] single_point_search_iterations: {14693883, 0.000000}
+[Tup] single_point_search: {965139.000000, 1.000000}
+[Tup] single_point_search_iterations: {14486838, 1.000000}
+[Tup] single_point_search: {902198.000000, 2.000000}
+[Tup] single_point_search_iterations: {13445120, 2.000000}
+[Tup] single_point_search: {825456.000000, 3.000000}
+[Tup] single_point_search_iterations: {12150282, 3.000000}
+[T] search (ms): 978379.000000
+[T] iterations (): 14693883.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1229643.000000, 0.000000}
+[Tup] single_point_search_iterations: {18289512, 0.000000}
+[Tup] single_point_search: {1195267.000000, 1.000000}
+[Tup] single_point_search_iterations: {17765468, 1.000000}
+[T] search (ms): 1229645.000000
+[T] iterations (): 18289512.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1779565.000000, 0.000000}
+[Tup] single_point_search_iterations: {26803708, 0.000000}
+[Tup] single_point_search: {1755245.000000, 1.000000}
+[Tup] single_point_search_iterations: {26421819, 1.000000}
+[Tup] single_point_search: {1683525.000000, 2.000000}
+[Tup] single_point_search_iterations: {25205226, 2.000000}
+[Tup] single_point_search: {1651607.000000, 3.000000}
+[Tup] single_point_search_iterations: {24791276, 3.000000}
+[Tup] single_point_search: {1622862.000000, 4.000000}
+[Tup] single_point_search_iterations: {24282231, 4.000000}
+[Tup] single_point_search: {1594240.000000, 5.000000}
+[Tup] single_point_search_iterations: {23786498, 5.000000}
+[T] search (ms): 1779566.000000
+[T] iterations (): 26803708.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2151731.000000, 0.000000}
+[Tup] single_point_search_iterations: {32530118, 0.000000}
+[Tup] single_point_search: {2113399.000000, 1.000000}
+[Tup] single_point_search_iterations: {31919252, 1.000000}
+[Tup] single_point_search: {2042348.000000, 2.000000}
+[Tup] single_point_search_iterations: {30712421, 2.000000}
+[Tup] single_point_search: {1792483.000000, 3.000000}
+[Tup] single_point_search_iterations: {26374826, 3.000000}
+[T] search (ms): 2151731.000000
+[T] iterations (): 32530118.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {13967.000000, 0.000000}
+[Tup] single_point_search_iterations: {228384, 0.000000}
+[Tup] single_point_search: {10673.000000, 3.000000}
+[Tup] single_point_search_iterations: {168664, 3.000000}
+[T] search (ms): 13972.000000
+[T] iterations (): 228384.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {85218.000000, 0.000000}
+[Tup] single_point_search_iterations: {1303962, 0.000000}
+[Tup] single_point_search: {84480.000000, 1.000000}
+[Tup] single_point_search_iterations: {1291781, 1.000000}
+[Tup] single_point_search: {81658.000000, 2.000000}
+[Tup] single_point_search_iterations: {1242890, 2.000000}
+[Tup] single_point_search: {78482.000000, 3.000000}
+[Tup] single_point_search_iterations: {1186243, 3.000000}
+[Tup] single_point_search: {67764.000000, 4.000000}
+[Tup] single_point_search_iterations: {1005087, 4.000000}
+[T] search (ms): 85218.000000
+[T] iterations (): 1303962.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {187896.000000, 0.000000}
+[Tup] single_point_search_iterations: {2848320, 0.000000}
+[Tup] single_point_search: {186785.000000, 1.000000}
+[Tup] single_point_search_iterations: {2831038, 1.000000}
+[Tup] single_point_search: {184763.000000, 4.000000}
+[Tup] single_point_search_iterations: {2791242, 4.000000}
+[Tup] single_point_search: {175519.000000, 6.000000}
+[Tup] single_point_search_iterations: {2618341, 6.000000}
+[T] search (ms): 187897.000000
+[T] iterations (): 2848320.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {228721.000000, 0.000000}
+[Tup] single_point_search_iterations: {3735485, 0.000000}
+[Tup] single_point_search: {224582.000000, 1.000000}
+[Tup] single_point_search_iterations: {3666060, 1.000000}
+[Tup] single_point_search: {212887.000000, 2.000000}
+[Tup] single_point_search_iterations: {3458250, 2.000000}
+[Tup] single_point_search: {208457.000000, 3.000000}
+[Tup] single_point_search_iterations: {3372845, 3.000000}
+[Tup] single_point_search: {174892.000000, 4.000000}
+[Tup] single_point_search_iterations: {2802576, 4.000000}
+[T] search (ms): 228721.000000
+[T] iterations (): 3735485.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {476569.000000, 0.000000}
+[Tup] single_point_search_iterations: {7305671, 0.000000}
+[Tup] single_point_search: {469525.000000, 1.000000}
+[Tup] single_point_search_iterations: {7191474, 1.000000}
+[T] search (ms): 476570.000000
+[T] iterations (): 7305671.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {771747.000000, 0.000000}
+[Tup] single_point_search_iterations: {11919791, 0.000000}
+[Tup] single_point_search: {742731.000000, 2.000000}
+[Tup] single_point_search_iterations: {11439279, 2.000000}
+[Tup] single_point_search: {732020.000000, 3.000000}
+[Tup] single_point_search_iterations: {11238655, 3.000000}
+[Tup] single_point_search: {719044.000000, 4.000000}
+[Tup] single_point_search_iterations: {10985035, 4.000000}
+[T] search (ms): 771752.000000
+[T] iterations (): 11919791.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1089228.000000, 0.000000}
+[Tup] single_point_search_iterations: {16305102, 0.000000}
+[Tup] single_point_search: {1069412.000000, 1.000000}
+[Tup] single_point_search_iterations: {16002610, 1.000000}
+[Tup] single_point_search: {1028106.000000, 2.000000}
+[Tup] single_point_search_iterations: {15336297, 2.000000}
+[Tup] single_point_search: {998212.000000, 3.000000}
+[Tup] single_point_search_iterations: {14821175, 3.000000}
+[Tup] single_point_search: {959897.000000, 4.000000}
+[Tup] single_point_search_iterations: {14158140, 4.000000}
+[T] search (ms): 1089228.000000
+[T] iterations (): 16305102.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1226298.000000, 0.000000}
+[Tup] single_point_search_iterations: {17927183, 0.000000}
+[Tup] single_point_search: {1045659.000000, 3.000000}
+[Tup] single_point_search_iterations: {14964746, 3.000000}
+[Tup] single_point_search: {951864.000000, 4.000000}
+[Tup] single_point_search_iterations: {13465181, 4.000000}
+[T] search (ms): 1226384.000000
+[T] iterations (): 17927183.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1764825.000000, 0.000000}
+[Tup] single_point_search_iterations: {26714814, 0.000000}
+[Tup] single_point_search: {1747733.000000, 1.000000}
+[Tup] single_point_search_iterations: {26450378, 1.000000}
+[Tup] single_point_search: {1693742.000000, 2.000000}
+[Tup] single_point_search_iterations: {25540282, 2.000000}
+[Tup] single_point_search: {1668819.000000, 3.000000}
+[Tup] single_point_search_iterations: {25072485, 3.000000}
+[Tup] single_point_search: {1610919.000000, 4.000000}
+[Tup] single_point_search_iterations: {24148977, 4.000000}
+[T] search (ms): 1764825.000000
+[T] iterations (): 26714814.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2053503.000000, 0.000000}
+[Tup] single_point_search_iterations: {30489231, 0.000000}
+[Tup] single_point_search: {2018738.000000, 1.000000}
+[Tup] single_point_search_iterations: {29965063, 1.000000}
+[T] search (ms): 2053507.000000
+[T] iterations (): 30489231.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {19344.000000, 0.000000}
+[Tup] single_point_search_iterations: {298367, 0.000000}
+[Tup] single_point_search: {17538.000000, 3.000000}
+[Tup] single_point_search_iterations: {266395, 3.000000}
+[T] search (ms): 19345.000000
+[T] iterations (): 298367.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {87027.000000, 0.000000}
+[Tup] single_point_search_iterations: {1362789, 0.000000}
+[Tup] single_point_search: {86145.000000, 1.000000}
+[Tup] single_point_search_iterations: {1348832, 1.000000}
+[Tup] single_point_search: {82207.000000, 2.000000}
+[Tup] single_point_search_iterations: {1280797, 2.000000}
+[Tup] single_point_search: {80361.000000, 3.000000}
+[Tup] single_point_search_iterations: {1245895, 3.000000}
+[Tup] single_point_search: {77675.000000, 4.000000}
+[Tup] single_point_search_iterations: {1195645, 4.000000}
+[T] search (ms): 87027.000000
+[T] iterations (): 1362789.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {171210.000000, 0.000000}
+[Tup] single_point_search_iterations: {2631340, 0.000000}
+[Tup] single_point_search: {165559.000000, 1.000000}
+[Tup] single_point_search_iterations: {2544354, 1.000000}
+[Tup] single_point_search: {154886.000000, 6.000000}
+[Tup] single_point_search_iterations: {2362457, 6.000000}
+[T] search (ms): 171210.000000
+[T] iterations (): 2631340.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {325699.000000, 0.000000}
+[Tup] single_point_search_iterations: {4968364, 0.000000}
+[Tup] single_point_search: {321707.000000, 1.000000}
+[Tup] single_point_search_iterations: {4905255, 1.000000}
+[Tup] single_point_search: {317000.000000, 2.000000}
+[Tup] single_point_search_iterations: {4822585, 2.000000}
+[Tup] single_point_search: {307360.000000, 3.000000}
+[Tup] single_point_search_iterations: {4642566, 3.000000}
+[T] search (ms): 325699.000000
+[T] iterations (): 4968364.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {502695.000000, 0.000000}
+[Tup] single_point_search_iterations: {7570152, 0.000000}
+[Tup] single_point_search: {500355.000000, 1.000000}
+[Tup] single_point_search_iterations: {7535096, 1.000000}
+[Tup] single_point_search: {493686.000000, 2.000000}
+[Tup] single_point_search_iterations: {7423085, 2.000000}
+[Tup] single_point_search: {484079.000000, 3.000000}
+[Tup] single_point_search_iterations: {7259624, 3.000000}
+[T] search (ms): 502697.000000
+[T] iterations (): 7570152.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {743105.000000, 0.000000}
+[Tup] single_point_search_iterations: {11537674, 0.000000}
+[Tup] single_point_search: {728739.000000, 3.000000}
+[Tup] single_point_search_iterations: {11269813, 3.000000}
+[Tup] single_point_search: {713563.000000, 4.000000}
+[Tup] single_point_search_iterations: {10976993, 4.000000}
+[Tup] single_point_search: {709734.000000, 5.000000}
+[Tup] single_point_search_iterations: {10906341, 5.000000}
+[Tup] single_point_search: {697216.000000, 6.000000}
+[Tup] single_point_search_iterations: {10676301, 6.000000}
+[T] search (ms): 743107.000000
+[T] iterations (): 11537674.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1052163.000000, 0.000000}
+[Tup] single_point_search_iterations: {15898462, 0.000000}
+[Tup] single_point_search: {1038411.000000, 1.000000}
+[Tup] single_point_search_iterations: {15682293, 1.000000}
+[Tup] single_point_search: {994290.000000, 2.000000}
+[Tup] single_point_search_iterations: {14948965, 2.000000}
+[Tup] single_point_search: {964142.000000, 3.000000}
+[Tup] single_point_search_iterations: {14411478, 3.000000}
+[T] search (ms): 1052164.000000
+[T] iterations (): 15898462.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1345063.000000, 0.000000}
+[Tup] single_point_search_iterations: {20243286, 0.000000}
+[Tup] single_point_search: {1323118.000000, 1.000000}
+[Tup] single_point_search_iterations: {19904692, 1.000000}
+[Tup] single_point_search: {1264892.000000, 2.000000}
+[Tup] single_point_search_iterations: {18957646, 2.000000}
+[Tup] single_point_search: {1171178.000000, 3.000000}
+[Tup] single_point_search_iterations: {17417119, 3.000000}
+[Tup] single_point_search: {1079904.000000, 4.000000}
+[Tup] single_point_search_iterations: {15919833, 4.000000}
+[T] search (ms): 1345064.000000
+[T] iterations (): 20243286.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1694431.000000, 0.000000}
+[Tup] single_point_search_iterations: {25369381, 0.000000}
+[Tup] single_point_search: {1671890.000000, 1.000000}
+[Tup] single_point_search_iterations: {25021061, 1.000000}
+[Tup] single_point_search: {1610662.000000, 3.000000}
+[Tup] single_point_search_iterations: {24077247, 3.000000}
+[Tup] single_point_search: {1605286.000000, 5.000000}
+[Tup] single_point_search_iterations: {23981249, 5.000000}
+[T] search (ms): 1694432.000000
+[T] iterations (): 25369381.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2201628.000000, 0.000000}
+[Tup] single_point_search_iterations: {33398438, 0.000000}
+[Tup] single_point_search: {2171038.000000, 1.000000}
+[Tup] single_point_search_iterations: {32918174, 1.000000}
+[Tup] single_point_search: {2085468.000000, 2.000000}
+[Tup] single_point_search_iterations: {31489039, 2.000000}
+[Tup] single_point_search: {2060640.000000, 3.000000}
+[Tup] single_point_search_iterations: {31021610, 3.000000}
+[Tup] single_point_search: {1965272.000000, 4.000000}
+[Tup] single_point_search_iterations: {29214569, 4.000000}
+[T] search (ms): 2201629.000000
+[T] iterations (): 33398438.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {21260.000000, 0.000000}
+[Tup] single_point_search_iterations: {327597, 0.000000}
+[Tup] single_point_search: {20915.000000, 1.000000}
+[Tup] single_point_search_iterations: {322231, 1.000000}
+[Tup] single_point_search: {19967.000000, 2.000000}
+[Tup] single_point_search_iterations: {306344, 2.000000}
+[Tup] single_point_search: {19326.000000, 4.000000}
+[Tup] single_point_search_iterations: {294592, 4.000000}
+[Tup] single_point_search: {18365.000000, 6.000000}
+[Tup] single_point_search_iterations: {277383, 6.000000}
+[T] search (ms): 21260.000000
+[T] iterations (): 327597.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {87930.000000, 0.000000}
+[Tup] single_point_search_iterations: {1365189, 0.000000}
+[Tup] single_point_search: {86167.000000, 1.000000}
+[Tup] single_point_search_iterations: {1337605, 1.000000}
+[Tup] single_point_search: {81685.000000, 2.000000}
+[Tup] single_point_search_iterations: {1261362, 2.000000}
+[Tup] single_point_search: {80030.000000, 3.000000}
+[Tup] single_point_search_iterations: {1231370, 3.000000}
+[Tup] single_point_search: {77294.000000, 4.000000}
+[Tup] single_point_search_iterations: {1180938, 4.000000}
+[T] search (ms): 87930.000000
+[T] iterations (): 1365189.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {178099.000000, 0.000000}
+[Tup] single_point_search_iterations: {2746023, 0.000000}
+[Tup] single_point_search: {175765.000000, 1.000000}
+[Tup] single_point_search_iterations: {2709302, 1.000000}
+[Tup] single_point_search: {161095.000000, 4.000000}
+[Tup] single_point_search_iterations: {2440367, 4.000000}
+[T] search (ms): 178100.000000
+[T] iterations (): 2746023.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {310634.000000, 0.000000}
+[Tup] single_point_search_iterations: {4566319, 0.000000}
+[Tup] single_point_search: {303388.000000, 1.000000}
+[Tup] single_point_search_iterations: {4456416, 1.000000}
+[Tup] single_point_search: {269792.000000, 2.000000}
+[Tup] single_point_search_iterations: {3922516, 2.000000}
+[T] search (ms): 310636.000000
+[T] iterations (): 4566319.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {547319.000000, 0.000000}
+[Tup] single_point_search_iterations: {8351032, 0.000000}
+[Tup] single_point_search: {539155.000000, 1.000000}
+[Tup] single_point_search_iterations: {8222477, 1.000000}
+[Tup] single_point_search: {515368.000000, 2.000000}
+[Tup] single_point_search_iterations: {7824537, 2.000000}
+[Tup] single_point_search: {504792.000000, 3.000000}
+[Tup] single_point_search_iterations: {7638307, 3.000000}
+[Tup] single_point_search: {484246.000000, 4.000000}
+[Tup] single_point_search_iterations: {7277065, 4.000000}
+[T] search (ms): 547319.000000
+[T] iterations (): 8351032.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {735910.000000, 0.000000}
+[Tup] single_point_search_iterations: {11282427, 0.000000}
+[Tup] single_point_search: {728660.000000, 1.000000}
+[Tup] single_point_search_iterations: {11169320, 1.000000}
+[Tup] single_point_search: {692294.000000, 2.000000}
+[Tup] single_point_search_iterations: {10549803, 2.000000}
+[Tup] single_point_search: {677595.000000, 3.000000}
+[Tup] single_point_search_iterations: {10287137, 3.000000}
+[T] search (ms): 735911.000000
+[T] iterations (): 11282427.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1068198.000000, 0.000000}
+[Tup] single_point_search_iterations: {16313308, 0.000000}
+[Tup] single_point_search: {1051407.000000, 1.000000}
+[Tup] single_point_search_iterations: {16051193, 1.000000}
+[Tup] single_point_search: {1018290.000000, 2.000000}
+[Tup] single_point_search_iterations: {15476333, 2.000000}
+[Tup] single_point_search: {1004445.000000, 3.000000}
+[Tup] single_point_search_iterations: {15210257, 3.000000}
+[Tup] single_point_search: {976939.000000, 5.000000}
+[Tup] single_point_search_iterations: {14679209, 5.000000}
+[T] search (ms): 1068199.000000
+[T] iterations (): 16313308.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1391758.000000, 0.000000}
+[Tup] single_point_search_iterations: {21095307, 0.000000}
+[Tup] single_point_search: {1361364.000000, 1.000000}
+[Tup] single_point_search_iterations: {20627126, 1.000000}
+[Tup] single_point_search: {1308601.000000, 2.000000}
+[Tup] single_point_search_iterations: {19752137, 2.000000}
+[Tup] single_point_search: {1264986.000000, 3.000000}
+[Tup] single_point_search_iterations: {18936047, 3.000000}
+[T] search (ms): 1391758.000000
+[T] iterations (): 21095307.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1587111.000000, 0.000000}
+[Tup] single_point_search_iterations: {24287473, 0.000000}
+[Tup] single_point_search: {1556312.000000, 1.000000}
+[Tup] single_point_search_iterations: {23793769, 1.000000}
+[Tup] single_point_search: {1480111.000000, 2.000000}
+[Tup] single_point_search_iterations: {22517666, 2.000000}
+[T] search (ms): 1587113.000000
+[T] iterations (): 24287473.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2093058.000000, 0.000000}
+[Tup] single_point_search_iterations: {31274441, 0.000000}
+[Tup] single_point_search: {2023370.000000, 2.000000}
+[Tup] single_point_search_iterations: {30122039, 2.000000}
+[Tup] single_point_search: {1977760.000000, 3.000000}
+[Tup] single_point_search_iterations: {29320949, 3.000000}
+[Tup] single_point_search: {1966279.000000, 4.000000}
+[Tup] single_point_search_iterations: {29109271, 4.000000}
+[T] search (ms): 2093061.000000
+[T] iterations (): 31274441.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {19451.000000, 0.000000}
+[Tup] single_point_search_iterations: {304430, 0.000000}
+[Tup] single_point_search: {18502.000000, 1.000000}
+[Tup] single_point_search_iterations: {288710, 1.000000}
+[Tup] single_point_search: {17201.000000, 2.000000}
+[Tup] single_point_search_iterations: {267382, 2.000000}
+[Tup] single_point_search: {14351.000000, 4.000000}
+[Tup] single_point_search_iterations: {220094, 4.000000}
+[Tup] single_point_search: {12922.000000, 6.000000}
+[Tup] single_point_search_iterations: {197024, 6.000000}
+[T] search (ms): 19452.000000
+[T] iterations (): 304430.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {78667.000000, 0.000000}
+[Tup] single_point_search_iterations: {1195108, 0.000000}
+[Tup] single_point_search: {73382.000000, 4.000000}
+[Tup] single_point_search_iterations: {1098215, 4.000000}
+[T] search (ms): 78672.000000
+[T] iterations (): 1195108.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {178695.000000, 0.000000}
+[Tup] single_point_search_iterations: {2725661, 0.000000}
+[Tup] single_point_search: {175535.000000, 3.000000}
+[Tup] single_point_search_iterations: {2670730, 3.000000}
+[Tup] single_point_search: {173549.000000, 4.000000}
+[Tup] single_point_search_iterations: {2635135, 4.000000}
+[T] search (ms): 178704.000000
+[T] iterations (): 2725661.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {317737.000000, 0.000000}
+[Tup] single_point_search_iterations: {4807344, 0.000000}
+[Tup] single_point_search: {314742.000000, 1.000000}
+[Tup] single_point_search_iterations: {4760391, 1.000000}
+[Tup] single_point_search: {305293.000000, 3.000000}
+[Tup] single_point_search_iterations: {4593908, 3.000000}
+[T] search (ms): 317737.000000
+[T] iterations (): 4807344.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {399510.000000, 0.000000}
+[Tup] single_point_search_iterations: {6017602, 0.000000}
+[Tup] single_point_search: {377509.000000, 1.000000}
+[Tup] single_point_search_iterations: {5687101, 1.000000}
+[Tup] single_point_search: {351323.000000, 2.000000}
+[Tup] single_point_search_iterations: {5255130, 2.000000}
+[Tup] single_point_search: {283606.000000, 3.000000}
+[Tup] single_point_search_iterations: {4138367, 3.000000}
+[Tup] single_point_search: {275083.000000, 5.000000}
+[Tup] single_point_search_iterations: {3998098, 5.000000}
+[T] search (ms): 399520.000000
+[T] iterations (): 6017602.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {651258.000000, 0.000000}
+[Tup] single_point_search_iterations: {9582186, 0.000000}
+[Tup] single_point_search: {637690.000000, 1.000000}
+[Tup] single_point_search_iterations: {9377652, 1.000000}
+[Tup] single_point_search: {381309.000000, 3.000000}
+[Tup] single_point_search_iterations: {5400576, 3.000000}
+[T] search (ms): 651277.000000
+[T] iterations (): 9582186.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1024456.000000, 0.000000}
+[Tup] single_point_search_iterations: {15249779, 0.000000}
+[Tup] single_point_search: {1010129.000000, 1.000000}
+[Tup] single_point_search_iterations: {15030456, 1.000000}
+[Tup] single_point_search: {959084.000000, 2.000000}
+[Tup] single_point_search_iterations: {14195860, 2.000000}
+[Tup] single_point_search: {953375.000000, 6.000000}
+[Tup] single_point_search_iterations: {14095609, 6.000000}
+[T] search (ms): 1024457.000000
+[T] iterations (): 15249779.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1409700.000000, 0.000000}
+[Tup] single_point_search_iterations: {21393648, 0.000000}
+[Tup] single_point_search: {1378713.000000, 1.000000}
+[Tup] single_point_search_iterations: {20922127, 1.000000}
+[Tup] single_point_search: {1312280.000000, 2.000000}
+[Tup] single_point_search_iterations: {19833179, 2.000000}
+[Tup] single_point_search: {1298785.000000, 3.000000}
+[Tup] single_point_search_iterations: {19601840, 3.000000}
+[Tup] single_point_search: {1266190.000000, 4.000000}
+[Tup] single_point_search_iterations: {19043219, 4.000000}
+[Tup] single_point_search: {1122058.000000, 5.000000}
+[Tup] single_point_search_iterations: {16720968, 5.000000}
+[T] search (ms): 1409700.000000
+[T] iterations (): 21393648.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1672774.000000, 0.000000}
+[Tup] single_point_search_iterations: {25095022, 0.000000}
+[Tup] single_point_search: {1642986.000000, 1.000000}
+[Tup] single_point_search_iterations: {24634991, 1.000000}
+[Tup] single_point_search: {1511901.000000, 3.000000}
+[Tup] single_point_search_iterations: {22297327, 3.000000}
+[T] search (ms): 1672775.000000
+[T] iterations (): 25095022.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2117795.000000, 0.000000}
+[Tup] single_point_search_iterations: {31943575, 0.000000}
+[Tup] single_point_search: {2102588.000000, 1.000000}
+[Tup] single_point_search_iterations: {31698614, 1.000000}
+[Tup] single_point_search: {2046795.000000, 2.000000}
+[Tup] single_point_search_iterations: {30759454, 2.000000}
+[Tup] single_point_search: {1979304.000000, 3.000000}
+[Tup] single_point_search_iterations: {29535961, 3.000000}
+[Tup] single_point_search: {1959673.000000, 5.000000}
+[Tup] single_point_search_iterations: {29186252, 5.000000}
+[T] search (ms): 2117795.000000
+[T] iterations (): 31943575.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {20983.000000, 0.000000}
+[Tup] single_point_search_iterations: {325470, 0.000000}
+[Tup] single_point_search: {20682.000000, 1.000000}
+[Tup] single_point_search_iterations: {320742, 1.000000}
+[Tup] single_point_search: {19320.000000, 2.000000}
+[Tup] single_point_search_iterations: {297726, 2.000000}
+[Tup] single_point_search: {17041.000000, 5.000000}
+[Tup] single_point_search_iterations: {257419, 5.000000}
+[T] search (ms): 20983.000000
+[T] iterations (): 325470.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {76384.000000, 0.000000}
+[Tup] single_point_search_iterations: {1167269, 0.000000}
+[Tup] single_point_search: {75194.000000, 1.000000}
+[Tup] single_point_search_iterations: {1148404, 1.000000}
+[Tup] single_point_search: {74007.000000, 4.000000}
+[Tup] single_point_search_iterations: {1126509, 4.000000}
+[T] search (ms): 76384.000000
+[T] iterations (): 1167269.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {184339.000000, 0.000000}
+[Tup] single_point_search_iterations: {2842345, 0.000000}
+[Tup] single_point_search: {181066.000000, 1.000000}
+[Tup] single_point_search_iterations: {2789664, 1.000000}
+[Tup] single_point_search: {167793.000000, 3.000000}
+[Tup] single_point_search_iterations: {2550621, 3.000000}
+[T] search (ms): 184339.000000
+[T] iterations (): 2842345.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {306865.000000, 0.000000}
+[Tup] single_point_search_iterations: {4545234, 0.000000}
+[Tup] single_point_search: {303186.000000, 1.000000}
+[Tup] single_point_search_iterations: {4489977, 1.000000}
+[Tup] single_point_search: {286394.000000, 2.000000}
+[Tup] single_point_search_iterations: {4215030, 2.000000}
+[T] search (ms): 306868.000000
+[T] iterations (): 4545234.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {542295.000000, 0.000000}
+[Tup] single_point_search_iterations: {8260307, 0.000000}
+[Tup] single_point_search: {531967.000000, 1.000000}
+[Tup] single_point_search_iterations: {8100278, 1.000000}
+[Tup] single_point_search: {513109.000000, 2.000000}
+[Tup] single_point_search_iterations: {7788551, 2.000000}
+[Tup] single_point_search: {501463.000000, 4.000000}
+[Tup] single_point_search_iterations: {7574661, 4.000000}
+[Tup] single_point_search: {492102.000000, 5.000000}
+[Tup] single_point_search_iterations: {7409587, 5.000000}
+[T] search (ms): 542295.000000
+[T] iterations (): 8260307.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {780355.000000, 0.000000}
+[Tup] single_point_search_iterations: {11768662, 0.000000}
+[Tup] single_point_search: {766518.000000, 1.000000}
+[Tup] single_point_search_iterations: {11556158, 1.000000}
+[Tup] single_point_search: {756116.000000, 3.000000}
+[Tup] single_point_search_iterations: {11356039, 3.000000}
+[Tup] single_point_search: {743589.000000, 4.000000}
+[Tup] single_point_search_iterations: {11103109, 4.000000}
+[Tup] single_point_search: {731196.000000, 6.000000}
+[Tup] single_point_search_iterations: {10868148, 6.000000}
+[T] search (ms): 780355.000000
+[T] iterations (): 11768662.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1016749.000000, 0.000000}
+[Tup] single_point_search_iterations: {15352600, 0.000000}
+[Tup] single_point_search: {1007052.000000, 1.000000}
+[Tup] single_point_search_iterations: {15192705, 1.000000}
+[Tup] single_point_search: {998730.000000, 4.000000}
+[Tup] single_point_search_iterations: {15031074, 4.000000}
+[Tup] single_point_search: {925709.000000, 5.000000}
+[Tup] single_point_search_iterations: {13753637, 5.000000}
+[T] search (ms): 1016749.000000
+[T] iterations (): 15352600.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1354872.000000, 0.000000}
+[Tup] single_point_search_iterations: {20571362, 0.000000}
+[Tup] single_point_search: {1331339.000000, 3.000000}
+[Tup] single_point_search_iterations: {20118042, 3.000000}
+[Tup] single_point_search: {1304306.000000, 4.000000}
+[Tup] single_point_search_iterations: {19587886, 4.000000}
+[Tup] single_point_search: {1246768.000000, 6.000000}
+[Tup] single_point_search_iterations: {18548444, 6.000000}
+[T] search (ms): 1354875.000000
+[T] iterations (): 20571362.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1647135.000000, 0.000000}
+[Tup] single_point_search_iterations: {24461696, 0.000000}
+[Tup] single_point_search: {1613565.000000, 2.000000}
+[Tup] single_point_search_iterations: {23878410, 2.000000}
+[Tup] single_point_search: {1586304.000000, 3.000000}
+[Tup] single_point_search_iterations: {23394720, 3.000000}
+[T] search (ms): 1647137.000000
+[T] iterations (): 24461696.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2138902.000000, 0.000000}
+[Tup] single_point_search_iterations: {32708406, 0.000000}
+[Tup] single_point_search: {2112774.000000, 1.000000}
+[Tup] single_point_search_iterations: {32300320, 1.000000}
+[Tup] single_point_search: {2035529.000000, 2.000000}
+[Tup] single_point_search_iterations: {30994406, 2.000000}
+[Tup] single_point_search: {1921031.000000, 3.000000}
+[Tup] single_point_search_iterations: {29013747, 3.000000}
+[T] search (ms): 2138904.000000
+[T] iterations (): 32708406.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {18312.000000, 0.000000}
+[Tup] single_point_search_iterations: {289013, 0.000000}
+[Tup] single_point_search: {18003.000000, 1.000000}
+[Tup] single_point_search_iterations: {283705, 1.000000}
+[Tup] single_point_search: {17034.000000, 3.000000}
+[Tup] single_point_search_iterations: {265679, 3.000000}
+[T] search (ms): 18313.000000
+[T] iterations (): 289013.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {45184.000000, 0.000000}
+[Tup] single_point_search_iterations: {746141, 0.000000}
+[Tup] single_point_search: {44449.000000, 1.000000}
+[Tup] single_point_search_iterations: {733619, 1.000000}
+[Tup] single_point_search: {36514.000000, 3.000000}
+[Tup] single_point_search_iterations: {594361, 3.000000}
+[T] search (ms): 45184.000000
+[T] iterations (): 746141.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {187870.000000, 0.000000}
+[Tup] single_point_search_iterations: {2913966, 0.000000}
+[Tup] single_point_search: {185118.000000, 1.000000}
+[Tup] single_point_search_iterations: {2869821, 1.000000}
+[Tup] single_point_search: {182314.000000, 3.000000}
+[Tup] single_point_search_iterations: {2816562, 3.000000}
+[Tup] single_point_search: {175898.000000, 4.000000}
+[Tup] single_point_search_iterations: {2694841, 4.000000}
+[T] search (ms): 187871.000000
+[T] iterations (): 2913966.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {328670.000000, 0.000000}
+[Tup] single_point_search_iterations: {4976009, 0.000000}
+[Tup] single_point_search: {323913.000000, 1.000000}
+[Tup] single_point_search_iterations: {4902813, 1.000000}
+[Tup] single_point_search: {301175.000000, 3.000000}
+[Tup] single_point_search_iterations: {4521033, 3.000000}
+[T] search (ms): 328670.000000
+[T] iterations (): 4976009.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {546876.000000, 0.000000}
+[Tup] single_point_search_iterations: {8323928, 0.000000}
+[Tup] single_point_search: {542047.000000, 1.000000}
+[Tup] single_point_search_iterations: {8244165, 1.000000}
+[Tup] single_point_search: {521313.000000, 2.000000}
+[Tup] single_point_search_iterations: {7888722, 2.000000}
+[Tup] single_point_search: {512707.000000, 3.000000}
+[Tup] single_point_search_iterations: {7730259, 3.000000}
+[Tup] single_point_search: {441023.000000, 5.000000}
+[Tup] single_point_search_iterations: {6460886, 5.000000}
+[T] search (ms): 546876.000000
+[T] iterations (): 8323928.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {679118.000000, 0.000000}
+[Tup] single_point_search_iterations: {10232720, 0.000000}
+[Tup] single_point_search: {664614.000000, 1.000000}
+[Tup] single_point_search_iterations: {10003073, 1.000000}
+[Tup] single_point_search: {650050.000000, 2.000000}
+[Tup] single_point_search_iterations: {9764781, 2.000000}
+[T] search (ms): 679118.000000
+[T] iterations (): 10232720.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1080081.000000, 0.000000}
+[Tup] single_point_search_iterations: {16419038, 0.000000}
+[Tup] single_point_search: {1068115.000000, 1.000000}
+[Tup] single_point_search_iterations: {16230312, 1.000000}
+[Tup] single_point_search: {1018964.000000, 2.000000}
+[Tup] single_point_search_iterations: {15409185, 2.000000}
+[Tup] single_point_search: {977083.000000, 3.000000}
+[Tup] single_point_search_iterations: {14645480, 3.000000}
+[Tup] single_point_search: {963905.000000, 6.000000}
+[Tup] single_point_search_iterations: {14408253, 6.000000}
+[T] search (ms): 1080081.000000
+[T] iterations (): 16419038.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1380085.000000, 0.000000}
+[Tup] single_point_search_iterations: {20975480, 0.000000}
+[Tup] single_point_search: {1356826.000000, 1.000000}
+[Tup] single_point_search_iterations: {20613962, 1.000000}
+[Tup] single_point_search: {1319515.000000, 2.000000}
+[Tup] single_point_search_iterations: {19971377, 2.000000}
+[Tup] single_point_search: {1258901.000000, 4.000000}
+[Tup] single_point_search_iterations: {18852692, 4.000000}
+[T] search (ms): 1380086.000000
+[T] iterations (): 20975480.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1715037.000000, 0.000000}
+[Tup] single_point_search_iterations: {26332344, 0.000000}
+[Tup] single_point_search: {1683272.000000, 1.000000}
+[Tup] single_point_search_iterations: {25826190, 1.000000}
+[Tup] single_point_search: {1642439.000000, 2.000000}
+[Tup] single_point_search_iterations: {25109740, 2.000000}
+[Tup] single_point_search: {1616542.000000, 3.000000}
+[Tup] single_point_search_iterations: {24603658, 3.000000}
+[T] search (ms): 1715038.000000
+[T] iterations (): 26332344.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2171908.000000, 0.000000}
+[Tup] single_point_search_iterations: {32649610, 0.000000}
+[Tup] single_point_search: {2127179.000000, 1.000000}
+[Tup] single_point_search_iterations: {31973338, 1.000000}
+[Tup] single_point_search: {2058903.000000, 2.000000}
+[Tup] single_point_search_iterations: {30859513, 2.000000}
+[Tup] single_point_search: {2012378.000000, 4.000000}
+[Tup] single_point_search_iterations: {29993015, 4.000000}
+[T] search (ms): 2171909.000000
+[T] iterations (): 32649610.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {10370.000000, 0.000000}
+[Tup] single_point_search_iterations: {168207, 0.000000}
+[Tup] single_point_search: {9664.000000, 1.000000}
+[Tup] single_point_search_iterations: {155707, 1.000000}
+[T] search (ms): 10370.000000
+[T] iterations (): 168207.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {85582.000000, 0.000000}
+[Tup] single_point_search_iterations: {1341316, 0.000000}
+[Tup] single_point_search: {83702.000000, 1.000000}
+[Tup] single_point_search_iterations: {1311721, 1.000000}
+[Tup] single_point_search: {80705.000000, 2.000000}
+[Tup] single_point_search_iterations: {1260415, 2.000000}
+[Tup] single_point_search: {79238.000000, 3.000000}
+[Tup] single_point_search_iterations: {1232784, 3.000000}
+[Tup] single_point_search: {71338.000000, 4.000000}
+[Tup] single_point_search_iterations: {1087747, 4.000000}
+[T] search (ms): 85582.000000
+[T] iterations (): 1341316.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {171767.000000, 0.000000}
+[Tup] single_point_search_iterations: {2587523, 0.000000}
+[Tup] single_point_search: {170318.000000, 1.000000}
+[Tup] single_point_search_iterations: {2563920, 1.000000}
+[Tup] single_point_search: {148403.000000, 2.000000}
+[Tup] single_point_search_iterations: {2213996, 2.000000}
+[T] search (ms): 171768.000000
+[T] iterations (): 2587523.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {349408.000000, 0.000000}
+[Tup] single_point_search_iterations: {5374161, 0.000000}
+[Tup] single_point_search: {336504.000000, 2.000000}
+[Tup] single_point_search_iterations: {5157079, 2.000000}
+[Tup] single_point_search: {331730.000000, 3.000000}
+[Tup] single_point_search_iterations: {5069576, 3.000000}
+[Tup] single_point_search: {315549.000000, 5.000000}
+[Tup] single_point_search_iterations: {4776459, 5.000000}
+[T] search (ms): 349409.000000
+[T] iterations (): 5374161.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {529541.000000, 0.000000}
+[Tup] single_point_search_iterations: {8113386, 0.000000}
+[Tup] single_point_search: {524775.000000, 1.000000}
+[Tup] single_point_search_iterations: {8035155, 1.000000}
+[Tup] single_point_search: {506339.000000, 2.000000}
+[Tup] single_point_search_iterations: {7728472, 2.000000}
+[Tup] single_point_search: {492015.000000, 3.000000}
+[Tup] single_point_search_iterations: {7471397, 3.000000}
+[Tup] single_point_search: {458313.000000, 5.000000}
+[Tup] single_point_search_iterations: {6868464, 5.000000}
+[T] search (ms): 529541.000000
+[T] iterations (): 8113386.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {770514.000000, 0.000000}
+[Tup] single_point_search_iterations: {11683790, 0.000000}
+[Tup] single_point_search: {761411.000000, 1.000000}
+[Tup] single_point_search_iterations: {11539140, 1.000000}
+[Tup] single_point_search: {741242.000000, 2.000000}
+[Tup] single_point_search_iterations: {11195603, 2.000000}
+[Tup] single_point_search: {676058.000000, 3.000000}
+[Tup] single_point_search_iterations: {10083735, 3.000000}
+[Tup] single_point_search: {668684.000000, 4.000000}
+[Tup] single_point_search_iterations: {9949856, 4.000000}
+[T] search (ms): 770515.000000
+[T] iterations (): 11683790.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {902565.000000, 0.000000}
+[Tup] single_point_search_iterations: {13264455, 0.000000}
+[Tup] single_point_search: {890341.000000, 1.000000}
+[Tup] single_point_search_iterations: {13080968, 1.000000}
+[Tup] single_point_search: {747965.000000, 3.000000}
+[Tup] single_point_search_iterations: {10834016, 3.000000}
+[T] search (ms): 902574.000000
+[T] iterations (): 13264455.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1300091.000000, 0.000000}
+[Tup] single_point_search_iterations: {19567896, 0.000000}
+[Tup] single_point_search: {1293836.000000, 1.000000}
+[Tup] single_point_search_iterations: {19467585, 1.000000}
+[T] search (ms): 1300092.000000
+[T] iterations (): 19567896.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1680007.000000, 0.000000}
+[Tup] single_point_search_iterations: {25104268, 0.000000}
+[Tup] single_point_search: {1643372.000000, 1.000000}
+[Tup] single_point_search_iterations: {24553427, 1.000000}
+[Tup] single_point_search: {1550438.000000, 2.000000}
+[Tup] single_point_search_iterations: {23033650, 2.000000}
+[Tup] single_point_search: {1523549.000000, 3.000000}
+[Tup] single_point_search_iterations: {22575783, 3.000000}
+[Tup] single_point_search: {1374722.000000, 5.000000}
+[Tup] single_point_search_iterations: {20094185, 5.000000}
+[T] search (ms): 1680008.000000
+[T] iterations (): 25104268.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2054990.000000, 0.000000}
+[Tup] single_point_search_iterations: {29739114, 0.000000}
+[T] search (ms): 2055041.000000
+[T] iterations (): 29739114.000000
+num_dfas: 5
+model_size: 10000
+>--
+[Tup] single_point_search: {17768.000000, 0.000000}
+[Tup] single_point_search_iterations: {264702, 0.000000}
+[Tup] single_point_search: {17490.000000, 1.000000}
+[Tup] single_point_search_iterations: {260159, 1.000000}
+[Tup] single_point_search: {16411.000000, 2.000000}
+[Tup] single_point_search_iterations: {242414, 2.000000}
+[Tup] single_point_search: {14224.000000, 3.000000}
+[Tup] single_point_search_iterations: {205650, 3.000000}
+[T] search (ms): 17768.000000
+[T] iterations (): 264702.000000
+num_dfas: 5
+model_size: 100
+>--
+[Tup] single_point_search: {85420.000000, 0.000000}
+[Tup] single_point_search_iterations: {1268897, 0.000000}
+[Tup] single_point_search: {84925.000000, 1.000000}
+[Tup] single_point_search_iterations: {1261236, 1.000000}
+[Tup] single_point_search: {83827.000000, 3.000000}
+[Tup] single_point_search_iterations: {1241212, 3.000000}
+[Tup] single_point_search: {80359.000000, 4.000000}
+[Tup] single_point_search_iterations: {1177377, 4.000000}
+[T] search (ms): 85420.000000
+[T] iterations (): 1268897.000000
+num_dfas: 5
+model_size: 400
+>--
+[Tup] single_point_search: {207510.000000, 0.000000}
+[Tup] single_point_search_iterations: {3048960, 0.000000}
+[Tup] single_point_search: {206897.000000, 1.000000}
+[Tup] single_point_search_iterations: {3039537, 1.000000}
+[Tup] single_point_search: {198547.000000, 2.000000}
+[Tup] single_point_search_iterations: {2905363, 2.000000}
+[Tup] single_point_search: {195829.000000, 3.000000}
+[Tup] single_point_search_iterations: {2856646, 3.000000}
+[Tup] single_point_search: {192187.000000, 4.000000}
+[Tup] single_point_search_iterations: {2788025, 4.000000}
+[Tup] single_point_search: {190134.000000, 5.000000}
+[Tup] single_point_search_iterations: {2751896, 5.000000}
+[Tup] single_point_search: {188336.000000, 6.000000}
+[Tup] single_point_search_iterations: {2720254, 6.000000}
+[T] search (ms): 207510.000000
+[T] iterations (): 3048960.000000
+num_dfas: 5
+model_size: 900
+>--
+[Tup] single_point_search: {350549.000000, 0.000000}
+[Tup] single_point_search_iterations: {5177240, 0.000000}
+[Tup] single_point_search: {345040.000000, 1.000000}
+[Tup] single_point_search_iterations: {5091809, 1.000000}
+[Tup] single_point_search: {338056.000000, 2.000000}
+[Tup] single_point_search_iterations: {4975262, 2.000000}
+[Tup] single_point_search: {332012.000000, 3.000000}
+[Tup] single_point_search_iterations: {4860363, 3.000000}
+[T] search (ms): 350550.000000
+[T] iterations (): 5177240.000000
+num_dfas: 5
+model_size: 1600
+>--
+[Tup] single_point_search: {519443.000000, 0.000000}
+[Tup] single_point_search_iterations: {7520899, 0.000000}
+[Tup] single_point_search: {502206.000000, 1.000000}
+[Tup] single_point_search_iterations: {7271901, 1.000000}
+[Tup] single_point_search: {486223.000000, 2.000000}
+[Tup] single_point_search_iterations: {7021763, 2.000000}
+[Tup] single_point_search: {469243.000000, 3.000000}
+[Tup] single_point_search_iterations: {6749991, 3.000000}
+[T] search (ms): 519444.000000
+[T] iterations (): 7520899.000000
+num_dfas: 5
+model_size: 2500
+>--
+[Tup] single_point_search: {797773.000000, 0.000000}
+[Tup] single_point_search_iterations: {11860824, 0.000000}
+[Tup] single_point_search: {785252.000000, 1.000000}
+[Tup] single_point_search_iterations: {11669365, 1.000000}
+[Tup] single_point_search: {760185.000000, 2.000000}
+[Tup] single_point_search_iterations: {11251399, 2.000000}
+[Tup] single_point_search: {752449.000000, 4.000000}
+[Tup] single_point_search_iterations: {11096425, 4.000000}
+[Tup] single_point_search: {734774.000000, 6.000000}
+[Tup] single_point_search_iterations: {10761607, 6.000000}
+[T] search (ms): 797773.000000
+[T] iterations (): 11860824.000000
+num_dfas: 5
+model_size: 3600
+>--
+[Tup] single_point_search: {1063810.000000, 0.000000}
+[Tup] single_point_search_iterations: {15565534, 0.000000}
+[Tup] single_point_search: {1039023.000000, 1.000000}
+[Tup] single_point_search_iterations: {15198584, 1.000000}
+[Tup] single_point_search: {1007634.000000, 2.000000}
+[Tup] single_point_search_iterations: {14700288, 2.000000}
+[Tup] single_point_search: {994746.000000, 4.000000}
+[Tup] single_point_search_iterations: {14464909, 4.000000}
+[T] search (ms): 1063810.000000
+[T] iterations (): 15565534.000000
+num_dfas: 5
+model_size: 4900
+>--
+[Tup] single_point_search: {1421753.000000, 0.000000}
+[Tup] single_point_search_iterations: {20806744, 0.000000}
+[Tup] single_point_search: {1396567.000000, 1.000000}
+[Tup] single_point_search_iterations: {20438128, 1.000000}
+[Tup] single_point_search: {1339091.000000, 2.000000}
+[Tup] single_point_search_iterations: {19517857, 2.000000}
+[Tup] single_point_search: {1315905.000000, 5.000000}
+[Tup] single_point_search_iterations: {19107712, 5.000000}
+[T] search (ms): 1421754.000000
+[T] iterations (): 20806744.000000
+num_dfas: 5
+model_size: 6400
+>--
+[Tup] single_point_search: {1854517.000000, 0.000000}
+[Tup] single_point_search_iterations: {27012678, 0.000000}
+[Tup] single_point_search: {1824884.000000, 1.000000}
+[Tup] single_point_search_iterations: {26583056, 1.000000}
+[Tup] single_point_search: {1755627.000000, 2.000000}
+[Tup] single_point_search_iterations: {25491159, 2.000000}
+[Tup] single_point_search: {1733015.000000, 3.000000}
+[Tup] single_point_search_iterations: {25087755, 3.000000}
+[Tup] single_point_search: {1711180.000000, 4.000000}
+[Tup] single_point_search_iterations: {24683389, 4.000000}
+[T] search (ms): 1854519.000000
+[T] iterations (): 27012678.000000
+num_dfas: 5
+model_size: 8100
+>--
+[Tup] single_point_search: {2023055.000000, 0.000000}
+[Tup] single_point_search_iterations: {29001240, 0.000000}
+[Tup] single_point_search: {2002738.000000, 1.000000}
+[Tup] single_point_search_iterations: {28697480, 1.000000}
+[Tup] single_point_search: {1653889.000000, 2.000000}
+[Tup] single_point_search_iterations: {23485449, 2.000000}
+[T] search (ms): 2023061.000000
+[T] iterations (): 29001240.000000
+num_dfas: 5
+model_size: 10000
+>--

@@ -1,3 +1,4 @@
+#! /root/miniconda3/envs/tpenv/bin/python
 import os
 import struct
 import sys
@@ -6,7 +7,6 @@ import argparse
 
 sys.path.append(os.path.join(os.path.dirname(__file__),"../spot_automaton_file_dump"))
 
-#! /root/miniconda3/envs/tpenv/bin/python
 import formula2dfa 
 import bm_preference_planner_grid_robot
 

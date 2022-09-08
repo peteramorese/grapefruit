@@ -1,0 +1,2794 @@
+[T] heuristic (ms): 64.000000
+[Tup] single_point_search: {4345.000000, 0.000000}
+[Tup] single_point_search_iterations: {61305, 0.000000}
+[Tup] single_point_search: {4016.000000, 1.000000}
+[Tup] single_point_search_iterations: {56739, 1.000000}
+[Tup] single_point_search: {1557.000000, 2.000000}
+[Tup] single_point_search_iterations: {21549, 2.000000}
+[Tup] single_point_search: {879.000000, 3.000000}
+[Tup] single_point_search_iterations: {11961, 3.000000}
+[T] search (ms): 4349.000000
+[T] iterations (): 61305.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 307.000000
+[Tup] single_point_search: {35637.000000, 0.000000}
+[Tup] single_point_search_iterations: {443279, 0.000000}
+[Tup] single_point_search: {28332.000000, 1.000000}
+[Tup] single_point_search_iterations: {350908, 1.000000}
+[Tup] single_point_search: {11831.000000, 2.000000}
+[Tup] single_point_search_iterations: {141567, 2.000000}
+[Tup] single_point_search: {9214.000000, 3.000000}
+[Tup] single_point_search_iterations: {109153, 3.000000}
+[T] search (ms): 35650.000000
+[T] iterations (): 443279.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 695.000000
+[Tup] single_point_search: {59293.000000, 0.000000}
+[Tup] single_point_search_iterations: {744613, 0.000000}
+[Tup] single_point_search: {34308.000000, 2.000000}
+[Tup] single_point_search_iterations: {423996, 2.000000}
+[Tup] single_point_search: {29677.000000, 3.000000}
+[Tup] single_point_search_iterations: {363834, 3.000000}
+[Tup] single_point_search: {13341.000000, 4.000000}
+[Tup] single_point_search_iterations: {159263, 4.000000}
+[T] search (ms): 59347.000000
+[T] iterations (): 744613.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1211.000000
+[Tup] single_point_search: {112115.000000, 0.000000}
+[Tup] single_point_search_iterations: {1413109, 0.000000}
+[Tup] single_point_search: {69747.000000, 1.000000}
+[Tup] single_point_search_iterations: {879173, 1.000000}
+[Tup] single_point_search: {21715.000000, 2.000000}
+[Tup] single_point_search_iterations: {267245, 2.000000}
+[T] search (ms): 112158.000000
+[T] iterations (): 1413109.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1929.000000
+[Tup] single_point_search: {236892.000000, 0.000000}
+[Tup] single_point_search_iterations: {3008843, 0.000000}
+[Tup] single_point_search: {183824.000000, 1.000000}
+[Tup] single_point_search_iterations: {2351707, 1.000000}
+[Tup] single_point_search: {157597.000000, 2.000000}
+[Tup] single_point_search_iterations: {2002256, 2.000000}
+[Tup] single_point_search: {118891.000000, 3.000000}
+[Tup] single_point_search_iterations: {1480132, 3.000000}
+[Tup] single_point_search: {101618.000000, 5.000000}
+[Tup] single_point_search_iterations: {1258488, 5.000000}
+[T] search (ms): 236935.000000
+[T] iterations (): 3008843.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2739.000000
+[Tup] single_point_search: {175188.000000, 0.000000}
+[Tup] single_point_search_iterations: {2249529, 0.000000}
+[Tup] single_point_search: {172719.000000, 1.000000}
+[Tup] single_point_search_iterations: {2218132, 1.000000}
+[Tup] single_point_search: {82405.000000, 2.000000}
+[Tup] single_point_search_iterations: {1039007, 2.000000}
+[Tup] single_point_search: {75592.000000, 4.000000}
+[Tup] single_point_search_iterations: {949019, 4.000000}
+[Tup] single_point_search: {17857.000000, 6.000000}
+[Tup] single_point_search_iterations: {216048, 6.000000}
+[T] search (ms): 175253.000000
+[T] iterations (): 2249529.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3814.000000
+[Tup] single_point_search: {547275.000000, 0.000000}
+[Tup] single_point_search_iterations: {6878574, 0.000000}
+[Tup] single_point_search: {438568.000000, 1.000000}
+[Tup] single_point_search_iterations: {5529717, 1.000000}
+[Tup] single_point_search: {286258.000000, 2.000000}
+[Tup] single_point_search_iterations: {3544862, 2.000000}
+[Tup] single_point_search: {214144.000000, 3.000000}
+[Tup] single_point_search_iterations: {2624354, 3.000000}
+[T] search (ms): 547334.000000
+[T] iterations (): 6878574.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4954.000000
+[Tup] single_point_search: {952148.000000, 0.000000}
+[Tup] single_point_search_iterations: {12485317, 0.000000}
+[Tup] single_point_search: {910654.000000, 1.000000}
+[Tup] single_point_search_iterations: {11960801, 1.000000}
+[Tup] single_point_search: {756199.000000, 2.000000}
+[Tup] single_point_search_iterations: {9901195, 2.000000}
+[Tup] single_point_search: {291199.000000, 4.000000}
+[Tup] single_point_search_iterations: {3682598, 4.000000}
+[Tup] single_point_search: {276240.000000, 6.000000}
+[Tup] single_point_search_iterations: {3483382, 6.000000}
+[T] search (ms): 952212.000000
+[T] iterations (): 12485317.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6358.000000
+[Tup] single_point_search: {1015107.000000, 0.000000}
+[Tup] single_point_search_iterations: {12989968, 0.000000}
+[Tup] single_point_search: {788250.000000, 1.000000}
+[Tup] single_point_search_iterations: {10150158, 1.000000}
+[Tup] single_point_search: {247579.000000, 3.000000}
+[Tup] single_point_search_iterations: {3040778, 3.000000}
+[T] search (ms): 1015167.000000
+[T] iterations (): 12989968.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7716.000000
+[Tup] single_point_search: {527966.000000, 0.000000}
+[Tup] single_point_search_iterations: {6618976, 0.000000}
+[Tup] single_point_search: {387930.000000, 4.000000}
+[Tup] single_point_search_iterations: {4819577, 4.000000}
+[Tup] single_point_search: {225691.000000, 6.000000}
+[Tup] single_point_search_iterations: {2738093, 6.000000}
+[T] search (ms): 528110.000000
+[T] iterations (): 6618976.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 76.000000
+[Tup] single_point_search: {3380.000000, 0.000000}
+[Tup] single_point_search_iterations: {41460, 0.000000}
+[Tup] single_point_search: {3111.000000, 1.000000}
+[Tup] single_point_search_iterations: {38148, 1.000000}
+[Tup] single_point_search: {1769.000000, 2.000000}
+[Tup] single_point_search_iterations: {21359, 2.000000}
+[T] search (ms): 3386.000000
+[T] iterations (): 41460.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 309.000000
+[Tup] single_point_search: {59865.000000, 0.000000}
+[Tup] single_point_search_iterations: {763766, 0.000000}
+[Tup] single_point_search: {26473.000000, 2.000000}
+[Tup] single_point_search_iterations: {324915, 2.000000}
+[Tup] single_point_search: {8219.000000, 4.000000}
+[Tup] single_point_search_iterations: {96952, 4.000000}
+[T] search (ms): 59899.000000
+[T] iterations (): 763766.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 685.000000
+[Tup] single_point_search: {73178.000000, 0.000000}
+[Tup] single_point_search_iterations: {937055, 0.000000}
+[Tup] single_point_search: {36651.000000, 2.000000}
+[Tup] single_point_search_iterations: {458560, 2.000000}
+[Tup] single_point_search: {31953.000000, 4.000000}
+[Tup] single_point_search_iterations: {397607, 4.000000}
+[Tup] single_point_search: {21968.000000, 5.000000}
+[Tup] single_point_search_iterations: {271752, 5.000000}
+[T] search (ms): 73230.000000
+[T] iterations (): 937055.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1242.000000
+[Tup] single_point_search: {236844.000000, 0.000000}
+[Tup] single_point_search_iterations: {2982507, 0.000000}
+[Tup] single_point_search: {183312.000000, 1.000000}
+[Tup] single_point_search_iterations: {2313844, 1.000000}
+[Tup] single_point_search: {167589.000000, 2.000000}
+[Tup] single_point_search_iterations: {2106947, 2.000000}
+[Tup] single_point_search: {110307.000000, 3.000000}
+[Tup] single_point_search_iterations: {1360432, 3.000000}
+[Tup] single_point_search: {101578.000000, 5.000000}
+[Tup] single_point_search_iterations: {1247129, 5.000000}
+[T] search (ms): 236858.000000
+[T] iterations (): 2982507.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1929.000000
+[Tup] single_point_search: {330672.000000, 0.000000}
+[Tup] single_point_search_iterations: {4167275, 0.000000}
+[Tup] single_point_search: {258385.000000, 1.000000}
+[Tup] single_point_search_iterations: {3260325, 1.000000}
+[Tup] single_point_search: {157428.000000, 2.000000}
+[Tup] single_point_search_iterations: {1965244, 2.000000}
+[Tup] single_point_search: {134596.000000, 3.000000}
+[Tup] single_point_search_iterations: {1669886, 3.000000}
+[Tup] single_point_search: {104971.000000, 5.000000}
+[Tup] single_point_search_iterations: {1295857, 5.000000}
+[T] search (ms): 330702.000000
+[T] iterations (): 4167275.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2752.000000
+[Tup] single_point_search: {381111.000000, 0.000000}
+[Tup] single_point_search_iterations: {4805540, 0.000000}
+[Tup] single_point_search: {368655.000000, 1.000000}
+[Tup] single_point_search_iterations: {4650185, 1.000000}
+[Tup] single_point_search: {236963.000000, 3.000000}
+[Tup] single_point_search_iterations: {2925413, 3.000000}
+[Tup] single_point_search: {173310.000000, 4.000000}
+[Tup] single_point_search_iterations: {2104072, 4.000000}
+[T] search (ms): 381166.000000
+[T] iterations (): 4805540.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3792.000000
+[Tup] single_point_search: {830054.000000, 0.000000}
+[Tup] single_point_search_iterations: {10674083, 0.000000}
+[Tup] single_point_search: {781625.000000, 1.000000}
+[Tup] single_point_search_iterations: {10065750, 1.000000}
+[Tup] single_point_search: {515467.000000, 2.000000}
+[Tup] single_point_search_iterations: {6571924, 2.000000}
+[Tup] single_point_search: {199810.000000, 4.000000}
+[Tup] single_point_search_iterations: {2465671, 4.000000}
+[T] search (ms): 830098.000000
+[T] iterations (): 10674083.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4883.000000
+[Tup] single_point_search: {96976.000000, 0.000000}
+[Tup] single_point_search_iterations: {1213130, 0.000000}
+[Tup] single_point_search: {91830.000000, 1.000000}
+[Tup] single_point_search_iterations: {1147356, 1.000000}
+[Tup] single_point_search: {54958.000000, 2.000000}
+[Tup] single_point_search_iterations: {672527, 2.000000}
+[Tup] single_point_search: {30748.000000, 4.000000}
+[Tup] single_point_search_iterations: {365744, 4.000000}
+[T] search (ms): 97008.000000
+[T] iterations (): 1213130.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6303.000000
+[Tup] single_point_search: {1081097.000000, 0.000000}
+[Tup] single_point_search_iterations: {13563038, 0.000000}
+[Tup] single_point_search: {741348.000000, 1.000000}
+[Tup] single_point_search_iterations: {9314596, 1.000000}
+[Tup] single_point_search: {580743.000000, 2.000000}
+[Tup] single_point_search_iterations: {7233959, 2.000000}
+[Tup] single_point_search: {429099.000000, 4.000000}
+[Tup] single_point_search_iterations: {5287659, 4.000000}
+[T] search (ms): 1081127.000000
+[T] iterations (): 13563038.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7689.000000
+[Tup] single_point_search: {1180563.000000, 0.000000}
+[Tup] single_point_search_iterations: {15183056, 0.000000}
+[Tup] single_point_search: {1057108.000000, 1.000000}
+[Tup] single_point_search_iterations: {13651162, 1.000000}
+[Tup] single_point_search: {731732.000000, 2.000000}
+[Tup] single_point_search_iterations: {9407246, 2.000000}
+[Tup] single_point_search: {656480.000000, 3.000000}
+[Tup] single_point_search_iterations: {8402755, 3.000000}
+[Tup] single_point_search: {460066.000000, 4.000000}
+[Tup] single_point_search_iterations: {5830351, 4.000000}
+[T] search (ms): 1180641.000000
+[T] iterations (): 15183056.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 73.000000
+[Tup] single_point_search: {4648.000000, 0.000000}
+[Tup] single_point_search_iterations: {59949, 0.000000}
+[Tup] single_point_search: {3984.000000, 1.000000}
+[Tup] single_point_search_iterations: {51320, 1.000000}
+[Tup] single_point_search: {1657.000000, 2.000000}
+[Tup] single_point_search_iterations: {20740, 2.000000}
+[T] search (ms): 4656.000000
+[T] iterations (): 59949.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 308.000000
+[Tup] single_point_search: {32142.000000, 0.000000}
+[Tup] single_point_search_iterations: {394364, 0.000000}
+[Tup] single_point_search: {9298.000000, 1.000000}
+[Tup] single_point_search_iterations: {113333, 1.000000}
+[Tup] single_point_search: {8380.000000, 2.000000}
+[Tup] single_point_search_iterations: {101727, 2.000000}
+[T] search (ms): 32156.000000
+[T] iterations (): 394364.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 689.000000
+[Tup] single_point_search: {30971.000000, 0.000000}
+[Tup] single_point_search_iterations: {390672, 0.000000}
+[Tup] single_point_search: {19815.000000, 1.000000}
+[Tup] single_point_search_iterations: {252098, 1.000000}
+[Tup] single_point_search: {12901.000000, 2.000000}
+[Tup] single_point_search_iterations: {161576, 2.000000}
+[Tup] single_point_search: {9814.000000, 3.000000}
+[Tup] single_point_search_iterations: {122011, 3.000000}
+[Tup] single_point_search: {6829.000000, 4.000000}
+[Tup] single_point_search_iterations: {83040, 4.000000}
+[Tup] single_point_search: {5137.000000, 5.000000}
+[Tup] single_point_search_iterations: {61762, 5.000000}
+[T] search (ms): 30989.000000
+[T] iterations (): 390672.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1229.000000
+[Tup] single_point_search: {214406.000000, 0.000000}
+[Tup] single_point_search_iterations: {2707938, 0.000000}
+[Tup] single_point_search: {151877.000000, 1.000000}
+[Tup] single_point_search_iterations: {1930806, 1.000000}
+[Tup] single_point_search: {70253.000000, 2.000000}
+[Tup] single_point_search_iterations: {887330, 2.000000}
+[Tup] single_point_search: {34072.000000, 3.000000}
+[Tup] single_point_search_iterations: {423717, 3.000000}
+[T] search (ms): 214424.000000
+[T] iterations (): 2707938.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1916.000000
+[Tup] single_point_search: {173153.000000, 0.000000}
+[Tup] single_point_search_iterations: {2208800, 0.000000}
+[Tup] single_point_search: {122683.000000, 1.000000}
+[Tup] single_point_search_iterations: {1575843, 1.000000}
+[Tup] single_point_search: {21998.000000, 2.000000}
+[Tup] single_point_search_iterations: {276786, 2.000000}
+[Tup] single_point_search: {16526.000000, 4.000000}
+[Tup] single_point_search_iterations: {205783, 4.000000}
+[T] search (ms): 173197.000000
+[T] iterations (): 2208800.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2773.000000
+[Tup] single_point_search: {302840.000000, 0.000000}
+[Tup] single_point_search_iterations: {3832045, 0.000000}
+[Tup] single_point_search: {300550.000000, 1.000000}
+[Tup] single_point_search_iterations: {3802260, 1.000000}
+[Tup] single_point_search: {241096.000000, 3.000000}
+[Tup] single_point_search_iterations: {3006087, 3.000000}
+[T] search (ms): 302913.000000
+[T] iterations (): 3832045.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3787.000000
+[Tup] single_point_search: {607064.000000, 0.000000}
+[Tup] single_point_search_iterations: {8162076, 0.000000}
+[Tup] single_point_search: {597079.000000, 1.000000}
+[Tup] single_point_search_iterations: {8035089, 1.000000}
+[Tup] single_point_search: {518353.000000, 2.000000}
+[Tup] single_point_search_iterations: {6982238, 2.000000}
+[Tup] single_point_search: {444537.000000, 3.000000}
+[Tup] single_point_search_iterations: {6002238, 3.000000}
+[Tup] single_point_search: {330619.000000, 4.000000}
+[Tup] single_point_search_iterations: {4424311, 4.000000}
+[Tup] single_point_search: {239917.000000, 6.000000}
+[Tup] single_point_search_iterations: {3172247, 6.000000}
+[T] search (ms): 607113.000000
+[T] iterations (): 8162076.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4917.000000
+[Tup] single_point_search: {645857.000000, 0.000000}
+[Tup] single_point_search_iterations: {8200520, 0.000000}
+[Tup] single_point_search: {544751.000000, 1.000000}
+[Tup] single_point_search_iterations: {6942800, 1.000000}
+[Tup] single_point_search: {405636.000000, 2.000000}
+[Tup] single_point_search_iterations: {5163720, 2.000000}
+[Tup] single_point_search: {259396.000000, 3.000000}
+[Tup] single_point_search_iterations: {3253488, 3.000000}
+[Tup] single_point_search: {48728.000000, 6.000000}
+[Tup] single_point_search_iterations: {584609, 6.000000}
+[T] search (ms): 645941.000000
+[T] iterations (): 8200520.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6266.000000
+[Tup] single_point_search: {977661.000000, 0.000000}
+[Tup] single_point_search_iterations: {12585175, 0.000000}
+[Tup] single_point_search: {756933.000000, 1.000000}
+[Tup] single_point_search_iterations: {9942942, 1.000000}
+[Tup] single_point_search: {678281.000000, 2.000000}
+[Tup] single_point_search_iterations: {8905240, 2.000000}
+[Tup] single_point_search: {318030.000000, 3.000000}
+[Tup] single_point_search_iterations: {4100596, 3.000000}
+[T] search (ms): 977727.000000
+[T] iterations (): 12585175.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7705.000000
+[Tup] single_point_search: {1298989.000000, 0.000000}
+[Tup] single_point_search_iterations: {16609189, 0.000000}
+[Tup] single_point_search: {1132454.000000, 1.000000}
+[Tup] single_point_search_iterations: {14505005, 1.000000}
+[Tup] single_point_search: {820761.000000, 2.000000}
+[Tup] single_point_search_iterations: {10390393, 2.000000}
+[Tup] single_point_search: {632527.000000, 3.000000}
+[Tup] single_point_search_iterations: {7896294, 3.000000}
+[Tup] single_point_search: {602422.000000, 4.000000}
+[Tup] single_point_search_iterations: {7501295, 4.000000}
+[T] search (ms): 1299056.000000
+[T] iterations (): 16609189.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 75.000000
+[Tup] single_point_search: {18933.000000, 0.000000}
+[Tup] single_point_search_iterations: {249831, 0.000000}
+[Tup] single_point_search: {17858.000000, 1.000000}
+[Tup] single_point_search_iterations: {235751, 1.000000}
+[Tup] single_point_search: {15525.000000, 2.000000}
+[Tup] single_point_search_iterations: {203679, 2.000000}
+[Tup] single_point_search: {11444.000000, 4.000000}
+[Tup] single_point_search_iterations: {147230, 4.000000}
+[T] search (ms): 18934.000000
+[T] iterations (): 249831.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 303.000000
+[Tup] single_point_search: {29310.000000, 0.000000}
+[Tup] single_point_search_iterations: {363321, 0.000000}
+[Tup] single_point_search: {24877.000000, 1.000000}
+[Tup] single_point_search_iterations: {309051, 1.000000}
+[Tup] single_point_search: {12609.000000, 3.000000}
+[Tup] single_point_search_iterations: {151345, 3.000000}
+[T] search (ms): 29327.000000
+[T] iterations (): 363321.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 688.000000
+[Tup] single_point_search: {160355.000000, 0.000000}
+[Tup] single_point_search_iterations: {2087312, 0.000000}
+[Tup] single_point_search: {139306.000000, 1.000000}
+[Tup] single_point_search_iterations: {1811162, 1.000000}
+[Tup] single_point_search: {110565.000000, 2.000000}
+[Tup] single_point_search_iterations: {1423995, 2.000000}
+[Tup] single_point_search: {77253.000000, 3.000000}
+[Tup] single_point_search_iterations: {973117, 3.000000}
+[Tup] single_point_search: {69642.000000, 4.000000}
+[Tup] single_point_search_iterations: {871780, 4.000000}
+[Tup] single_point_search: {46878.000000, 5.000000}
+[Tup] single_point_search_iterations: {576709, 5.000000}
+[T] search (ms): 160359.000000
+[T] iterations (): 2087312.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1224.000000
+[Tup] single_point_search: {274595.000000, 0.000000}
+[Tup] single_point_search_iterations: {3632845, 0.000000}
+[Tup] single_point_search: {258854.000000, 1.000000}
+[Tup] single_point_search_iterations: {3431484, 1.000000}
+[Tup] single_point_search: {177750.000000, 2.000000}
+[Tup] single_point_search_iterations: {2343873, 2.000000}
+[Tup] single_point_search: {174071.000000, 3.000000}
+[Tup] single_point_search_iterations: {2291860, 3.000000}
+[Tup] single_point_search: {114206.000000, 5.000000}
+[Tup] single_point_search_iterations: {1465751, 5.000000}
+[T] search (ms): 274610.000000
+[T] iterations (): 3632845.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1901.000000
+[Tup] single_point_search: {398053.000000, 0.000000}
+[Tup] single_point_search_iterations: {5188402, 0.000000}
+[Tup] single_point_search: {344641.000000, 1.000000}
+[Tup] single_point_search_iterations: {4502037, 1.000000}
+[Tup] single_point_search: {246838.000000, 2.000000}
+[Tup] single_point_search_iterations: {3182943, 2.000000}
+[Tup] single_point_search: {196926.000000, 3.000000}
+[Tup] single_point_search_iterations: {2521956, 3.000000}
+[Tup] single_point_search: {193083.000000, 5.000000}
+[Tup] single_point_search_iterations: {2470564, 5.000000}
+[Tup] single_point_search: {165715.000000, 6.000000}
+[Tup] single_point_search_iterations: {2101081, 6.000000}
+[T] search (ms): 398077.000000
+[T] iterations (): 5188402.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2797.000000
+[Tup] single_point_search: {627064.000000, 0.000000}
+[Tup] single_point_search_iterations: {8176114, 0.000000}
+[Tup] single_point_search: {615828.000000, 1.000000}
+[Tup] single_point_search_iterations: {8033045, 1.000000}
+[Tup] single_point_search: {398230.000000, 2.000000}
+[Tup] single_point_search_iterations: {5173218, 2.000000}
+[Tup] single_point_search: {170417.000000, 3.000000}
+[Tup] single_point_search_iterations: {2164956, 3.000000}
+[Tup] single_point_search: {159003.000000, 6.000000}
+[Tup] single_point_search_iterations: {2016671, 6.000000}
+[T] search (ms): 627091.000000
+[T] iterations (): 8176114.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3804.000000
+[Tup] single_point_search: {148407.000000, 0.000000}
+[Tup] single_point_search_iterations: {1786155, 0.000000}
+[Tup] single_point_search: {134040.000000, 2.000000}
+[Tup] single_point_search_iterations: {1607447, 2.000000}
+[Tup] single_point_search: {124373.000000, 5.000000}
+[Tup] single_point_search_iterations: {1486303, 5.000000}
+[T] search (ms): 148482.000000
+[T] iterations (): 1786155.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4908.000000
+[Tup] single_point_search: {591437.000000, 0.000000}
+[Tup] single_point_search_iterations: {7562806, 0.000000}
+[Tup] single_point_search: {450798.000000, 1.000000}
+[Tup] single_point_search_iterations: {5834691, 1.000000}
+[Tup] single_point_search: {439861.000000, 2.000000}
+[Tup] single_point_search_iterations: {5685532, 2.000000}
+[Tup] single_point_search: {319465.000000, 3.000000}
+[Tup] single_point_search_iterations: {4075594, 3.000000}
+[Tup] single_point_search: {112328.000000, 4.000000}
+[Tup] single_point_search_iterations: {1386176, 4.000000}
+[T] search (ms): 591524.000000
+[T] iterations (): 7562806.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6210.000000
+[Tup] single_point_search: {1385576.000000, 0.000000}
+[Tup] single_point_search_iterations: {18272685, 0.000000}
+[Tup] single_point_search: {1295013.000000, 1.000000}
+[Tup] single_point_search_iterations: {17113014, 1.000000}
+[Tup] single_point_search: {1192387.000000, 2.000000}
+[Tup] single_point_search_iterations: {15705529, 2.000000}
+[Tup] single_point_search: {331408.000000, 4.000000}
+[Tup] single_point_search_iterations: {4152111, 4.000000}
+[Tup] single_point_search: {206384.000000, 5.000000}
+[Tup] single_point_search_iterations: {2544102, 5.000000}
+[Tup] single_point_search: {149471.000000, 6.000000}
+[Tup] single_point_search_iterations: {1816646, 6.000000}
+[T] search (ms): 1385616.000000
+[T] iterations (): 18272685.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7864.000000
+[Tup] single_point_search: {1257859.000000, 0.000000}
+[Tup] single_point_search_iterations: {15726201, 0.000000}
+[Tup] single_point_search: {951425.000000, 1.000000}
+[Tup] single_point_search_iterations: {12056841, 1.000000}
+[Tup] single_point_search: {892683.000000, 3.000000}
+[Tup] single_point_search_iterations: {11289671, 3.000000}
+[Tup] single_point_search: {676609.000000, 4.000000}
+[Tup] single_point_search_iterations: {8458781, 4.000000}
+[Tup] single_point_search: {508533.000000, 5.000000}
+[Tup] single_point_search_iterations: {6279919, 5.000000}
+[T] search (ms): 1257936.000000
+[T] iterations (): 15726201.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 66.000000
+[Tup] single_point_search: {4224.000000, 0.000000}
+[Tup] single_point_search_iterations: {59534, 0.000000}
+[Tup] single_point_search: {3992.000000, 1.000000}
+[Tup] single_point_search_iterations: {56387, 1.000000}
+[Tup] single_point_search: {2781.000000, 3.000000}
+[Tup] single_point_search_iterations: {38843, 3.000000}
+[T] search (ms): 4229.000000
+[T] iterations (): 59534.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 302.000000
+[Tup] single_point_search: {36430.000000, 0.000000}
+[Tup] single_point_search_iterations: {463033, 0.000000}
+[Tup] single_point_search: {23145.000000, 1.000000}
+[Tup] single_point_search_iterations: {294290, 1.000000}
+[Tup] single_point_search: {19558.000000, 2.000000}
+[Tup] single_point_search_iterations: {247303, 2.000000}
+[Tup] single_point_search: {18256.000000, 5.000000}
+[Tup] single_point_search_iterations: {230163, 5.000000}
+[T] search (ms): 36442.000000
+[T] iterations (): 463033.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 694.000000
+[Tup] single_point_search: {63999.000000, 0.000000}
+[Tup] single_point_search_iterations: {803536, 0.000000}
+[Tup] single_point_search: {27281.000000, 1.000000}
+[Tup] single_point_search_iterations: {348205, 1.000000}
+[Tup] single_point_search: {24101.000000, 2.000000}
+[Tup] single_point_search_iterations: {308122, 2.000000}
+[Tup] single_point_search: {13705.000000, 4.000000}
+[Tup] single_point_search_iterations: {170470, 4.000000}
+[T] search (ms): 64028.000000
+[T] iterations (): 803536.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1237.000000
+[Tup] single_point_search: {91405.000000, 0.000000}
+[Tup] single_point_search_iterations: {1108708, 0.000000}
+[Tup] single_point_search: {83655.000000, 1.000000}
+[Tup] single_point_search_iterations: {1013050, 1.000000}
+[Tup] single_point_search: {47374.000000, 2.000000}
+[Tup] single_point_search_iterations: {558441, 2.000000}
+[T] search (ms): 91435.000000
+[T] iterations (): 1108708.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1892.000000
+[Tup] single_point_search: {343874.000000, 0.000000}
+[Tup] single_point_search_iterations: {4608624, 0.000000}
+[Tup] single_point_search: {304446.000000, 1.000000}
+[Tup] single_point_search_iterations: {4107425, 1.000000}
+[Tup] single_point_search: {288083.000000, 2.000000}
+[Tup] single_point_search_iterations: {3878774, 2.000000}
+[Tup] single_point_search: {193181.000000, 3.000000}
+[Tup] single_point_search_iterations: {2573422, 3.000000}
+[Tup] single_point_search: {158192.000000, 6.000000}
+[Tup] single_point_search_iterations: {2093069, 6.000000}
+[T] search (ms): 343899.000000
+[T] iterations (): 4608624.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2736.000000
+[Tup] single_point_search: {425005.000000, 0.000000}
+[Tup] single_point_search_iterations: {5478499, 0.000000}
+[Tup] single_point_search: {343449.000000, 1.000000}
+[Tup] single_point_search_iterations: {4436776, 1.000000}
+[Tup] single_point_search: {246145.000000, 2.000000}
+[Tup] single_point_search_iterations: {3131136, 2.000000}
+[Tup] single_point_search: {145899.000000, 3.000000}
+[Tup] single_point_search_iterations: {1807143, 3.000000}
+[T] search (ms): 425054.000000
+[T] iterations (): 5478499.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3838.000000
+[Tup] single_point_search: {809851.000000, 0.000000}
+[Tup] single_point_search_iterations: {10423296, 0.000000}
+[Tup] single_point_search: {742092.000000, 1.000000}
+[Tup] single_point_search_iterations: {9570033, 1.000000}
+[Tup] single_point_search: {289928.000000, 2.000000}
+[Tup] single_point_search_iterations: {3653861, 2.000000}
+[Tup] single_point_search: {191906.000000, 4.000000}
+[Tup] single_point_search_iterations: {2397663, 4.000000}
+[T] search (ms): 809879.000000
+[T] iterations (): 10423296.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4918.000000
+[Tup] single_point_search: {779365.000000, 0.000000}
+[Tup] single_point_search_iterations: {9670174, 0.000000}
+[Tup] single_point_search: {300643.000000, 1.000000}
+[Tup] single_point_search_iterations: {3700461, 1.000000}
+[Tup] single_point_search: {153970.000000, 3.000000}
+[Tup] single_point_search_iterations: {1843882, 3.000000}
+[T] search (ms): 779387.000000
+[T] iterations (): 9670174.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6230.000000
+[Tup] single_point_search: {460957.000000, 0.000000}
+[Tup] single_point_search_iterations: {5707997, 0.000000}
+[Tup] single_point_search: {315101.000000, 1.000000}
+[Tup] single_point_search_iterations: {3909769, 1.000000}
+[Tup] single_point_search: {282913.000000, 3.000000}
+[Tup] single_point_search_iterations: {3492482, 3.000000}
+[Tup] single_point_search: {141851.000000, 4.000000}
+[Tup] single_point_search_iterations: {1695208, 4.000000}
+[T] search (ms): 461034.000000
+[T] iterations (): 5707997.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7887.000000
+[Tup] single_point_search: {947288.000000, 0.000000}
+[Tup] single_point_search_iterations: {11833716, 0.000000}
+[Tup] single_point_search: {522225.000000, 1.000000}
+[Tup] single_point_search_iterations: {6487258, 1.000000}
+[Tup] single_point_search: {341169.000000, 2.000000}
+[Tup] single_point_search_iterations: {4159287, 2.000000}
+[T] search (ms): 947365.000000
+[T] iterations (): 11833716.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 75.000000
+[Tup] single_point_search: {12488.000000, 0.000000}
+[Tup] single_point_search_iterations: {164491, 0.000000}
+[Tup] single_point_search: {11995.000000, 1.000000}
+[Tup] single_point_search_iterations: {157916, 1.000000}
+[Tup] single_point_search: {7905.000000, 2.000000}
+[Tup] single_point_search_iterations: {102752, 2.000000}
+[Tup] single_point_search: {5814.000000, 4.000000}
+[Tup] single_point_search_iterations: {74234, 4.000000}
+[Tup] single_point_search: {3717.000000, 5.000000}
+[Tup] single_point_search_iterations: {46428, 5.000000}
+[T] search (ms): 12495.000000
+[T] iterations (): 164491.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 303.000000
+[Tup] single_point_search: {25698.000000, 0.000000}
+[Tup] single_point_search_iterations: {324049, 0.000000}
+[Tup] single_point_search: {21351.000000, 1.000000}
+[Tup] single_point_search_iterations: {269880, 1.000000}
+[Tup] single_point_search: {8485.000000, 2.000000}
+[Tup] single_point_search_iterations: {103708, 2.000000}
+[Tup] single_point_search: {6552.000000, 3.000000}
+[Tup] single_point_search_iterations: {79225, 3.000000}
+[T] search (ms): 25712.000000
+[T] iterations (): 324049.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 688.000000
+[Tup] single_point_search: {118465.000000, 0.000000}
+[Tup] single_point_search_iterations: {1515180, 0.000000}
+[Tup] single_point_search: {89937.000000, 1.000000}
+[Tup] single_point_search_iterations: {1166081, 1.000000}
+[Tup] single_point_search: {57780.000000, 2.000000}
+[Tup] single_point_search_iterations: {745967, 2.000000}
+[Tup] single_point_search: {28233.000000, 3.000000}
+[Tup] single_point_search_iterations: {358841, 3.000000}
+[Tup] single_point_search: {28207.000000, 4.000000}
+[Tup] single_point_search_iterations: {358428, 4.000000}
+[Tup] single_point_search: {23760.000000, 5.000000}
+[Tup] single_point_search_iterations: {301805, 5.000000}
+[Tup] single_point_search: {23736.000000, 6.000000}
+[Tup] single_point_search_iterations: {301434, 6.000000}
+[T] search (ms): 118478.000000
+[T] iterations (): 1515180.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1232.000000
+[Tup] single_point_search: {199224.000000, 0.000000}
+[Tup] single_point_search_iterations: {2545964, 0.000000}
+[Tup] single_point_search: {179749.000000, 1.000000}
+[Tup] single_point_search_iterations: {2306316, 1.000000}
+[Tup] single_point_search: {152759.000000, 2.000000}
+[Tup] single_point_search_iterations: {1953158, 2.000000}
+[Tup] single_point_search: {143615.000000, 3.000000}
+[Tup] single_point_search_iterations: {1830791, 3.000000}
+[T] search (ms): 199252.000000
+[T] iterations (): 2545964.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1931.000000
+[Tup] single_point_search: {339674.000000, 0.000000}
+[Tup] single_point_search_iterations: {4377958, 0.000000}
+[Tup] single_point_search: {251265.000000, 1.000000}
+[Tup] single_point_search_iterations: {3265626, 1.000000}
+[Tup] single_point_search: {168336.000000, 3.000000}
+[Tup] single_point_search_iterations: {2158288, 3.000000}
+[Tup] single_point_search: {131649.000000, 4.000000}
+[Tup] single_point_search_iterations: {1670726, 4.000000}
+[T] search (ms): 339693.000000
+[T] iterations (): 4377958.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2731.000000
+[Tup] single_point_search: {219735.000000, 0.000000}
+[Tup] single_point_search_iterations: {2688129, 0.000000}
+[Tup] single_point_search: {68507.000000, 1.000000}
+[Tup] single_point_search_iterations: {816869, 1.000000}
+[T] search (ms): 219795.000000
+[T] iterations (): 2688129.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3734.000000
+[Tup] single_point_search: {774932.000000, 0.000000}
+[Tup] single_point_search_iterations: {9973972, 0.000000}
+[Tup] single_point_search: {656081.000000, 1.000000}
+[Tup] single_point_search_iterations: {8494370, 1.000000}
+[Tup] single_point_search: {391709.000000, 2.000000}
+[Tup] single_point_search_iterations: {5027987, 2.000000}
+[Tup] single_point_search: {204551.000000, 4.000000}
+[Tup] single_point_search_iterations: {2561083, 4.000000}
+[T] search (ms): 774958.000000
+[T] iterations (): 9973972.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4981.000000
+[Tup] single_point_search: {142484.000000, 0.000000}
+[Tup] single_point_search_iterations: {1738458, 0.000000}
+[Tup] single_point_search: {74363.000000, 1.000000}
+[Tup] single_point_search_iterations: {909879, 1.000000}
+[Tup] single_point_search: {63915.000000, 2.000000}
+[Tup] single_point_search_iterations: {778568, 2.000000}
+[Tup] single_point_search: {43313.000000, 4.000000}
+[Tup] single_point_search_iterations: {520343, 4.000000}
+[T] search (ms): 142532.000000
+[T] iterations (): 1738458.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6251.000000
+[Tup] single_point_search: {611051.000000, 0.000000}
+[Tup] single_point_search_iterations: {7821539, 0.000000}
+[Tup] single_point_search: {560951.000000, 1.000000}
+[Tup] single_point_search_iterations: {7191793, 1.000000}
+[Tup] single_point_search: {315175.000000, 2.000000}
+[Tup] single_point_search_iterations: {3987591, 2.000000}
+[Tup] single_point_search: {306458.000000, 3.000000}
+[Tup] single_point_search_iterations: {3872202, 3.000000}
+[T] search (ms): 611128.000000
+[T] iterations (): 7821539.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7723.000000
+[Tup] single_point_search: {534323.000000, 0.000000}
+[Tup] single_point_search_iterations: {6864818, 0.000000}
+[Tup] single_point_search: {466255.000000, 2.000000}
+[Tup] single_point_search_iterations: {5981190, 2.000000}
+[Tup] single_point_search: {153176.000000, 3.000000}
+[Tup] single_point_search_iterations: {1900631, 3.000000}
+[Tup] single_point_search: {94369.000000, 5.000000}
+[Tup] single_point_search_iterations: {1161806, 5.000000}
+[T] search (ms): 534498.000000
+[T] iterations (): 6864818.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 73.000000
+[Tup] single_point_search: {8281.000000, 0.000000}
+[Tup] single_point_search_iterations: {107481, 0.000000}
+[Tup] single_point_search: {5516.000000, 1.000000}
+[Tup] single_point_search_iterations: {71738, 1.000000}
+[Tup] single_point_search: {4848.000000, 2.000000}
+[Tup] single_point_search_iterations: {62902, 2.000000}
+[Tup] single_point_search: {3701.000000, 3.000000}
+[Tup] single_point_search_iterations: {47439, 3.000000}
+[Tup] single_point_search: {3242.000000, 4.000000}
+[Tup] single_point_search_iterations: {41316, 4.000000}
+[T] search (ms): 8287.000000
+[T] iterations (): 107481.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 263.000000
+[Tup] single_point_search: {10013.000000, 0.000000}
+[Tup] single_point_search_iterations: {145477, 0.000000}
+[Tup] single_point_search: {9043.000000, 1.000000}
+[Tup] single_point_search_iterations: {131754, 1.000000}
+[Tup] single_point_search: {7004.000000, 3.000000}
+[Tup] single_point_search_iterations: {101225, 3.000000}
+[Tup] single_point_search: {5988.000000, 4.000000}
+[Tup] single_point_search_iterations: {86041, 4.000000}
+[T] search (ms): 10017.000000
+[T] iterations (): 145477.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 700.000000
+[Tup] single_point_search: {71094.000000, 0.000000}
+[Tup] single_point_search_iterations: {902649, 0.000000}
+[Tup] single_point_search: {64477.000000, 2.000000}
+[Tup] single_point_search_iterations: {814910, 2.000000}
+[Tup] single_point_search: {56668.000000, 6.000000}
+[Tup] single_point_search_iterations: {711863, 6.000000}
+[T] search (ms): 71149.000000
+[T] iterations (): 902649.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1090.000000
+[Tup] single_point_search: {98696.000000, 0.000000}
+[Tup] single_point_search_iterations: {1315758, 0.000000}
+[Tup] single_point_search: {80855.000000, 1.000000}
+[Tup] single_point_search_iterations: {1085575, 1.000000}
+[Tup] single_point_search: {66137.000000, 2.000000}
+[Tup] single_point_search_iterations: {882831, 2.000000}
+[Tup] single_point_search: {59496.000000, 3.000000}
+[Tup] single_point_search_iterations: {789544, 3.000000}
+[T] search (ms): 98708.000000
+[T] iterations (): 1315758.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1892.000000
+[Tup] single_point_search: {78836.000000, 0.000000}
+[Tup] single_point_search_iterations: {1007848, 0.000000}
+[Tup] single_point_search: {45622.000000, 2.000000}
+[Tup] single_point_search_iterations: {572573, 2.000000}
+[T] search (ms): 78885.000000
+[T] iterations (): 1007848.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2740.000000
+[Tup] single_point_search: {451865.000000, 0.000000}
+[Tup] single_point_search_iterations: {5785894, 0.000000}
+[Tup] single_point_search: {347851.000000, 1.000000}
+[Tup] single_point_search_iterations: {4468266, 1.000000}
+[Tup] single_point_search: {125564.000000, 2.000000}
+[Tup] single_point_search_iterations: {1549279, 2.000000}
+[T] search (ms): 451896.000000
+[T] iterations (): 5785894.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3781.000000
+[Tup] single_point_search: {601371.000000, 0.000000}
+[Tup] single_point_search_iterations: {7605815, 0.000000}
+[Tup] single_point_search: {575019.000000, 1.000000}
+[Tup] single_point_search_iterations: {7273545, 1.000000}
+[Tup] single_point_search: {337804.000000, 2.000000}
+[Tup] single_point_search_iterations: {4174773, 2.000000}
+[Tup] single_point_search: {159233.000000, 4.000000}
+[Tup] single_point_search_iterations: {1889176, 4.000000}
+[T] search (ms): 601430.000000
+[T] iterations (): 7605815.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4896.000000
+[Tup] single_point_search: {736982.000000, 0.000000}
+[Tup] single_point_search_iterations: {9349871, 0.000000}
+[Tup] single_point_search: {400884.000000, 1.000000}
+[Tup] single_point_search_iterations: {5116225, 1.000000}
+[Tup] single_point_search: {338063.000000, 5.000000}
+[Tup] single_point_search_iterations: {4274701, 5.000000}
+[Tup] single_point_search: {96126.000000, 6.000000}
+[Tup] single_point_search_iterations: {1164221, 6.000000}
+[T] search (ms): 737028.000000
+[T] iterations (): 9349871.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6344.000000
+[Tup] single_point_search: {649407.000000, 0.000000}
+[Tup] single_point_search_iterations: {8238061, 0.000000}
+[Tup] single_point_search: {532212.000000, 1.000000}
+[Tup] single_point_search_iterations: {6803464, 1.000000}
+[Tup] single_point_search: {436863.000000, 2.000000}
+[Tup] single_point_search_iterations: {5600389, 2.000000}
+[Tup] single_point_search: {378090.000000, 4.000000}
+[Tup] single_point_search_iterations: {4823466, 4.000000}
+[Tup] single_point_search: {227080.000000, 6.000000}
+[Tup] single_point_search_iterations: {2846241, 6.000000}
+[T] search (ms): 649497.000000
+[T] iterations (): 8238061.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7678.000000
+[Tup] single_point_search: {967499.000000, 0.000000}
+[Tup] single_point_search_iterations: {12138469, 0.000000}
+[Tup] single_point_search: {767418.000000, 1.000000}
+[Tup] single_point_search_iterations: {9686305, 1.000000}
+[Tup] single_point_search: {404279.000000, 2.000000}
+[Tup] single_point_search_iterations: {5036069, 2.000000}
+[T] search (ms): 967588.000000
+[T] iterations (): 12138469.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 76.000000
+[Tup] single_point_search: {13388.000000, 0.000000}
+[Tup] single_point_search_iterations: {170522, 0.000000}
+[Tup] single_point_search: {12808.000000, 1.000000}
+[Tup] single_point_search_iterations: {163175, 1.000000}
+[Tup] single_point_search: {7367.000000, 2.000000}
+[Tup] single_point_search_iterations: {92445, 2.000000}
+[Tup] single_point_search: {2269.000000, 4.000000}
+[Tup] single_point_search_iterations: {27080, 4.000000}
+[T] search (ms): 13396.000000
+[T] iterations (): 170522.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 294.000000
+[Tup] single_point_search: {38445.000000, 0.000000}
+[Tup] single_point_search_iterations: {516472, 0.000000}
+[Tup] single_point_search: {30952.000000, 1.000000}
+[Tup] single_point_search_iterations: {413945, 1.000000}
+[Tup] single_point_search: {19854.000000, 2.000000}
+[Tup] single_point_search_iterations: {261548, 2.000000}
+[Tup] single_point_search: {11867.000000, 3.000000}
+[Tup] single_point_search_iterations: {153452, 3.000000}
+[T] search (ms): 38455.000000
+[T] iterations (): 516472.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 688.000000
+[Tup] single_point_search: {109788.000000, 0.000000}
+[Tup] single_point_search_iterations: {1397391, 0.000000}
+[Tup] single_point_search: {83538.000000, 1.000000}
+[Tup] single_point_search_iterations: {1069467, 1.000000}
+[Tup] single_point_search: {75876.000000, 2.000000}
+[Tup] single_point_search_iterations: {969300, 2.000000}
+[Tup] single_point_search: {73106.000000, 3.000000}
+[Tup] single_point_search_iterations: {932256, 3.000000}
+[Tup] single_point_search: {22676.000000, 6.000000}
+[Tup] single_point_search_iterations: {278947, 6.000000}
+[T] search (ms): 109807.000000
+[T] iterations (): 1397391.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1222.000000
+[Tup] single_point_search: {69319.000000, 0.000000}
+[Tup] single_point_search_iterations: {887762, 0.000000}
+[Tup] single_point_search: {28333.000000, 2.000000}
+[Tup] single_point_search_iterations: {359548, 2.000000}
+[Tup] single_point_search: {21654.000000, 3.000000}
+[Tup] single_point_search_iterations: {274539, 3.000000}
+[T] search (ms): 69386.000000
+[T] iterations (): 887762.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1937.000000
+[Tup] single_point_search: {135944.000000, 0.000000}
+[Tup] single_point_search_iterations: {1703897, 0.000000}
+[Tup] single_point_search: {107007.000000, 1.000000}
+[Tup] single_point_search_iterations: {1354879, 1.000000}
+[Tup] single_point_search: {90352.000000, 3.000000}
+[Tup] single_point_search_iterations: {1137597, 3.000000}
+[Tup] single_point_search: {66066.000000, 4.000000}
+[Tup] single_point_search_iterations: {819982, 4.000000}
+[Tup] single_point_search: {45820.000000, 5.000000}
+[Tup] single_point_search_iterations: {563989, 5.000000}
+[Tup] single_point_search: {37128.000000, 6.000000}
+[Tup] single_point_search_iterations: {454152, 6.000000}
+[T] search (ms): 135986.000000
+[T] iterations (): 1703897.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2759.000000
+[Tup] single_point_search: {181141.000000, 0.000000}
+[Tup] single_point_search_iterations: {2245159, 0.000000}
+[Tup] single_point_search: {145763.000000, 1.000000}
+[Tup] single_point_search_iterations: {1806116, 1.000000}
+[Tup] single_point_search: {145672.000000, 2.000000}
+[Tup] single_point_search_iterations: {1804788, 2.000000}
+[Tup] single_point_search: {113490.000000, 3.000000}
+[Tup] single_point_search_iterations: {1393815, 3.000000}
+[T] search (ms): 181194.000000
+[T] iterations (): 2245159.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3780.000000
+[Tup] single_point_search: {763681.000000, 0.000000}
+[Tup] single_point_search_iterations: {9734882, 0.000000}
+[Tup] single_point_search: {714541.000000, 1.000000}
+[Tup] single_point_search_iterations: {9102939, 1.000000}
+[Tup] single_point_search: {367674.000000, 2.000000}
+[Tup] single_point_search_iterations: {4527862, 2.000000}
+[Tup] single_point_search: {239767.000000, 3.000000}
+[Tup] single_point_search_iterations: {2889877, 3.000000}
+[T] search (ms): 763724.000000
+[T] iterations (): 9734882.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4975.000000
+[Tup] single_point_search: {259610.000000, 0.000000}
+[Tup] single_point_search_iterations: {3139728, 0.000000}
+[Tup] single_point_search: {146416.000000, 1.000000}
+[Tup] single_point_search_iterations: {1755516, 1.000000}
+[T] search (ms): 259691.000000
+[T] iterations (): 3139728.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6189.000000
+[Tup] single_point_search: {625748.000000, 0.000000}
+[Tup] single_point_search_iterations: {7851906, 0.000000}
+[Tup] single_point_search: {319423.000000, 1.000000}
+[Tup] single_point_search_iterations: {4066861, 1.000000}
+[Tup] single_point_search: {307765.000000, 2.000000}
+[Tup] single_point_search_iterations: {3912772, 2.000000}
+[Tup] single_point_search: {142018.000000, 3.000000}
+[Tup] single_point_search_iterations: {1773505, 3.000000}
+[T] search (ms): 625816.000000
+[T] iterations (): 7851906.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7733.000000
+[Tup] single_point_search: {1200482.000000, 0.000000}
+[Tup] single_point_search_iterations: {15365735, 0.000000}
+[Tup] single_point_search: {1114304.000000, 1.000000}
+[Tup] single_point_search_iterations: {14291978, 1.000000}
+[Tup] single_point_search: {694197.000000, 3.000000}
+[Tup] single_point_search_iterations: {8766428, 3.000000}
+[Tup] single_point_search: {350339.000000, 6.000000}
+[Tup] single_point_search_iterations: {4331280, 6.000000}
+[T] search (ms): 1200564.000000
+[T] iterations (): 15365735.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 74.000000
+[Tup] single_point_search: {5242.000000, 0.000000}
+[Tup] single_point_search_iterations: {66232, 0.000000}
+[T] search (ms): 5253.000000
+[T] iterations (): 66232.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 300.000000
+[Tup] single_point_search: {42769.000000, 0.000000}
+[Tup] single_point_search_iterations: {566986, 0.000000}
+[Tup] single_point_search: {32838.000000, 3.000000}
+[Tup] single_point_search_iterations: {430712, 3.000000}
+[Tup] single_point_search: {27731.000000, 4.000000}
+[Tup] single_point_search_iterations: {360470, 4.000000}
+[Tup] single_point_search: {22362.000000, 5.000000}
+[Tup] single_point_search_iterations: {288863, 5.000000}
+[T] search (ms): 42806.000000
+[T] iterations (): 566986.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 686.000000
+[Tup] single_point_search: {69310.000000, 0.000000}
+[Tup] single_point_search_iterations: {871962, 0.000000}
+[Tup] single_point_search: {41939.000000, 1.000000}
+[Tup] single_point_search_iterations: {529347, 1.000000}
+[T] search (ms): 69337.000000
+[T] iterations (): 871962.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1216.000000
+[Tup] single_point_search: {202642.000000, 0.000000}
+[Tup] single_point_search_iterations: {2672615, 0.000000}
+[Tup] single_point_search: {136919.000000, 1.000000}
+[Tup] single_point_search_iterations: {1842365, 1.000000}
+[Tup] single_point_search: {127203.000000, 2.000000}
+[Tup] single_point_search_iterations: {1710658, 2.000000}
+[Tup] single_point_search: {87154.000000, 3.000000}
+[Tup] single_point_search_iterations: {1161420, 3.000000}
+[Tup] single_point_search: {26325.000000, 4.000000}
+[Tup] single_point_search_iterations: {334334, 4.000000}
+[T] search (ms): 202662.000000
+[T] iterations (): 2672615.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1903.000000
+[Tup] single_point_search: {85492.000000, 0.000000}
+[Tup] single_point_search_iterations: {1051152, 0.000000}
+[Tup] single_point_search: {48908.000000, 1.000000}
+[Tup] single_point_search_iterations: {602223, 1.000000}
+[Tup] single_point_search: {31999.000000, 6.000000}
+[Tup] single_point_search_iterations: {387970, 6.000000}
+[T] search (ms): 85536.000000
+[T] iterations (): 1051152.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2713.000000
+[Tup] single_point_search: {486399.000000, 0.000000}
+[Tup] single_point_search_iterations: {6388233, 0.000000}
+[Tup] single_point_search: {439586.000000, 1.000000}
+[Tup] single_point_search_iterations: {5819345, 1.000000}
+[Tup] single_point_search: {359811.000000, 2.000000}
+[Tup] single_point_search_iterations: {4748767, 2.000000}
+[Tup] single_point_search: {296232.000000, 3.000000}
+[Tup] single_point_search_iterations: {3879658, 3.000000}
+[Tup] single_point_search: {223078.000000, 4.000000}
+[Tup] single_point_search_iterations: {2896202, 4.000000}
+[Tup] single_point_search: {159443.000000, 5.000000}
+[Tup] single_point_search_iterations: {2042725, 5.000000}
+[Tup] single_point_search: {139233.000000, 6.000000}
+[Tup] single_point_search_iterations: {1773154, 6.000000}
+[T] search (ms): 486441.000000
+[T] iterations (): 6388233.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3769.000000
+[Tup] single_point_search: {390340.000000, 0.000000}
+[Tup] single_point_search_iterations: {4911012, 0.000000}
+[Tup] single_point_search: {140982.000000, 2.000000}
+[Tup] single_point_search_iterations: {1702180, 2.000000}
+[Tup] single_point_search: {101464.000000, 5.000000}
+[Tup] single_point_search_iterations: {1213963, 5.000000}
+[T] search (ms): 390487.000000
+[T] iterations (): 4911012.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4974.000000
+[Tup] single_point_search: {979512.000000, 0.000000}
+[Tup] single_point_search_iterations: {12523339, 0.000000}
+[Tup] single_point_search: {896034.000000, 1.000000}
+[Tup] single_point_search_iterations: {11485823, 1.000000}
+[Tup] single_point_search: {437293.000000, 2.000000}
+[Tup] single_point_search_iterations: {5530257, 2.000000}
+[Tup] single_point_search: {218189.000000, 4.000000}
+[Tup] single_point_search_iterations: {2694709, 4.000000}
+[T] search (ms): 979553.000000
+[T] iterations (): 12523339.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6328.000000
+[Tup] single_point_search: {1065011.000000, 0.000000}
+[Tup] single_point_search_iterations: {13518966, 0.000000}
+[Tup] single_point_search: {837909.000000, 1.000000}
+[Tup] single_point_search_iterations: {10752657, 1.000000}
+[Tup] single_point_search: {518341.000000, 2.000000}
+[Tup] single_point_search_iterations: {6541245, 2.000000}
+[Tup] single_point_search: {233356.000000, 3.000000}
+[Tup] single_point_search_iterations: {2850622, 3.000000}
+[T] search (ms): 1065080.000000
+[T] iterations (): 13518966.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7796.000000
+[Tup] single_point_search: {1489772.000000, 0.000000}
+[Tup] single_point_search_iterations: {19004523, 0.000000}
+[Tup] single_point_search: {1439432.000000, 1.000000}
+[Tup] single_point_search_iterations: {18361233, 1.000000}
+[Tup] single_point_search: {659437.000000, 2.000000}
+[Tup] single_point_search_iterations: {8130334, 2.000000}
+[Tup] single_point_search: {564211.000000, 3.000000}
+[Tup] single_point_search_iterations: {6901857, 3.000000}
+[Tup] single_point_search: {480596.000000, 4.000000}
+[Tup] single_point_search_iterations: {5859981, 4.000000}
+[T] search (ms): 1489843.000000
+[T] iterations (): 19004523.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 75.000000
+[Tup] single_point_search: {9377.000000, 0.000000}
+[Tup] single_point_search_iterations: {126663, 0.000000}
+[Tup] single_point_search: {4382.000000, 2.000000}
+[Tup] single_point_search_iterations: {58511, 2.000000}
+[Tup] single_point_search: {3103.000000, 3.000000}
+[Tup] single_point_search_iterations: {41185, 3.000000}
+[T] search (ms): 9386.000000
+[T] iterations (): 126663.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 307.000000
+[Tup] single_point_search: {8734.000000, 0.000000}
+[Tup] single_point_search_iterations: {104668, 0.000000}
+[Tup] single_point_search: {2856.000000, 1.000000}
+[Tup] single_point_search_iterations: {33418, 1.000000}
+[Tup] single_point_search: {2339.000000, 3.000000}
+[Tup] single_point_search_iterations: {27192, 3.000000}
+[T] search (ms): 8746.000000
+[T] iterations (): 104668.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 678.000000
+[Tup] single_point_search: {73145.000000, 0.000000}
+[Tup] single_point_search_iterations: {922389, 0.000000}
+[Tup] single_point_search: {40709.000000, 1.000000}
+[Tup] single_point_search_iterations: {517857, 1.000000}
+[Tup] single_point_search: {23578.000000, 3.000000}
+[Tup] single_point_search_iterations: {294047, 3.000000}
+[T] search (ms): 73165.000000
+[T] iterations (): 922389.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1212.000000
+[Tup] single_point_search: {80991.000000, 0.000000}
+[Tup] single_point_search_iterations: {1036545, 0.000000}
+[T] search (ms): 81044.000000
+[T] iterations (): 1036545.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1885.000000
+[Tup] single_point_search: {322208.000000, 0.000000}
+[Tup] single_point_search_iterations: {4199414, 0.000000}
+[Tup] single_point_search: {204844.000000, 1.000000}
+[Tup] single_point_search_iterations: {2704327, 1.000000}
+[Tup] single_point_search: {93832.000000, 3.000000}
+[Tup] single_point_search_iterations: {1193730, 3.000000}
+[Tup] single_point_search: {47065.000000, 5.000000}
+[Tup] single_point_search_iterations: {582012, 5.000000}
+[T] search (ms): 322232.000000
+[T] iterations (): 4199414.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2752.000000
+[Tup] single_point_search: {575457.000000, 0.000000}
+[Tup] single_point_search_iterations: {7478429, 0.000000}
+[Tup] single_point_search: {517475.000000, 1.000000}
+[Tup] single_point_search_iterations: {6737640, 1.000000}
+[Tup] single_point_search: {461207.000000, 2.000000}
+[Tup] single_point_search_iterations: {6010328, 2.000000}
+[Tup] single_point_search: {341169.000000, 3.000000}
+[Tup] single_point_search_iterations: {4389750, 3.000000}
+[Tup] single_point_search: {279185.000000, 4.000000}
+[Tup] single_point_search_iterations: {3553427, 4.000000}
+[Tup] single_point_search: {211048.000000, 6.000000}
+[Tup] single_point_search_iterations: {2660831, 6.000000}
+[T] search (ms): 575492.000000
+[T] iterations (): 7478429.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3783.000000
+[Tup] single_point_search: {541435.000000, 0.000000}
+[Tup] single_point_search_iterations: {6796710, 0.000000}
+[Tup] single_point_search: {425051.000000, 1.000000}
+[Tup] single_point_search_iterations: {5351616, 1.000000}
+[Tup] single_point_search: {170569.000000, 2.000000}
+[Tup] single_point_search_iterations: {2056820, 2.000000}
+[T] search (ms): 541487.000000
+[T] iterations (): 6796710.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4919.000000
+[Tup] single_point_search: {614847.000000, 0.000000}
+[Tup] single_point_search_iterations: {7696587, 0.000000}
+[Tup] single_point_search: {510790.000000, 1.000000}
+[Tup] single_point_search_iterations: {6399620, 1.000000}
+[Tup] single_point_search: {390137.000000, 2.000000}
+[Tup] single_point_search_iterations: {4856035, 2.000000}
+[T] search (ms): 614916.000000
+[T] iterations (): 7696587.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6260.000000
+[Tup] single_point_search: {927098.000000, 0.000000}
+[Tup] single_point_search_iterations: {11732915, 0.000000}
+[Tup] single_point_search: {855924.000000, 1.000000}
+[Tup] single_point_search_iterations: {10838006, 1.000000}
+[Tup] single_point_search: {455212.000000, 2.000000}
+[Tup] single_point_search_iterations: {5659102, 2.000000}
+[Tup] single_point_search: {433295.000000, 3.000000}
+[Tup] single_point_search_iterations: {5371733, 3.000000}
+[Tup] single_point_search: {426442.000000, 4.000000}
+[Tup] single_point_search_iterations: {5280950, 4.000000}
+[Tup] single_point_search: {315377.000000, 5.000000}
+[Tup] single_point_search_iterations: {3846546, 5.000000}
+[T] search (ms): 927187.000000
+[T] iterations (): 11732915.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7689.000000
+[Tup] single_point_search: {467291.000000, 0.000000}
+[Tup] single_point_search_iterations: {5836703, 0.000000}
+[Tup] single_point_search: {272057.000000, 1.000000}
+[Tup] single_point_search_iterations: {3427579, 1.000000}
+[Tup] single_point_search: {139925.000000, 2.000000}
+[Tup] single_point_search_iterations: {1751607, 2.000000}
+[Tup] single_point_search: {125546.000000, 3.000000}
+[Tup] single_point_search_iterations: {1567047, 3.000000}
+[Tup] single_point_search: {60923.000000, 5.000000}
+[Tup] single_point_search_iterations: {748369, 5.000000}
+[Tup] single_point_search: {49824.000000, 6.000000}
+[Tup] single_point_search_iterations: {608126, 6.000000}
+[T] search (ms): 467409.000000
+[T] iterations (): 5836703.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 74.000000
+[Tup] single_point_search: {7928.000000, 0.000000}
+[Tup] single_point_search_iterations: {109290, 0.000000}
+[Tup] single_point_search: {2065.000000, 2.000000}
+[Tup] single_point_search_iterations: {26549, 2.000000}
+[Tup] single_point_search: {2046.000000, 3.000000}
+[Tup] single_point_search_iterations: {26274, 3.000000}
+[T] search (ms): 7937.000000
+[T] iterations (): 109290.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 293.000000
+[Tup] single_point_search: {44027.000000, 0.000000}
+[Tup] single_point_search_iterations: {600234, 0.000000}
+[Tup] single_point_search: {35130.000000, 1.000000}
+[Tup] single_point_search_iterations: {477966, 1.000000}
+[Tup] single_point_search: {21754.000000, 2.000000}
+[Tup] single_point_search_iterations: {290509, 2.000000}
+[Tup] single_point_search: {8873.000000, 3.000000}
+[Tup] single_point_search_iterations: {114005, 3.000000}
+[T] search (ms): 44036.000000
+[T] iterations (): 600234.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 699.000000
+[Tup] single_point_search: {66151.000000, 0.000000}
+[Tup] single_point_search_iterations: {852468, 0.000000}
+[Tup] single_point_search: {63568.000000, 2.000000}
+[Tup] single_point_search_iterations: {818391, 2.000000}
+[Tup] single_point_search: {34776.000000, 3.000000}
+[Tup] single_point_search_iterations: {439501, 3.000000}
+[Tup] single_point_search: {33117.000000, 4.000000}
+[Tup] single_point_search_iterations: {417679, 4.000000}
+[Tup] single_point_search: {30490.000000, 5.000000}
+[Tup] single_point_search_iterations: {382727, 5.000000}
+[Tup] single_point_search: {21158.000000, 6.000000}
+[Tup] single_point_search_iterations: {262630, 6.000000}
+[T] search (ms): 66200.000000
+[T] iterations (): 852468.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1244.000000
+[Tup] single_point_search: {54373.000000, 0.000000}
+[Tup] single_point_search_iterations: {690475, 0.000000}
+[Tup] single_point_search: {41949.000000, 1.000000}
+[Tup] single_point_search_iterations: {538464, 1.000000}
+[Tup] single_point_search: {31213.000000, 2.000000}
+[Tup] single_point_search_iterations: {399674, 2.000000}
+[Tup] single_point_search: {16443.000000, 3.000000}
+[Tup] single_point_search_iterations: {206913, 3.000000}
+[T] search (ms): 54396.000000
+[T] iterations (): 690475.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1903.000000
+[Tup] single_point_search: {349688.000000, 0.000000}
+[Tup] single_point_search_iterations: {4571212, 0.000000}
+[Tup] single_point_search: {318431.000000, 1.000000}
+[Tup] single_point_search_iterations: {4185434, 1.000000}
+[Tup] single_point_search: {230244.000000, 2.000000}
+[Tup] single_point_search_iterations: {3022483, 2.000000}
+[Tup] single_point_search: {54000.000000, 3.000000}
+[Tup] single_point_search_iterations: {700624, 3.000000}
+[T] search (ms): 349715.000000
+[T] iterations (): 4571212.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2723.000000
+[Tup] single_point_search: {267273.000000, 0.000000}
+[Tup] single_point_search_iterations: {3404393, 0.000000}
+[Tup] single_point_search: {151294.000000, 3.000000}
+[Tup] single_point_search_iterations: {1879578, 3.000000}
+[T] search (ms): 267397.000000
+[T] iterations (): 3404393.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3760.000000
+[Tup] single_point_search: {743830.000000, 0.000000}
+[Tup] single_point_search_iterations: {9585666, 0.000000}
+[Tup] single_point_search: {641173.000000, 1.000000}
+[Tup] single_point_search_iterations: {8306874, 1.000000}
+[Tup] single_point_search: {447978.000000, 2.000000}
+[Tup] single_point_search_iterations: {5781156, 2.000000}
+[Tup] single_point_search: {175241.000000, 3.000000}
+[Tup] single_point_search_iterations: {2201746, 3.000000}
+[Tup] single_point_search: {150639.000000, 5.000000}
+[Tup] single_point_search_iterations: {1885593, 5.000000}
+[T] search (ms): 743863.000000
+[T] iterations (): 9585666.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4925.000000
+[Tup] single_point_search: {200940.000000, 0.000000}
+[Tup] single_point_search_iterations: {2531305, 0.000000}
+[Tup] single_point_search: {166681.000000, 1.000000}
+[Tup] single_point_search_iterations: {2111762, 1.000000}
+[T] search (ms): 200997.000000
+[T] iterations (): 2531305.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6290.000000
+[Tup] single_point_search: {1141430.000000, 0.000000}
+[Tup] single_point_search_iterations: {14972355, 0.000000}
+[Tup] single_point_search: {923728.000000, 1.000000}
+[Tup] single_point_search_iterations: {12324066, 1.000000}
+[Tup] single_point_search: {903009.000000, 2.000000}
+[Tup] single_point_search_iterations: {12050819, 2.000000}
+[Tup] single_point_search: {668846.000000, 3.000000}
+[Tup] single_point_search_iterations: {8881725, 3.000000}
+[Tup] single_point_search: {553266.000000, 5.000000}
+[Tup] single_point_search_iterations: {7318622, 5.000000}
+[Tup] single_point_search: {354353.000000, 6.000000}
+[Tup] single_point_search_iterations: {4666523, 6.000000}
+[T] search (ms): 1141474.000000
+[T] iterations (): 14972355.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7777.000000
+[Tup] single_point_search: {1369061.000000, 0.000000}
+[Tup] single_point_search_iterations: {17588392, 0.000000}
+[Tup] single_point_search: {1294489.000000, 1.000000}
+[Tup] single_point_search_iterations: {16671316, 1.000000}
+[Tup] single_point_search: {984699.000000, 2.000000}
+[Tup] single_point_search_iterations: {12572263, 2.000000}
+[Tup] single_point_search: {569294.000000, 3.000000}
+[Tup] single_point_search_iterations: {7142581, 3.000000}
+[Tup] single_point_search: {437247.000000, 4.000000}
+[Tup] single_point_search_iterations: {5459491, 4.000000}
+[T] search (ms): 1369143.000000
+[T] iterations (): 17588392.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 71.000000
+[Tup] single_point_search: {5850.000000, 0.000000}
+[Tup] single_point_search_iterations: {79673, 0.000000}
+[Tup] single_point_search: {4073.000000, 1.000000}
+[Tup] single_point_search_iterations: {55748, 1.000000}
+[Tup] single_point_search: {3449.000000, 2.000000}
+[Tup] single_point_search_iterations: {47029, 2.000000}
+[Tup] single_point_search: {2432.000000, 3.000000}
+[Tup] single_point_search_iterations: {32676, 3.000000}
+[Tup] single_point_search: {1461.000000, 6.000000}
+[Tup] single_point_search_iterations: {19288, 6.000000}
+[T] search (ms): 5856.000000
+[T] iterations (): 79673.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 306.000000
+[Tup] single_point_search: {19880.000000, 0.000000}
+[Tup] single_point_search_iterations: {242677, 0.000000}
+[Tup] single_point_search: {16132.000000, 1.000000}
+[Tup] single_point_search_iterations: {196788, 1.000000}
+[Tup] single_point_search: {4436.000000, 3.000000}
+[Tup] single_point_search_iterations: {52173, 3.000000}
+[T] search (ms): 19897.000000
+[T] iterations (): 242677.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 685.000000
+[Tup] single_point_search: {115631.000000, 0.000000}
+[Tup] single_point_search_iterations: {1484863, 0.000000}
+[Tup] single_point_search: {73547.000000, 1.000000}
+[Tup] single_point_search_iterations: {959665, 1.000000}
+[Tup] single_point_search: {9265.000000, 3.000000}
+[Tup] single_point_search_iterations: {112065, 3.000000}
+[Tup] single_point_search: {8988.000000, 4.000000}
+[Tup] single_point_search_iterations: {108539, 4.000000}
+[T] search (ms): 115644.000000
+[T] iterations (): 1484863.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1229.000000
+[Tup] single_point_search: {87001.000000, 0.000000}
+[Tup] single_point_search_iterations: {1124989, 0.000000}
+[Tup] single_point_search: {71839.000000, 1.000000}
+[Tup] single_point_search_iterations: {934665, 1.000000}
+[Tup] single_point_search: {58551.000000, 2.000000}
+[Tup] single_point_search_iterations: {757995, 2.000000}
+[Tup] single_point_search: {37958.000000, 3.000000}
+[Tup] single_point_search_iterations: {482967, 3.000000}
+[Tup] single_point_search: {17500.000000, 5.000000}
+[Tup] single_point_search_iterations: {211512, 5.000000}
+[Tup] single_point_search: {16193.000000, 6.000000}
+[Tup] single_point_search_iterations: {194796, 6.000000}
+[T] search (ms): 87034.000000
+[T] iterations (): 1124989.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1922.000000
+[Tup] single_point_search: {387218.000000, 0.000000}
+[Tup] single_point_search_iterations: {5090289, 0.000000}
+[Tup] single_point_search: {223058.000000, 2.000000}
+[Tup] single_point_search_iterations: {2911839, 2.000000}
+[Tup] single_point_search: {162799.000000, 3.000000}
+[Tup] single_point_search_iterations: {2095385, 3.000000}
+[Tup] single_point_search: {113429.000000, 4.000000}
+[Tup] single_point_search_iterations: {1433021, 4.000000}
+[Tup] single_point_search: {78839.000000, 6.000000}
+[Tup] single_point_search_iterations: {986011, 6.000000}
+[T] search (ms): 387260.000000
+[T] iterations (): 5090289.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2725.000000
+[Tup] single_point_search: {507734.000000, 0.000000}
+[Tup] single_point_search_iterations: {6507389, 0.000000}
+[Tup] single_point_search: {426523.000000, 1.000000}
+[Tup] single_point_search_iterations: {5496619, 1.000000}
+[Tup] single_point_search: {202538.000000, 2.000000}
+[Tup] single_point_search_iterations: {2551382, 2.000000}
+[Tup] single_point_search: {181590.000000, 5.000000}
+[Tup] single_point_search_iterations: {2278729, 5.000000}
+[T] search (ms): 507769.000000
+[T] iterations (): 6507389.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3729.000000
+[Tup] single_point_search: {372719.000000, 0.000000}
+[Tup] single_point_search_iterations: {4547165, 0.000000}
+[Tup] single_point_search: {199881.000000, 1.000000}
+[Tup] single_point_search_iterations: {2427839, 1.000000}
+[Tup] single_point_search: {117719.000000, 2.000000}
+[Tup] single_point_search_iterations: {1403417, 2.000000}
+[Tup] single_point_search: {80158.000000, 3.000000}
+[Tup] single_point_search_iterations: {940057, 3.000000}
+[T] search (ms): 372785.000000
+[T] iterations (): 4547165.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4943.000000
+[Tup] single_point_search: {177396.000000, 0.000000}
+[Tup] single_point_search_iterations: {2147954, 0.000000}
+[Tup] single_point_search: {85595.000000, 1.000000}
+[Tup] single_point_search_iterations: {1031573, 1.000000}
+[T] search (ms): 177443.000000
+[T] iterations (): 2147954.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6296.000000
+[Tup] single_point_search: {1244232.000000, 0.000000}
+[Tup] single_point_search_iterations: {15880054, 0.000000}
+[Tup] single_point_search: {1109251.000000, 1.000000}
+[Tup] single_point_search_iterations: {14222361, 1.000000}
+[Tup] single_point_search: {340749.000000, 2.000000}
+[Tup] single_point_search_iterations: {4334705, 2.000000}
+[Tup] single_point_search: {269013.000000, 3.000000}
+[Tup] single_point_search_iterations: {3393533, 3.000000}
+[Tup] single_point_search: {197955.000000, 4.000000}
+[Tup] single_point_search_iterations: {2476379, 4.000000}
+[Tup] single_point_search: {152611.000000, 5.000000}
+[Tup] single_point_search_iterations: {1878384, 5.000000}
+[T] search (ms): 1244285.000000
+[T] iterations (): 15880054.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7773.000000
+[Tup] single_point_search: {1701797.000000, 0.000000}
+[Tup] single_point_search_iterations: {21963003, 0.000000}
+[Tup] single_point_search: {1517444.000000, 1.000000}
+[Tup] single_point_search_iterations: {19624514, 1.000000}
+[Tup] single_point_search: {1067481.000000, 2.000000}
+[Tup] single_point_search_iterations: {13627034, 2.000000}
+[Tup] single_point_search: {283299.000000, 3.000000}
+[Tup] single_point_search_iterations: {3419042, 3.000000}
+[T] search (ms): 1701840.000000
+[T] iterations (): 21963003.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 73.000000
+[Tup] single_point_search: {1982.000000, 0.000000}
+[Tup] single_point_search_iterations: {26678, 0.000000}
+[Tup] single_point_search: {643.000000, 3.000000}
+[Tup] single_point_search_iterations: {8478, 3.000000}
+[T] search (ms): 1987.000000
+[T] iterations (): 26678.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 307.000000
+[Tup] single_point_search: {58640.000000, 0.000000}
+[Tup] single_point_search_iterations: {757889, 0.000000}
+[Tup] single_point_search: {53413.000000, 1.000000}
+[Tup] single_point_search_iterations: {694827, 1.000000}
+[Tup] single_point_search: {33730.000000, 2.000000}
+[Tup] single_point_search_iterations: {434335, 2.000000}
+[Tup] single_point_search: {18332.000000, 3.000000}
+[Tup] single_point_search_iterations: {231597, 3.000000}
+[Tup] single_point_search: {6525.000000, 4.000000}
+[Tup] single_point_search_iterations: {79652, 4.000000}
+[T] search (ms): 58651.000000
+[T] iterations (): 757889.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 690.000000
+[Tup] single_point_search: {49017.000000, 0.000000}
+[Tup] single_point_search_iterations: {619366, 0.000000}
+[Tup] single_point_search: {43696.000000, 1.000000}
+[Tup] single_point_search_iterations: {553669, 1.000000}
+[Tup] single_point_search: {15367.000000, 6.000000}
+[Tup] single_point_search_iterations: {187166, 6.000000}
+[T] search (ms): 49041.000000
+[T] iterations (): 619366.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1226.000000
+[Tup] single_point_search: {178252.000000, 0.000000}
+[Tup] single_point_search_iterations: {2427451, 0.000000}
+[Tup] single_point_search: {160008.000000, 1.000000}
+[Tup] single_point_search_iterations: {2190399, 1.000000}
+[Tup] single_point_search: {102651.000000, 2.000000}
+[Tup] single_point_search_iterations: {1413177, 2.000000}
+[Tup] single_point_search: {54341.000000, 3.000000}
+[Tup] single_point_search_iterations: {741653, 3.000000}
+[Tup] single_point_search: {9510.000000, 4.000000}
+[Tup] single_point_search_iterations: {123107, 4.000000}
+[T] search (ms): 178260.000000
+[T] iterations (): 2427451.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1882.000000
+[Tup] single_point_search: {158558.000000, 0.000000}
+[Tup] single_point_search_iterations: {1988472, 0.000000}
+[Tup] single_point_search: {87119.000000, 1.000000}
+[Tup] single_point_search_iterations: {1088997, 1.000000}
+[T] search (ms): 158600.000000
+[T] iterations (): 1988472.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2746.000000
+[Tup] single_point_search: {403468.000000, 0.000000}
+[Tup] single_point_search_iterations: {5279178, 0.000000}
+[Tup] single_point_search: {402009.000000, 2.000000}
+[Tup] single_point_search_iterations: {5258883, 2.000000}
+[Tup] single_point_search: {348464.000000, 3.000000}
+[Tup] single_point_search_iterations: {4522302, 3.000000}
+[Tup] single_point_search: {314022.000000, 4.000000}
+[Tup] single_point_search_iterations: {4046865, 4.000000}
+[T] search (ms): 403605.000000
+[T] iterations (): 5279178.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3775.000000
+[Tup] single_point_search: {500733.000000, 0.000000}
+[Tup] single_point_search_iterations: {6244787, 0.000000}
+[Tup] single_point_search: {182587.000000, 1.000000}
+[Tup] single_point_search_iterations: {2357078, 1.000000}
+[Tup] single_point_search: {147444.000000, 2.000000}
+[Tup] single_point_search_iterations: {1898084, 2.000000}
+[Tup] single_point_search: {79059.000000, 3.000000}
+[Tup] single_point_search_iterations: {989785, 3.000000}
+[Tup] single_point_search: {55979.000000, 4.000000}
+[Tup] single_point_search_iterations: {693875, 4.000000}
+[T] search (ms): 500794.000000
+[T] iterations (): 6244787.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4954.000000
+[Tup] single_point_search: {75878.000000, 0.000000}
+[Tup] single_point_search_iterations: {900762, 0.000000}
+[Tup] single_point_search: {39786.000000, 3.000000}
+[Tup] single_point_search_iterations: {465786, 3.000000}
+[Tup] single_point_search: {29480.000000, 4.000000}
+[Tup] single_point_search_iterations: {344383, 4.000000}
+[T] search (ms): 75915.000000
+[T] iterations (): 900762.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6204.000000
+[Tup] single_point_search: {1078192.000000, 0.000000}
+[Tup] single_point_search_iterations: {13828537, 0.000000}
+[Tup] single_point_search: {1015594.000000, 1.000000}
+[Tup] single_point_search_iterations: {13055995, 1.000000}
+[Tup] single_point_search: {706660.000000, 2.000000}
+[Tup] single_point_search_iterations: {9052806, 2.000000}
+[Tup] single_point_search: {599028.000000, 3.000000}
+[Tup] single_point_search_iterations: {7614164, 3.000000}
+[Tup] single_point_search: {433782.000000, 4.000000}
+[Tup] single_point_search_iterations: {5451248, 4.000000}
+[T] search (ms): 1078255.000000
+[T] iterations (): 13828537.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7864.000000
+[Tup] single_point_search: {373750.000000, 0.000000}
+[Tup] single_point_search_iterations: {4614136, 0.000000}
+[Tup] single_point_search: {340127.000000, 1.000000}
+[Tup] single_point_search_iterations: {4200866, 1.000000}
+[T] search (ms): 373824.000000
+[T] iterations (): 4614136.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 75.000000
+[Tup] single_point_search: {8040.000000, 0.000000}
+[Tup] single_point_search_iterations: {105746, 0.000000}
+[Tup] single_point_search: {2940.000000, 3.000000}
+[Tup] single_point_search_iterations: {37617, 3.000000}
+[T] search (ms): 8052.000000
+[T] iterations (): 105746.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 309.000000
+[Tup] single_point_search: {48699.000000, 0.000000}
+[Tup] single_point_search_iterations: {637248, 0.000000}
+[Tup] single_point_search: {45226.000000, 1.000000}
+[Tup] single_point_search_iterations: {593923, 1.000000}
+[Tup] single_point_search: {38652.000000, 2.000000}
+[Tup] single_point_search_iterations: {506156, 2.000000}
+[Tup] single_point_search: {18334.000000, 3.000000}
+[Tup] single_point_search_iterations: {234743, 3.000000}
+[Tup] single_point_search: {13921.000000, 4.000000}
+[Tup] single_point_search_iterations: {176200, 4.000000}
+[T] search (ms): 48710.000000
+[T] iterations (): 637248.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 679.000000
+[Tup] single_point_search: {38153.000000, 0.000000}
+[Tup] single_point_search_iterations: {472460, 0.000000}
+[Tup] single_point_search: {9452.000000, 1.000000}
+[Tup] single_point_search_iterations: {115928, 1.000000}
+[Tup] single_point_search: {6358.000000, 6.000000}
+[Tup] single_point_search_iterations: {77142, 6.000000}
+[T] search (ms): 38171.000000
+[T] iterations (): 472460.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1213.000000
+[Tup] single_point_search: {80514.000000, 0.000000}
+[Tup] single_point_search_iterations: {1019087, 0.000000}
+[Tup] single_point_search: {78261.000000, 1.000000}
+[Tup] single_point_search_iterations: {990443, 1.000000}
+[Tup] single_point_search: {62159.000000, 2.000000}
+[Tup] single_point_search_iterations: {777927, 2.000000}
+[Tup] single_point_search: {42274.000000, 3.000000}
+[Tup] single_point_search_iterations: {521863, 3.000000}
+[T] search (ms): 80551.000000
+[T] iterations (): 1019087.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1954.000000
+[Tup] single_point_search: {144916.000000, 0.000000}
+[Tup] single_point_search_iterations: {1797819, 0.000000}
+[Tup] single_point_search: {130280.000000, 1.000000}
+[Tup] single_point_search_iterations: {1619537, 1.000000}
+[Tup] single_point_search: {108883.000000, 2.000000}
+[Tup] single_point_search_iterations: {1351391, 2.000000}
+[Tup] single_point_search: {94209.000000, 3.000000}
+[Tup] single_point_search_iterations: {1162987, 3.000000}
+[T] search (ms): 144960.000000
+[T] iterations (): 1797819.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2798.000000
+[Tup] single_point_search: {584688.000000, 0.000000}
+[Tup] single_point_search_iterations: {7576315, 0.000000}
+[Tup] single_point_search: {276984.000000, 3.000000}
+[Tup] single_point_search_iterations: {3456419, 3.000000}
+[Tup] single_point_search: {209104.000000, 4.000000}
+[Tup] single_point_search_iterations: {2584554, 4.000000}
+[Tup] single_point_search: {178008.000000, 6.000000}
+[Tup] single_point_search_iterations: {2184096, 6.000000}
+[T] search (ms): 584810.000000
+[T] iterations (): 7576315.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3741.000000
+[Tup] single_point_search: {427216.000000, 0.000000}
+[Tup] single_point_search_iterations: {5383662, 0.000000}
+[Tup] single_point_search: {286708.000000, 1.000000}
+[Tup] single_point_search_iterations: {3626720, 1.000000}
+[Tup] single_point_search: {252573.000000, 2.000000}
+[Tup] single_point_search_iterations: {3177423, 2.000000}
+[Tup] single_point_search: {170063.000000, 3.000000}
+[Tup] single_point_search_iterations: {2116316, 3.000000}
+[T] search (ms): 427275.000000
+[T] iterations (): 5383662.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4949.000000
+[Tup] single_point_search: {464660.000000, 0.000000}
+[Tup] single_point_search_iterations: {5744945, 0.000000}
+[Tup] single_point_search: {251082.000000, 1.000000}
+[Tup] single_point_search_iterations: {3121006, 1.000000}
+[Tup] single_point_search: {178203.000000, 2.000000}
+[Tup] single_point_search_iterations: {2212008, 2.000000}
+[Tup] single_point_search: {83313.000000, 3.000000}
+[Tup] single_point_search_iterations: {1013873, 3.000000}
+[Tup] single_point_search: {45858.000000, 4.000000}
+[Tup] single_point_search_iterations: {550258, 4.000000}
+[T] search (ms): 464735.000000
+[T] iterations (): 5744945.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6411.000000
+[Tup] single_point_search: {706872.000000, 0.000000}
+[Tup] single_point_search_iterations: {8770098, 0.000000}
+[Tup] single_point_search: {421336.000000, 1.000000}
+[Tup] single_point_search_iterations: {5247809, 1.000000}
+[Tup] single_point_search: {232679.000000, 3.000000}
+[Tup] single_point_search_iterations: {2805501, 3.000000}
+[T] search (ms): 706954.000000
+[T] iterations (): 8770098.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7856.000000
+[Tup] single_point_search: {937900.000000, 0.000000}
+[Tup] single_point_search_iterations: {11725796, 0.000000}
+[Tup] single_point_search: {791698.000000, 1.000000}
+[Tup] single_point_search_iterations: {9931090, 1.000000}
+[Tup] single_point_search: {409317.000000, 2.000000}
+[Tup] single_point_search_iterations: {5036590, 2.000000}
+[Tup] single_point_search: {340054.000000, 3.000000}
+[Tup] single_point_search_iterations: {4148482, 3.000000}
+[Tup] single_point_search: {181136.000000, 4.000000}
+[Tup] single_point_search_iterations: {2138445, 4.000000}
+[T] search (ms): 937995.000000
+[T] iterations (): 11725796.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 76.000000
+[Tup] single_point_search: {13547.000000, 0.000000}
+[Tup] single_point_search_iterations: {171203, 0.000000}
+[Tup] single_point_search: {11502.000000, 1.000000}
+[Tup] single_point_search_iterations: {146110, 1.000000}
+[Tup] single_point_search: {8996.000000, 2.000000}
+[Tup] single_point_search_iterations: {113311, 2.000000}
+[Tup] single_point_search: {6879.000000, 4.000000}
+[Tup] single_point_search_iterations: {85442, 4.000000}
+[Tup] single_point_search: {4961.000000, 6.000000}
+[Tup] single_point_search_iterations: {60797, 6.000000}
+[T] search (ms): 13551.000000
+[T] iterations (): 171203.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 307.000000
+[Tup] single_point_search: {69991.000000, 0.000000}
+[Tup] single_point_search_iterations: {901788, 0.000000}
+[Tup] single_point_search: {65295.000000, 1.000000}
+[Tup] single_point_search_iterations: {841732, 1.000000}
+[Tup] single_point_search: {41499.000000, 2.000000}
+[Tup] single_point_search_iterations: {524803, 2.000000}
+[Tup] single_point_search: {22947.000000, 3.000000}
+[Tup] single_point_search_iterations: {281356, 3.000000}
+[Tup] single_point_search: {13954.000000, 4.000000}
+[Tup] single_point_search_iterations: {167448, 4.000000}
+[T] search (ms): 70000.000000
+[T] iterations (): 901788.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 684.000000
+[Tup] single_point_search: {52873.000000, 0.000000}
+[Tup] single_point_search_iterations: {651147, 0.000000}
+[Tup] single_point_search: {39420.000000, 1.000000}
+[Tup] single_point_search_iterations: {483579, 1.000000}
+[Tup] single_point_search: {16268.000000, 4.000000}
+[Tup] single_point_search_iterations: {192782, 4.000000}
+[T] search (ms): 52901.000000
+[T] iterations (): 651147.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1224.000000
+[Tup] single_point_search: {69181.000000, 0.000000}
+[Tup] single_point_search_iterations: {864813, 0.000000}
+[Tup] single_point_search: {47264.000000, 1.000000}
+[Tup] single_point_search_iterations: {599359, 1.000000}
+[Tup] single_point_search: {20597.000000, 2.000000}
+[Tup] single_point_search_iterations: {259491, 2.000000}
+[T] search (ms): 69214.000000
+[T] iterations (): 864813.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1940.000000
+[Tup] single_point_search: {366952.000000, 0.000000}
+[Tup] single_point_search_iterations: {4701652, 0.000000}
+[Tup] single_point_search: {278761.000000, 1.000000}
+[Tup] single_point_search_iterations: {3601144, 1.000000}
+[Tup] single_point_search: {146423.000000, 2.000000}
+[Tup] single_point_search_iterations: {1855411, 2.000000}
+[Tup] single_point_search: {104203.000000, 3.000000}
+[Tup] single_point_search_iterations: {1303667, 3.000000}
+[Tup] single_point_search: {66050.000000, 4.000000}
+[Tup] single_point_search_iterations: {812755, 4.000000}
+[T] search (ms): 366968.000000
+[T] iterations (): 4701652.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2780.000000
+[Tup] single_point_search: {243605.000000, 0.000000}
+[Tup] single_point_search_iterations: {3065648, 0.000000}
+[Tup] single_point_search: {243557.000000, 1.000000}
+[Tup] single_point_search_iterations: {3064996, 1.000000}
+[Tup] single_point_search: {97133.000000, 2.000000}
+[Tup] single_point_search_iterations: {1190732, 2.000000}
+[Tup] single_point_search: {83327.000000, 3.000000}
+[Tup] single_point_search_iterations: {1015232, 3.000000}
+[T] search (ms): 243698.000000
+[T] iterations (): 3065648.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3757.000000
+[Tup] single_point_search: {568736.000000, 0.000000}
+[Tup] single_point_search_iterations: {7341233, 0.000000}
+[Tup] single_point_search: {525198.000000, 1.000000}
+[Tup] single_point_search_iterations: {6794661, 1.000000}
+[Tup] single_point_search: {374473.000000, 2.000000}
+[Tup] single_point_search_iterations: {4830374, 2.000000}
+[Tup] single_point_search: {316798.000000, 3.000000}
+[Tup] single_point_search_iterations: {4060544, 3.000000}
+[Tup] single_point_search: {215331.000000, 5.000000}
+[Tup] single_point_search_iterations: {2726525, 5.000000}
+[T] search (ms): 568789.000000
+[T] iterations (): 7341233.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4936.000000
+[Tup] single_point_search: {632912.000000, 0.000000}
+[Tup] single_point_search_iterations: {7949294, 0.000000}
+[Tup] single_point_search: {461291.000000, 1.000000}
+[Tup] single_point_search_iterations: {5858759, 1.000000}
+[Tup] single_point_search: {306497.000000, 2.000000}
+[Tup] single_point_search_iterations: {3884445, 2.000000}
+[Tup] single_point_search: {134610.000000, 3.000000}
+[Tup] single_point_search_iterations: {1674499, 3.000000}
+[T] search (ms): 632994.000000
+[T] iterations (): 7949294.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6236.000000
+[Tup] single_point_search: {335173.000000, 0.000000}
+[Tup] single_point_search_iterations: {4232680, 0.000000}
+[Tup] single_point_search: {157714.000000, 1.000000}
+[Tup] single_point_search_iterations: {1976230, 1.000000}
+[Tup] single_point_search: {103184.000000, 2.000000}
+[Tup] single_point_search_iterations: {1271528, 2.000000}
+[T] search (ms): 335245.000000
+[T] iterations (): 4232680.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7761.000000
+[Tup] single_point_search: {1137091.000000, 0.000000}
+[Tup] single_point_search_iterations: {14384097, 0.000000}
+[Tup] single_point_search: {602628.000000, 2.000000}
+[Tup] single_point_search_iterations: {7519954, 2.000000}
+[Tup] single_point_search: {504917.000000, 3.000000}
+[Tup] single_point_search_iterations: {6237000, 3.000000}
+[T] search (ms): 1137291.000000
+[T] iterations (): 14384097.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 74.000000
+[Tup] single_point_search: {6793.000000, 0.000000}
+[Tup] single_point_search_iterations: {90699, 0.000000}
+[Tup] single_point_search: {4607.000000, 1.000000}
+[Tup] single_point_search_iterations: {62483, 1.000000}
+[Tup] single_point_search: {3473.000000, 2.000000}
+[Tup] single_point_search_iterations: {46976, 2.000000}
+[Tup] single_point_search: {1633.000000, 4.000000}
+[Tup] single_point_search_iterations: {21656, 4.000000}
+[Tup] single_point_search: {1068.000000, 6.000000}
+[Tup] single_point_search_iterations: {14090, 6.000000}
+[T] search (ms): 6798.000000
+[T] iterations (): 90699.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 308.000000
+[Tup] single_point_search: {22624.000000, 0.000000}
+[Tup] single_point_search_iterations: {283265, 0.000000}
+[Tup] single_point_search: {12281.000000, 4.000000}
+[Tup] single_point_search_iterations: {150008, 4.000000}
+[T] search (ms): 22645.000000
+[T] iterations (): 283265.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 682.000000
+[Tup] single_point_search: {16187.000000, 0.000000}
+[Tup] single_point_search_iterations: {197552, 0.000000}
+[Tup] single_point_search: {10732.000000, 3.000000}
+[Tup] single_point_search_iterations: {129358, 3.000000}
+[Tup] single_point_search: {10660.000000, 4.000000}
+[Tup] single_point_search_iterations: {128447, 4.000000}
+[T] search (ms): 16201.000000
+[T] iterations (): 197552.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1226.000000
+[Tup] single_point_search: {108033.000000, 0.000000}
+[Tup] single_point_search_iterations: {1397071, 0.000000}
+[Tup] single_point_search: {91788.000000, 1.000000}
+[Tup] single_point_search_iterations: {1194773, 1.000000}
+[Tup] single_point_search: {59968.000000, 3.000000}
+[Tup] single_point_search_iterations: {770211, 3.000000}
+[T] search (ms): 108068.000000
+[T] iterations (): 1397071.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1899.000000
+[Tup] single_point_search: {86019.000000, 0.000000}
+[Tup] single_point_search_iterations: {1075392, 0.000000}
+[Tup] single_point_search: {52231.000000, 1.000000}
+[Tup] single_point_search_iterations: {651371, 1.000000}
+[Tup] single_point_search: {37236.000000, 2.000000}
+[Tup] single_point_search_iterations: {455245, 2.000000}
+[Tup] single_point_search: {16352.000000, 3.000000}
+[Tup] single_point_search_iterations: {191926, 3.000000}
+[Tup] single_point_search: {13911.000000, 5.000000}
+[Tup] single_point_search_iterations: {162646, 5.000000}
+[T] search (ms): 86050.000000
+[T] iterations (): 1075392.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2777.000000
+[Tup] single_point_search: {72240.000000, 0.000000}
+[Tup] single_point_search_iterations: {893839, 0.000000}
+[Tup] single_point_search: {71056.000000, 1.000000}
+[Tup] single_point_search_iterations: {878196, 1.000000}
+[Tup] single_point_search: {17650.000000, 3.000000}
+[Tup] single_point_search_iterations: {208095, 3.000000}
+[T] search (ms): 72275.000000
+[T] iterations (): 893839.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3705.000000
+[Tup] single_point_search: {305039.000000, 0.000000}
+[Tup] single_point_search_iterations: {3983011, 0.000000}
+[Tup] single_point_search: {292713.000000, 1.000000}
+[Tup] single_point_search_iterations: {3825716, 1.000000}
+[Tup] single_point_search: {178931.000000, 2.000000}
+[Tup] single_point_search_iterations: {2326230, 2.000000}
+[Tup] single_point_search: {167322.000000, 6.000000}
+[Tup] single_point_search_iterations: {2170525, 6.000000}
+[T] search (ms): 305132.000000
+[T] iterations (): 3983011.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4862.000000
+[Tup] single_point_search: {1092715.000000, 0.000000}
+[Tup] single_point_search_iterations: {14119370, 0.000000}
+[Tup] single_point_search: {947635.000000, 1.000000}
+[Tup] single_point_search_iterations: {12371166, 1.000000}
+[Tup] single_point_search: {520784.000000, 2.000000}
+[Tup] single_point_search_iterations: {6791664, 2.000000}
+[Tup] single_point_search: {478686.000000, 3.000000}
+[Tup] single_point_search_iterations: {6233397, 3.000000}
+[Tup] single_point_search: {402840.000000, 4.000000}
+[Tup] single_point_search_iterations: {5250789, 4.000000}
+[Tup] single_point_search: {177661.000000, 5.000000}
+[Tup] single_point_search_iterations: {2294621, 5.000000}
+[T] search (ms): 1092735.000000
+[T] iterations (): 14119370.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6318.000000
+[Tup] single_point_search: {552870.000000, 0.000000}
+[Tup] single_point_search_iterations: {6786204, 0.000000}
+[Tup] single_point_search: {435876.000000, 1.000000}
+[Tup] single_point_search_iterations: {5375398, 1.000000}
+[Tup] single_point_search: {158676.000000, 3.000000}
+[Tup] single_point_search_iterations: {1868960, 3.000000}
+[T] search (ms): 552954.000000
+[T] iterations (): 6786204.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7699.000000
+[Tup] single_point_search: {631681.000000, 0.000000}
+[Tup] single_point_search_iterations: {7624142, 0.000000}
+[Tup] single_point_search: {466893.000000, 1.000000}
+[Tup] single_point_search_iterations: {5633853, 1.000000}
+[Tup] single_point_search: {345707.000000, 2.000000}
+[Tup] single_point_search_iterations: {4125936, 2.000000}
+[Tup] single_point_search: {206665.000000, 3.000000}
+[Tup] single_point_search_iterations: {2411154, 3.000000}
+[Tup] single_point_search: {189596.000000, 5.000000}
+[Tup] single_point_search_iterations: {2204109, 5.000000}
+[T] search (ms): 631771.000000
+[T] iterations (): 7624142.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 75.000000
+[Tup] single_point_search: {11737.000000, 0.000000}
+[Tup] single_point_search_iterations: {149332, 0.000000}
+[Tup] single_point_search: {8397.000000, 1.000000}
+[Tup] single_point_search_iterations: {106870, 1.000000}
+[Tup] single_point_search: {4362.000000, 2.000000}
+[Tup] single_point_search_iterations: {54784, 2.000000}
+[Tup] single_point_search: {2876.000000, 5.000000}
+[Tup] single_point_search_iterations: {35330, 5.000000}
+[T] search (ms): 11742.000000
+[T] iterations (): 149332.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 305.000000
+[Tup] single_point_search: {27297.000000, 0.000000}
+[Tup] single_point_search_iterations: {337052, 0.000000}
+[Tup] single_point_search: {17568.000000, 1.000000}
+[Tup] single_point_search_iterations: {215093, 1.000000}
+[Tup] single_point_search: {14988.000000, 4.000000}
+[Tup] single_point_search_iterations: {182099, 4.000000}
+[T] search (ms): 27313.000000
+[T] iterations (): 337052.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 690.000000
+[Tup] single_point_search: {109326.000000, 0.000000}
+[Tup] single_point_search_iterations: {1396237, 0.000000}
+[Tup] single_point_search: {60946.000000, 1.000000}
+[Tup] single_point_search_iterations: {782964, 1.000000}
+[Tup] single_point_search: {25905.000000, 3.000000}
+[Tup] single_point_search_iterations: {318905, 3.000000}
+[T] search (ms): 109343.000000
+[T] iterations (): 1396237.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1233.000000
+[Tup] single_point_search: {42014.000000, 0.000000}
+[Tup] single_point_search_iterations: {507122, 0.000000}
+[Tup] single_point_search: {39114.000000, 1.000000}
+[Tup] single_point_search_iterations: {471641, 1.000000}
+[Tup] single_point_search: {25495.000000, 2.000000}
+[Tup] single_point_search_iterations: {303651, 2.000000}
+[T] search (ms): 42034.000000
+[T] iterations (): 507122.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1944.000000
+[Tup] single_point_search: {139849.000000, 0.000000}
+[Tup] single_point_search_iterations: {1753115, 0.000000}
+[Tup] single_point_search: {97567.000000, 1.000000}
+[Tup] single_point_search_iterations: {1235132, 1.000000}
+[Tup] single_point_search: {66297.000000, 2.000000}
+[Tup] single_point_search_iterations: {826367, 2.000000}
+[Tup] single_point_search: {59851.000000, 4.000000}
+[Tup] single_point_search_iterations: {741544, 4.000000}
+[Tup] single_point_search: {47087.000000, 5.000000}
+[Tup] single_point_search_iterations: {580200, 5.000000}
+[T] search (ms): 139888.000000
+[T] iterations (): 1753115.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2770.000000
+[Tup] single_point_search: {434433.000000, 0.000000}
+[Tup] single_point_search_iterations: {5541920, 0.000000}
+[Tup] single_point_search: {371294.000000, 1.000000}
+[Tup] single_point_search_iterations: {4766964, 1.000000}
+[Tup] single_point_search: {298234.000000, 3.000000}
+[Tup] single_point_search_iterations: {3796426, 3.000000}
+[Tup] single_point_search: {208779.000000, 4.000000}
+[Tup] single_point_search_iterations: {2633228, 4.000000}
+[Tup] single_point_search: {153475.000000, 6.000000}
+[Tup] single_point_search_iterations: {1913944, 6.000000}
+[T] search (ms): 434482.000000
+[T] iterations (): 5541920.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3817.000000
+[Tup] single_point_search: {577131.000000, 0.000000}
+[Tup] single_point_search_iterations: {7254651, 0.000000}
+[Tup] single_point_search: {271412.000000, 1.000000}
+[Tup] single_point_search_iterations: {3435790, 1.000000}
+[Tup] single_point_search: {267620.000000, 4.000000}
+[Tup] single_point_search_iterations: {3385727, 4.000000}
+[Tup] single_point_search: {102771.000000, 5.000000}
+[Tup] single_point_search_iterations: {1273785, 5.000000}
+[T] search (ms): 577160.000000
+[T] iterations (): 7254651.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4871.000000
+[Tup] single_point_search: {629862.000000, 0.000000}
+[Tup] single_point_search_iterations: {8223522, 0.000000}
+[Tup] single_point_search: {282755.000000, 3.000000}
+[Tup] single_point_search_iterations: {3605577, 3.000000}
+[Tup] single_point_search: {195822.000000, 4.000000}
+[Tup] single_point_search_iterations: {2471759, 4.000000}
+[Tup] single_point_search: {114674.000000, 6.000000}
+[Tup] single_point_search_iterations: {1419962, 6.000000}
+[T] search (ms): 630026.000000
+[T] iterations (): 8223522.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6345.000000
+[Tup] single_point_search: {358171.000000, 0.000000}
+[Tup] single_point_search_iterations: {4422933, 0.000000}
+[Tup] single_point_search: {145965.000000, 2.000000}
+[Tup] single_point_search_iterations: {1756355, 2.000000}
+[Tup] single_point_search: {112973.000000, 3.000000}
+[Tup] single_point_search_iterations: {1354248, 3.000000}
+[T] search (ms): 358296.000000
+[T] iterations (): 4422933.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7751.000000
+[Tup] single_point_search: {1325867.000000, 0.000000}
+[Tup] single_point_search_iterations: {17158211, 0.000000}
+[Tup] single_point_search: {1287240.000000, 1.000000}
+[Tup] single_point_search_iterations: {16679949, 1.000000}
+[Tup] single_point_search: {1231194.000000, 2.000000}
+[Tup] single_point_search_iterations: {15919219, 2.000000}
+[Tup] single_point_search: {391147.000000, 3.000000}
+[Tup] single_point_search_iterations: {4834265, 3.000000}
+[T] search (ms): 1325953.000000
+[T] iterations (): 17158211.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 74.000000
+[Tup] single_point_search: {5763.000000, 0.000000}
+[Tup] single_point_search_iterations: {74443, 0.000000}
+[Tup] single_point_search: {4865.000000, 1.000000}
+[Tup] single_point_search_iterations: {63071, 1.000000}
+[Tup] single_point_search: {3511.000000, 3.000000}
+[Tup] single_point_search_iterations: {44830, 3.000000}
+[T] search (ms): 5770.000000
+[T] iterations (): 74443.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 269.000000
+[Tup] single_point_search: {16598.000000, 0.000000}
+[Tup] single_point_search_iterations: {223379, 0.000000}
+[Tup] single_point_search: {11848.000000, 1.000000}
+[Tup] single_point_search_iterations: {161404, 1.000000}
+[Tup] single_point_search: {2987.000000, 3.000000}
+[Tup] single_point_search_iterations: {38899, 3.000000}
+[T] search (ms): 16603.000000
+[T] iterations (): 223379.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 688.000000
+[Tup] single_point_search: {106784.000000, 0.000000}
+[Tup] single_point_search_iterations: {1391378, 0.000000}
+[Tup] single_point_search: {95891.000000, 1.000000}
+[Tup] single_point_search_iterations: {1254717, 1.000000}
+[Tup] single_point_search: {69546.000000, 3.000000}
+[Tup] single_point_search_iterations: {896053, 3.000000}
+[Tup] single_point_search: {39701.000000, 4.000000}
+[Tup] single_point_search_iterations: {499279, 4.000000}
+[T] search (ms): 106804.000000
+[T] iterations (): 1391378.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1215.000000
+[Tup] single_point_search: {201366.000000, 0.000000}
+[Tup] single_point_search_iterations: {2619309, 0.000000}
+[Tup] single_point_search: {151341.000000, 1.000000}
+[Tup] single_point_search_iterations: {1995388, 1.000000}
+[Tup] single_point_search: {89693.000000, 3.000000}
+[Tup] single_point_search_iterations: {1166597, 3.000000}
+[T] search (ms): 201389.000000
+[T] iterations (): 2619309.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1906.000000
+[Tup] single_point_search: {318465.000000, 0.000000}
+[Tup] single_point_search_iterations: {4049167, 0.000000}
+[Tup] single_point_search: {266466.000000, 1.000000}
+[Tup] single_point_search_iterations: {3395832, 1.000000}
+[Tup] single_point_search: {192020.000000, 2.000000}
+[Tup] single_point_search_iterations: {2434231, 2.000000}
+[Tup] single_point_search: {149509.000000, 3.000000}
+[Tup] single_point_search_iterations: {1874579, 3.000000}
+[Tup] single_point_search: {41107.000000, 5.000000}
+[Tup] single_point_search_iterations: {489958, 5.000000}
+[T] search (ms): 318511.000000
+[T] iterations (): 4049167.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2755.000000
+[Tup] single_point_search: {117241.000000, 0.000000}
+[Tup] single_point_search_iterations: {1447071, 0.000000}
+[Tup] single_point_search: {46560.000000, 1.000000}
+[Tup] single_point_search_iterations: {567786, 1.000000}
+[Tup] single_point_search: {46474.000000, 2.000000}
+[Tup] single_point_search_iterations: {566598, 2.000000}
+[T] search (ms): 117283.000000
+[T] iterations (): 1447071.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3747.000000
+[Tup] single_point_search: {572348.000000, 0.000000}
+[Tup] single_point_search_iterations: {7374582, 0.000000}
+[Tup] single_point_search: {499253.000000, 1.000000}
+[Tup] single_point_search_iterations: {6464421, 1.000000}
+[Tup] single_point_search: {475177.000000, 2.000000}
+[Tup] single_point_search_iterations: {6133409, 2.000000}
+[Tup] single_point_search: {176720.000000, 3.000000}
+[Tup] single_point_search_iterations: {2217946, 3.000000}
+[Tup] single_point_search: {163332.000000, 6.000000}
+[Tup] single_point_search_iterations: {2044112, 6.000000}
+[T] search (ms): 572409.000000
+[T] iterations (): 7374582.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4964.000000
+[Tup] single_point_search: {580985.000000, 0.000000}
+[Tup] single_point_search_iterations: {7400559, 0.000000}
+[Tup] single_point_search: {562259.000000, 1.000000}
+[Tup] single_point_search_iterations: {7166255, 1.000000}
+[Tup] single_point_search: {313714.000000, 2.000000}
+[Tup] single_point_search_iterations: {3990423, 2.000000}
+[Tup] single_point_search: {129786.000000, 4.000000}
+[Tup] single_point_search_iterations: {1600891, 4.000000}
+[T] search (ms): 581057.000000
+[T] iterations (): 7400559.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6261.000000
+[Tup] single_point_search: {1053839.000000, 0.000000}
+[Tup] single_point_search_iterations: {13449322, 0.000000}
+[Tup] single_point_search: {861559.000000, 1.000000}
+[Tup] single_point_search_iterations: {11115236, 1.000000}
+[Tup] single_point_search: {635281.000000, 2.000000}
+[Tup] single_point_search_iterations: {8106692, 2.000000}
+[Tup] single_point_search: {461969.000000, 3.000000}
+[Tup] single_point_search_iterations: {5838301, 3.000000}
+[T] search (ms): 1053890.000000
+[T] iterations (): 13449322.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7648.000000
+[Tup] single_point_search: {808016.000000, 0.000000}
+[Tup] single_point_search_iterations: {9779447, 0.000000}
+[Tup] single_point_search: {481292.000000, 1.000000}
+[Tup] single_point_search_iterations: {5812929, 1.000000}
+[Tup] single_point_search: {461763.000000, 2.000000}
+[Tup] single_point_search_iterations: {5571050, 2.000000}
+[Tup] single_point_search: {351269.000000, 4.000000}
+[Tup] single_point_search_iterations: {4196380, 4.000000}
+[T] search (ms): 808122.000000
+[T] iterations (): 9779447.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 72.000000
+[Tup] single_point_search: {2494.000000, 0.000000}
+[Tup] single_point_search_iterations: {32663, 0.000000}
+[Tup] single_point_search: {473.000000, 1.000000}
+[Tup] single_point_search_iterations: {5870, 1.000000}
+[T] search (ms): 2499.000000
+[T] iterations (): 32663.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 305.000000
+[Tup] single_point_search: {42225.000000, 0.000000}
+[Tup] single_point_search_iterations: {542751, 0.000000}
+[Tup] single_point_search: {29863.000000, 1.000000}
+[Tup] single_point_search_iterations: {387283, 1.000000}
+[Tup] single_point_search: {24686.000000, 2.000000}
+[Tup] single_point_search_iterations: {319459, 2.000000}
+[Tup] single_point_search: {22695.000000, 3.000000}
+[Tup] single_point_search_iterations: {292654, 3.000000}
+[Tup] single_point_search: {9799.000000, 4.000000}
+[Tup] single_point_search_iterations: {122376, 4.000000}
+[T] search (ms): 42238.000000
+[T] iterations (): 542751.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 691.000000
+[Tup] single_point_search: {17879.000000, 0.000000}
+[Tup] single_point_search_iterations: {222695, 0.000000}
+[Tup] single_point_search: {12849.000000, 1.000000}
+[Tup] single_point_search_iterations: {159874, 1.000000}
+[Tup] single_point_search: {3538.000000, 2.000000}
+[Tup] single_point_search_iterations: {42419, 2.000000}
+[T] search (ms): 17894.000000
+[T] iterations (): 222695.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1230.000000
+[Tup] single_point_search: {197498.000000, 0.000000}
+[Tup] single_point_search_iterations: {2593033, 0.000000}
+[Tup] single_point_search: {167514.000000, 2.000000}
+[Tup] single_point_search_iterations: {2194920, 2.000000}
+[Tup] single_point_search: {127880.000000, 3.000000}
+[Tup] single_point_search_iterations: {1653174, 3.000000}
+[Tup] single_point_search: {74117.000000, 5.000000}
+[Tup] single_point_search_iterations: {935932, 5.000000}
+[T] search (ms): 197572.000000
+[T] iterations (): 2593033.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 1935.000000
+[Tup] single_point_search: {233034.000000, 0.000000}
+[Tup] single_point_search_iterations: {2913838, 0.000000}
+[Tup] single_point_search: {84154.000000, 1.000000}
+[Tup] single_point_search_iterations: {1081459, 1.000000}
+[Tup] single_point_search: {68313.000000, 2.000000}
+[Tup] single_point_search_iterations: {875365, 2.000000}
+[Tup] single_point_search: {35970.000000, 3.000000}
+[Tup] single_point_search_iterations: {453743, 3.000000}
+[Tup] single_point_search: {14954.000000, 5.000000}
+[Tup] single_point_search_iterations: {183099, 5.000000}
+[T] search (ms): 233080.000000
+[T] iterations (): 2913838.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2787.000000
+[Tup] single_point_search: {506889.000000, 0.000000}
+[Tup] single_point_search_iterations: {6513595, 0.000000}
+[Tup] single_point_search: {402789.000000, 1.000000}
+[Tup] single_point_search_iterations: {5219527, 1.000000}
+[Tup] single_point_search: {352885.000000, 2.000000}
+[Tup] single_point_search_iterations: {4545954, 2.000000}
+[Tup] single_point_search: {114642.000000, 3.000000}
+[Tup] single_point_search_iterations: {1399426, 3.000000}
+[Tup] single_point_search: {111120.000000, 4.000000}
+[Tup] single_point_search_iterations: {1355032, 4.000000}
+[T] search (ms): 506913.000000
+[T] iterations (): 6513595.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3824.000000
+[Tup] single_point_search: {60036.000000, 0.000000}
+[Tup] single_point_search_iterations: {737559, 0.000000}
+[Tup] single_point_search: {46659.000000, 1.000000}
+[Tup] single_point_search_iterations: {577062, 1.000000}
+[Tup] single_point_search: {20193.000000, 3.000000}
+[Tup] single_point_search_iterations: {243870, 3.000000}
+[T] search (ms): 60056.000000
+[T] iterations (): 737559.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 4950.000000
+[Tup] single_point_search: {568382.000000, 0.000000}
+[Tup] single_point_search_iterations: {7004464, 0.000000}
+[Tup] single_point_search: {556501.000000, 1.000000}
+[Tup] single_point_search_iterations: {6859157, 1.000000}
+[T] search (ms): 568469.000000
+[T] iterations (): 7004464.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6375.000000
+[Tup] single_point_search: {520542.000000, 0.000000}
+[Tup] single_point_search_iterations: {6255117, 0.000000}
+[Tup] single_point_search: {174898.000000, 1.000000}
+[Tup] single_point_search_iterations: {2093666, 1.000000}
+[Tup] single_point_search: {97893.000000, 2.000000}
+[Tup] single_point_search_iterations: {1153928, 2.000000}
+[Tup] single_point_search: {90082.000000, 3.000000}
+[Tup] single_point_search_iterations: {1059169, 3.000000}
+[Tup] single_point_search: {45639.000000, 5.000000}
+[Tup] single_point_search_iterations: {524340, 5.000000}
+[T] search (ms): 520637.000000
+[T] iterations (): 6255117.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 8110.000000
+[Tup] single_point_search: {448111.000000, 0.000000}
+[Tup] single_point_search_iterations: {5402083, 0.000000}
+[T] search (ms): 448236.000000
+[T] iterations (): 5402083.000000
+num_dfas: 5
+model_size: 10000
+>--
+[T] heuristic (ms): 78.000000
+[Tup] single_point_search: {7290.000000, 0.000000}
+[Tup] single_point_search_iterations: {86930, 0.000000}
+[Tup] single_point_search: {2285.000000, 1.000000}
+[Tup] single_point_search_iterations: {25931, 1.000000}
+[Tup] single_point_search: {1765.000000, 2.000000}
+[Tup] single_point_search_iterations: {19765, 2.000000}
+[Tup] single_point_search: {990.000000, 3.000000}
+[Tup] single_point_search_iterations: {10833, 3.000000}
+[T] search (ms): 7295.000000
+[T] iterations (): 86930.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 317.000000
+[Tup] single_point_search: {44206.000000, 0.000000}
+[Tup] single_point_search_iterations: {545736, 0.000000}
+[Tup] single_point_search: {38414.000000, 1.000000}
+[Tup] single_point_search_iterations: {475450, 1.000000}
+[Tup] single_point_search: {37597.000000, 3.000000}
+[Tup] single_point_search_iterations: {464550, 3.000000}
+[Tup] single_point_search: {17943.000000, 4.000000}
+[Tup] single_point_search_iterations: {214019, 4.000000}
+[T] search (ms): 44221.000000
+[T] iterations (): 545736.000000
+num_dfas: 5
+model_size: 400
+>--
+[T] heuristic (ms): 712.000000
+[Tup] single_point_search: {106914.000000, 0.000000}
+[Tup] single_point_search_iterations: {1330740, 0.000000}
+[Tup] single_point_search: {97804.000000, 1.000000}
+[Tup] single_point_search_iterations: {1220766, 1.000000}
+[Tup] single_point_search: {68711.000000, 2.000000}
+[Tup] single_point_search_iterations: {851139, 2.000000}
+[Tup] single_point_search: {58453.000000, 3.000000}
+[Tup] single_point_search_iterations: {718439, 3.000000}
+[Tup] single_point_search: {42314.000000, 4.000000}
+[Tup] single_point_search_iterations: {514299, 4.000000}
+[Tup] single_point_search: {39110.000000, 5.000000}
+[Tup] single_point_search_iterations: {473170, 5.000000}
+[Tup] single_point_search: {33887.000000, 6.000000}
+[Tup] single_point_search_iterations: {406969, 6.000000}
+[T] search (ms): 106938.000000
+[T] iterations (): 1330740.000000
+num_dfas: 5
+model_size: 900
+>--
+[T] heuristic (ms): 1298.000000
+[Tup] single_point_search: {159528.000000, 0.000000}
+[Tup] single_point_search_iterations: {1952831, 0.000000}
+[Tup] single_point_search: {134089.000000, 1.000000}
+[Tup] single_point_search_iterations: {1646125, 1.000000}
+[Tup] single_point_search: {84551.000000, 2.000000}
+[Tup] single_point_search_iterations: {1020631, 2.000000}
+[Tup] single_point_search: {41551.000000, 3.000000}
+[Tup] single_point_search_iterations: {485793, 3.000000}
+[T] search (ms): 159563.000000
+[T] iterations (): 1952831.000000
+num_dfas: 5
+model_size: 1600
+>--
+[T] heuristic (ms): 2022.000000
+[Tup] single_point_search: {189201.000000, 0.000000}
+[Tup] single_point_search_iterations: {2208200, 0.000000}
+[Tup] single_point_search: {61328.000000, 1.000000}
+[Tup] single_point_search_iterations: {704541, 1.000000}
+[Tup] single_point_search: {44619.000000, 2.000000}
+[Tup] single_point_search_iterations: {508464, 2.000000}
+[Tup] single_point_search: {36540.000000, 3.000000}
+[Tup] single_point_search_iterations: {412864, 3.000000}
+[T] search (ms): 189251.000000
+[T] iterations (): 2208200.000000
+num_dfas: 5
+model_size: 2500
+>--
+[T] heuristic (ms): 2834.000000
+[Tup] single_point_search: {430861.000000, 0.000000}
+[Tup] single_point_search_iterations: {5315235, 0.000000}
+[Tup] single_point_search: {329839.000000, 1.000000}
+[Tup] single_point_search_iterations: {4071564, 1.000000}
+[Tup] single_point_search: {285315.000000, 2.000000}
+[Tup] single_point_search_iterations: {3503818, 2.000000}
+[Tup] single_point_search: {259635.000000, 4.000000}
+[Tup] single_point_search_iterations: {3171469, 4.000000}
+[Tup] single_point_search: {188985.000000, 6.000000}
+[Tup] single_point_search_iterations: {2283224, 6.000000}
+[T] search (ms): 430900.000000
+[T] iterations (): 5315235.000000
+num_dfas: 5
+model_size: 3600
+>--
+[T] heuristic (ms): 3929.000000
+[Tup] single_point_search: {415278.000000, 0.000000}
+[Tup] single_point_search_iterations: {4927414, 0.000000}
+[Tup] single_point_search: {305415.000000, 1.000000}
+[Tup] single_point_search_iterations: {3605704, 1.000000}
+[Tup] single_point_search: {253622.000000, 2.000000}
+[Tup] single_point_search_iterations: {2964624, 2.000000}
+[Tup] single_point_search: {221045.000000, 4.000000}
+[Tup] single_point_search_iterations: {2578720, 4.000000}
+[T] search (ms): 415357.000000
+[T] iterations (): 4927414.000000
+num_dfas: 5
+model_size: 4900
+>--
+[T] heuristic (ms): 5150.000000
+[Tup] single_point_search: {795980.000000, 0.000000}
+[Tup] single_point_search_iterations: {9538847, 0.000000}
+[Tup] single_point_search: {458645.000000, 1.000000}
+[Tup] single_point_search_iterations: {5544238, 1.000000}
+[Tup] single_point_search: {307517.000000, 2.000000}
+[Tup] single_point_search_iterations: {3681261, 2.000000}
+[Tup] single_point_search: {231036.000000, 5.000000}
+[Tup] single_point_search_iterations: {2748831, 5.000000}
+[T] search (ms): 796022.000000
+[T] iterations (): 9538847.000000
+num_dfas: 5
+model_size: 6400
+>--
+[T] heuristic (ms): 6615.000000
+[Tup] single_point_search: {665848.000000, 0.000000}
+[Tup] single_point_search_iterations: {8028062, 0.000000}
+[Tup] single_point_search: {604412.000000, 1.000000}
+[Tup] single_point_search_iterations: {7300403, 1.000000}
+[Tup] single_point_search: {523327.000000, 2.000000}
+[Tup] single_point_search_iterations: {6299880, 2.000000}
+[Tup] single_point_search: {425174.000000, 3.000000}
+[Tup] single_point_search_iterations: {5097756, 3.000000}
+[Tup] single_point_search: {363473.000000, 4.000000}
+[Tup] single_point_search_iterations: {4333545, 4.000000}
+[T] search (ms): 665939.000000
+[T] iterations (): 8028062.000000
+num_dfas: 5
+model_size: 8100
+>--
+[T] heuristic (ms): 7984.000000
+[Tup] single_point_search: {500265.000000, 0.000000}
+[Tup] single_point_search_iterations: {6052822, 0.000000}
+[Tup] single_point_search: {462099.000000, 1.000000}
+[Tup] single_point_search_iterations: {5626332, 1.000000}
+[Tup] single_point_search: {119624.000000, 2.000000}
+[Tup] single_point_search_iterations: {1394355, 2.000000}
+[T] search (ms): 500344.000000
+[T] iterations (): 6052822.000000
+num_dfas: 5
+model_size: 10000
+>--
