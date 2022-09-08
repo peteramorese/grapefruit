@@ -353,20 +353,23 @@ template<> struct std::hash<OrderedPlanner::VisitedNode> {
     }
 };
 
-const OrderedPlanner::Plan* OrderedPlanner::Result::getPlan(float mu_max) const {
+std::shared_ptr<const OrderedPlanner::Plan> OrderedPlanner::Result::getPlan(float mu_max) const {
     for (const auto& pt : pareto_front) {
         if (pt.mu <= mu_max) {
-            return &pt.plan;
+            // Put plan on the heap once it is retrieved:
+            return std::make_shared<const Plan>(pt.plan);
         }
     }
     return nullptr;
 }
 
-const OrderedPlanner::Plan* OrderedPlanner::Result::getPlan(unsigned ind) const {
+std::shared_ptr<const OrderedPlanner::Plan> OrderedPlanner::Result::getPlan(unsigned ind) const {
     int i = 0;
     for (const auto& pt : pareto_front) {
         if (i == ind) {
-            return &pt.plan;
+            // Put plan on the heap once it is retrieved:
+            return std::make_shared<const Plan>(pt.plan);
+            //return &pt.plan;
         }
         i++;
     }

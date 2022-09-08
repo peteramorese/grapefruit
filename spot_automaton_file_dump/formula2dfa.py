@@ -54,7 +54,7 @@ def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose
         for a_s in accepting_list:
             lines_list.append("- " + a_s)
         lines_list.append("")
-        with open(filename, "w") as file:
+        with open(filename, "w+") as file:
             for line in lines_list:
                 file.write(line)
                 file.write("\n")
@@ -129,23 +129,31 @@ if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
     parser.add_argument("-f", "--filepath", default="formulas.json", help="Specify forumla file")
     parser.add_argument("-l", "--formula-list", default="default", help="Specify formula list inside json formula file")
+    parser.add_argument("--formulas", default=None, action="extend", nargs="+", type=str, help="Manually specify multiple formula strings")
     parser.add_argument("-d", "--dfa-filename", default=None, help="Specify custom dfa filename")
+    parser.add_argument("--dfa-path", default="dfas/", type=str, help="Specify custom path for dfa files")
     parser.add_argument("-c", "--complete", action='store_true', default=False, help="DFA is complete (instead of minimal)")
     parser.add_argument("-x", "--use-txt", action='store_true', default=False, help="Use '.txt' interpretation instead of '.json'")
     parser.add_argument("-r", "--random-ordering", action='store_true', default=False, help="Randomly the order of the input formulas")
     args = parser.parse_args()
 
-
-    print("Reading file: ", args.filepath)
-    if args.filepath is not None:
-        print("DFA file target: ", args.dfa_filename)
-    if args.dfa_filename is not None and args.random_ordering:
-        raise Exception("Cannot use 'random_ordering' with a 'dfa_filename'")
-
-    READ_FILE_NAME = args.filepath
-    WRITE_FILE_DIR_NAME_PREFIX = "dfas/"
+    if not args.dfa_path.endswith("/"):
+        WRITE_FILE_DIR_NAME_PREFIX = args.dfa_path + "/"
+    else:
+        WRITE_FILE_DIR_NAME_PREFIX = args.dfa_path
     WRITE_FILE_NAME = args.dfa_filename
-    if not args.use_txt:
-        read_write_json(READ_FILE_NAME, args.formula_list, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete)
-    else: 
-        read_write_txt(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete)
+    if args.formulas:
+        print("Argument formulas: ", args.formulas)
+        create_file(args.formulas, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=False, verbose=True, f_complete=args.complete)
+    else:
+        print("Reading file: ", args.filepath)
+        if args.filepath is not None:
+            print("DFA file target: ", args.dfa_filename)
+        if args.dfa_filename is not None and args.random_ordering:
+            raise Exception("Cannot use 'random_ordering' with a 'dfa_filename'")
+
+        READ_FILE_NAME = args.filepath
+        if not args.use_txt:
+            read_write_json(READ_FILE_NAME, args.formula_list, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete)
+        else: 
+            read_write_txt(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete)
