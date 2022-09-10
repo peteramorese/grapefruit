@@ -20,7 +20,7 @@ def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose
         if custom_filename is None:
             filename = dirname_prefix + "dfa_{}".format(file_ind) + ".txt"
             if verbose:
-                print("Writing to: dfa_{}".format(file_ind))
+                print("    > Writing to: dfa_{}".format(file_ind))
         else:
             filename = dirname_prefix + custom_filename + ".txt"
         #filename_list[i] = filename
@@ -87,14 +87,14 @@ def read_write_txt(read_file_name, write_file_dir_name_prefix, write_file_name=N
         if not line == "\n": 
             if not F_i[0]=="#":
                 if verbose:
-                    print("Found formula:     ",F_i)
+                    print("  > Found formula:     ",F_i)
                 F_arr.append(F_i)
                 if custom_single:
                     break
 
     if verbose: 
         if not custom_single:
-            print("Number of formulas: ", len(F_arr))
+            print("  > Number of formulas: ", len(F_arr))
         else:
             print("Running as single custom filename...")
     create_file(F_arr, write_file_dir_name_prefix, write_file_name, random_ordering, verbose=verbose, f_complete=f_complete)
@@ -112,16 +112,16 @@ def read_write_json(read_json_name, formula_list_name, write_file_dir_name_prefi
     for F_i in formulas[formula_list_name]:
         if not F_i[0]=="#":
             if verbose:
-                print("Found formula:     ",F_i)
+                print("  > Found formula:     ",F_i)
             F_arr.append(F_i)
             if custom_single:
                 break
 
     if verbose: 
         if not custom_single:
-            print("Number of formulas: ", len(F_arr))
+            print("  > Number of formulas: ", len(F_arr))
         else:
-            print("Running as single custom filename...")
+            print("  > Running as single custom filename...")
     create_file(F_arr, write_file_dir_name_prefix, write_file_name, random_ordering, verbose=verbose, f_complete=f_complete)
     return len(F_arr)
 

@@ -58,7 +58,7 @@ def main():
             if args.verbose: 
                 print(gen.getFormulaList())
             #num_dfas_found = formula2dfa.read_write_json(READ_FILE_NAME, args.formula_list, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=True, verbose=args.verbose)
-            formula2dfa.create_file(gen.getFormulaList()["bm_formulas"], WRITE_FILE_DIR_NAME_PREFIX, None, True)
+            formula2dfa.create_file(gen.getFormulaList()["bm_formulas"], WRITE_FILE_DIR_NAME_PREFIX, None, True, verbose=args.verbose)
             #print("\nDijkstra's:")
             bm_preference_planner_grid_robot.exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
                 num_dfas=num_dfas, 

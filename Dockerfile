@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y build-essential && apt-get -y install c
 RUN conda init bash
 RUN conda create --name tpenv python=3.8
 RUN conda install -n tpenv -c conda-forge spot
-RUN /root/task_planner/python_scripts_up.sh
+#RUN /root/task_planner/python_scripts_up.sh
 
 # Make the build directory if it doesnt exist, then remove it to make sure a no previous build files exist:
 RUN mkdir -p /root/task_planner/build && rm -r /root/task_planner/build

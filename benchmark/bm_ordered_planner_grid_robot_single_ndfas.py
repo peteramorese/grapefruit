@@ -22,13 +22,13 @@ if __name__ == "__main__":
     grid_size = args.grid_size
     num_dfas = args.num_dfas
 
-    print("Starting benchmark: ordered_planner_grid_robot_pf")
+    print("Starting benchmark: ordered_planner_grid_robot_single_ndfas")
 
     READ_FILE_NAME = "ordered_planner_bm_formulas.json"
     WRITE_FILE_DIR_NAME_PREFIX = "../spot_automaton_file_dump/dfas/"
     EXEC_FILE_NAME = "ordered_planner_grid_robot"
-    BM_DATA_FILE_NAME_NO_H = "benchmark_data/bm_ordered_planner_pf.txt"
-    BM_DATA_FILE_NAME_H = "benchmark_data/bm_ordered_planner_heuristic_pf.txt"
+    BM_DATA_FILE_NAME_NO_H = "benchmark_data/bm_ordered_planner_single_ndfas.txt"
+    BM_DATA_FILE_NAME_H = "benchmark_data/bm_ordered_planner_heuristic_single_ndfas.txt"
 
     bm_preference_planner_grid_robot.clear_file(BM_DATA_FILE_NAME_NO_H) # Clear the bm session file
     bm_preference_planner_grid_robot.clear_file(BM_DATA_FILE_NAME_H) # Clear the bm session file
@@ -41,29 +41,32 @@ if __name__ == "__main__":
             print("Error: Create more than 2 BM formulas")
             break
         for j in range(2, num_dfas+1):
-            #print("\nDijkstra's:")
+
+            # Run without the heuristic:
             bm_preference_planner_grid_robot.exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
                 num_dfas=j, 
-                mu=None, 
+                mu=1000, #infinity
                 use_h_flag=False, 
                 write_file_flag=False, 
                 verbose=False, 
                 benchmark=True, 
-                bm_manual_iterations=True, 
+                single_query_flag=True,
                 dfas_filepath=WRITE_FILE_DIR_NAME_PREFIX,
                 bm_file=BM_DATA_FILE_NAME_NO_H,
                 grid_size=grid_size)
-            ##print("\nAstar:")
+
+            # Run with the heuristic:
             bm_preference_planner_grid_robot.exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
                 num_dfas=j, 
-                mu=None, 
+                mu=1000, #infinity
                 use_h_flag=True, 
                 write_file_flag=False, 
                 verbose=False, 
                 benchmark=True, 
-                bm_manual_iterations=True, 
+                single_query_flag=True,
                 dfas_filepath=WRITE_FILE_DIR_NAME_PREFIX,
                 bm_file=BM_DATA_FILE_NAME_H,
                 grid_size=grid_size)
+
 
 

@@ -34,13 +34,13 @@ if __name__ == "__main__":
     bm_preference_planner_grid_robot.clear_file(BM_DATA_FILE_NAME_H) # Clear the bm session file
     for i in range(0, trials):
         print("Working on trial {} out of {}...".format(i + 1, trials))
-        num_dfas_found = formula2dfa.read_write_json(READ_FILE_NAME, args.formula_list, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=args.verbose)
+        num_dfas_found = formula2dfa.read_write_json(READ_FILE_NAME, args.formula_list, WRITE_FILE_DIR_NAME_PREFIX, random_ordering=True, verbose=args.verbose)
         if not num_dfas:
             num_dfas = num_dfas_found
         if num_dfas <= 2:
             print("Error: Create more than 2 BM formulas")
             break
-        for j in range(2, num_dfas):
+        for j in range(2, num_dfas+1):
 
             # Run without the heuristic:
             bm_preference_planner_grid_robot.exec_pref_plan_grid_robot(EXEC_FILE_NAME, 
