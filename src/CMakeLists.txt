@@ -76,3 +76,11 @@ target_link_libraries(ordered_planner_grid_robot
 	BenchmarkClass
 	WriteToFileClass
 	)
+
+add_executable(ordered_planner_grid_robot_sum_delay ordered_planner_grid_robot_sum_delay.cpp)
+target_link_libraries(ordered_planner_grid_robot_sum_delay 
+	TransitionSystemClass
+	OrderedPlannerClass
+	BenchmarkClass
+	WriteToFileClass
+	)

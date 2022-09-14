@@ -2,10 +2,10 @@ Title: Flexibility Pareto Front
 xLabel: Flexiblity (mu)
 yLabel: Cost
 0, 90
-1, 74
-2, 58
-3, 42
-6, 36
-8, 34
-10, 32
-15, 26
+10, 74
+14, 60
+20, 58
+24, 44
+28, 36
+40, 32
+46, 26

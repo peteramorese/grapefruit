@@ -12,6 +12,10 @@ unsigned int LexSet::size() const {
 	return S;
 }
 
+const std::vector<float>& LexSet::get() const {
+	return lex_set;
+}
+
 void LexSet::setInf() {
 	inf_set = true;
 }
