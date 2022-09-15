@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__),"../spot_automaton_file_d
 import formula2dfa 
 
 
-def exec_pref_plan_grid_robot(exec_file_name, num_dfas, mu, use_h_flag, write_file_flag, verbose, benchmark, dfas_filepath, bm_file, single_query_flag=False,grid_size=None, bm_manual_iterations=None ):
+def exec_pref_plan_grid_robot(exec_file_name, num_dfas, mu, use_h_flag, write_file_flag, verbose, benchmark, dfas_filepath, bm_file, single_query_flag=False,grid_size=None, bm_manual_iterations=None, use_namoa=False):
     exec_dir_name = "../build/bin/"
     exec_file_path = exec_dir_name + exec_file_name
     #print("Executable file path: ",exec_file_path)
@@ -25,6 +25,8 @@ def exec_pref_plan_grid_robot(exec_file_name, num_dfas, mu, use_h_flag, write_fi
         exec_cmd += ' --verbose'
     if benchmark:
         exec_cmd += ' --benchmark'
+    if use_namoa:
+        exec_cmd += ' --namoa'
     if write_file_flag:
         exec_cmd += ' --write-plan'
     if single_query_flag:

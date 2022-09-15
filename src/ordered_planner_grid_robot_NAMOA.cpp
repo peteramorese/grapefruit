@@ -301,95 +301,70 @@ int main(int argc, char *argv[]) {
 
 	const std::string* bm_filepath_ptr = nullptr;
 	if (use_benchmark) bm_filepath_ptr = &bm_filename_path;
-	OrderedPlanner planner(ts, verbose, bm_filepath_ptr);
-	if (manual_setup) {
-		std::cout<<"\n------------------------------\n";
-		std::cout<<"Enter flexibility parameter: ";
-		std::cout<<"\n";
-		std::cin >> mu;
+	{
+		OrderedPlanner planner(ts, verbose, bm_filepath_ptr);
 	
-		char use_h;
-		std::cout<<"\n------------------------------\n";
-		std::cout<<"Use heuristic? [y/n]: ";
-		std::cout<<"\n";
-		std::cin >> use_h;
-		use_h_flag = (use_h == 'y') ? true : false;
+		if (use_benchmark) benchmark.pushStartPoint("total_search");
+		if (verbose) {
+			if (use_h_flag) {
+				std::cout<<"Using heuristic."<<std::endl;
+			}
+		}
+		
+		auto sumDelay = [](const std::vector<float>& set) {
+			std::vector<float> sorted_set = set;
+			std::sort(sorted_set.begin(), sorted_set.end());
+			float sum_delay = 0.0f;
+			for (int i=0; i<set.size(); ++i) {
+				float diff = set[i] - sorted_set[i];
+				sum_delay += (diff > 0.0f) ? diff : 0.0f;
+			}
+			return sum_delay;
+		};
 	
-		char write_f;
-		std::cout<<"\n------------------------------\n";
-		std::cout<<"Write to file? [y/n]: ";
-		std::cout<<"\n";
-		std::cin >> write_f;
-		write_file_flag = (write_f == 'y') ? true : false;
-	}
-
-	if (use_benchmark) benchmark.pushStartPoint("total_search");
-	if (verbose) {
-		if (use_h_flag) {
-			std::cout<<"Using heuristic."<<std::endl;
-		}
-	}
-	
-	auto sumDelay = [](const std::vector<float>& set) {
-		std::vector<float> sorted_set = set;
-		std::sort(sorted_set.begin(), sorted_set.end());
-		float sum_delay = 0.0f;
-		for (int i=0; i<set.size(); ++i) {
-			float diff = set[i] - sorted_set[i];
-			sum_delay += (diff > 0.0f) ? diff : 0.0f;
-		}
-		return sum_delay;
-	};
-
-	float g_mu = sumDelay({11, 1, 25, 25});
-	std::cout<<"Got the mu: "<<g_mu<<std::endl;
-
-	if (bm_manual_iterations) {
-		bool success = true;
-		bool found_one = false;
-		float mu_i = -1.0f;
-		float d_mu = .0001; // Make sure mu_i < mu_{i-1}
-		int naive_iterations = 0;
-		double naive_time = 0;
-
-		while(success || mu_i > 0.0f) {
-			benchmark.pushStartPoint("naive_search");
-			success = planner.search(dfa_eval_ptrs, sumDelay, use_h_flag, true, mu_i);
-			naive_time += benchmark.measureMilli("naive_search", false);
-			if (!success) {
-				continue;
-			} else {
-				found_one = true;
-			}
-			if (planner.getResult()->getParetoFront()->size() != 1) {
-				std::cout<<"Error (manual iterations): Number of solutions not equal to 1\n";
-				return 1;
-			}
-			mu_i = planner.getResult()->getParetoFront()->begin()->mu - d_mu;
-			naive_iterations += planner.getResult()->iterations;
-		}
-		if (found_one) {
-			benchmark.addCustomTimeAttr("naive_iterations", static_cast<double>(naive_iterations), ""); // No units
-			benchmark.addCustomTimeAttr("naive_time", static_cast<double>(naive_time), "ms"); // No units
-			benchmark.pushStartPoint("smart_time");
-			success = planner.search(dfa_eval_ptrs, sumDelay, use_h_flag);
-			benchmark.measureMilli("smart_time");
-			if (success) {
-				benchmark.addCustomTimeAttr("smart_iterations", static_cast<double>(planner.getResult()->iterations), ""); // No units
-			}
-			benchmark.pushAttributesToFile();
-		} else {
-			std::cout<<"Error (manual iterations): Did not find a solution!\n";
-			return 1;
-		}
-		benchmark.finishSessionInFile();
-	} else {
 		bool success;
-		if (use_namoa) {
-			success = planner.NAMOA(dfa_eval_ptrs, sumDelay, use_h_flag, single_query_flag, mu);
-		} else {
-			success = planner.search(dfa_eval_ptrs, sumDelay, use_h_flag, single_query_flag, mu);
+		//if (use_namoa) {
+		//} else {
+		success = planner.search(dfa_eval_ptrs, sumDelay, use_h_flag, single_query_flag, mu);
+		//}
+		const OrderedPlanner::Result* result  = planner.getResult();
+		//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
+		if (result) {
+			if (verbose) result->printParetoFront();
+			//benchmark.measureMilli("total_search");
+			//if (use_benchmark) {
+			//	benchmark.pushAttributesToFile();
+			//	benchmark.finishSessionInFile();
+			//}
 		}
+	}
+
+	{
+		OrderedPlanner planner(ts, verbose, bm_filepath_ptr);
+	
+		if (use_benchmark) benchmark.pushStartPoint("total_search");
+		if (verbose) {
+			if (use_h_flag) {
+				std::cout<<"Using heuristic."<<std::endl;
+			}
+		}
+		
+		auto sumDelay = [](const std::vector<float>& set) {
+			std::vector<float> sorted_set = set;
+			std::sort(sorted_set.begin(), sorted_set.end());
+			float sum_delay = 0.0f;
+			for (int i=0; i<set.size(); ++i) {
+				float diff = set[i] - sorted_set[i];
+				sum_delay += (diff > 0.0f) ? diff : 0.0f;
+			}
+			return sum_delay;
+		};
+	
+		bool success;
+		//if (use_namoa) {
+		success = planner.NAMOA(dfa_eval_ptrs, sumDelay, use_h_flag, single_query_flag, mu);
+		//} else {
+		//}
 		const OrderedPlanner::Result* result  = planner.getResult();
 		//std::cout<<"search time: "<<benchmark.measureMicro("before_search")<<std::endl;
 		if (result) {
@@ -399,22 +374,8 @@ int main(int argc, char *argv[]) {
 				benchmark.pushAttributesToFile();
 				benchmark.finishSessionInFile();
 			}
-			if (write_file_flag) {
-				std::vector<std::string> xtra_info;
-				for (int i=0; i<dfa_arr.size(); ++i) {
-					const std::vector<std::string>* ap_ptr = dfa_arr[i].getAP();
-					for (int ii=0; ii<ap_ptr->size(); ++ii) {
-						xtra_info.push_back(ap_ptr->operator[](ii));
-						xtra_info.back() = xtra_info.back() + "_prio" + std::to_string(i);
-					}
-				}
-				MatlabDemoFiles::GridRobot::writeFlexibilityPlanList(*result, nullptr, &xtra_info);
-				MatlabDemoFiles::ParetoFront::writeFlexibilityParetoFront(*result, nullptr);
-			}
 		}
 	}
-
-
 	for (int i=0; i<dfa_eval_ptrs.size(); ++i) {
 		delete dfa_eval_ptrs[i];
 	}

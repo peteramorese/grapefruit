@@ -819,16 +819,42 @@ bool OrderedPlanner::search(const std::vector<DFA_EVAL*>& dfas, const std::funct
 }
 
 
-struct OpenNode {
-    OpenNode() : f_set(2), g_set(2) {}
-    OpenNode(int ind_, const std::string& action_, const LexSet& f_set_, const std::vector<float>& g_set_, const std::vector<float>& cost_vector_) : ind(ind_), par_ind(par_ind_), action(action_), f_set(2), g_set(g_set_), cost_vector(cost_vector_) {
-        f_set = f_set_;
-    }
-    int ind; // State
-    std::vector<float> g_set;
-    LexSet f_set; 
-    std::vector<float> cost_vector;
-};
+    struct OpenNode {
+        OpenNode() : f_set(2), g_set(2) {}
+        OpenNode(int p_ind_, int node_ind_, const LexSet& f_set_, const std::vector<float>& g_set_, const std::vector<float>& cost_vector_) : p_ind(p_ind_), node_ind(node_ind_), f_set(2), g_set(g_set_), cost_vector(cost_vector_) {
+            f_set = f_set_;
+        }
+        int p_ind;
+        int node_ind;
+        LexSet f_set; 
+        std::vector<float> g_set;
+        std::vector<float> cost_vector;
+    };
+void printON(OpenNode* n) {
+    std::cout<<"P Ind: "<<n->p_ind<<std::endl;
+    std::cout<<"P Ind: "<<n->node_ind<<std::endl;
+    std::cout<<"F LexSet: "<<std::endl;
+    n->f_set.print();
+    std::cout<<"G Set: "<<std::endl;
+    for (auto g : n->g_set) std::cout<<"  - "<<g<<std::endl;
+}
+template<typename Q>
+void printQueueON(Q queue) {
+	int toomuch = 0;
+    std::cout<<"~~~~~Printing q:"<<std::endl;
+	while (!queue.empty()) {
+        std::cout<<" Element: "<<toomuch<<std::endl;
+		toomuch++;
+
+        printON(queue.top());
+        queue.pop();
+		if (toomuch > 50) {
+			break;
+		}
+	}
+}
+
+
 
 bool OrderedPlanner::NAMOA(const std::vector<DFA_EVAL*>& dfas, const std::function<float(const std::vector<float>&)>& setToMu, bool use_heuristic, bool single_query, float mu_sq) {
     /*
@@ -861,11 +887,16 @@ bool OrderedPlanner::NAMOA(const std::vector<DFA_EVAL*>& dfas, const std::functi
     // Node check and pq structures:
     std::unordered_map<int, bool> seen; // Checks if the node has ever been encountered 
 
-    std::unordered_map<int, OpenNode> parents; // Holds parent node and action
+    struct ParentOpenNode {
+        OpenNode* node;
+        std::string action;
+    };
+    std::vector<std::unique_ptr<OpenNode>> node_list;
+    std::unordered_map<int, ParentOpenNode> parents; // Holds parent node and action
     std::unordered_map<int, float> g_min; // Holds parent node and action
     std::unordered_map<int, bool> is_g_min_bounded; // Holds parent node and action
-    auto compareFCost  = [](const OpenNode& p1, const OpenNode& p2) {return p1.f_set > p2.f_set;};
-    std::priority_queue<OpenNode, std::vector<OpenNode>, decltype(compareFCost)> pq(compareFCost); // Regular search queue
+    auto compareFCost  = [](const OpenNode* p1, const OpenNode* p2) {return p1->f_set > p2->f_set;};
+    std::priority_queue<OpenNode*, std::vector<OpenNode*>, decltype(compareFCost)> pq(compareFCost); // Regular search queue
     //std::vector<FrontierNode> frontier; // Stack that holds frontier nodes to be searched in the next iteration
     //std::unordered_map<int, std::unique_ptr<Node>> node_map; // incorperates min cost
 
@@ -892,46 +923,54 @@ bool OrderedPlanner::NAMOA(const std::vector<DFA_EVAL*>& dfas, const std::functi
     int curr_node_ind = 0;
     LexSet init_set(2);
     std::vector<float> init_cost_v(dfas.size(), 0.0f);
-    OpenNode init_onode = {p_init, -1, "none", init_set, {0.0f, 0.0f}, init_cost_v};
-    parents[p_init] = init_onode; // No parent for init node
+    std::vector<float> init_g(2, 0.0f);
+    std::unique_ptr<OpenNode> init_onode = std::make_unique<OpenNode>(p_init, 0, init_set, init_g, init_cost_v);
+    node_list.push_back(std::move(init_onode));
+    parents[0] = {node_list.back().get(), "none"}; // No parent for init node
 
-    pq.push(init_onode);
+    pq.push(node_list.back().get());
 
     // Benchmark the entire search time:
     if (bm_filepath) {
-        bm.pushStartPoint("search");
+        bm.pushStartPoint("boa_search");
     }
     std::map<float, std::pair<double, int>> bm_cost_to_time;
 
     float g_min_sgoal = -1.0f;
     while (!pq.empty()) {
-        OpenNode curr_leaf = pq.top();
-        int p = curr_leaf.ind;
+
+        //printQueueON(pq);
+
+        OpenNode* curr_leaf = pq.top();
+        int p = curr_leaf->p_ind;
         pq.pop();
 
-        std::cout<<"iteration: "<<iterations<<" qsize: "<<pq.size()<<std::endl;
-        std::cout<<"seen size: "<<seen.size()<<" pspace size: "<< p_space_size<<std::endl;
+        //std::cout<<"selected element: "<<curr_leaf->node_ind<<std::endl;
+        //int pause;
+        //std::cin>>pause;
+
+        //std::cout<<"iteration: "<<iterations<<" qsize: "<<pq.size()<<std::endl;
+        //std::cout<<"seen size: "<<seen.size()<<" pspace size: "<< p_space_size<<std::endl;
 
         // If the popped node does not satisfy mu constraint, simply remove from queue:
         //float mu_p = curr_leaf->mu;
-        if (seen[p]) {
-            std::cout<<"    in seen, p: "<<p<<std::endl;
-            if ((is_g_min_bounded[p] && curr_leaf.g_set[1] >= g_min.at(p)) || (g_min_sgoal >= 0.0f && curr_leaf.f_set.get()[1] >= g_min_sgoal)) {
-                std::cout<<"continuing"<<std::endl;
-                continue;
-            }
+        if ((is_g_min_bounded[p] && curr_leaf->g_set[1] >= g_min.at(p)) || (g_min_sgoal >= 0.0f && curr_leaf->f_set.get()[1] >= g_min_sgoal)) {
+        //if ((is_g_min_bounded[p] && curr_leaf->g_set[1] >= g_min.at(p))) {
+            //std::cout<<"continuing"<<std::endl;
+            continue;
         }
         iterations++;
-        g_min[p] = curr_leaf.g_set[1];
+        g_min[p] = curr_leaf->g_set[1];
         is_g_min_bounded[p] = true;
 
         // Check if current node is a solution:
         bool all_accepting = allAccepting(graph_sizes, p, dfas);
         if (all_accepting) {
+            //std::cout<<"        IS ACCEPTING"<<std::endl;
             //mu_max = mu_p;
 
             Plan pl;//= extractPlanNAMOA(graph_sizes, p, p_init, parents);
-            result.addParetoPoint(curr_leaf.g_set[1], curr_leaf.g_set[0], pl);
+            result.addParetoPoint(curr_leaf->g_set[1], curr_leaf->g_set[0], pl);
 
             //is_inf = false;
             success = true;
@@ -941,7 +980,8 @@ bool OrderedPlanner::NAMOA(const std::vector<DFA_EVAL*>& dfas, const std::functi
                 result.iterations = iterations;
                 if (verbose) std::cout<<"Single query iterations: "<<iterations<<std::endl;
                 if (bm_filepath) {
-                    bm.measureMilli("search");
+                    std::cout<<"IN SINGLE QUERY"<<std::endl;
+                    bm.measureMilli("boa_search");
                     bm.addCustomTimeAttr("sq_iterations", static_cast<double>(iterations), ""); // No units
                     bm.pushAttributesToFile();
                 }
@@ -950,7 +990,7 @@ bool OrderedPlanner::NAMOA(const std::vector<DFA_EVAL*>& dfas, const std::functi
             }
             
             if (bm_filepath) {
-                bm_cost_to_time[curr_leaf.g_set[0]] = {bm.measureMilli("search", false), iterations};
+                bm_cost_to_time[curr_leaf->g_set[0]] = {bm.measureMilli("boa_search", false), iterations};
             }
             
             //// Add all frontier nodes to the queue, then restart search from frontier:
@@ -962,7 +1002,7 @@ bool OrderedPlanner::NAMOA(const std::vector<DFA_EVAL*>& dfas, const std::functi
             //        frontier.pop_back();
             //    }
             //}
-            g_min_sgoal = curr_leaf.g_set[1];
+            g_min_sgoal = curr_leaf->g_set[1];
             continue;
         }
 
@@ -984,36 +1024,45 @@ bool OrderedPlanner::NAMOA(const std::vector<DFA_EVAL*>& dfas, const std::functi
             Graph<float>::augmentedStatePreImage(graph_sizes, p, ret_inds);
 
             // Check if all nodes are accepting, if not add appropriate costs:
-            float new_cost = curr_leaf.g_set[0] + edge->weight;
+            float new_cost = curr_leaf->g_set[0] + edge->weight;
             //Node node_candidate(pp, new_cost, new_cost, -1.0f, curr_leaf.cost_set); // Temp value for mu
             LexSet pp_ls(2);
-            OpenNode node_candidate(pp, p, edge->label, pp_ls, curr_leaf.g_set, curr_leaf.cost_vector);
+
+            std::unique_ptr<OpenNode> new_node = std::make_unique<OpenNode>(pp, node_list.size(), pp_ls, curr_leaf->g_set, curr_leaf->cost_vector);
+            node_list.push_back(std::move(new_node));
+            OpenNode* nn = node_list.back().get();
+            //OpenNode node_candidate(pp, p, edge->label, pp_ls, curr_leaf.g_set, curr_leaf.cost_vector);
 
 
             for (int i=0; i<dfas.size(); ++i) {
                 if (!dfas[i]->getDFA()->isAccepting(ret_inds[i+1])) {
-                    node_candidate.cost_vector[i] += edge->weight;
+                    nn->cost_vector[i] += edge->weight;
                 }
             }
             // Add cost vector:
-            node_candidate.g_set[0] = new_cost;
-            node_candidate.g_set[1] = setToMu(node_candidate.cost_vector);
+            nn->g_set[0] = new_cost;
+            nn->g_set[1] = setToMu(nn->cost_vector);
 
             // Add heuristic value:
             if (use_heuristic) {
-                //std::vector<float> new_f_set = {node_candidate.g_set[0] + getH(graph_sizes, pp), node_candidate.g_set[1]};
-                std::vector<float> new_f_set = {node_candidate.g_set[0], node_candidate.g_set[1]};
-                node_candidate.f_set = new_f_set;
-            } 
-            if (seen[pp]) {
-                if ((is_g_min_bounded[pp] && node_candidate.g_set[1] >= g_min.at(pp)) || (g_min_sgoal >= 0.0f && node_candidate.f_set.get()[1] > g_min_sgoal)) {
-                    parents[pp] = node_candidate;
-                    continue;
-                }
+                std::vector<float> new_f_set = {nn->g_set[0] + getH(graph_sizes, pp), nn->g_set[1]};
+                nn->f_set = new_f_set;
+            } else {
+                std::vector<float> new_f_set = {nn->g_set[0], nn->g_set[1]};
+                nn->f_set = new_f_set;
             }
-            parents[pp] = node_candidate;
+
+            //std::cout<<"------------> connected node: "<<std::endl;
+            //printON(nn);
+
+            parents[node_list.size()-1] = {nn, edge->label};
+            if ((is_g_min_bounded[pp] && nn->g_set[1] >= g_min.at(pp)) || (g_min_sgoal >= 0.0f && nn->f_set.get()[1] >= g_min_sgoal)) {
+            //if ((is_g_min_bounded[pp] && nn->g_set[1] >= g_min.at(pp))) {
+                continue;
+            }
             seen[pp] = true;
-            pq.push(node_candidate);
+            pq.push(nn);
+            //std::cout<<"pushing..."<<std::endl;
 
 
             //// Prune nodes:
@@ -1093,8 +1142,8 @@ bool OrderedPlanner::NAMOA(const std::vector<DFA_EVAL*>& dfas, const std::functi
             bm.addAttribute("single_point_search", std::to_string(bm_cost_to_time.at(pt.path_length).first), std::to_string(pt.mu));
             bm.addAttribute("single_point_search_iterations", std::to_string(bm_cost_to_time.at(pt.path_length).second), std::to_string(pt.mu));
         }
-        bm.measureMilli("search");
-        bm.addCustomTimeAttr("iterations", static_cast<double>(iterations), ""); // No units
+        bm.measureMilli("boa_search");
+        bm.addCustomTimeAttr("boa_iterations", static_cast<double>(iterations), ""); // No units
         bm.pushAttributesToFile();
     }
 
