@@ -27,5 +27,5 @@ add_library(SymbSearchClass research/symbSearch.cpp)
 add_library(StratSynthesisClass research/stratSynthesis.cpp)
 target_link_libraries(SymbSearchClass LexSetClass)
 add_library(OrderedPlannerClass research/orderedPlanner.cpp)
-target_link_libraries(OrderedPlannerClass TransitionSystemClass BenchmarkClass)
+target_link_libraries(OrderedPlannerClass TransitionSystemClass BenchmarkClass LexSetClass)
 
