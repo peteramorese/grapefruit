@@ -22,13 +22,13 @@ if __name__ == "__main__":
     grid_size = args.grid_size
     num_dfas = args.num_dfas
 
-    print("Starting benchmark: ordered_planner_grid_robot_NAMOA")
+    print("Starting benchmark: ordered_planner_grid_robot_boa")
 
     READ_FILE_NAME = "ordered_planner_bm_formulas.json"
     WRITE_FILE_DIR_NAME_PREFIX = "../spot_automaton_file_dump/dfas/"
-    EXEC_FILE_NAME = "ordered_planner_grid_robot_namoa"
-    BM_DATA_FILE_NAME_NO_H = "benchmark_data/bm_ordered_planner_namoa.txt"
-    BM_DATA_FILE_NAME_H = "benchmark_data/bm_ordered_planner_heuristic_namoa.txt"
+    EXEC_FILE_NAME = "ordered_planner_grid_robot_boa"
+    BM_DATA_FILE_NAME_NO_H = "benchmark_data/bm_ordered_planner_boa.txt"
+    BM_DATA_FILE_NAME_H = "benchmark_data/bm_ordered_planner_heuristic_boa.txt"
 
     bm_preference_planner_grid_robot.clear_file(BM_DATA_FILE_NAME_NO_H) # Clear the bm session file
     bm_preference_planner_grid_robot.clear_file(BM_DATA_FILE_NAME_H) # Clear the bm session file

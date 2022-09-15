@@ -85,8 +85,8 @@ target_link_libraries(ordered_planner_grid_robot_sum_delay
 	WriteToFileClass
 	)
 
-add_executable(ordered_planner_grid_robot_namoa ordered_planner_grid_robot_namoa.cpp)
-target_link_libraries(ordered_planner_grid_robot_namoa 
+add_executable(ordered_planner_grid_robot_boa ordered_planner_grid_robot_boa.cpp)
+target_link_libraries(ordered_planner_grid_robot_boa 
 	TransitionSystemClass
 	OrderedPlannerClass
 	BenchmarkClass
