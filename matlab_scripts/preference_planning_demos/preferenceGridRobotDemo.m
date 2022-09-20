@@ -156,7 +156,7 @@ for plan_ind = 1:N_plans
         %title(s,'Interpreter','latex')
         s = sprintf("\\mu = %.1f, cost = %.1f", mu_arr(plan_ind), cost_arr(plan_ind));
         if ~use_subplot
-            title(s,'FontSize',font_size)
+            %title(s,'FontSize',font_size)
         else
             title(s)
         end

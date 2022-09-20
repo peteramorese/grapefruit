@@ -4,7 +4,7 @@ clear; clc; close all;
 grid_size = 10;
 animate = false;
 display_prio = false;
-use_subplot = true;
+use_subplot = false;
 max_subplot_length = 3;
 loi_font_size = 9;
 show_xyticks = false;

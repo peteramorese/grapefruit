@@ -2,7 +2,128 @@ Type: flexibility_plan_list
 LOI: ap_x1_y9_prio0
 LOI: ap_x2_y0_prio1
 LOI: ap_x3_y9_prio2
-Flexibility: 0, Cost: 30
+LOI: ap_x4_y0_prio3
+LOI: ap_x5_y9_prio4
+LOI: ap_x6_y0_prio5
+LOI: ap_x7_y9_prio6
+LOI: ap_x8_y0_prio7
+LOI: ap_x9_y9_prio8
+Flexibility: 0, Cost: 90
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_right
+  move_up
+  move_up
+  move_up
+  move_up
+  move_down
+  move_down
+  move_down
+  move_down
+  move_right
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_right
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_right
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_right
+  move_up
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_right
+  move_down
+  move_down
+  move_down
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_right
+  move_up
+  move_up
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_right
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_right
+  move_up
+  move_up
+  move_up
+Flexibility: 1, Cost: 74
+  move_right
+  move_right
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_left
+  move_up
+  move_up
+  move_up
+  move_up
+  move_right
+  move_right
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_right
+  move_down
+  move_down
+  move_down
   move_up
   move_up
   move_up
@@ -20,9 +141,89 @@ Flexibility: 0, Cost: 30
   move_down
   move_down
   move_down
+  move_down
+  move_down
+  move_right
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_right
+  move_up
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_right
+  move_up
+  move_right
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+Flexibility: 2, Cost: 58
+  move_right
+  move_right
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_left
+  move_up
+  move_up
+  move_up
+  move_up
+  move_right
   move_right
   move_down
   move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_right
+  move_down
+  move_down
+  move_down
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_right
+  move_right
+  move_right
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_left
+  move_right
+  move_right
+  move_up
   move_up
   move_up
   move_up
@@ -32,11 +233,37 @@ Flexibility: 0, Cost: 30
   move_up
   move_up
   move_up
-  move_up
-Flexibility: 1, Cost: 14
+Flexibility: 3, Cost: 42
   move_right
   move_right
   move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_left
+  move_up
+  move_up
+  move_up
+  move_up
+  move_right
+  move_right
+  move_right
+  move_right
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_left
+  move_right
+  move_right
+  move_right
+  move_right
   move_up
   move_up
   move_up
@@ -46,5 +273,138 @@ Flexibility: 1, Cost: 14
   move_up
   move_left
   move_up
+  move_up
   move_right
   move_right
+Flexibility: 6, Cost: 36
+  move_right
+  move_right
+  move_right
+  move_right
+  move_left
+  move_left
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_left
+  move_up
+  move_up
+  move_up
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_down
+  move_down
+  move_left
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_left
+  move_left
+Flexibility: 8, Cost: 34
+  move_right
+  move_right
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_left
+  move_up
+  move_up
+  move_up
+  move_up
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_down
+  move_down
+  move_left
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_down
+  move_left
+  move_left
+  move_left
+  move_left
+Flexibility: 10, Cost: 32
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_up
+  move_up
+  move_left
+  move_left
+  move_left
+  move_left
+  move_up
+  move_left
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_left
+  move_up
+  move_left
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+Flexibility: 15, Cost: 26
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_right
+  move_up
+  move_up
+  move_up
+  move_up
+  move_up
+  move_right
+  move_up
+  move_up
+  move_up
+  move_up
+  move_left
+  move_left
+  move_left
+  move_left
+  move_left
+  move_left
+  move_left
+  move_left

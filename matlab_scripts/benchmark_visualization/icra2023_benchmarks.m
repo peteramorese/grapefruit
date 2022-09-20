@@ -3,36 +3,37 @@ clear; close all; clc;
 % Search computation for single plan
 figure()
 subplot(1,2,1)
-sgtitle("Cost-Optimal Plan Synthesis")
+sgtitle("Search-Time Benchmarks")
 units = plotAttrVsTimeData(["./icra2023_scaled_benchmark_data/bm_ordered_planner_single_ndfas.txt", "./icra2023_scaled_benchmark_data/bm_ordered_planner_heuristic_single_ndfas.txt"], "num_dfas", ["search"], ["No Heuristic: ", "Heuristic: "]);
-%set(gca, "YScale", 'log')
-title("Search Time")
+set(gca, "YScale", 'log')
+title("Single Plan")
 ylabel("Time ("+units+")")
 xlabel("Number of DFAs")
 
-subplot(1,2,2)
-plotAttrVsTimeData(["./icra2023_scaled_benchmark_data/bm_ordered_planner_single_ndfas.txt", "./icra2023_scaled_benchmark_data/bm_ordered_planner_heuristic_single_ndfas.txt"], "num_dfas", ["sq_iterations"], ["No Heuristic: ", "Heuristic: "]);
-%set(gca, "YScale", 'log')
-title("Iterations")
-ylabel("Iterations")
-xlabel("Number of DFAs")
+
+% subplot(1,2,2)
+% plotAttrVsTimeData(["./icra2023_scaled_benchmark_data/bm_ordered_planner_single_ndfas.txt", "./icra2023_scaled_benchmark_data/bm_ordered_planner_heuristic_single_ndfas.txt"], "num_dfas", ["sq_iterations"], ["No Heuristic: ", "Heuristic: "]);
+% set(gca, "YScale", 'log')
+% title("Iterations")
+% ylabel("Iterations")
+% xlabel("Number of DFAs")
 
 % Search computation for whole PF
-figure()
-subplot(1,2,1)
-sgtitle("Pareto Front Computation")
+
+subplot(1,2,2)
+
 units = plotAttrVsTimeData(["./icra2023_scaled_benchmark_data/bm_ordered_planner.txt", "./icra2023_scaled_benchmark_data/bm_ordered_planner_heuristic.txt"], "num_dfas", ["search"], ["No Heuristic: ", "Heuristic: "]);
 set(gca, "YScale", 'log')
-title("Search Time")
+title("Pareto Front Computation")
 ylabel("Time ("+units+")")
 xlabel("Number of DFAs")
 
-subplot(1,2,2)
-plotAttrVsTimeData(["./icra2023_scaled_benchmark_data/bm_ordered_planner.txt", "./icra2023_scaled_benchmark_data/bm_ordered_planner_heuristic.txt"], "num_dfas", ["iterations"], ["No Heuristic: ", "Heuristic: "]);
-set(gca, "YScale", 'log')
-title("Iterations")
-ylabel("Iterations")
-xlabel("Number of DFAs")
+% subplot(1,2,2)
+% plotAttrVsTimeData(["./icra2023_scaled_benchmark_data/bm_ordered_planner.txt", "./icra2023_scaled_benchmark_data/bm_ordered_planner_heuristic.txt"], "num_dfas", ["iterations"], ["No Heuristic: ", "Heuristic: "]);
+% set(gca, "YScale", 'log')
+% title("Iterations")
+% ylabel("Iterations")
+% xlabel("Number of DFAs")
 
 % Naive vs. smart PF computation
 figure()
@@ -46,6 +47,26 @@ xlabel("Number of DFAs")
 
 subplot(1,2,2)
 plotAttrVsTimeData(["./icra2023_scaled_benchmark_data/bm_ordered_planner_pf.txt"], "num_dfas", ["naive_iterations", "smart_iterations"], ["No Heuristic: ", "Heuristic: "]);
+%set(gca, "YScale", 'log')
+title("Iterations")
+ylabel("Iterations")
+xlabel("Number of DFAs")
+
+% Ours vs. BOA PF computation
+figure()
+subplot(1,2,1)
+sgtitle("BOA Comparison")
+plotAttrVsTimeData(["./icra2023_scaled_benchmark_data/bm_ordered_planner_boa.txt","./icra2023_scaled_benchmark_data/bm_ordered_planner_heuristic_boa.txt"], "num_dfas", ["search", "boa_search"], ["No Heuristic: ", "Heuristic: "]);
+%set(gca, "YScale", 'log')
+title("Search Time")
+ylabel("Time (ms)")
+xlabel("Number of DFAs")
+
+
+
+subplot(1,2,2)
+sgtitle("BOA Comparison")
+plotAttrVsTimeData(["./icra2023_scaled_benchmark_data/bm_ordered_planner_boa.txt","./icra2023_scaled_benchmark_data/bm_ordered_planner_heuristic_boa.txt"], "num_dfas", ["iterations", "boa_iterations"], ["No Heuristic: ", "Heuristic: "]);
 %set(gca, "YScale", 'log')
 title("Iterations")
 ylabel("Iterations")

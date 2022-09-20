@@ -46,6 +46,7 @@ class TransitionSystem : public Graph<WL> {
 		//T compose(const T* mult_TS) const;
 		void clear();
 		void print();
+		void writeToFile(const std::string& filename);
 		//~TransitionSystem();
 };
 

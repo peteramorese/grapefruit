@@ -3,6 +3,7 @@
 #include<array>
 #include<iostream>
 #include "transitionSystem.h"
+#include "writeToFile.h"
 
 // Transition system uses WL structure: 
 // W: edge weight (action cost)
@@ -498,6 +499,65 @@ void TransitionSystem<T>::print() {
 		std::cout<<"Warning: Transition has not been generated, or has failed to generate. Cannot print\n";
 	}
 }
+
+template <class T>
+void TransitionSystem<T>::writeToFile(const std::string& filename) {
+	init_state->getSS()->writeToFile(filename);
+	std::ofstream model_file;
+	model_file.open(filename,std::ios_base::app);
+	//graph_TS->print();
+	
+	if (state_map.size() > 1) {
+		for (int i=0; i<state_map.size(); ++i) {
+			std::vector<WL*> con_data; 
+			std::vector<int> con_nodes; 
+			//std::vector<std::string> list_actions; 
+			//graph_TS->returnListLabels(i, list_actions);
+			this->getConnectedData(i, con_data);
+			this->getConnectedNodes(i, con_nodes);
+			model_file<<"<"<<i<<": ";
+			T* curr_state = state_map[i];
+			std::vector<std::string> state_i; 
+			curr_state->getState(state_i);
+			for (int ii=0; ii<state_i.size(); ++ii) {
+				model_file<<state_i[ii];
+				if (ii != state_i.size()-1) {
+					model_file<<", ";
+				} else {
+					model_file<<"; \n";
+				}
+			}
+			for (int ii=0; ii<con_data.size(); ++ii) {
+				T* con_state = state_map[con_nodes[ii]];
+				model_file<<"   >"<<con_nodes[ii]<<": ";
+				con_state->getState(state_i);
+				for (int iii=0; iii<state_i.size(); ++iii) {
+					model_file<<state_i[iii];
+					if (iii != state_i.size()-1) {
+						model_file<<", ";
+					} else {
+						model_file<<"; ";
+					}
+				}
+				model_file<<" {action: "<<con_data[ii]->label<<", cost: "<<con_data[ii]->weight<<"}"<<"\n";
+			}
+		}
+	} else {
+		model_file<<"Warning: Transition has not been generated, or has failed to generate. Cannot write to file\n";
+	}
+	model_file.close();
+}
+
+//template <class T>
+//bool TransitionSystem<T>::readFromFile(const std::string& filename) {
+//	std::ifstream model_file(filename);
+//	if (model_file.is_open()) {
+//		std::string line;
+//		while (std::getline(model_file, line)) {
+//			//if
+//		}
+//	}
+//}
 
 template class TransitionSystem<State>;
 template class TransitionSystem<BlockingState>;

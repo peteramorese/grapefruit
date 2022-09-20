@@ -2,6 +2,7 @@
 #include<vector>
 #include<iostream>
 #include<unordered_map>
+#include<fstream>
 #include "stateSpace.h"
 #include "state.h"
 
@@ -102,6 +103,11 @@ int StateSpace::getVarOptionsCount_(unsigned int dim) {
 void StateSpace::setStateDimensionLabel(unsigned int dim, const std::string& dimension_label){
 	if (dim < state_space_dim) {
 		index_labels[dimension_label] = dim;
+		std::cout<<"b4 res : "<<index_labels_rev.size()-1<<std::endl;
+		if (index_labels_rev.size() == 0 || index_labels_rev.size()-1 < dim) index_labels_rev.resize(dim+1);
+		std::cout<<"af res dim:"<<dim<<" index labels size: "<<index_labels_rev.size()<<std::endl;
+		index_labels_rev[dim] = dimension_label;
+		std::cout<<"done res"<<std::endl;
 	} else {
 		std::cout<<"Error: Index out of bounds\n";
 	}
@@ -326,6 +332,57 @@ bool StateSpace::exclEquals_(const State* state_ptr_, const std::vector<std::str
 		}
 	}
 	return true;
+}
+
+void StateSpace::writeToFile(const std::string& filename) const {
+	std::ofstream file;
+	file.open(filename);
+	file<<"<SS>NDIMS: "<<state_space_named.size()<<"\n";
+	for (int i=0; i<state_space_named.size(); ++i) {
+		std::cout<<"b4"<<std::endl;
+		file<<"<SS>DIM"<<i<<" "<<index_labels_rev[i]<<": ";
+		std::cout<<"af"<<std::endl;
+		for (int ii=0; ii<state_space_named[i].size(); ++ii) {
+			file<<state_space_named[i][ii];
+			if (ii != state_space_named[i].size() - 1) {
+				file<<", ";
+			} else {
+				file<<";";
+			}
+		}
+		file<<"\n";
+	}
+	file<<"<SS>NDOMAINS: "<<domains.size()<<"\n";
+	for (int i=0; i<domains.size(); ++i) {
+		file<<"<SS>DOM"<<i<<" "<<domains[i].label<<": ";
+		for (int ii=0; ii<domains[i].vars.size(); ++ii) {
+			file<<domains[i].vars[ii];
+			if (ii != domains[i].vars.size() - 1) {
+				file<<", ";
+			} else {
+				file<<";";
+			}
+		}
+		file<<"\n";
+	}
+	file<<"<SS>NGROUPS: "<<groups.size()<<"\n";
+	for (int i=0; i<groups.size(); ++i) {
+		file<<"<SS>GRP"<<i<<" "<<groups[i].label<<": ";
+		for (int ii=0; ii<groups[i].vars.size(); ++ii) {
+			file<<groups[i].vars[ii];
+			if (ii != groups[i].vars.size() - 1) {
+				file<<", ";
+			} else {
+				file<<";";
+			}
+		}
+		file<<"\n";
+	}
+	file.close();
+}
+
+bool readFromFile(const std::string& filename) {
+
 }
 
 /*

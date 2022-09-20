@@ -11,6 +11,7 @@ class StateSpace {
 	protected:
 		std::vector<std::vector<std::string>> state_space_named;
 		std::unordered_map<std::string, unsigned int> index_labels;
+		std::vector<std::string> index_labels_rev;
 		std::vector<int> num_vars;
 		//std::vector<int> state_space;
 		unsigned int state_space_dim;
@@ -47,6 +48,7 @@ class StateSpace {
 		bool isDefined_(const std::vector<int>& state_space) const;
 		void print_(const std::vector<int>& state_space) const;
 		bool exclEquals_(const State* state_ptr_, const std::vector<std::string>& excl_dimension_labels, const std::vector<int>& state_space);
+		void writeToFile(const std::string& filename) const;
 		/*
 		bool operator== (const State& state_) const;
 		bool operator== (const State* state_ptr_) const;

@@ -142,6 +142,7 @@ int main() {
 	ts.setInitState(&init_state_c);
 	ts.generate();
 	ts.print();
+	ts.writeToFile("./test_ts_file");
 
 	
 	//PRODSYS_c.addProposition(&p_p);
