@@ -47,6 +47,7 @@ class TransitionSystem : public Graph<WL> {
 		void clear();
 		void print();
 		void writeToFile(const std::string& filename);
+		std::shared_ptr<StateSpace> readFromFile(const std::string& filename);
 		//~TransitionSystem();
 };
 

@@ -49,6 +49,7 @@ class StateSpace {
 		void print_(const std::vector<int>& state_space) const;
 		bool exclEquals_(const State* state_ptr_, const std::vector<std::string>& excl_dimension_labels, const std::vector<int>& state_space);
 		void writeToFile(const std::string& filename) const;
+		static std::shared_ptr<StateSpace> readFromFile(const std::string& filename);
 		/*
 		bool operator== (const State& state_) const;
 		bool operator== (const State* state_ptr_) const;

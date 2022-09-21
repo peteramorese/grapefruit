@@ -548,16 +548,40 @@ void TransitionSystem<T>::writeToFile(const std::string& filename) {
 	model_file.close();
 }
 
-//template <class T>
-//bool TransitionSystem<T>::readFromFile(const std::string& filename) {
-//	std::ifstream model_file(filename);
-//	if (model_file.is_open()) {
-//		std::string line;
-//		while (std::getline(model_file, line)) {
-//			//if
-//		}
-//	}
-//}
+template <class T>
+std::shared_ptr<StateSpace> TransitionSystem<T>::readFromFile(const std::string& filename) {
+	std::shared_ptr<StateSpace> SS = StateSpace::readFromFile(filename);
+
+	std::ifstream model_file(filename);
+	std::shared_ptr<StateSpace> SS = std::make_shared<StateSpace>();
+	if (model_file.is_open()) {
+		std::string line;
+		while (std::getline(model_file, line)) {
+			if (line.starts_with("<SS>")) {
+				continue;
+			}
+			State src_state(SS.get());
+			State dst_state(SS.get());
+			if (line.starts_with('<')) {
+				std::vector<std::string> vars;
+				std::string buffer;
+				for (int j=0; j<line.size(); ++j) {
+					if (line[j] == ';') {
+						src_state.setState(vars);
+					} else if (line[j] == ',') {
+						vars.push_back(buffer);
+						std::cout<<"ADDING VAR: "<<buffer<<std::endl;
+						buffer.clear();
+					} else if (line[j] != ' ') {
+						buffer.push_back(line[j]);
+					}
+				}
+			} else if (line.starts_with("   >"))
+		}
+	}
+	return SS;
+}
+
 
 template class TransitionSystem<State>;
 template class TransitionSystem<BlockingState>;
