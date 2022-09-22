@@ -387,6 +387,16 @@ bool StateSpace::starts_with(const std::string& str, const std::string& prefix) 
 	return true;
 }
 
+std::string::iterator StateSpace::str_find(std::string* str, char stop_char) {
+	for (auto c=str->begin(); c!=str->end(); c++) {
+		std::cout<<"*c: "<<*c<<" stop_char: "<<stop_char<<";\n";
+		if (*c == stop_char) {
+			return c;
+		}
+	}
+	return str->end();
+}
+
 std::shared_ptr<StateSpace> StateSpace::readFromFile(const std::string& filename) {
 	std::ifstream model_file(filename);
 	std::shared_ptr<StateSpace> SS = std::make_shared<StateSpace>();
@@ -411,8 +421,10 @@ std::shared_ptr<StateSpace> StateSpace::readFromFile(const std::string& filename
 				for (int i=0; i<n_dims; ++i) {
 					if (!std::getline(model_file, line)) std::cout<<"Error expected more dimensions";
 					std::vector<std::string> vars;
-					line.erase(line.begin(), std::find(line.begin(), line.end(), ' ') + 1);
-					auto colon_itr = std::find(line.begin(), line.end(), ':');
+					//line.erase(line.begin(), std::find(line.begin(), line.end(), ' ') + 1);
+					line.erase(line.begin(), str_find(&line, ' ') + 1);
+					//auto colon_itr = std::find(line.begin(), line.end(), ':');
+					auto colon_itr = str_find(&line, ':');
 					std::string lbl(line.begin(), colon_itr);
 					line.erase(line.begin(), colon_itr + 2);
 					std::cout<<"FOUND LABEL: "<<lbl<<std::endl;
