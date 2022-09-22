@@ -378,20 +378,29 @@ void StateSpace::writeToFile(const std::string& filename) const {
 	file.close();
 }
 
+bool StateSpace::starts_with(const std::string& str, const std::string& prefix) {
+	for (int i=0; i<prefix.size(); ++i) {
+		if (str[i] != prefix[i]) {
+			return false;
+		}
+	}
+	return true;
+}
+
 std::shared_ptr<StateSpace> StateSpace::readFromFile(const std::string& filename) {
 	std::ifstream model_file(filename);
 	std::shared_ptr<StateSpace> SS = std::make_shared<StateSpace>();
 	if (model_file.is_open()) {
 		std::string line;
 		while (std::getline(model_file, line)) {
-			if (line.starts_with("<SS>")) {
+			if (starts_with(line,"<SS>")) {
 				line.erase(0,4);
 				int type = -1;
-				if (line.starts_with("NDIMS: ")) {
+				if (starts_with(line, "NDIMS: ")) {
 					type = 0;
-				} else if (line.starts_with("NDOMAINS: ")) {
+				} else if (starts_with(line, "NDOMAINS: ")) {
 					type = 1;
-				} else if (line.starts_with("NGROUPS: ")) {
+				} else if (starts_with(line, "NGROUPS: ")) {
 					type = 1;
 				} else {
 					std::cout<<"Unrecognized state space line"<<std::endl;

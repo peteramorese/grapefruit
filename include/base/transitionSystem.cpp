@@ -559,6 +559,7 @@ void TransitionSystem<T>::writeToFile(const std::string& filename) {
 	model_file.close();
 }
 
+
 template <>
 std::shared_ptr<StateSpace> TransitionSystem<State>::readFromFile(const std::string& filename) {
 	clear();
@@ -573,9 +574,9 @@ std::shared_ptr<StateSpace> TransitionSystem<State>::readFromFile(const std::str
 		State dst_state(SS_read_in.get());
 		bool check_init = true;
 		while (std::getline(model_file, line)) {
-			if (line.starts_with("<SS>")) {
+			if (StateSpace::starts_with(line, "<SS>")) {
 				continue;
-			} else if (check_init && line.starts_with("<init_state:")) {
+			} else if (check_init && StateSpace::starts_with(line, "<init_state:")) {
 				line.erase(line.begin(), std::find(line.begin(), line.end(), ' ') + 1);
 				check_init = false;
 				State init_state(SS_read_in.get());
@@ -597,7 +598,7 @@ std::shared_ptr<StateSpace> TransitionSystem<State>::readFromFile(const std::str
 				init_state.setState(vars);
 				setInitState(&init_state);
 			}
-			if (line.starts_with('<')) {
+			if (StateSpace::starts_with(line, "<")) {
 				line.erase(line.begin(), std::find(line.begin(), line.end(), ' ') + 1);
 				std::vector<std::string> vars;
 				std::string buffer;
@@ -613,7 +614,7 @@ std::shared_ptr<StateSpace> TransitionSystem<State>::readFromFile(const std::str
 						buffer.push_back(line[j]);
 					}
 				}
-			} else if (line.starts_with("   >")) {
+			} else if (StateSpace::starts_with(line, "   >")) {
 				line.erase(line.begin(), std::find(line.begin()+3, line.end(), ' ') + 1);
 				std::vector<std::string> vars;
 				std::string buffer, action;
