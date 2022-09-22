@@ -577,7 +577,8 @@ std::shared_ptr<StateSpace> TransitionSystem<State>::readFromFile(const std::str
 			if (StateSpace::starts_with(line, "<SS>")) {
 				continue;
 			} else if (check_init && StateSpace::starts_with(line, "<init_state:")) {
-				line.erase(line.begin(), std::find(line.begin(), line.end(), ' ') + 1);
+				//line.erase(line.begin(), std::find(line.begin(), line.end(), ' ') + 1);
+				line.erase(line.begin(), StateSpace::str_find(&line, ' ') + 1);
 				check_init = false;
 				State init_state(SS_read_in.get());
 				std::vector<std::string> vars;
@@ -599,7 +600,8 @@ std::shared_ptr<StateSpace> TransitionSystem<State>::readFromFile(const std::str
 				setInitState(&init_state);
 			}
 			if (StateSpace::starts_with(line, "<")) {
-				line.erase(line.begin(), std::find(line.begin(), line.end(), ' ') + 1);
+				//line.erase(line.begin(), std::find(line.begin(), line.end(), ' ') + 1);
+				line.erase(line.begin(), StateSpace::str_find(&line, ' ') + 1);
 				std::vector<std::string> vars;
 				std::string buffer;
 				for (int j=0; j<line.size(); ++j) {
@@ -615,7 +617,9 @@ std::shared_ptr<StateSpace> TransitionSystem<State>::readFromFile(const std::str
 					}
 				}
 			} else if (StateSpace::starts_with(line, "   >")) {
-				line.erase(line.begin(), std::find(line.begin()+3, line.end(), ' ') + 1);
+				//line.erase(line.begin(), std::find(line.begin()+3, line.end(), ' ') + 1);
+				line.erase(0,3);
+				line.erase(line.begin(), StateSpace::str_find(&line, ' ') + 1);
 				std::vector<std::string> vars;
 				std::string buffer, action;
 				buffer.clear();
@@ -625,10 +629,11 @@ std::shared_ptr<StateSpace> TransitionSystem<State>::readFromFile(const std::str
 					if (line[j] == ';') {
 						vars.push_back(buffer);
 						dst_state.setState(vars);
-						line.erase(line.begin(), std::find(line.begin(), line.end(), ':') + 2);
-						//auto comma_itr = std::find(line.begin(), line.end(), ',');
+						//line.erase(line.begin(), std::find(line.begin(), line.end(), ':') + 2);
+						line.erase(line.begin(), StateSpace::str_find(&line, ':') + 2);
 						action = line.substr(0, line.find(','));
-						line.erase(line.begin(), std::find(line.begin(), line.end(), ':')+2);
+						//line.erase(line.begin(), std::find(line.begin(), line.end(), ':')+2);
+						line.erase(line.begin(), StateSpace::str_find(&line, ':')+2);
 						line.pop_back();
 						cost = std::stof(line);
 						break;
