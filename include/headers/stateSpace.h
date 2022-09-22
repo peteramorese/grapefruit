@@ -2,6 +2,7 @@
 #include<vector>
 #include<iostream>
 #include<unordered_map>
+#include<memory>
 #include "state.h"
 
 class State;
