@@ -507,6 +507,17 @@ void TransitionSystem<T>::writeToFile(const std::string& filename) {
 	model_file.open(filename,std::ios_base::app);
 	//graph_TS->print();
 	
+	std::vector<std::string> init_state_arr;
+	init_state->getState(init_state_arr);
+	model_file<<"<init_state: ";
+	for (int i=0; i<init_state_arr.size(); ++i) {
+		model_file<<init_state_arr[i];
+		if (i != init_state_arr.size()-1) {
+			model_file<<", ";
+		} else {
+			model_file<<"; \n";
+		}
+	}
 	if (state_map.size() > 1) {
 		for (int i=0; i<state_map.size(); ++i) {
 			std::vector<WL*> con_data; 
@@ -548,38 +559,98 @@ void TransitionSystem<T>::writeToFile(const std::string& filename) {
 	model_file.close();
 }
 
-template <class T>
-std::shared_ptr<StateSpace> TransitionSystem<T>::readFromFile(const std::string& filename) {
-	std::shared_ptr<StateSpace> SS = StateSpace::readFromFile(filename);
+template <>
+std::shared_ptr<StateSpace> TransitionSystem<State>::readFromFile(const std::string& filename) {
+	clear();
+	manual = true;
+	UNIQUE_ACTION = false;
+	SS_read_in = StateSpace::readFromFile(filename);
 
 	std::ifstream model_file(filename);
-	std::shared_ptr<StateSpace> SS = std::make_shared<StateSpace>();
 	if (model_file.is_open()) {
 		std::string line;
+		State src_state(SS_read_in.get());
+		State dst_state(SS_read_in.get());
+		bool check_init = true;
 		while (std::getline(model_file, line)) {
 			if (line.starts_with("<SS>")) {
 				continue;
-			}
-			State src_state(SS.get());
-			State dst_state(SS.get());
-			if (line.starts_with('<')) {
+			} else if (check_init && line.starts_with("<init_state:")) {
+				line.erase(line.begin(), std::find(line.begin(), line.end(), ' ') + 1);
+				check_init = false;
+				State init_state(SS_read_in.get());
 				std::vector<std::string> vars;
 				std::string buffer;
 				for (int j=0; j<line.size(); ++j) {
 					if (line[j] == ';') {
+						vars.push_back(buffer);
 						src_state.setState(vars);
+						break;
 					} else if (line[j] == ',') {
 						vars.push_back(buffer);
-						std::cout<<"ADDING VAR: "<<buffer<<std::endl;
 						buffer.clear();
 					} else if (line[j] != ' ') {
 						buffer.push_back(line[j]);
 					}
 				}
-			} else if (line.starts_with("   >"))
+
+				init_state.setState(vars);
+				setInitState(&init_state);
+			}
+			if (line.starts_with('<')) {
+				line.erase(line.begin(), std::find(line.begin(), line.end(), ' ') + 1);
+				std::vector<std::string> vars;
+				std::string buffer;
+				for (int j=0; j<line.size(); ++j) {
+					if (line[j] == ';') {
+						vars.push_back(buffer);
+						src_state.setState(vars);
+						break;
+					} else if (line[j] == ',') {
+						vars.push_back(buffer);
+						buffer.clear();
+					} else if (line[j] != ' ') {
+						buffer.push_back(line[j]);
+					}
+				}
+			} else if (line.starts_with("   >")) {
+				line.erase(line.begin(), std::find(line.begin()+3, line.end(), ' ') + 1);
+				std::vector<std::string> vars;
+				std::string buffer, action;
+				buffer.clear();
+				action.clear();
+				float cost;
+				for (int j=0; j<line.size(); ++j) {
+					if (line[j] == ';') {
+						vars.push_back(buffer);
+						dst_state.setState(vars);
+						line.erase(line.begin(), std::find(line.begin(), line.end(), ':') + 2);
+						//auto comma_itr = std::find(line.begin(), line.end(), ',');
+						action = line.substr(0, line.find(','));
+						line.erase(line.begin(), std::find(line.begin(), line.end(), ':')+2);
+						line.pop_back();
+						cost = std::stof(line);
+						break;
+					} else if (line[j] == ',') {
+						vars.push_back(buffer);
+						buffer.clear();
+					} else if (line[j] != ' ') {
+						buffer.push_back(line[j]);
+					}
+				}
+				//std::cout<<"Found src state: "<<std::endl;
+				//src_state.print();
+				//std::cout<<"Found dst state: "<<std::endl;
+				//dst_state.print();
+				//std::cout<<"Action: "<<action<<" Cost: "<<cost<<std::endl;
+				connect(&src_state, &dst_state, cost, action);
+
+			}
 		}
 	}
-	return SS;
+	finishConnecting();
+	UNIQUE_ACTION = true;
+	return SS_read_in;
 }
 
 

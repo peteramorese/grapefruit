@@ -12,8 +12,9 @@ template <class T>
 class TransitionSystem : public Graph<WL> {
 	protected:
 		bool is_blocking, mapped;
-		const bool UNIQUE_ACTION;
-		const bool manual;
+		bool UNIQUE_ACTION; // non const for read in
+		bool manual; // non const for read in
+		std::shared_ptr<StateSpace> SS_read_in;
 		T* init_state;
 		std::vector<T> all_states;
 		std::vector<bool> state_added;

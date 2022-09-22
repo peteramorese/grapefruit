@@ -418,7 +418,10 @@ std::shared_ptr<StateSpace> StateSpace::readFromFile(const std::string& filename
 						}
 					}
 					if (type == 0) {
+						std::cout<<"Setting state dimension "<<i<<" vars: "<<std::endl;
+						for (auto var : vars) std::cout<<"	-var: "<<var<<std::endl;
 						SS->setStateDimension(vars, i);
+						std::cout<<"Setting state dimension label "<<i<<" lbl: "<<lbl<<std::endl;
 						SS->setStateDimensionLabel(i, lbl);
 					} else if (type == 1) {
 						std::cout<<"SETTING GROUP: "<<lbl<<std::endl;

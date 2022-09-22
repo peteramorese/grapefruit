@@ -144,7 +144,7 @@ int main() {
 	ts.print();
 	ts.writeToFile("./test_ts_file");
 	TransitionSystem<State> ts2;
-	ts2.readFromFile("./test_ts_file");
+	std::shared_ptr<StateSpace> SS_read_in = ts2.readFromFile("./test_ts_file");
 	ts2.print();
 
 	
