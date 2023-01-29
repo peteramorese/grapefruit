@@ -1,6 +1,6 @@
 #! /root/miniconda3/envs/tpenv/bin/python
 from posixpath import dirname
-import spot, os, glob, random, json
+import spot, os, glob, random, json, yaml
 import argparse
 
 def remove_dfa_files(dirname_prefix):
@@ -10,20 +10,22 @@ def remove_dfa_files(dirname_prefix):
         #print(file.path)
 
 def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose=False, f_complete=False):
+
+    file_dict = dict()
+
     remove_dfa_files(dirname_prefix)
-    inds = [i for i in range(0, len(F_arr))]
+    inds = list(range(0, len(F_arr)))
     if random_ordering:
         random.shuffle(inds)
     i = 0
     for F in F_arr: 
         file_ind = inds[i]
         if custom_filename is None:
-            filename = dirname_prefix + "dfa_{}".format(file_ind) + ".txt"
+            filename = dirname_prefix + "dfa_{}".format(file_ind) + ".yaml"
             if verbose:
                 print("    > Writing to: dfa_{}".format(file_ind))
         else:
-            filename = dirname_prefix + custom_filename + ".txt"
-        #filename_list[i] = filename
+            filename = dirname_prefix + custom_filename + ".yaml"
         i = i + 1
         lines_list = list()
         accepting_list = list()
@@ -32,32 +34,25 @@ def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose
         else:
             A = spot.formula(F).translate("BA","deterministic","sbacc")
         bdict = A.get_dict()	
-        #print("Acceptance: ", A.get_acceptance())
-        #print("num states: ", A.num_states())
-        lines_list.append("Alphabet: ")
-        for ap in A.ap():
-            #print(" ", ap)
-            temp_str = "- {}".format(ap)
-            lines_list.append(temp_str)
-        lines_list.append("Initial States: ")
-        lines_list.append("- {}".format(A.get_init_state_number()))
-        lines_list.append("Graph:")
+        file_dict["Alphabet"] = [str(ap) for ap in A.ap()]
+        file_dict["Initial States"] = [A.get_init_state_number()]
+        file_dict["Connections"] = dict()
+        file_dict["Labels"] = dict()
+        file_dict["Accepting States"] = list()
         for s in range(0, A.num_states()):
-            lines_list.append("- {}".format(s))
+            begin = True
             for s_con in A.out(s):
-                temp_str = "   - {} -> {}".format(s_con.src, s_con.dst)
-                temp_str = temp_str + " : " + spot.bdd_format_formula(bdict, s_con.cond)
-                lines_list.append(temp_str)
+                if begin:
+                    file_dict["Connections"][s] = list()
+                    file_dict["Labels"][s] = list()
+                    begin = False
+                file_dict["Connections"][s].append(s_con.dst)
+                file_dict["Labels"][s].append(str(spot.bdd_format_formula(bdict, s_con.cond)))
                 if "{}".format(s_con.acc) != "{}":
-                    accepting_list.append("{}".format(s))
-        lines_list.append("Accepting States:")	
-        for a_s in accepting_list:
-            lines_list.append("- " + a_s)
-        lines_list.append("")
+                    file_dict["Accepting States"].append(s)
+                print()
         with open(filename, "w+") as file:
-            for line in lines_list:
-                file.write(line)
-                file.write("\n")
+            yaml.dump(file_dict, file)
 
 def print_automaton(A):
     bdict = A.get_dict()	

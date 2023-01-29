@@ -1,9 +1,18 @@
-add_executable(SpotTest SpotTest.cpp)
-target_link_libraries(SpotTest PUBLIC
+add_executable(GraphTest GraphTest.cpp)
+target_link_libraries(GraphTest PUBLIC
 )
-target_include_directories(SpotTest PUBLIC
+target_include_directories(GraphTest PUBLIC
 	${TP_INCLUDE_DIRS}
-	${SPOT_INCLUDE_DIRS}
+	#${SPOT_INCLUDE_DIRS}
+)
+
+add_executable(YAMLTest YAMLTest.cpp)
+target_link_libraries(YAMLTest PUBLIC
+	yaml-cpp
+)
+target_include_directories(YAMLTest PUBLIC
+	${TP_INCLUDE_DIRS}
+	${YAML_INCLUDE_DIRS}
 )
 
 

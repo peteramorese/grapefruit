@@ -13,7 +13,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 #set(base_include_dir ${CMAKE_CURRENT_LIST_DIR}/include)
 #set(pref_include_dir ${CMAKE_CURRENT_LIST_DIR}/pref_include)
 
-set(SPOT_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/dependencies/spot-2.11)
+add_subdirectory(dependencies/yaml-cpp)
+
+set(YAML_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/dependencies/yaml-cpp)
 set(TP_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src)
 
 #include_directories(PUBLIC include/headers)

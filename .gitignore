@@ -1,6 +1,5 @@
 # Ignore build directory
 build/
-dependencies/
 include/copies/
 spot_automaton_file_dump/dfas/
 benchmark/benchmark_data/

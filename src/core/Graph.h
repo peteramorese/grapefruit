@@ -18,8 +18,15 @@ class RandomAccessList {
 		const T& operator[](uint32_t i) const {return *m_access_ptrs[i];}
 
 		void clear() {m_list.clear(); m_access_ptrs.clear();}
-		void resize(std::size_t count) {m_list.resize(count); m_access_ptrs.resize(count);}
-		std::size_t size() {return m_list.size();}
+		void resize(std::size_t count) {
+			auto list_it = std::prev(m_list.end());
+			m_list.resize(count);
+			m_access_ptrs.reserve(count);
+			while (m_access_ptrs.size() < m_access_ptrs.capacity()) {
+				m_access_ptrs.insert(m_access_ptrs.end(), &(*(++list_it)));
+			}
+		}
+		std::size_t size() const {return m_list.size();}
 
 		std::list<T>::iterator begin() {return m_list.begin();}
 		std::list<T>::iterator end() {return m_list.end();}
@@ -86,6 +93,7 @@ class Graph {
 		std::size_t size() const {return m_graph.size();}
 
 		const std::vector<T>& getOutgoingEdges(uint32_t ind) {
+			LOG("graph size: " << m_graph.size() << " ind: " <<ind);
 			return m_graph[ind].forward.edges;
 		}
 
@@ -104,40 +112,50 @@ class Graph {
 		virtual bool connect(uint32_t src, uint32_t dst, const T& edge) {
 			if (src >= size() || dst >= size()) {
 				uint32_t max_ind = (src > dst) ? src : dst;
-				m_graph.resize(max_ind);
+				m_graph.resize(max_ind + 1);
 			}
+			m_graph[src];
 			m_graph[src].forward.pushConnect(dst, edge);
+
 			if (m_reversible) m_graph[dst].backward.pushConnect(src, edge);
 			return true;
 		}
 
 		virtual void print() const {
-			LOG("Printing graph");
+			if (!m_edgeToStr) {
+				ERROR("No 'edgeToStr' function provided, cannot print");
+				return;
+			}
+			LOG("Printing graph (size: " << size() << ")");
 			uint32_t node_ind = 0;
 			for (const auto& list : m_graph) {
-				PRINT_NAMED("Node " << node_ind++, "is connected to:");
 				for (uint32_t i=0; i < list.forward.size(); ++i) {
-					std::string edge_str = (m_edgeToStr) ? m_edgeToStr(list.forward.edges[i]) : list.forward.edges[i];
-					PRINT_NAMED("    - child node " << list.forward.nodes[i], "with edge: " << list.forward.edges[i]);
+					if (i == 0) PRINT_NAMED("Node " << node_ind, "is connected to:");
+					PRINT_NAMED("    - child node " << list.forward.nodes[i], "with edge: " << m_edgeToStr(list.forward.edges[i]));
 				}
+				++node_ind;
 			}
 		}
 
 		virtual void printReverse() const {
-			LOG("Printing reversed graph");
+			if (!m_edgeToStr) {
+				ERROR("No 'edgeToStr' function provided, cannot print");
+				return;
+			}
+			LOG("Printing reversed graph (size: " << size() << ")");
 			uint32_t node_ind = 0;
 			for (const auto& list : m_graph) {
-				PRINT_NAMED("Node " << node_ind++, "is connected to:");
 				for (uint32_t i=0; i < list.backward.size(); ++i) {
-					std::string edge_str = (m_edgeToStr) ? m_edgeToStr(list.backward.edges[i]) : list.backward.edges[i];
-					PRINT_NAMED("    - parent node " << list.backward.nodes[i], "with edge: " << edge_str);
+					if (i == 0) PRINT_NAMED("Node " << node_ind, "is connected to:");
+					PRINT_NAMED("    - parent node " << list.backward.nodes[i], "with edge: " << m_edgeToStr(list.backward.edges[i]));
 				}
+				++node_ind;
 			}
 		}
 
 		virtual void clear() {m_graph.clear();}
 	
-	private:
+	protected:
 		struct AdjacencyList {
 			std::vector<T> edges;
 			std::vector<uint32_t> nodes;
@@ -156,9 +174,12 @@ class Graph {
 			AdjacencyList forward;
 			AdjacencyList backward;
 		};
-	private:
+
+	protected:
 		RandomAccessList<BidirectionalConnectionList> m_graph;
-		bool m_directed, m_reversible;
 		EdgeToStrFunction m_edgeToStr;
+
+	private:
+		bool m_directed, m_reversible;
 };
 
