@@ -1,0 +1,3 @@
+[submodule "dependencies/spot"]
+	path = dependencies/spot
+	url = https://gitlab.lre.epita.fr/spot/spot.git
