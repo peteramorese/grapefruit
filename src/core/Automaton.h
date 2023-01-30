@@ -80,7 +80,7 @@ namespace FormalMethods {
                 return true;
             }
 
-            bool readFromFile(const std::string& filepath) {
+            bool deserialize(const std::string& filepath) {
                 YAML::Node data;
                 try {
                     data = YAML::LoadFile(filepath);

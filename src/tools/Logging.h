@@ -24,5 +24,5 @@
 #endif
 
 #ifdef TP_ASSERTS
-    #define ASSERT(condition, ...) {if (!(condition)) {ERROR("Assert fail: " << __VA_ARGS__); exit(1);}}
+    #define ASSERT(condition, ...) {if (!(condition)) {ERROR("[Assert fail] " << __VA_ARGS__); exit(1);}}
 #endif

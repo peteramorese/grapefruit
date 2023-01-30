@@ -1,7 +1,6 @@
-#add_library(class class.cpp)
-#target_link_libraries(class PUBLIC
-#    libraries
-#)
-#target_include_directories(class PUBLIC
-#    directories
-#)
+add_library(StateSpace StateSpace.cpp)
+target_link_libraries(StateSpace PUBLIC
+)
+target_include_directories(StateSpace PUBLIC
+    ${TP_INCLUDE_DIRS}
+)

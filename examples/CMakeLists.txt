@@ -1,20 +1,29 @@
-add_executable(GraphTest GraphTest.cpp)
-target_link_libraries(GraphTest PUBLIC
+add_executable(GraphExample GraphExample.cpp)
+target_link_libraries(GraphExample PUBLIC
 )
-target_include_directories(GraphTest PUBLIC
+target_include_directories(GraphExample PUBLIC
 	${TP_INCLUDE_DIRS}
 	#${SPOT_INCLUDE_DIRS}
 )
 
-add_executable(YAMLTest YAMLTest.cpp)
-target_link_libraries(YAMLTest PUBLIC
+add_executable(YAMLExample YAMLExample.cpp)
+target_link_libraries(YAMLExample PUBLIC
 	yaml-cpp
 )
-target_include_directories(YAMLTest PUBLIC
+target_include_directories(YAMLExample PUBLIC
 	${TP_INCLUDE_DIRS}
 	${YAML_INCLUDE_DIRS}
 )
 
+add_executable(StateSpaceExample StateSpaceExample.cpp)
+target_link_libraries(StateSpaceExample PUBLIC
+	StateSpace
+	yaml-cpp
+)
+target_include_directories(StateSpaceExample PUBLIC
+	${TP_INCLUDE_DIRS}
+	${YAML_INCLUDE_DIRS}
+)
 
 #add_executable(file_read_example file_read.cpp)
 #target_link_libraries(file_read_example 
