@@ -1,10 +1,6 @@
 #include "StateSpace.h"
 
 #include <string>
-#include <vector>
-#include <iostream>
-#include <fstream>
-#include <unordered_map>
 #include <fstream>
 
 #include <yaml-cpp/yaml.h>
@@ -44,104 +40,165 @@ namespace DiscreteModel {
 	}
 
 	void StateSpace::serialize(const std::string& filepath) const {
-    	std::string filepath_ = "./spot_automaton_file_dump/dfas/test.yaml";
 
-    	std::map<std::string, std::vector<uint32_t>> map;
-    	map["hello"].push_back(0);
-    	map["hello"].push_back(1);
-    	map["hello"].push_back(2);
-    	map["bye"].push_back(22);
-    	YAML::Emitter out;
-    	out << YAML::BeginMap;
-    	out << YAML::Key << "Groups";
-    	out << YAML::Value << YAML::BeginMap;
-    	out << YAML::Key << 0;
-    	out << YAML::Value << YAML::BeginSeq;
-    	out << 0;
-    	out << 1;
-    	out << 2;
-    	out << 3;
-    	out << YAML::EndSeq << YAML::EndMap;
-    	out << YAML::EndMap;
-    	std::ofstream fout(filepath_);
-    	fout << out.c_str();
-		//LOG("b4 test key");
-		//out << YAML::Key << "Groups";
-		//LOG("af test key");
-		//bool begin = true;
-		//for (const auto&[name, bundle] : m_domains) {
-		//	LOG("not where I should be");
-		//	if (begin) {
-		//		out << YAML::Key << "Domains" << YAML::Value << YAML::BeginMap;
-		//		begin = false;
-		//	}
-		//	out << YAML::Key << name;
-		//	out << YAML::Value << bundle.vars;
-		//}
-		//if (!begin) {
-		//	LOG("not where I should be");
-		//	out << YAML::EndMap;
-		//	begin = true;
-		//}
-		//LOG("af domains");
 
-		//for (const auto&[name, bundle] : m_groups) {
-		//	if (begin) {
-		//		LOG("b4 begin");
-		//		out << YAML::Key << "Groups";
-		//		LOG("af key");
-		//		out << YAML::Value << YAML::BeginMap;
-		//		begin = false;
-		//	}
-		//	out << YAML::Key << name;
-		//	LOG("b4 bundle");
-		//	out << YAML::Value << bundle.vars;
-		//	LOG("af bundle");
-		//}
-		//if (!begin) {
-		//	out << YAML::EndMap;
-		//	begin = true;
-		//}
-		//LOG("af groups");
+		YAML::Emitter out;
+		out << YAML::BeginMap;
 
-		//for (uint8_t i=0; i < m_data.rank(); ++i) {
-		//	if (begin) {
-		//		out << YAML::Key << "State Space" << YAML::Value << YAML::BeginMap;
-		//		begin = false;
-		//	}
-		//	out << YAML::Key << m_data.getLabel(i);
-		//	out << YAML::Value << m_data.getValues(i);
-		//}
-		//out << YAML::EndMap;
+		out << YAML::Key << "Rank" << YAML::Value << (uint32_t)rank();
 
-		//out << YAML::EndMap;
-		//std::ofstream fout(filepath);
-		//fout << out.c_str();
+		bool begin = true;
+		for (const auto&[name, bundle] : m_domains) {
+			if (begin) {
+				out << YAML::Key << "Domains" << YAML::Value << YAML::BeginMap;
+				begin = false;
+			}
+			out << YAML::Key << name;
+			out << YAML::Value << bundle.vars;
+		}
+		if (!begin) {
+			out << YAML::EndMap;
+			begin = true;
+		}
+
+		for (const auto&[name, bundle] : m_groups) {
+			if (begin) {
+				out << YAML::Key << "Groups";
+				out << YAML::Value << YAML::BeginMap;
+				begin = false;
+			}
+			out << YAML::Key << name;
+			out << YAML::Value << bundle.vars;
+		}
+		if (!begin) {
+			out << YAML::EndMap;
+			begin = true;
+		}
+
+		for (uint8_t i=0; i < m_data.rank(); ++i) {
+			if (begin) {
+				out << YAML::Key << "State Space" << YAML::Value << YAML::BeginMap;
+				begin = false;
+			}
+			out << YAML::Key << m_data.getLabel(i);
+			out << YAML::Value << m_data.getValues(i);
+		}
+		out << YAML::EndMap;
+
+		out << YAML::EndMap;
+		std::ofstream fout(filepath);
+		fout << out.c_str();
 	}
 
-	//void StateSpace::deserialize(const std::string& filepath) {
-	//	YAML::Node data;
-	//	try {
-	//		data = YAML::LoadFile(filepath);
+	bool StateSpace::deserialize(const std::string& filepath) {
+		YAML::Node data;
+		try {
+			data = YAML::LoadFile(filepath);
 
-	//		m_alphabet = data["Alphabet"].as<Alphabet>();
-	//		m_init_states = data["Initial States"].as<StateSet>();
-	//		m_accepting_states = data["Accepting States"].as<StateSet>();
+			if (data["Rank"].as<uint32_t>() == 0 || !data["State Space"]) {
+				WARN("Attempted to deserialize empty state space (" << filepath);
+				return false;
+			}
 
-	//		std::map<uint32_t, std::vector<uint32_t>> connections = data["Connections"].as<std::map<uint32_t, std::vector<uint32_t>>>();
-	//		std::map<uint32_t, std::vector<std::string>> labels = data["Labels"].as<std::map<uint32_t, std::vector<std::string>>>();
-	//		for (auto[src, destinations] : connections) {
-	//			for (uint32_t i = 0; i <destinations.size(); ++i) {
-	//				const std::string& label = labels[src][i];
-	//				uint32_t dst = destinations[i];
-	//				connect(src, dst, label);
-	//			}
-	//		}
-	//	} catch (YAML::ParserException e) {
-	//		ERROR("Failed to load file" << filepath << " ("<< e.what() <<")");
-	//	}
-	//	return true;
-	//}
+			m_data.reset(data["Rank"].as<uint32_t>());
+
+			typedef std::map<std::string, std::vector<std::string>> StrToStrArr;
+
+			StrToStrArr state_space = data["State Space"].as<StrToStrArr>();
+			uint8_t dim = 0;
+			for (auto&[name, label_bundle] : state_space) {
+				m_data.setDimension(dim++, name, label_bundle);
+			}
+			
+			m_domains.clear();
+			if (data["Domains"]) {
+				StrToStrArr domain_map = data["Domains"].as<StrToStrArr>();
+				for (auto&[name, label_bundle] : domain_map) {
+					addDomain(name, label_bundle);
+				}
+			}
+			
+			m_groups.clear();
+			if (data["Groups"]) {
+				StrToStrArr group_map = data["Groups"].as<StrToStrArr>();
+				for (auto&[name, label_bundle] : group_map) {
+					addGroup(name, label_bundle);
+				}
+
+			}
+
+
+		} catch (YAML::ParserException e) {
+			ERROR("Failed to load file" << filepath << " ("<< e.what() <<")");
+			return false;
+		}
+		return true;
+	}
+
+	void StateSpace::print() const {
+		LOG("Printing StateSpace");
+		PRINT_NAMED("Rank", (uint32_t)rank());
+		bool begin = true;
+		for (const auto&[name, bundle] : m_domains) {
+			if (begin) {
+				PRINT_NAMED("Domains", "");
+				begin = false;
+			}
+			PRINT("   " << name << ":");
+			for (const auto& var : bundle.vars) {
+				PRINT("     -" << var);
+			}
+		}
+		begin = true;
+
+		for (const auto&[name, bundle] : m_groups) {
+			if (begin) {
+				PRINT_NAMED("Domains", "");
+				begin = false;
+			}
+			PRINT("   " << name << ":");
+			for (const auto& var : bundle.vars) {
+				PRINT("     -" << var);
+			}
+		}
+		begin = true;
+
+		for (uint8_t i=0; i < m_data.rank(); ++i) {
+			if (begin) {
+				PRINT_NAMED("State Space", "");
+				begin = false;
+			}
+			PRINT_NAMED("   (Dim " << (uint32_t)i << ")", m_data.getLabel(i));
+			for (const auto& var : m_data.getValues(i)) {
+				PRINT("     -" << var);
+			}
+		}
+
+	}
+}
+
+namespace YAML {
+    template <>
+    struct convert<std::map<std::string, std::vector<std::string>>> {
+        //static Node encode(const std::map<std::string, std::vector<std::string>>& str_to_str_arr) {
+        //    Node node;
+        //    for (auto state : state_set) node.push_back(state);
+        //    return node;
+        //}
+        static bool decode(const Node& node, std::map<std::string, std::vector<std::string>>& str_to_str_arr) {
+            if (!node.IsMap()) return false;
+			str_to_str_arr.clear();
+
+            for (YAML::const_iterator it = node.begin(); it != node.end(); ++it) {
+				const YAML::Node& key = it->first;
+				const YAML::Node& value = it->second;
+				str_to_str_arr.emplace(std::make_pair(
+					key.as<std::string>(),
+					value.as<std::vector<std::string>>()));
+			}
+            return true;
+        }
+    };
 }
 
 

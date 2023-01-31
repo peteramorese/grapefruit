@@ -47,6 +47,9 @@ namespace DiscreteModel {
 						m_state_space[dim].values = values;
 						m_label_to_index[label] = dim;
 					}
+
+					void clear() {m_state_space.clear(); m_label_to_index.clear();}
+					void reset(uint8_t rank) {clear(); m_state_space.resize(rank);}
 			};
 
 			struct LabelBundle {
@@ -63,6 +66,7 @@ namespace DiscreteModel {
 			friend class State;
 		public:
 			StateSpace(uint8_t rank) : m_data(rank) {}
+			StateSpace(const std::string& filepath) : m_data(0) {deserialize(filepath);}
 
 			uint8_t rank() const {return m_data.rank();}
 
@@ -81,6 +85,8 @@ namespace DiscreteModel {
 			std::pair<bool, const std::string&> argFindGroup(const std::string& var_find, const std::string& group_label) const;
 
 			void serialize(const std::string& filepath) const;
-			void deserialize(const std::string& filepath);
+			bool deserialize(const std::string& filepath);
+
+			void print() const;
 	};
 }
