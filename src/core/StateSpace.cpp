@@ -6,16 +6,13 @@
 #include <yaml-cpp/yaml.h>
 
 #include "tools/Logging.h"
+#include "core/State.h"
 
 namespace DiscreteModel {
 
-	void StateSpace::setDimension(uint32_t dim, const std::string& label, const std::vector<std::string>& vars) {
-		m_data.setDimension(dim, label, vars);
-	}
-
 	void StateSpace::addDomain(const std::string& domain_name, const std::vector<std::string>& vars) {
-		for (const auto& value : vars) {
-			ASSERT(m_data.hasValue(value), "Input variable: " << value << " was not found in state space");
+		for (const auto& variable : vars) {
+			ASSERT(m_data.hasVariable(variable), "Input variable: " << variable << " was not found in state space");
 		}
 		//m_domains[domain_name] = LabelBundle(vars);
 		m_domains.emplace(std::make_pair(domain_name, LabelBundle(vars)));
@@ -32,7 +29,7 @@ namespace DiscreteModel {
 		const LabelBundle& group = m_groups.at(group_label);
 		for (const auto& var : group.vars) {
 			for (uint8_t i=0; i<m_data.rank(); ++i) {
-				auto result = m_data.findValue(var_find, i);
+				auto result = m_data.findVariable(var_find, i);
 				if (result.first) return result;
 			}
 		}
@@ -81,7 +78,7 @@ namespace DiscreteModel {
 				begin = false;
 			}
 			out << YAML::Key << m_data.getLabel(i);
-			out << YAML::Value << m_data.getValues(i);
+			out << YAML::Value << m_data.getVariables(i);
 		}
 		out << YAML::EndMap;
 
@@ -169,11 +166,30 @@ namespace DiscreteModel {
 				begin = false;
 			}
 			PRINT_NAMED("   (Dim " << (uint32_t)i << ")", m_data.getLabel(i));
-			for (const auto& var : m_data.getValues(i)) {
+			for (const auto& var : m_data.getVariables(i)) {
 				PRINT("     -" << var);
 			}
 		}
 
+	}
+
+	const Containers::SizedArray<const std::string*> StateSpace::interpret(const State* state) const {
+		ASSERT(state->getStateSpace() == this, "Cannot interpret state from a different state space");
+		Containers::SizedArray<const std::string*> ret_vars(rank());
+		for (uint8_t i=0; i < rank(); ++i) {
+			uint32_t variable_index = (*state)[i];
+			ret_vars[i] = &m_data.getVariables(i)[variable_index];
+		}
+		return ret_vars;
+	}
+
+	uint32_t StateSpace::variableIndex(uint8_t index, const std::string& variable) const {
+		uint32_t i=0;
+		for (const auto& var : m_data.getVariables(index)) {
+			if (var == variable) return i;
+			i++;
+		}
+		ASSERT(false, "Variable: " << variable << " was not found along dimension: " << index);
 	}
 }
 
@@ -191,10 +207,10 @@ namespace YAML {
 
             for (YAML::const_iterator it = node.begin(); it != node.end(); ++it) {
 				const YAML::Node& key = it->first;
-				const YAML::Node& value = it->second;
+				const YAML::Node& variable = it->second;
 				str_to_str_arr.emplace(std::make_pair(
 					key.as<std::string>(),
-					value.as<std::vector<std::string>>()));
+					variable.as<std::vector<std::string>>()));
 			}
             return true;
         }
