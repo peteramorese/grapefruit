@@ -1,10 +1,12 @@
 #pragma once
 #include<vector>
-#include "state.h"
 #include<string>
 #include<unordered_map>
 
 namespace DiscreteModel {
+
+	class State;
+
 	enum class ConditionType {
 		// Type of condition (for TransitionCondition)
 		Pre, 			// Applies to the anterior state
@@ -35,7 +37,7 @@ namespace DiscreteModel {
 	enum class ConditionJunction {
 		Conjunction,	// Conditions are conjoined
 		Disjunction,	// Conditions are disjoined
-	}
+	};
 
 	enum class ConditionOperator {
 		// Operator
@@ -43,7 +45,7 @@ namespace DiscreteModel {
 		InDomain,			// Check if a 'Variable' or the variable inside a 'Label' is inside a 'Domain'
 		ArgFind,		// Check if an instance of 'Variable' or the variable inside a 'Label' is found within a 'Group'. If found, the variable/label is stored
 		EqualsArg		// Check if a 'Label' or 'Variable' is equal to the found argument
-	}
+	};
 
 	// Houses common types and methods for Condition and TransitionCondition
 	class _ConditionBase {
@@ -56,29 +58,29 @@ namespace DiscreteModel {
 					, condition_operator(condition_operator_)
 					, lhs(lhs_)
 					, rhs(rhs_)
-					, condition_label(condition_label_)
+					, condition_name(condition_name_)
 					, logical(logical_) {}
 				ConditionArg lhs_type;
 				ConditionArg rhs_type;
 				ConditionOperator condition_operator;
 				std::string lhs, rhs;
-				std::string condition_label;
+				std::string condition_name;
 				ConditionLogical logical;
 			};
 		protected:
-			bool subEvaluate(const State& state, const subCondition& cond);
+			bool subEvaluate(const State& state, const SubCondition& cond) const;
 			virtual void print() const = 0;
-	}
+	};
 
 	class Condition : protected _ConditionBase {
 		public:
 		 	Condition(ConditionJunction junction_type) : m_junction_type(junction_type) {}
 
 			inline void addCondition(ConditionArg lhs_type, const std::string& lhs, ConditionOperator condition_operator, ConditionArg rhs_type, const std::string& rhs, ConditionLogical logical = ConditionLogical::True) {
-				m_sub_conditions.emplace(lhs_type, lhs, condition_operator, rhs_type, rhs, "", logical);
+				m_sub_conditions.emplace_back(lhs_type, lhs, condition_operator, rhs_type, rhs, "", logical);
 			}
 			inline void addCondition(ConditionArg lhs_type, const std::string& lhs, ConditionOperator condition_operator, ConditionArg rhs_type, const std::string& rhs, const std::string& condition_name, ConditionLogical logical = ConditionLogical::True) {
-				m_sub_conditions.emplace(lhs_type, lhs, condition_operator, rhs_type, rhs, condition_name, logical);
+				m_sub_conditions.emplace_back(lhs_type, lhs, condition_operator, rhs_type, rhs, condition_name, logical);
 			}
 			inline void setName(const std::string& name) {m_name = name;}
 			inline const std::string& getName() const {return m_name;}
@@ -92,7 +94,7 @@ namespace DiscreteModel {
 			ConditionJunction m_junction_type = ConditionJunction::Conjunction;
 	};
 
-	class TransitionCondition {
+	class TransitionCondition : protected _ConditionBase {
 		private:
 			struct ArgumentProperties {
 				bool is_set;
@@ -112,14 +114,14 @@ namespace DiscreteModel {
 			float m_action_cost;
 
 
-			std::vector<std::pair<bool, std::string>> arg_L;
-			std::unordered_map<std::string, int> arg_L_labels;
-			std::vector<arg_V_struct> arg_V;
-			std::unordered_map<std::string, int> arg_V_labels;
-			std::pair<bool, std::string> arg_L_i;
-			arg_V_struct arg_V_i;
-			void sub_print(const std::vector<subCondition>& p_c) const;
-			std::string label;
+			//std::vector<std::pair<bool, std::string>> arg_L;
+			//std::unordered_map<std::string, int> arg_L_labels;
+			//std::vector<arg_V_struct> arg_V;
+			//std::unordered_map<std::string, int> arg_V_labels;
+			//std::pair<bool, std::string> arg_L_i;
+			//arg_V_struct arg_V_i;
+			//void sub_print(const std::vector<subCondition>& p_c) const;
+			//std::string label;
 		public:	
 			TransitionCondition(ConditionJunction pre_junction_type, ConditionJunction post_junction_type, const std::string& action_label, float action_cost) 
 				: m_pre_junction_type(pre_junction_type)
@@ -131,20 +133,20 @@ namespace DiscreteModel {
 			inline void addCondition(ConditionType type, ConditionArg lhs_type, const std::string& lhs, ConditionOperator condition_operator, ConditionArg rhs_type, const std::string& rhs, ConditionLogical logical = ConditionLogical::True) {
 				switch (type) {
 					case ConditionType::Pre:
-						m_pre_conditions.emplace(lhs_type, lhs, condition_operator, rhs_type, rhs, "", logical);
+						m_pre_conditions.emplace_back(lhs_type, lhs, condition_operator, rhs_type, rhs, "", logical);
 						return;
 					case ConditionType::Post:
-						m_post_conditions.emplace(lhs_type, lhs, condition_operator, rhs_type, rhs, "", logical);
+						m_post_conditions.emplace_back(lhs_type, lhs, condition_operator, rhs_type, rhs, "", logical);
 						return;
 				}
 			}
 			inline void addCondition(ConditionType type, ConditionArg lhs_type, const std::string& lhs, ConditionOperator condition_operator, ConditionArg rhs_type, const std::string& rhs, const std::string& condition_name, ConditionLogical logical = ConditionLogical::True) {
 				switch (type) {
 					case ConditionType::Pre:
-                        m_pre_conditions.emplace(lhs_type, lhs, condition_operator, rhs_type, rhs, condition_name, logical);
+                        m_pre_conditions.emplace_back(lhs_type, lhs, condition_operator, rhs_type, rhs, condition_name, logical);
 						return;
 					case ConditionType::Post:
-                        m_post_conditions.emplace(lhs_type, lhs, condition_operator, rhs_type, rhs, condition_name, logical);
+                        m_post_conditions.emplace_back(lhs_type, lhs, condition_operator, rhs_type, rhs, condition_name, logical);
 						return;
 				}
 			}

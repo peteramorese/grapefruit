@@ -36,6 +36,15 @@ target_include_directories(StateSpaceExample PUBLIC
 	${YAML_INCLUDE_DIRS}
 )
 
+add_executable(ConditionExample ConditionExample.cpp)
+target_link_libraries(ConditionExample PUBLIC
+	#Condition
+)
+target_include_directories(ConditionExample PUBLIC
+	${TP_INCLUDE_DIRS}
+	${YAML_INCLUDE_DIRS}
+)
+
 #add_executable(file_read_example file_read.cpp)
 #target_link_libraries(file_read_example 
 #	GraphClass

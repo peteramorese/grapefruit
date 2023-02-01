@@ -8,6 +8,15 @@
 #include "tools/Logging.h"
 #include "core/State.h"
 
+// YAML OVERLOADS
+YAML::Emitter& operator << (YAML::Emitter& out, const std::unordered_set<std::string>& str_set) {
+	out << YAML::Flow;
+	out << YAML::BeginSeq;
+	for (const auto& str : str_set) out << str;
+	out << YAML::EndSeq;
+	return out;
+}
+
 namespace DiscreteModel {
 
 	void StateSpace::addDomain(const std::string& domain_name, const std::vector<std::string>& vars) {
@@ -214,6 +223,26 @@ namespace YAML {
         }
     };
 }
+
+
+//namespace YAML {
+//    template <>
+//    struct convert<std::unordered_set<std::string>> {
+//        static Node encode(const std::unordered_set<std::string>& str_set) {
+//            Node node;
+//            for (auto str : str_set) node.push_back(str);
+//            return node;
+//        }
+//        static bool decode(const Node& node, std::unordered_set<std::string>& str_set) {
+//            if (!node.IsSequence()) return false;
+//			str_set.clear();
+//
+//			std::vector<std::string> items = node.as<std::vector<std::string>>();
+//			for (const auto& item : items) str_set.insert(item);
+//            return true;
+//        }
+//    };
+//}
 
 
 

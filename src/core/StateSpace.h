@@ -2,6 +2,7 @@
 #include<vector>
 #include<iostream>
 #include<unordered_map>
+#include<unordered_set>
 
 #include "tools/Containers.h"
 //#include "core/State.h"
@@ -61,8 +62,11 @@ namespace DiscreteModel {
 			};
 
 			struct LabelBundle {
-				LabelBundle(const std::vector<std::string>& vars_) : vars(vars_) {}
-				std::vector<std::string> vars;
+				LabelBundle(const std::vector<std::string>& vars_) {
+					for (const auto& var : vars_) vars.insert(var);
+				}
+				std::unordered_set<std::string> vars;
+				bool inBundle(const std::string& label) const {return vars.contains(label);};
 			};
 
 		protected:
@@ -73,11 +77,14 @@ namespace DiscreteModel {
 
 
 		protected:
+		 	// Backdoor methods for State
 			const Containers::SizedArray<const std::string*> interpret(const uint32_t var_indices[]) const;
 			inline const std::string& interpretIndex(dimension_t dim, uint32_t var_index) const {return m_data.getVariables(dim)[var_index];}
 			inline dimension_t getDimension(const std::string& label) const {return m_data.getDimension(label);}
 			uint32_t variableIndex(dimension_t index, const std::string& variable) const;
 
+
+			// Read from file
 			bool deserialize(const std::string& filepath);
 
 		private:
@@ -95,11 +102,13 @@ namespace DiscreteModel {
 
 			// Add a domain that names and bundles a set of variables
 			void addDomain(const std::string& domain_name, const std::vector<std::string>& vars);
+			inline const std::unordered_set<std::string>& getDomain(const std::string& domain_label) const {return m_domains.at(domain_label).vars;}
+			inline bool inDomain(const std::string& domain_name, const std::string& var) const {return m_domains.at(domain_name).inBundle(var);}
 
 			// Add a group that names and bundles a set of dimension labels
 			void addGroup(const std::string& group_name, const std::vector<std::string>& labels);
-
-			inline const std::vector<std::string>& getGroup(const std::string& group_label) const {return m_groups.at(group_label).vars;}
+			inline const std::unordered_set<std::string>& getGroup(const std::string& group_label) const {return m_groups.at(group_label).vars;}
+			inline bool inGroup(const std::string& group_name, const std::string& label) const {return m_groups.at(group_name).inBundle(label);}
 
 			// Find an instance of 'var_find' among dimensions that are within group 'group_label'
 			std::pair<bool, const std::string&> argFindGroup(const std::string& var_find, const std::string& group_label) const;
