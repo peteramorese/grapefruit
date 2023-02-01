@@ -3,35 +3,59 @@
 #include<iostream>
 #include<unordered_map>
 
-//#include "core/StateSpace.h"
+#include "tools/Logging.h"
+#include "core/StateSpace.h"
+
 
 namespace DiscreteModel {
 
-	class StateSpace;
+
+	//class StateSpace;
+
+	class VariableReference {
+		public:
+		 	VariableReference(const StateSpace* ss, dimension_t dim, uint32_t* var_ind) : m_ss(ss), m_dim(dim), m_var_ind(var_ind) {}
+			inline operator const std::string&() const {return m_ss->interpretIndex(m_dim, *m_var_ind);}
+			inline void operator= (const std::string& set_var) {
+				uint32_t var_ind_set = 0;
+				for (const auto& var : m_ss->getVariables(m_dim)) {
+					if (var == set_var) {
+						*(m_var_ind) = var_ind_set;
+						return;
+					}
+					var_ind_set++;
+				}
+				ASSERT(false, "Set variable ('" << set_var << "') was not recognized");
+			}
+		private:
+		 	dimension_t m_dim;
+			uint32_t* m_var_ind;
+			const StateSpace* m_ss;
+	};
 
 	class State {
 
 		public:
 			State(const StateSpace* ss);
+			State(const StateSpace* ss, const std::vector<std::string>& vars);
 			State(const State& other);
 			~State();
+
 			const StateSpace* getStateSpace() const {return m_ss;}
 			//void generateAllPossibleStates(std::vector<State>& all_states) ;
-			//int getVarOptionsCount(unsigned int dim);
-			//bool getDomains(const std::string& var, std::vector<std::string>& in_domains) const;
-			//void getGroupDimLabels(const std::string& group_label, std::vector<std::string>& group_dim_labels) const;
-			//bool argFindGroup(const std::string& var_find, const std::string& group_label, std::string& arg_dimension_label) const; 
-			//void setState(const std::vector<std::string>& set_state);
-			//void setState(const std::string& set_state_var, unsigned int dim);
-			//void getState(std::vector<std::string>& ret_state) const;
-			const std::string& getVar(const std::string& label) const;
-			bool isDefined() const;
 			void print() const;
-			bool exclEquals(const State* state_ptr_, const std::vector<std::string>& excl_dimension_labels) const;
+			bool exclEquals(const State& other, const std::vector<std::string>& excl_labels) const;
+
 			bool operator== (const State& other) const;
 			void operator= (const std::vector<std::string>& vars);
-			 
-		 	inline uint32_t operator[](uint8_t i) const {return m_state_index_buffer[i];}
+		 	inline const std::string& operator[](const std::string& label) const {
+				dimension_t dim = m_ss->getDimension(label);
+				return m_ss->interpretIndex(dim, m_state_index_buffer[dim]);
+			}
+			inline VariableReference operator[](const std::string& label) {
+				dimension_t dim = m_ss->m_data.getDimension(label);
+				return VariableReference(m_ss, dim, &m_state_index_buffer[dim]);
+			}
 
 		protected:
 			uint32_t* m_state_index_buffer;

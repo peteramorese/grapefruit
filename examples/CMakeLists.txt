@@ -15,6 +15,17 @@ target_include_directories(YAMLExample PUBLIC
 	${YAML_INCLUDE_DIRS}
 )
 
+add_executable(StateExample StateExample.cpp)
+target_link_libraries(StateExample PUBLIC
+	State
+	StateSpace
+	yaml-cpp
+)
+target_include_directories(StateExample PUBLIC
+	${TP_INCLUDE_DIRS}
+	${YAML_INCLUDE_DIRS}
+)
+
 add_executable(StateSpaceExample StateSpaceExample.cpp)
 target_link_libraries(StateSpaceExample PUBLIC
 	StateSpace

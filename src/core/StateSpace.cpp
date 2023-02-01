@@ -12,7 +12,7 @@ namespace DiscreteModel {
 
 	void StateSpace::addDomain(const std::string& domain_name, const std::vector<std::string>& vars) {
 		for (const auto& variable : vars) {
-			ASSERT(m_data.hasVariable(variable), "Input variable: " << variable << " was not found in state space");
+			ASSERT(m_data.hasVariable(variable), "Input variable ('" << variable << "') was not found in state space");
 		}
 		//m_domains[domain_name] = LabelBundle(vars);
 		m_domains.emplace(std::make_pair(domain_name, LabelBundle(vars)));
@@ -20,7 +20,7 @@ namespace DiscreteModel {
 
 	void StateSpace::addGroup(const std::string& group_name, const std::vector<std::string>& labels) {
 		for (const auto& label : labels) {
-			ASSERT(m_data.hasLabel(label), "Input label: " << label << " was not found in state space");
+			ASSERT(m_data.hasLabel(label), "Input label ('" << label << "') was not found in state space");
 		}
 		m_groups.emplace(std::make_pair(group_name, LabelBundle(labels)));
 	}
@@ -28,7 +28,7 @@ namespace DiscreteModel {
 	std::pair<bool, const std::string&> StateSpace::argFindGroup(const std::string& var_find, const std::string& group_label) const {
 		const LabelBundle& group = m_groups.at(group_label);
 		for (const auto& var : group.vars) {
-			for (uint8_t i=0; i<m_data.rank(); ++i) {
+			for (dimension_t i=0; i<m_data.rank(); ++i) {
 				auto result = m_data.findVariable(var_find, i);
 				if (result.first) return result;
 			}
@@ -72,7 +72,7 @@ namespace DiscreteModel {
 			begin = true;
 		}
 
-		for (uint8_t i=0; i < m_data.rank(); ++i) {
+		for (dimension_t i=0; i < m_data.rank(); ++i) {
 			if (begin) {
 				out << YAML::Key << "State Space" << YAML::Value << YAML::BeginMap;
 				begin = false;
@@ -93,7 +93,7 @@ namespace DiscreteModel {
 			data = YAML::LoadFile(filepath);
 
 			if (data["Rank"].as<uint32_t>() == 0 || !data["State Space"]) {
-				WARN("Attempted to deserialize empty state space (" << filepath);
+				WARN("Attempted to deserialize empty state space (" << filepath <<")");
 				return false;
 			}
 
@@ -102,7 +102,7 @@ namespace DiscreteModel {
 			typedef std::map<std::string, std::vector<std::string>> StrToStrArr;
 
 			StrToStrArr state_space = data["State Space"].as<StrToStrArr>();
-			uint8_t dim = 0;
+			dimension_t dim = 0;
 			for (auto&[name, label_bundle] : state_space) {
 				m_data.setDimension(dim++, name, label_bundle);
 			}
@@ -160,7 +160,7 @@ namespace DiscreteModel {
 		}
 		begin = true;
 
-		for (uint8_t i=0; i < m_data.rank(); ++i) {
+		for (dimension_t i=0; i < m_data.rank(); ++i) {
 			if (begin) {
 				PRINT_NAMED("State Space", "");
 				begin = false;
@@ -173,23 +173,21 @@ namespace DiscreteModel {
 
 	}
 
-	const Containers::SizedArray<const std::string*> StateSpace::interpret(const State* state) const {
-		ASSERT(state->getStateSpace() == this, "Cannot interpret state from a different state space");
+	const Containers::SizedArray<const std::string*> StateSpace::interpret(const uint32_t var_indices[]) const {
 		Containers::SizedArray<const std::string*> ret_vars(rank());
-		for (uint8_t i=0; i < rank(); ++i) {
-			uint32_t variable_index = (*state)[i];
-			ret_vars[i] = &m_data.getVariables(i)[variable_index];
+		for (dimension_t i=0; i < rank(); ++i) {
+			ret_vars[i] = &m_data.getVariables(i)[var_indices[i]];
 		}
 		return ret_vars;
 	}
 
-	uint32_t StateSpace::variableIndex(uint8_t index, const std::string& variable) const {
+	uint32_t StateSpace::variableIndex(dimension_t index, const std::string& variable) const {
 		uint32_t i=0;
 		for (const auto& var : m_data.getVariables(index)) {
 			if (var == variable) return i;
 			i++;
 		}
-		ASSERT(false, "Variable: " << variable << " was not found along dimension: " << index);
+		ASSERT(false, "Variable '" << variable << "' was not found along dimension: " << index);
 	}
 }
 

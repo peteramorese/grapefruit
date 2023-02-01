@@ -4,11 +4,13 @@
 #include<unordered_map>
 
 #include "tools/Containers.h"
-#include "core/State.h"
+//#include "core/State.h"
 
 namespace DiscreteModel {
 
-	//class State;
+	typedef uint8_t dimension_t;
+
+	class State;
 
 	class StateSpace {
 		protected:
@@ -22,11 +24,11 @@ namespace DiscreteModel {
 					};
 				private:
 					std::vector<Dimension> m_state_space;
-					std::unordered_map<std::string, uint32_t> m_label_to_index;
+					std::unordered_map<std::string, uint32_t> m_label_to_dim;
 				public:
 					StateSpaceData(uint32_t rank) : m_state_space(rank) {}
 
-					inline uint8_t rank() const {return m_state_space.size();}
+					inline dimension_t rank() const {return m_state_space.size();}
 					bool hasVariable(const std::string& variable) const {
 						for (const auto& dim : m_state_space) {
 							for (const auto& var : dim.variables) {
@@ -35,27 +37,27 @@ namespace DiscreteModel {
 						}
 						return false;
 					}
-					std::pair<bool, const std::string&> findVariable(const std::string& variable, uint32_t index) const {
+					std::pair<bool, const std::string&> findVariable(const std::string& variable, dimension_t index) const {
 						for (const auto& var : m_state_space[index].variables) {
 							if (var == variable) return {true, var};
 						}
 						return {false, ""};
 					}
-					inline bool hasLabel(const std::string& variable) const {return m_label_to_index.find(variable) != m_label_to_index.end();}
+					inline bool hasLabel(const std::string& variable) const {return m_label_to_dim.find(variable) != m_label_to_dim.end();}
 
-					inline uint32_t getIndex(const std::string& label) const {return m_label_to_index.at(label);}
+					inline dimension_t getDimension(const std::string& label) const {return m_label_to_dim.at(label);}
 					inline const std::string& getLabel(uint32_t index) const {return m_state_space[index].label;}
-					inline const std::vector<std::string>& getVariables(uint32_t index) const {return m_state_space[index].variables;}
-					inline const std::vector<std::string>& getVariables(const std::string& label) const {return m_state_space[m_label_to_index.at(label)].variables;}
+					inline const std::vector<std::string>& getVariables(dimension_t dim) const {return m_state_space[dim].variables;}
+					inline const std::vector<std::string>& getVariables(const std::string& label) const {return m_state_space[m_label_to_dim.at(label)].variables;}
 
-					void setDimension(uint32_t dim, const std::string& label, const std::vector<std::string>& variables) {
+					void setDimension(dimension_t dim, const std::string& label, const std::vector<std::string>& variables) {
 						m_state_space[dim].label = label;
 						m_state_space[dim].variables = variables;
-						m_label_to_index[label] = dim;
+						m_label_to_dim[label] = dim;
 					}
 
-					inline void clear() {m_state_space.clear(); m_label_to_index.clear();}
-					inline void reset(uint8_t rank) {clear(); m_state_space.resize(rank);}
+					inline void clear() {m_state_space.clear(); m_label_to_dim.clear();}
+					inline void reset(dimension_t rank) {clear(); m_state_space.resize(rank);}
 			};
 
 			struct LabelBundle {
@@ -71,25 +73,22 @@ namespace DiscreteModel {
 
 
 		protected:
-			const Containers::SizedArray<const std::string*> interpret(const State* state) const;
-	        inline const std::string& interpretLabel(const State* state, const std::string& label) const {
-	        	uint8_t index = m_data.getIndex(label);
-	        	return m_data.getVariables(index)[(*state)[index]];
-	        }
-
-			//inline const std::string& interpretLabel(const State* state, const std::string& label) const;
-			uint32_t variableIndex(uint8_t index, const std::string& variable) const;
+			const Containers::SizedArray<const std::string*> interpret(const uint32_t var_indices[]) const;
+			inline const std::string& interpretIndex(dimension_t dim, uint32_t var_index) const {return m_data.getVariables(dim)[var_index];}
+			inline dimension_t getDimension(const std::string& label) const {return m_data.getDimension(label);}
+			uint32_t variableIndex(dimension_t index, const std::string& variable) const;
 
 			bool deserialize(const std::string& filepath);
 
 		private:
 			friend class State;
+			friend class VariableReference;
 
 		public:
-			StateSpace(uint8_t rank) : m_data(rank) {}
+			StateSpace(dimension_t rank) : m_data(rank) {}
 			StateSpace(const std::string& filepath) : m_data(0) {deserialize(filepath);}
 
-			inline uint8_t rank() const {return m_data.rank();}
+			inline dimension_t rank() const {return m_data.rank();}
 
 			inline void setDimension(uint32_t dim, const std::string& label, const std::vector<std::string>& vars) {m_data.setDimension(dim, label, vars);}
 			inline const std::vector<std::string>& getVariables(uint32_t dim) const {return m_data.getVariables(dim);}
