@@ -38,7 +38,9 @@ target_include_directories(StateSpaceExample PUBLIC
 
 add_executable(ConditionExample ConditionExample.cpp)
 target_link_libraries(ConditionExample PUBLIC
-	#Condition
+	State
+	StateSpace
+	Condition
 )
 target_include_directories(ConditionExample PUBLIC
 	${TP_INCLUDE_DIRS}

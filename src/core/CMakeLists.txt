@@ -13,3 +13,12 @@ target_link_libraries(State PUBLIC
 target_include_directories(State PUBLIC
     ${TP_INCLUDE_DIRS}
 )
+
+add_library(Condition Condition.cpp)
+target_link_libraries(Condition PUBLIC
+    State
+    StateSpace
+)
+target_include_directories(Condition PUBLIC
+    ${TP_INCLUDE_DIRS}
+)

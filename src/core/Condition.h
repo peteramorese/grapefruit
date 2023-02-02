@@ -3,9 +3,12 @@
 #include<string>
 #include<unordered_map>
 
+#include "tools/Logging.h"
+
 namespace DiscreteModel {
 
 	class State;
+	class StateAccessCapture;
 
 	enum class ConditionType {
 		// Type of condition (for TransitionCondition)
@@ -67,14 +70,37 @@ namespace DiscreteModel {
 				std::string condition_name;
 				ConditionLogical logical;
 			};
+			struct ArgumentValues {
+				ArgumentValues(const std::string* variable_, const std::string& label_) : variable(variable_), label(label_) {}
+				ArgumentValues(const ArgumentValues& other) = default;
+				const std::string* variable;
+				std::string label;
+				bool operator==(const ArgumentValues& other) const {return *(variable) == *(other.variable) && label == other.label;}
+			};
+
 		protected:
-			bool subEvaluate(const State& state, const SubCondition& cond) const;
+			std::unordered_map<std::string, ArgumentValues> m_arg_values;
+
+		private:
+			void addArgValues(const std::string& condition_name, const std::string* variable, const std::string& label) {
+				m_arg_values.emplace(std::piecewise_construct, std::forward_as_tuple(condition_name), std::forward_as_tuple(variable, label));
+			}
+			const ArgumentValues& getArgValues(const std::string& condition_name) const {
+				ASSERT(m_arg_values.find(condition_name) != m_arg_values.end(), "Condition name: " << condition_name << " unrecognized");
+				return m_arg_values.at(condition_name);
+			}
+
+		protected:
+		  	_ConditionBase() = default;
+		 	virtual ~_ConditionBase() {}
+			std::pair<bool, StateAccessCapture> subEvaluate(const State& state, const SubCondition& cond);
+			inline void clearArgValues() {m_arg_values.clear();}
 			virtual void print() const = 0;
 	};
 
 	class Condition : protected _ConditionBase {
 		public:
-		 	Condition(ConditionJunction junction_type) : m_junction_type(junction_type) {}
+		 	Condition(ConditionJunction junction_type = ConditionJunction::Conjunction) : m_junction_type(junction_type) {}
 
 			inline void addCondition(ConditionArg lhs_type, const std::string& lhs, ConditionOperator condition_operator, ConditionArg rhs_type, const std::string& rhs, ConditionLogical logical = ConditionLogical::True) {
 				m_sub_conditions.emplace_back(lhs_type, lhs, condition_operator, rhs_type, rhs, "", logical);
@@ -82,12 +108,14 @@ namespace DiscreteModel {
 			inline void addCondition(ConditionArg lhs_type, const std::string& lhs, ConditionOperator condition_operator, ConditionArg rhs_type, const std::string& rhs, const std::string& condition_name, ConditionLogical logical = ConditionLogical::True) {
 				m_sub_conditions.emplace_back(lhs_type, lhs, condition_operator, rhs_type, rhs, condition_name, logical);
 			}
+
 			inline void setName(const std::string& name) {m_name = name;}
 			inline const std::string& getName() const {return m_name;}
 
-			bool evaluate(const State& state) const;
+			bool evaluate(const State& state);
 
-			virtual void print() const override;
+			// TODO
+			virtual void print() const override {}
 		private:
 		 	std::string m_name;
 			std::vector<SubCondition> m_sub_conditions;
@@ -95,35 +123,8 @@ namespace DiscreteModel {
 	};
 
 	class TransitionCondition : protected _ConditionBase {
-		private:
-			struct ArgumentProperties {
-				bool is_set;
-				const std::string* variable;
-				const std::string* label;
-				bool operator==(const ArgumentProperties& other) const {return is_set == other.is_set && *(variable) == *(other.variable) && *(label) == *(other.label);}
-			};
-		private:
-			std::vector<SubCondition> m_pre_conditions;
-			std::vector<SubCondition> m_post_conditions;
-			ConditionJunction m_pre_junction_type = ConditionJunction::Conjunction;
-			ConditionJunction m_post_junction_type = ConditionJunction::Conjunction;
-			std::unordered_map<std::string, ArgumentProperties> m_arg_variables;
-			std::unordered_map<std::string, ArgumentProperties> m_arg_labels;
-			bool m_excl_eq = true;
-			std::string m_action_label;
-			float m_action_cost;
-
-
-			//std::vector<std::pair<bool, std::string>> arg_L;
-			//std::unordered_map<std::string, int> arg_L_labels;
-			//std::vector<arg_V_struct> arg_V;
-			//std::unordered_map<std::string, int> arg_V_labels;
-			//std::pair<bool, std::string> arg_L_i;
-			//arg_V_struct arg_V_i;
-			//void sub_print(const std::vector<subCondition>& p_c) const;
-			//std::string label;
 		public:	
-			TransitionCondition(ConditionJunction pre_junction_type, ConditionJunction post_junction_type, const std::string& action_label, float action_cost) 
+			TransitionCondition(const std::string& action_label, float action_cost, ConditionJunction pre_junction_type = ConditionJunction::Conjunction, ConditionJunction post_junction_type = ConditionJunction::Conjunction) 
 				: m_pre_junction_type(pre_junction_type)
 				, m_post_junction_type(post_junction_type) 
 				, m_action_label(action_label)
@@ -131,6 +132,7 @@ namespace DiscreteModel {
 				{}
 
 			inline void addCondition(ConditionType type, ConditionArg lhs_type, const std::string& lhs, ConditionOperator condition_operator, ConditionArg rhs_type, const std::string& rhs, ConditionLogical logical = ConditionLogical::True) {
+				ASSERT(condition_operator != ConditionOperator::ArgFind && condition_operator != ConditionOperator::EqualsArg, "Must provide a name when using operator 'ArgFind' or 'ArgEquals'");
 				switch (type) {
 					case ConditionType::Pre:
 						m_pre_conditions.emplace_back(lhs_type, lhs, condition_operator, rhs_type, rhs, "", logical);
@@ -155,9 +157,19 @@ namespace DiscreteModel {
 			inline const std::string& getActionLabel() const {return m_action_label;}
 			inline float getActionCost() const {return m_action_cost;}
 
-			bool evaluate(const State& pre_state, const State& post_state) const;
+			bool evaluate(const State& pre_state, const State& post_state);
 
-			virtual void print() const override;
+			// TODO
+			virtual void print() const override {}
+
+		private:
+			std::vector<SubCondition> m_pre_conditions;
+			std::vector<SubCondition> m_post_conditions;
+			ConditionJunction m_pre_junction_type = ConditionJunction::Conjunction;
+			ConditionJunction m_post_junction_type = ConditionJunction::Conjunction;
+			bool m_excl_eq = true;
+			std::string m_action_label;
+			float m_action_cost;
 	};
 
 

@@ -33,6 +33,30 @@ namespace DiscreteModel {
 			const StateSpace* m_ss;
 	};
 
+#ifdef TP_MAX_RANK_64
+	class State;
+
+	class StateAccessCapture {
+		public:
+			StateAccessCapture(const State* state) : m_state(state) {}
+
+		 	const std::string& operator[](const std::string& label);
+			inline void operator|=(const StateAccessCapture& other) {m_accessed_bit_field |= other.m_accessed_bit_field;}
+
+			bool accessed(dimension_t dim) const {
+				return m_accessed_bit_field & (1 << dim);
+			}
+		private:
+			const State* m_state;
+			int64_t m_accessed_bit_field = 0;
+	};
+#else
+
+	// TODO (non bit-field implementation)
+
+#endif
+
+
 	class State {
 
 		public:
@@ -41,10 +65,11 @@ namespace DiscreteModel {
 			State(const State& other);
 			~State();
 
-			const StateSpace* getStateSpace() const {return m_ss;}
+			inline const StateSpace* getStateSpace() const {return m_ss;}
+			StateAccessCapture getStateAccessCapture() const {return StateAccessCapture(this);}
 			//void generateAllPossibleStates(std::vector<State>& all_states) ;
 			void print() const;
-			bool exclEquals(const State& other, const std::vector<std::string>& excl_labels) const;
+			bool exclEquals(const State& other, const StateAccessCapture& sac) const;
 
 			bool operator== (const State& other) const;
 			void operator= (const std::vector<std::string>& vars);
@@ -58,7 +83,16 @@ namespace DiscreteModel {
 			}
 
 		protected:
+		 	inline const std::string& operator[](dimension_t dim) const {
+				return m_ss->interpretIndex(dim, m_state_index_buffer[dim]);
+			}
+
+		protected:
 			uint32_t* m_state_index_buffer;
 			const StateSpace* m_ss;
+			
+			friend class StateAccessCapture;
 	};
+
+
 }

@@ -196,7 +196,7 @@ namespace DiscreteModel {
 			if (var == variable) return i;
 			i++;
 		}
-		ASSERT(false, "Variable '" << variable << "' was not found along dimension: " << index);
+		ASSERT(false, "Variable '" << variable << "' was not found along dimension: " << (uint32_t)index);
 	}
 }
 

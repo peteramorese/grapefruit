@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 
 #define TP_LOG_COLOR
 #define TP_ASSERTS

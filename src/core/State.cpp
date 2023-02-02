@@ -11,6 +11,13 @@
 
 namespace DiscreteModel {
 
+
+	const std::string& StateAccessCapture::operator[](const std::string& label) {
+		dimension_t dim = m_state->getStateSpace()->getDimension(label);
+		m_accessed_bit_field |= (1 << dim);
+		return (*m_state)[dim];
+	}
+
 	State::State(const StateSpace* ss) : m_ss(ss) {
 		m_state_index_buffer = new uint32_t[m_ss->rank()];
 	}
@@ -44,14 +51,9 @@ namespace DiscreteModel {
 		PRINT_NAMED("State", vars_str);
 	}
 
-	bool State::exclEquals(const State& other, const std::vector<std::string>& excl_labels) const {
-		std::vector check(m_ss->rank(), true);
-		for (const auto& label : excl_labels) {
-			dimension_t dim = m_ss->getDimension(label);
-			check[dim] = false;
-		}
+	bool State::exclEquals(const State& other, const StateAccessCapture& sac) const {
 		for (dimension_t i=0; i<m_ss->rank(); ++i) {
-			if (check[i] && m_state_index_buffer[i] != other.m_state_index_buffer[i]) return false;
+			if (!sac.accessed(i) && m_state_index_buffer[i] != other.m_state_index_buffer[i]) return false;
 		}
 		return true;
 	}

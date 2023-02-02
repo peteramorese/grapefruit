@@ -5,11 +5,19 @@
 #include<unordered_set>
 
 #include "tools/Containers.h"
-//#include "core/State.h"
+#include "tools/Logging.h"
+
+// Limit the rank of the statespace such that bitfield operations can be used
+#define TP_MAX_RANK_64
 
 namespace DiscreteModel {
 
+
+#ifdef TP_MAX_RANK_64
 	typedef uint8_t dimension_t;
+#else
+	typedef uint32_t dimension_t;
+#endif
 
 	class State;
 
@@ -80,7 +88,6 @@ namespace DiscreteModel {
 		 	// Backdoor methods for State
 			const Containers::SizedArray<const std::string*> interpret(const uint32_t var_indices[]) const;
 			inline const std::string& interpretIndex(dimension_t dim, uint32_t var_index) const {return m_data.getVariables(dim)[var_index];}
-			inline dimension_t getDimension(const std::string& label) const {return m_data.getDimension(label);}
 			uint32_t variableIndex(dimension_t index, const std::string& variable) const;
 
 
@@ -97,8 +104,12 @@ namespace DiscreteModel {
 
 			inline dimension_t rank() const {return m_data.rank();}
 
-			inline void setDimension(uint32_t dim, const std::string& label, const std::vector<std::string>& vars) {m_data.setDimension(dim, label, vars);}
+			inline void setDimension(uint32_t dim, const std::string& label, const std::vector<std::string>& vars) {
+				ASSERT(dim < rank(), "Dimension must be less than rank");
+				m_data.setDimension(dim, label, vars);
+			}
 			inline const std::vector<std::string>& getVariables(uint32_t dim) const {return m_data.getVariables(dim);}
+			inline dimension_t getDimension(const std::string& label) const {return m_data.getDimension(label);}
 
 			// Add a domain that names and bundles a set of variables
 			void addDomain(const std::string& domain_name, const std::vector<std::string>& vars);
