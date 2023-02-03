@@ -122,16 +122,16 @@ int main() {
 
 	/////////////////   TransitionCondition   /////////////////
 	// ArgFind:
-	PRINT("\n ArgFind:");
+	PRINT("\n Manipulator Examples:");
 	{
-	TransitionCondition cond("grasp", 0.0f, ConditionJunction::Conjunction, ConditionJunction::Conjunction); // Each sub-condition is conjoined
+	TransitionCondition cond("grasp", 1.0f, ConditionJunction::Conjunction, ConditionJunction::Conjunction); // Each sub-condition is conjoined
 
 	// Pre: "End effector is not holding and the variable in 'ee_loc' is found in group 'obj_locations'"
-	//cond.addCondition(ConditionType::Pre, ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "F"); // 'holding' == 'F'
+	cond.addCondition(ConditionType::Pre, ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "F"); // 'holding' == 'F'
 	cond.addCondition(ConditionType::Pre, ConditionArg::Group, "obj_locations", ConditionOperator::ArgFind, ConditionArg::Label, "ee_loc", "arg");
 
 	// Post: "End effector is holding and the label found from 'ArgFind' in the precondition assumes the variable 'ee'"
-	//cond.addCondition(ConditionType::Post, ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "T"); // 'holding' == 'T'
+	cond.addCondition(ConditionType::Post, ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "T"); // 'holding' == 'T'
 	cond.addCondition(ConditionType::Post, ConditionArg::Variable, "ee", ConditionOperator::Equals, ConditionArg::ArgLabel, "", "arg");
 	
 	State pre_state(&ss_manipulator, {"L3", "L2", "L3", "L0", "F"});
@@ -141,6 +141,57 @@ int main() {
 	// Demonstrate exclusion equals:
 	post_state = {"L3", "L2", "ee", "L1", "T"};
 	printTransitionConditionEvaluation("Grasp", cond, pre_state, post_state);
+	}
+	{
+	TransitionCondition cond("transport", 2.0f, ConditionJunction::Conjunction, ConditionJunction::Conjunction); // Each sub-condition is conjoined
+
+	// Pre: "End effector is not holding and ee_loc variable does not match any in obj_locations"
+	cond.addCondition(ConditionType::Pre, ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "T"); // 'holding' == 'T'
+	cond.addCondition(ConditionType::Pre, ConditionArg::Group, "obj_locations", ConditionOperator::ArgFind, ConditionArg::Label, "ee_loc", "arg_1", ConditionLogical::Negate);
+	cond.addCondition(ConditionType::Pre, ConditionArg::Label, "ee_loc", ConditionOperator::ArgFind, ConditionArg::None, "", "arg_2");
+
+	// Post: "End effector is holding and the arg variable stored in 'arg2' (the ee_loc) does not equal the new variable stored in ee_loc"
+	cond.addCondition(ConditionType::Post, ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "T"); // 'holding' == 'T'
+	cond.addCondition(ConditionType::Post, ConditionArg::Label, "ee_loc", ConditionOperator::Equals, ConditionArg::ArgVariable, "", "arg_2", ConditionLogical::Negate); // ee_loc has changed
+	cond.addCondition(ConditionType::Post, ConditionArg::Group, "obj_locations", ConditionOperator::ArgFind, ConditionArg::Label, "ee_loc", "na", ConditionLogical::Negate); // ee_loc is not in an object's location
+	
+	State pre_state(&ss_manipulator, {"L4", "L2", "ee", "L0", "T"});
+	State post_state(&ss_manipulator, {"L3", "L2", "ee", "L0", "T"});
+	printTransitionConditionEvaluation("Transport", cond, pre_state, post_state);
+
+	pre_state = {"L4", "L2", "ee", "L0", "T"};
+	post_state = {"L2", "L2", "ee", "L0", "T"};
+	printTransitionConditionEvaluation("Transport", cond, pre_state, post_state);
+
+	// Demonstrate exclusion equals:
+	pre_state = {"L4", "L2", "ee", "L0", "T"};
+	post_state = {"L3", "L1", "ee", "L0", "T"};
+	printTransitionConditionEvaluation("Transport", cond, pre_state, post_state);
+	}
+	{
+	TransitionCondition cond("release", 2.0f, ConditionJunction::Conjunction, ConditionJunction::Conjunction); // Each sub-condition is conjoined
+
+	// Pre: "End effector is holding and ee_loc var is not found among obj_locations and 'ee' is found among obj_locations"
+	cond.addCondition(ConditionType::Pre, ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "T"); 
+	cond.addCondition(ConditionType::Pre, ConditionArg::Group, "obj_locations", ConditionOperator::ArgFind, ConditionArg::Label, "ee_loc", "arg_1", ConditionLogical::Negate);
+	cond.addCondition(ConditionType::Pre, ConditionArg::Group, "obj_locations", ConditionOperator::ArgFind, ConditionArg::Variable, "ee", "arg_2");
+
+	// Post: "End effector is no longer holding, the arg label found in 'arg_2' equals the variable in ee_loc"
+	cond.addCondition(ConditionType::Post, ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "F"); 
+	cond.addCondition(ConditionType::Post, ConditionArg::Label, "ee_loc", ConditionOperator::Equals, ConditionArg::ArgLabel, "", "arg_2"); 
+	
+	State pre_state(&ss_manipulator, {"L4", "L2", "ee", "L0", "T"});
+	State post_state(&ss_manipulator, {"L4", "L2", "L4", "L0", "F"});
+	printTransitionConditionEvaluation("Release", cond, pre_state, post_state);
+
+	pre_state = {"L4", "L2", "ee", "L0", "T"};
+	post_state = {"L3", "L2", "L4", "L0", "F"};
+	printTransitionConditionEvaluation("Release", cond, pre_state, post_state);
+
+	// Demonstrate exclusion equals:
+	pre_state = {"L4", "L2", "ee", "L0", "T"};
+	post_state = {"L4", "ee", "L4", "L0", "T"};
+	printTransitionConditionEvaluation("Release", cond, pre_state, post_state);
 	}
 
 	return 0;

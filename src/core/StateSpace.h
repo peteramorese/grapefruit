@@ -123,6 +123,9 @@ namespace DiscreteModel {
 			inline const std::unordered_set<std::string>& getGroup(const std::string& group_label) const {return m_groups.at(group_label).vars;}
 			inline bool inGroup(const std::string& group_name, const std::string& label) const {return m_groups.at(group_name).inBundle(label);}
 
+			// Generate a set of all possible unique states:
+			void generateAllStates(std::vector<State>& all_states) const;
+
 			void serialize(const std::string& filepath) const;
 
 			void print() const;

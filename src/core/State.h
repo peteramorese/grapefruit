@@ -4,6 +4,7 @@
 #include<unordered_map>
 
 #include "tools/Logging.h"
+#include "tools/Containers.h"
 #include "core/StateSpace.h"
 
 
@@ -62,6 +63,7 @@ namespace DiscreteModel {
 		public:
 			State(const StateSpace* ss);
 			State(const StateSpace* ss, const std::vector<std::string>& vars);
+			State(const StateSpace* ss, const Containers::SizedArray<uint32_t>& var_indices);
 			State(const State& other);
 			~State();
 
@@ -95,7 +97,21 @@ namespace DiscreteModel {
 			const StateSpace* m_ss;
 			
 			friend class StateAccessCapture;
+			friend class std::hash<State>;
 	};
 
 
+} // namespace DiscreteModel
+
+namespace std {
+	template <>
+	struct hash<DiscreteModel::State> {
+		std::size_t operator()(const DiscreteModel::State& state) const {
+			std::size_t hash = state.m_state_index_buffer[0];
+			for (DiscreteModel::dimension_t dim = 0; dim < state.m_ss->rank(); ++dim) {
+				hash = hash ^ (state.m_state_index_buffer[dim] << dim);
+			}
+			return hash;
+		}
+	};
 }

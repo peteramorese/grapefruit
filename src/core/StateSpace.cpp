@@ -6,6 +6,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include "tools/Logging.h"
+#include "tools/Containers.h"
 #include "core/State.h"
 
 // YAML OVERLOADS
@@ -33,9 +34,25 @@ namespace DiscreteModel {
 		m_groups.emplace(std::make_pair(group_name, LabelBundle(labels)));
 	}
 
+	void StateSpace::generateAllStates(std::vector<State>& all_states) const {
+		dimension_t incrementing_dim = 0;
+		uint32_t var_index = 0;
+
+		Containers::SizedArray<uint32_t> increment_indices(rank());
+		for (dimension_t dim = 0; dim < increment_indices.size(); ++dim) increment_indices[dim] = 0;
+
+		while (incrementing_dim < rank() || var_index < m_data.getVariables(rank() - 1).size()) {
+			increment_indices[incrementing_dim] = var_index;
+			++var_index;
+			if (var_index == m_data.getVariables(incrementing_dim).size()) {
+				var_index = 0;
+				++incrementing_dim;
+			}
+		}
+		
+	}
+
 	void StateSpace::serialize(const std::string& filepath) const {
-
-
 		YAML::Emitter out;
 		out << YAML::BeginMap;
 

@@ -22,3 +22,13 @@ target_link_libraries(Condition PUBLIC
 target_include_directories(Condition PUBLIC
     ${TP_INCLUDE_DIRS}
 )
+
+add_library(TransitionSystem TransitionSystem.cpp)
+target_link_libraries(TransitionSystem PUBLIC
+    State
+    StateSpace
+    Condition
+)
+target_include_directories(TransitionSystem PUBLIC
+    ${TP_INCLUDE_DIRS}
+)

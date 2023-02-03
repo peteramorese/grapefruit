@@ -47,10 +47,14 @@ namespace DiscreteModel {
 						}
 					case ConditionArg::ArgLabel:
 						ASSERT(!cond.condition_name.empty(), "(operator 'Equals') Comparisons with arg values must match a condition name");
-					 	ASSERT(cond.lhs_type == ConditionArg::Label, "(operator 'Equals') lhs_type is not allowed");
-						// ADD VARIABLE CASE
-						eval = (!negate) ? cond.lhs == getArgValues(cond.condition_name).label : !(cond.lhs == getArgValues(cond.condition_name).label);
-						return {eval, sac};
+					 	ASSERT(cond.lhs_type == ConditionArg::Variable || cond.lhs_type == ConditionArg::Label, "(operator 'Equals') lhs_type is not allowed");
+						if (cond.lhs_type == ConditionArg::Variable) {
+							eval = (!negate) ? cond.lhs == sac[getArgValues(cond.condition_name).label] : !(cond.lhs == sac[getArgValues(cond.condition_name).label]);
+							return {eval, sac};
+						} else if (cond.lhs_type == ConditionArg::Label) {
+							eval = (!negate) ? sac[cond.lhs] == sac[getArgValues(cond.condition_name).label] : !(sac[cond.lhs] == sac[getArgValues(cond.condition_name).label]);
+							return {eval, sac};
+						}
 				}
 			case ConditionOperator::InDomain:
 			 	ASSERT(cond.rhs_type == ConditionArg::Domain, "(operator 'InDomain') rhs_type must be 'Domain'");

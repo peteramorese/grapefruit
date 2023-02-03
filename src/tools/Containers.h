@@ -14,6 +14,7 @@ namespace Containers {
             ~SizedArray() {delete[] m_array;}
             T& operator[](std::size_t i) {return m_array[i];}
             const T& operator[](std::size_t i) const {return m_array[i];}
+            std::size_t size() const {return m_size;}
         private:
             T* m_array;
             const std::size_t m_size;

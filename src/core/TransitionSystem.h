@@ -1,74 +1,78 @@
 #pragma once
+
 #include<string>
 #include<vector>
-#include<iostream>
+#include<unordered_set>
 #include<unordered_map>
 #include<memory>
-#include "graph.h"
-#include "state.h"
-#include "condition.h"
 
-template <class T>
-class TransitionSystem : public Graph<WL> {
-	protected:
-		bool is_blocking, mapped;
-		bool UNIQUE_ACTION; // non const for read in
-		bool manual; // non const for read in
-		std::shared_ptr<StateSpace> SS_read_in;
-		T* init_state;
-		std::vector<T> all_states;
-		std::vector<bool> state_added;
-		std::vector<unsigned> state_added_ind;
-		//unsigned int q_i;
-		std::vector<Condition*> conditions;
-		std::unordered_map<std::string, SimpleCondition*> propositions;
-		std::unordered_map<int, std::vector<std::string>> state_to_label_map;
-		std::vector<T*> state_map;
-		std::vector<std::shared_ptr<WL>> node_container;
-		bool generated;
-		void safeAddState(int q_i, T* add_state, int add_state_ind, Condition* cond);
-	public:
-	 	//TODO Move this to protected:
-		bool parseLabelAndEval(const std::string& label, const T* state);
-		TransitionSystem(bool UNIQUE_ACTION_ = true, bool manual_ = false);
-		//unsigned int size() const;
-		bool connect(T* src, T* dst, float weight, const std::string& action);
-		void finishConnecting();
-		void addCondition(Condition* condition_);
-		void setConditions(const std::vector<Condition*>& conditions_);
-		void addProposition(SimpleCondition* proposition_);
-		void setPropositions(const std::vector<SimpleCondition*>& propositions_);
-		void setInitState(T* init_state_);
-		int getInitStateInd();
-		const T* getState(int node_index) const;
-		void mapStatesToLabels(const std::vector<const DFA::alphabet_t*>& alphabet);
-		const std::vector<std::string>* returnStateLabels(int state_ind) const;
-		virtual bool generate();
-		//T compose(const T* mult_TS) const;
-		void clear();
-		void print();
-		void writeToFile(const std::string& filename);
-		std::shared_ptr<StateSpace> readFromFile(const std::string& filename);
-		//~TransitionSystem();
-};
+#include "core/Graph.h"
+#include "core/State.h"
+#include "core/Condition.h"
 
-template <class T>
-class TS_EVAL : public TransitionSystem<T> {
-	private:
-		int curr_node, init_node;
-	public:
-		//TS_EVAL(const TransitionSystem<T>* tsptr_, int init_node);
-		TS_EVAL(int init_node);
-		TS_EVAL(bool UNIQUE_ACTION_, bool manual_, int init_node);
-		bool eval(const std::string& action, bool evolve);
-		bool evalReverse(const std::string& action, bool evolve);
-		//bool isReversible() const;
-		int getCurrNode() const;
-		void getConnectedDataEVAL(std::vector<WL*>& con_data);
-		void getConnectedNodesEVAL(std::vector<int>& con_nodes);
-		void getParentDataEVAL(std::vector<WL*>& con_data);
-		void getParentNodesEVAL(std::vector<int>& con_nodes);
-		void set(int set_node);
-		void reset();
-		const T* getCurrState() const;
-};
+namespace DiscreteModel {
+	struct TransitionSystemLabel {
+		float cost;
+		std::string action;
+	};
+
+	class TransitionSystem : public Graph<TransitionSystemLabel> {
+		public:
+		 	class BijectiveStateContainer {
+				public:
+					void addStateIfUnique(const State& state) {
+						if (!m_state_to_ind.contains(state)) {
+							m_ind_to_state.push_back(state);
+							m_state_to_ind[state] = m_ind_to_state.size() - 1;
+						}
+					}
+					State& operator[](uint32_t state_ind) {return m_ind_to_state[state_ind];}
+					const State& operator[](uint32_t state_ind) const {return m_ind_to_state[state_ind];}
+					uint32_t operator[](const State& state) const {return m_state_to_ind.at(state);}
+				private:
+					std::vector<State> m_ind_to_state;
+					std::unordered_map<State, uint32_t> m_state_to_ind;
+			};
+
+		public:
+			TransitionSystem();
+			TransitionSystem(const std::string& filepath);
+
+			bool parseLabelAndEval(const std::string& label, const T* state);
+			int getInitStateInd();
+			const T* getState(int node_index) const;
+			void mapStatesToLabels(const std::vector<const DFA::alphabet_t*>& alphabet);
+			const std::vector<std::string>* returnStateLabels(int state_ind) const;
+			virtual bool generate();
+			void clear();
+			void print();
+			void writeToFile(const std::string& filepath);
+			std::shared_ptr<StateSpace> readFromFile(const std::string& filename);
+
+		private:
+			void safeAddState(int q_i, T* add_state, int add_state_ind, Condition* cond);
+			void deserialize(const std::string& filepath);
+
+		protected:
+		 	BijectiveStateContainer m_state_container;
+			std::unordered_map<std::string, Condition> m_propositions;
+			
+			friend class TransitionSystemGenerator;
+	};
+
+	class TransitionSystemGenerator {
+		public:
+			struct TransitionSystemProperties {
+				std::vector<Condition> propositions;
+				std::vector<TransitionCondition> conditions;
+				State init_state;
+				bool global_unique_actions = true;
+			};
+
+		public:
+			static const std::shared_ptr<TransitionSystem> generate(const TransitionSystemProperties& specs);
+
+		private:
+			static void addStateIfUnique(const State& state, std::vector<State>& state_container, std::unordered_map<State, uint32_t>& unique_state_container);
+	};
+}

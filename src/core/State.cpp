@@ -27,6 +27,15 @@ namespace DiscreteModel {
 		operator=(vars);
 	}
 
+	State::State(const StateSpace* ss, const Containers::SizedArray<uint32_t>& var_indices) : m_ss(ss) {
+		m_state_index_buffer = new uint32_t[m_ss->rank()];
+		ASSERT(var_indices.size() == m_ss->rank(), "Variable index array size does not match state space rank");
+		for (dimension_t dim = 0; dim < m_ss->rank(); ++dim) {
+			ASSERT(var_indices[dim] < m_ss->m_data.getVariables(dim).size(), "Variable index exceeds the number of variables in dimension " << (uint32_t)dim);
+			m_state_index_buffer[dim] = var_indices[dim];
+		}
+	}
+
 	State::~State() {
 		delete[] m_state_index_buffer;
 	}
