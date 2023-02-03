@@ -16,6 +16,11 @@ namespace DiscreteModel {
 		bool negate = cond.logical == ConditionLogical::Negate;
 		switch (cond.condition_operator) {
 			case ConditionOperator::Equals: 
+			 	ASSERT(cond.rhs_type == ConditionArg::Variable
+						|| cond.rhs_type == ConditionArg::Label
+						|| cond.rhs_type == ConditionArg::ArgVariable
+						|| cond.rhs_type == ConditionArg::ArgLabel
+						, "(operator 'Equals') rhs_type must of type 'Variable', 'Label', 'ArgVariable', or 'ArgLabel'");
 			 	switch (cond.rhs_type) {
 					case ConditionArg::Variable:
 					 	ASSERT(cond.lhs_type == ConditionArg::Label, "(operator 'Equals') lhs_type is not allowed");
@@ -43,6 +48,7 @@ namespace DiscreteModel {
 					case ConditionArg::ArgLabel:
 						ASSERT(!cond.condition_name.empty(), "(operator 'Equals') Comparisons with arg values must match a condition name");
 					 	ASSERT(cond.lhs_type == ConditionArg::Label, "(operator 'Equals') lhs_type is not allowed");
+						// ADD VARIABLE CASE
 						eval = (!negate) ? cond.lhs == getArgValues(cond.condition_name).label : !(cond.lhs == getArgValues(cond.condition_name).label);
 						return {eval, sac};
 				}
@@ -70,17 +76,17 @@ namespace DiscreteModel {
 						addArgValues(cond.condition_name, &state[cond.lhs], cond.lhs); // Access thru state since storing variable is not needed for excl eq
 						return {true, sac};
 					case ConditionArg::Group:
-						ASSERT(cond.rhs_type == ConditionArg::Variable || cond.rhs_type == ConditionArg::Group, "(operator 'ArgFind') ArgFind on a 'Group' can only search for rhs_type 'Variable' or rhs_type 'Label'");
+						ASSERT(cond.rhs_type == ConditionArg::Variable || cond.rhs_type == ConditionArg::Label, "(operator 'ArgFind') ArgFind on a 'Group' can only search for rhs_type 'Variable' or rhs_type 'Label'");
 						switch (cond.rhs_type) {
 							case ConditionArg::Variable:
 							  	{
-									auto[found, label] = state.getStateSpace()->argFindGroup(cond.rhs, cond.lhs);
+									auto[found, label] = state.argFindGroup(cond.rhs, cond.lhs);
 									if (found) addArgValues(cond.condition_name, &sac[label], label);
 									return {(!negate) ? found : !found, sac};
 								}
 							case ConditionArg::Label:
 							  	{
-									auto[found, label] = state.getStateSpace()->argFindGroup(sac[cond.rhs], cond.lhs);
+									auto[found, label] = state.argFindGroup(sac[cond.rhs], cond.lhs);
 									if (found) addArgValues(cond.condition_name, &sac[label], label);
 									return {(!negate) ? found : !found, sac};
 								}

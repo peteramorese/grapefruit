@@ -71,6 +71,9 @@ namespace DiscreteModel {
 			void print() const;
 			bool exclEquals(const State& other, const StateAccessCapture& sac) const;
 
+			// Find an instance of 'var_find' among dimensions that are within group 'group_label'
+			std::pair<bool, const std::string&> argFindGroup(const std::string& var_find, const std::string& group_label) const;
+
 			bool operator== (const State& other) const;
 			void operator= (const std::vector<std::string>& vars);
 		 	inline const std::string& operator[](const std::string& label) const {

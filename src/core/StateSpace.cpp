@@ -23,7 +23,6 @@ namespace DiscreteModel {
 		for (const auto& variable : vars) {
 			ASSERT(m_data.hasVariable(variable), "Input variable ('" << variable << "') was not found in state space");
 		}
-		//m_domains[domain_name] = LabelBundle(vars);
 		m_domains.emplace(std::make_pair(domain_name, LabelBundle(vars)));
 	}
 
@@ -32,17 +31,6 @@ namespace DiscreteModel {
 			ASSERT(m_data.hasLabel(label), "Input label ('" << label << "') was not found in state space");
 		}
 		m_groups.emplace(std::make_pair(group_name, LabelBundle(labels)));
-	}
-
-	std::pair<bool, const std::string&> StateSpace::argFindGroup(const std::string& var_find, const std::string& group_label) const {
-		const LabelBundle& group = m_groups.at(group_label);
-		for (const auto& var : group.vars) {
-			for (dimension_t i=0; i<m_data.rank(); ++i) {
-				auto result = m_data.findVariable(var_find, i);
-				if (result.first) return result;
-			}
-		}
-		return {false, ""};
 	}
 
 	void StateSpace::serialize(const std::string& filepath) const {

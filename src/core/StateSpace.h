@@ -46,11 +46,13 @@ namespace DiscreteModel {
 						}
 						return false;
 					}
-					std::pair<bool, const std::string&> findVariable(const std::string& variable, dimension_t index) const {
+					uint32_t findVariable(const std::string& variable, dimension_t index) const {
+						uint32_t var_ind = 0;
 						for (const auto& var : m_state_space[index].variables) {
-							if (var == variable) return {true, var};
+							if (var == variable) return var_ind;
+							var_ind++;
 						}
-						return {false, ""};
+						ASSERT(false, "Variable '" << variable << "' does not exist along dimension " << (uint32_t)index);
 					}
 					inline bool hasLabel(const std::string& variable) const {return m_label_to_dim.find(variable) != m_label_to_dim.end();}
 
@@ -120,9 +122,6 @@ namespace DiscreteModel {
 			void addGroup(const std::string& group_name, const std::vector<std::string>& labels);
 			inline const std::unordered_set<std::string>& getGroup(const std::string& group_label) const {return m_groups.at(group_label).vars;}
 			inline bool inGroup(const std::string& group_name, const std::string& label) const {return m_groups.at(group_name).inBundle(label);}
-
-			// Find an instance of 'var_find' among dimensions that are within group 'group_label'
-			std::pair<bool, const std::string&> argFindGroup(const std::string& var_find, const std::string& group_label) const;
 
 			void serialize(const std::string& filepath) const;
 

@@ -47,7 +47,6 @@ namespace DiscreteModel {
 		Equals,			// Check if a 'Label' equals a 'Variable'
 		InDomain,			// Check if a 'Variable' or the variable inside a 'Label' is inside a 'Domain'
 		ArgFind,		// Check if an instance of 'Variable' or the variable inside a 'Label' is found within a 'Group'. If found, the variable/label is stored
-		EqualsArg		// Check if a 'Label' or 'Variable' is equal to the found argument
 	};
 
 	// Houses common types and methods for Condition and TransitionCondition
@@ -103,6 +102,8 @@ namespace DiscreteModel {
 		 	Condition(ConditionJunction junction_type = ConditionJunction::Conjunction) : m_junction_type(junction_type) {}
 
 			inline void addCondition(ConditionArg lhs_type, const std::string& lhs, ConditionOperator condition_operator, ConditionArg rhs_type, const std::string& rhs, ConditionLogical logical = ConditionLogical::True) {
+				ASSERT(condition_operator != ConditionOperator::ArgFind && 
+					!(condition_operator == ConditionOperator::Equals && (rhs_type == ConditionArg::ArgLabel || rhs_type == ConditionArg::ArgVariable)), "Must provide a name when using operator 'ArgFind' or 'ArgEquals'");
 				m_sub_conditions.emplace_back(lhs_type, lhs, condition_operator, rhs_type, rhs, "", logical);
 			}
 			inline void addCondition(ConditionArg lhs_type, const std::string& lhs, ConditionOperator condition_operator, ConditionArg rhs_type, const std::string& rhs, const std::string& condition_name, ConditionLogical logical = ConditionLogical::True) {
@@ -132,7 +133,8 @@ namespace DiscreteModel {
 				{}
 
 			inline void addCondition(ConditionType type, ConditionArg lhs_type, const std::string& lhs, ConditionOperator condition_operator, ConditionArg rhs_type, const std::string& rhs, ConditionLogical logical = ConditionLogical::True) {
-				ASSERT(condition_operator != ConditionOperator::ArgFind && condition_operator != ConditionOperator::EqualsArg, "Must provide a name when using operator 'ArgFind' or 'ArgEquals'");
+				ASSERT(condition_operator != ConditionOperator::ArgFind && 
+					!(condition_operator == ConditionOperator::Equals && (rhs_type == ConditionArg::ArgLabel || rhs_type == ConditionArg::ArgVariable)), "Must provide a name when using operator 'ArgFind' or 'ArgEquals'");
 				switch (type) {
 					case ConditionType::Pre:
 						m_pre_conditions.emplace_back(lhs_type, lhs, condition_operator, rhs_type, rhs, "", logical);

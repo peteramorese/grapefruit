@@ -58,6 +58,15 @@ namespace DiscreteModel {
 		return true;
 	}
 
+	std::pair<bool, const std::string&> State::argFindGroup(const std::string& var_find, const std::string& group_label) const {
+		const auto& group = m_ss->getGroup(group_label);
+		for (const auto& lbl : group) {
+			dimension_t lbl_dim = m_ss->getDimension(lbl);
+			if (m_ss->variableIndex(lbl_dim, var_find) == m_state_index_buffer[lbl_dim]) return {true, lbl};
+		}
+		return {false, ""};
+	}
+
 	bool State::operator== (const State& other) const {
 		for (dimension_t i=0; i<m_ss->rank(); ++i) {
 			if (m_state_index_buffer[i] != other.m_state_index_buffer[i]) return false;
