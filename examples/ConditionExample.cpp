@@ -145,7 +145,7 @@ int main() {
 	{
 	TransitionCondition cond("transport", 2.0f, ConditionJunction::Conjunction, ConditionJunction::Conjunction); // Each sub-condition is conjoined
 
-	// Pre: "End effector is not holding and ee_loc variable does not match any in obj_locations"
+	// Pre: "End effector is holding and ee_loc variable does not match any in obj_locations"
 	cond.addCondition(ConditionType::Pre, ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "T"); // 'holding' == 'T'
 	cond.addCondition(ConditionType::Pre, ConditionArg::Group, "obj_locations", ConditionOperator::ArgFind, ConditionArg::Label, "ee_loc", "arg_1", ConditionLogical::Negate);
 	cond.addCondition(ConditionType::Pre, ConditionArg::Label, "ee_loc", ConditionOperator::ArgFind, ConditionArg::None, "", "arg_2");

@@ -35,21 +35,32 @@ namespace DiscreteModel {
 	}
 
 	void StateSpace::generateAllStates(std::vector<State>& all_states) const {
-		dimension_t incrementing_dim = 0;
-		uint32_t var_index = 0;
+		// Count the number of possible states using a permutation.
+		uint32_t counter = 1;
+		Containers::SizedArray<uint32_t> column_wrapper(rank());
+		Containers::SizedArray<uint32_t> digits(rank());
+		for (dimension_t dim=0; dim<rank(); ++dim) {
+			uint32_t num_variables = m_data.getVariables(dim).size();
+			counter *= num_variables;
+			column_wrapper[dim] = num_variables;
+			digits[dim] = 0;
+		}
+		all_states.resize(counter, State(this));
 
-		Containers::SizedArray<uint32_t> increment_indices(rank());
-		for (dimension_t dim = 0; dim < increment_indices.size(); ++dim) increment_indices[dim] = 0;
-
-		while (incrementing_dim < rank() || var_index < m_data.getVariables(rank() - 1).size()) {
-			increment_indices[incrementing_dim] = var_index;
-			++var_index;
-			if (var_index == m_data.getVariables(incrementing_dim).size()) {
-				var_index = 0;
-				++incrementing_dim;
+		int a = 0;
+		int b = 0;
+		for (uint32_t i=0; i<counter; i++) {
+			all_states[i] = digits;
+			digits[0]++;
+			for (dimension_t dim=0; dim < rank(); dim++){
+				if (digits[dim] >= column_wrapper[dim]) {
+					digits[dim] = 0;
+					if (dim < rank() -1) {
+						++digits[dim+1];
+					}
+				}
 			}
 		}
-		
 	}
 
 	void StateSpace::serialize(const std::string& filepath) const {
@@ -195,13 +206,13 @@ namespace DiscreteModel {
 		return ret_vars;
 	}
 
-	uint32_t StateSpace::variableIndex(dimension_t index, const std::string& variable) const {
+	std::pair<uint32_t, bool> StateSpace::variableIndex(dimension_t index, const std::string& variable) const {
 		uint32_t i=0;
 		for (const auto& var : m_data.getVariables(index)) {
-			if (var == variable) return i;
+			if (var == variable) return {i, true};
 			i++;
 		}
-		ASSERT(false, "Variable '" << variable << "' was not found along dimension: " << (uint32_t)index);
+		return {0, false};
 	}
 }
 
@@ -228,57 +239,3 @@ namespace YAML {
         }
     };
 }
-
-
-//namespace YAML {
-//    template <>
-//    struct convert<std::unordered_set<std::string>> {
-//        static Node encode(const std::unordered_set<std::string>& str_set) {
-//            Node node;
-//            for (auto str : str_set) node.push_back(str);
-//            return node;
-//        }
-//        static bool decode(const Node& node, std::unordered_set<std::string>& str_set) {
-//            if (!node.IsSequence()) return false;
-//			str_set.clear();
-//
-//			std::vector<std::string> items = node.as<std::vector<std::string>>();
-//			for (const auto& item : items) str_set.insert(item);
-//            return true;
-//        }
-//    };
-//}
-
-
-
-
-//void StateSpace::generateAllPossibleStates_(std::vector<State>& all_states) {
-//	int counter = 1;
-//	// Count the number of possible states using a permutation. Omit the last element in each
-//	// state_space_named array because it represents UNDEF
-//	std::vector<int> column_wrapper(state_space_dim);
-//	std::vector<int> digits(state_space_dim);
-//	for (int i=0; i<state_space_dim; i++){
-//		int inds = state_space_named[i].size() - 1;
-//		counter *= inds;
-//		column_wrapper[i] = inds;
-//		digits[i] = 0;
-//	}
-//	all_states.resize(counter, State(this));
-//	int a = 0;
-//	int b = 0;
-//	for (int i=0; i<counter; i++) {
-//		for (int ii=0; ii<state_space_dim; ii++){
-//			all_states[i].setState(state_space_named[ii][digits[ii]],ii);
-//		}
-//		digits[0]++;
-//		for (int ii=0; ii<state_space_dim; ii++){
-//			if (digits[ii] > column_wrapper[ii]-1) {
-//				digits[ii] = 0;
-//				if (ii != state_space_dim-1) {
-//					digits[ii+1]++;
-//				}
-//			}
-//		}
-//	}
-//}

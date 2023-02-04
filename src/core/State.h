@@ -61,6 +61,7 @@ namespace DiscreteModel {
 	class State {
 
 		public:
+		 	State() = delete;
 			State(const StateSpace* ss);
 			State(const StateSpace* ss, const std::vector<std::string>& vars);
 			State(const StateSpace* ss, const Containers::SizedArray<uint32_t>& var_indices);
@@ -69,8 +70,8 @@ namespace DiscreteModel {
 
 			inline const StateSpace* getStateSpace() const {return m_ss;}
 			StateAccessCapture getStateAccessCapture() const {return StateAccessCapture(this);}
-			//void generateAllPossibleStates(std::vector<State>& all_states) ;
 			void print() const;
+			std::string to_str() const;
 			bool exclEquals(const State& other, const StateAccessCapture& sac) const;
 
 			// Find an instance of 'var_find' among dimensions that are within group 'group_label'
@@ -78,6 +79,7 @@ namespace DiscreteModel {
 
 			bool operator== (const State& other) const;
 			void operator= (const std::vector<std::string>& vars);
+			void operator= (const Containers::SizedArray<uint32_t>& var_indices);
 		 	inline const std::string& operator[](const std::string& label) const {
 				dimension_t dim = m_ss->getDimension(label);
 				return m_ss->interpretIndex(dim, m_state_index_buffer[dim]);

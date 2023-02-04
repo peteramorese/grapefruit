@@ -90,7 +90,7 @@ namespace DiscreteModel {
 		 	// Backdoor methods for State
 			const Containers::SizedArray<const std::string*> interpret(const uint32_t var_indices[]) const;
 			inline const std::string& interpretIndex(dimension_t dim, uint32_t var_index) const {return m_data.getVariables(dim)[var_index];}
-			uint32_t variableIndex(dimension_t index, const std::string& variable) const;
+			std::pair<uint32_t, bool> variableIndex(dimension_t index, const std::string& variable) const;
 
 
 			// Read from file
