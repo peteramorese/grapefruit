@@ -7,15 +7,16 @@
 
 #include "tools/Logging.h"
 
-using namespace DiscreteModel;
+using namespace TP;
+using namespace TP::DiscreteModel;
 
 int main() {
  
 	/////////////////   Set up the system   /////////////////
 
-	std::vector<std::string> locations = {"L0", "L1", "L2"};
-	std::vector<std::string> objects = {"obj_0_loc"};
-	std::vector<std::string> init_state_vars = {"stow", "L0", "F"};
+	std::vector<std::string> locations = {"L0", "L1", "L2", "L3"};
+	std::vector<std::string> objects = {"obj_0_loc", "obj_1_loc"};
+	std::vector<std::string> init_state_vars = {"stow", "L0", "L3", "F"};
 
 
 	/////////////////   State Space   /////////////////
@@ -84,6 +85,11 @@ int main() {
 	// Post: "End effector is no longer holding, the arg label found in 'arg_2' equals the variable in ee_loc"
 	cond.addCondition(ConditionType::Post, ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "F"); 
 	cond.addCondition(ConditionType::Post, ConditionArg::Label, "ee_loc", ConditionOperator::Equals, ConditionArg::ArgLabel, "", "arg_2"); 
+
+	// Force ee_loc to stay the same
+	cond.forceExclusionComparison("ee_loc");
+
+    props.conditions.push_back(cond);
 	}
 	{
 	TransitionCondition cond("transit", 1.0f, ConditionJunction::Conjunction, ConditionJunction::Conjunction); // Each sub-condition is conjoined
@@ -117,10 +123,29 @@ int main() {
         }
     }
 
-
+    // Generate
     std::shared_ptr<TransitionSystem> ts = TransitionSystemGenerator::generate(props);
     ts->print();
+	ts->listPropositions();
 
+
+	/////////////////   Test Propositions   /////////////////
+
+	//FormalMethods::Alphabet alphabet = {"!(obj_0_L2 | obj_0_L1)"};
+
+	//ts->mapStatesToLabels(alphabet);
+
+	{
+	State test_state(&ss_manipulator, {"stow", "L1", "L3", "F"});
+	std::string observation = "!(obj_0_loc_L2 | obj_0_loc_L1)";
+	LOG("Observation: " << observation << ", State: " << test_state.to_str() << " Result: " << ts->parseObservationAndEvaluate(test_state, observation));
+	}
+
+	{
+	State test_state(&ss_manipulator, {"stow", "L2", "L3", "F"});
+	std::string observation = "!(obj_0_loc_L2 | obj_0_loc_L1)";
+	LOG("Observation: " << observation << ", State: " << test_state.to_str() << " Result: " << ts->parseObservationAndEvaluate(test_state, observation));
+	}
 
 	return 0;
 }

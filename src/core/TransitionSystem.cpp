@@ -1,11 +1,12 @@
 #include "TransitionSystem.h"
 
 
+namespace TP {
 namespace DiscreteModel {
 
     // TransitionSystemGenerator
 
-    const std::shared_ptr<TransitionSystem> TransitionSystemGenerator::generate(TransitionSystemProperties& props) {
+    std::shared_ptr<TransitionSystem> TransitionSystemGenerator::generate(TransitionSystemProperties& props) {
         std::shared_ptr<TransitionSystem> ts = std::make_shared<TransitionSystem>();
 
         // Copy the propositions into the transition system
@@ -37,10 +38,88 @@ namespace DiscreteModel {
             }
             ++state_ind;
         }
+        ts->mapStatesToLabels(props.alphabet);
         return ts;
     }
 
     // TransitionSystem
+
+    bool TransitionSystem::parseObservationAndEvaluate(const State& state, const std::string& observation) const {
+        if (observation == "1") return true;
+
+        std::vector<std::string> proposition_stack(1);
+        std::vector<bool> bool_stack(1);
+        std::vector<bool> negate_next_stack = {false};
+        std::vector<char> prev_operator_stack = {'\0'};
+        bool collapse = false;
+
+        for (uint32_t i = 0; i < observation.size(); ++i) {
+            char character = observation[i];
+            bool sub_eval = false;
+
+            switch (character) {
+                case '!': negate_next_stack.back() = !negate_next_stack.back(); continue;
+                case ' ': continue;
+                case '(': 
+                    proposition_stack.push_back("");
+                    bool_stack.push_back(true);
+                    negate_next_stack.push_back(false);
+                    prev_operator_stack.push_back('\0');
+                    continue;
+                case ')':
+                    ASSERT(bool_stack.size() > 1, "Found ')' with out opening bracket");
+                    if (!collapse) sub_eval = getProposition(proposition_stack.back()).evaluate(state);
+                    if (negate_next_stack.back()) sub_eval = !sub_eval;
+                    proposition_stack.back().clear();
+                    switch (prev_operator_stack.back()) {
+                        case '\0': bool_stack.back() = sub_eval; break;
+                        case '|': bool_stack.back() = bool_stack.back() || sub_eval; break;
+                        case '&': bool_stack.back() = bool_stack.back() && sub_eval; break;
+                    }
+
+                    negate_next_stack.pop_back();
+                    prev_operator_stack.pop_back();
+                    proposition_stack.pop_back();
+                    sub_eval = bool_stack.back();
+                    bool_stack.pop_back();
+                    collapse = true;
+            }
+            bool at_end = i == observation.size() - 1;
+            if (character == '|' || character == '&' || at_end) {
+                if (at_end) proposition_stack.back().push_back(character);
+                if (!collapse) sub_eval = getProposition(proposition_stack.back()).evaluate(state);
+                collapse = false;
+                if (negate_next_stack.back()) {
+                    sub_eval = !sub_eval;
+                    negate_next_stack.back() = false;
+                }
+                proposition_stack.back().clear();
+                switch (prev_operator_stack.back()) {
+                    case '\0': bool_stack.back() = sub_eval; break;
+                    case '|': bool_stack.back() = bool_stack.back() || sub_eval; break;
+                    case '&': bool_stack.back() = bool_stack.back() && sub_eval; break;
+                }
+                prev_operator_stack.back() = character;
+            } else {
+                proposition_stack.back().push_back(character);
+            }
+        }
+        return bool_stack.front();
+    }
+
+    void TransitionSystem::mapStatesToLabels(const FormalMethods::Alphabet& alphabet) {
+        if (alphabet.size() == 0) return;
+        for (uint32_t state_ind = 0; state_ind < m_state_container.size(); ++state_ind) {
+            std::unordered_map<std::string, bool> included;
+            for (const auto& observation : alphabet) {
+                if (included[observation]) continue;
+                if (parseObservationAndEvaluate(m_state_container[state_ind], observation)) {
+                    m_state_container.addObservationToState(observation, state_ind);
+                }
+                included[observation] = true;
+            }
+        }
+    }
 
     void TransitionSystem::print() const {
         LOG("Printing transition system");
@@ -54,4 +133,5 @@ namespace DiscreteModel {
         }
     }
 
-}
+} // namespace DiscreteModel
+} // namespace TP

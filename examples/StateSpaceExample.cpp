@@ -2,6 +2,8 @@
 
 #include "core/StateSpace.h"
 
+using namespace TP;
+
 int main() {
  
     std::string filepath = "test_state_space.yaml";

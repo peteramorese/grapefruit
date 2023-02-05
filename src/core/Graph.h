@@ -2,42 +2,13 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <list>
 
 #include "tools/Logging.h"
+#include "tools/Containers.h"
 
-template <class T>
-class RandomAccessList {
-	public:
-		void push_back(const T& value) {
-			m_list.push_back(value);
-			m_access_ptrs.push_back(&m_list.back());
-		}
+namespace TP {
 
-		T& operator[](uint32_t i) {return *m_access_ptrs[i];}
-		const T& operator[](uint32_t i) const {return *m_access_ptrs[i];}
-
-		void clear() {m_list.clear(); m_access_ptrs.clear();}
-		void resize(std::size_t count) {
-			auto list_it = std::prev(m_list.end());
-			m_list.resize(count);
-			m_access_ptrs.reserve(count);
-			while (m_access_ptrs.size() < m_access_ptrs.capacity()) {
-				m_access_ptrs.insert(m_access_ptrs.end(), &(*(++list_it)));
-			}
-		}
-		std::size_t size() const {return m_list.size();}
-
-		std::list<T>::iterator begin() {return m_list.begin();}
-		std::list<T>::iterator end() {return m_list.end();}
-		std::list<T>::const_iterator begin() const {return m_list.cbegin();}
-		std::list<T>::const_iterator end() const {return m_list.cend();}
-	private:
-		std::list<T> m_list;
-		std::vector<T*> m_access_ptrs;
-};
-
-namespace AugmentedStateIndex {
+namespace AugmentedNodeIndex {
 	static uint64_t wrap(const std::vector<uint32_t>& inds, const std::vector<uint32_t>& graph_sizes) {
 		uint64_t ret_ind = 0;
 		uint64_t prod_size = 1;
@@ -72,6 +43,7 @@ namespace AugmentedStateIndex {
 	}
 }
 
+using Node = uint32_t;
 
 template<class T>
 class Graph {
@@ -92,26 +64,25 @@ class Graph {
 
 		std::size_t size() const {return m_graph.size();}
 
-		const std::vector<T>& getOutgoingEdges(uint32_t ind) {
-			LOG("graph size: " << m_graph.size() << " ind: " <<ind);
-			return m_graph[ind].forward.edges;
+		const std::vector<T>& getOutgoingEdges(Node node) {
+			return m_graph[node].forward.edges;
 		}
 
-		const std::vector<uint32_t>& getChildren(uint32_t ind) {
-			return m_graph[ind].forward.nodes;
+		const std::vector<Node>& getChildren(Node node) {
+			return m_graph[node].forward.nodes;
 		}
 		
-		const std::vector<T>& getIncomingEdges(uint32_t ind) {
-			return m_graph[ind].backward.edges;
+		const std::vector<T>& getIncomingEdges(Node node) {
+			return m_graph[node].backward.edges;
 		}
 
-		const std::vector<uint32_t>& getParents(uint32_t ind) {
-			return m_graph[ind].backward.nodes;
+		const std::vector<Node>& getParents(Node node) {
+			return m_graph[node].backward.nodes;
 		}
 		
-		virtual bool connect(uint32_t src, uint32_t dst, const T& edge) {
+		virtual bool connect(Node src, Node dst, const T& edge) {
 			if (src >= size() || dst >= size()) {
-				uint32_t max_ind = (src > dst) ? src : dst;
+				Node max_ind = (src > dst) ? src : dst;
 				m_graph.resize(max_ind + 1);
 			}
 			m_graph[src];
@@ -127,13 +98,13 @@ class Graph {
 				return;
 			}
 			LOG("Printing graph (size: " << size() << ")");
-			uint32_t node_ind = 0;
+			Node node = 0;
 			for (const auto& list : m_graph) {
 				for (uint32_t i=0; i < list.forward.size(); ++i) {
-					if (i == 0) PRINT_NAMED("Node " << node_ind, "is connected to:");
+					if (i == 0) PRINT_NAMED("Node " << node, "is connected to:");
 					PRINT_NAMED("    - child node " << list.forward.nodes[i], "with edge: " << m_edgeToStr(list.forward.edges[i]));
 				}
-				++node_ind;
+				++node;
 			}
 		}
 
@@ -143,13 +114,13 @@ class Graph {
 				return;
 			}
 			LOG("Printing reversed graph (size: " << size() << ")");
-			uint32_t node_ind = 0;
+			Node node = 0;
 			for (const auto& list : m_graph) {
 				for (uint32_t i=0; i < list.backward.size(); ++i) {
-					if (i == 0) PRINT_NAMED("Node " << node_ind, "is connected to:");
+					if (i == 0) PRINT_NAMED("Node " << node, "is connected to:");
 					PRINT_NAMED("    - parent node " << list.backward.nodes[i], "with edge: " << m_edgeToStr(list.backward.edges[i]));
 				}
-				++node_ind;
+				++node;
 			}
 		}
 
@@ -158,13 +129,13 @@ class Graph {
 	protected:
 		struct AdjacencyList {
 			std::vector<T> edges;
-			std::vector<uint32_t> nodes;
-			void pushConnect(uint32_t dst_node, const T& edge) {
+			std::vector<Node> nodes;
+			void pushConnect(Node dst_node, const T& edge) {
 				edges.push_back(edge);
 				nodes.push_back(dst_node);
 			}
 			template<typename ... Args>
-			constexpr void emplaceConnect(uint32_t dst_node, Args&& ... args) {
+			constexpr void emplaceConnect(Node dst_node, Args&& ... args) {
 				edges.emplace_back(std::forward<Args>(args)...);
 				nodes.push_back(dst_node);
 			}
@@ -176,10 +147,11 @@ class Graph {
 		};
 
 	protected:
-		RandomAccessList<BidirectionalConnectionList> m_graph;
+		Containers::RandomAccessList<BidirectionalConnectionList> m_graph;
 		EdgeToStrFunction m_edgeToStr;
 
 	private:
 		bool m_directed, m_reversible;
 };
 
+}

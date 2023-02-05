@@ -1,6 +1,40 @@
 #pragma once
 
+#include <list>
+
+namespace TP {
 namespace Containers {
+
+    template <class T>
+    class RandomAccessList {
+        public:
+            void push_back(const T& value) {
+                m_list.push_back(value);
+                m_access_ptrs.push_back(&m_list.back());
+            }
+
+            T& operator[](uint32_t i) {return *m_access_ptrs[i];}
+            const T& operator[](uint32_t i) const {return *m_access_ptrs[i];}
+
+            void clear() {m_list.clear(); m_access_ptrs.clear();}
+            void resize(std::size_t count) {
+                auto list_it = std::prev(m_list.end());
+                m_list.resize(count);
+                m_access_ptrs.reserve(count);
+                while (m_access_ptrs.size() < m_access_ptrs.capacity()) {
+                    m_access_ptrs.insert(m_access_ptrs.end(), &(*(++list_it)));
+                }
+            }
+            std::size_t size() const {return m_list.size();}
+
+            std::list<T>::iterator begin() {return m_list.begin();}
+            std::list<T>::iterator end() {return m_list.end();}
+            std::list<T>::const_iterator begin() const {return m_list.cbegin();}
+            std::list<T>::const_iterator end() const {return m_list.cend();}
+        private:
+            std::list<T> m_list;
+            std::vector<T*> m_access_ptrs;
+    };
 
     template<class T>
     class SizedArray {
@@ -20,4 +54,5 @@ namespace Containers {
             const std::size_t m_size;
     };
 
-}
+} // namespace Containers
+} // namespace TP

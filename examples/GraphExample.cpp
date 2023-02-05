@@ -2,6 +2,7 @@
 
 #include "core/Graph.h"
 
+using namespace TP;
 
 int main() {
  

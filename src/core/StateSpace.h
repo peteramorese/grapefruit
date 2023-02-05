@@ -10,6 +10,7 @@
 // Limit the rank of the statespace such that bitfield operations can be used
 #define TP_MAX_RANK_64
 
+namespace TP {
 namespace DiscreteModel {
 
 
@@ -131,3 +132,4 @@ namespace DiscreteModel {
 			void print() const;
 	};
 }
+} // namespace TP

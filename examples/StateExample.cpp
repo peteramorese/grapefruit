@@ -3,6 +3,8 @@
 #include "core/State.h"
 #include "core/StateSpace.h"
 
+using namespace TP;
+
 int main() {
  
     // Set up state space:
@@ -34,8 +36,19 @@ int main() {
     LOG("Edited tilt to be down:");
     state_2.print();
 
-    LOG("Trying to edit power to be 'out' (should fail)");
-    state_2["power"] = "out";
+    //LOG("Trying to edit power to be 'out' (should fail)");
+    //state_2["power"] = "out";
+
+    DiscreteModel::StateAccessCapture sac = state_1.getStateAccessCapture();
+
+    LOG("SAC read pan: " << sac["pan"]);
+    LOG("SAC read tilt: " << sac["tilt"]);
+    LOG("SAC accessed 0 (pan)? " << sac.accessed(0));
+    LOG("SAC accessed 1 (tilt)? " << sac.accessed(1));
+    LOG("Removing SAC access to pan...");
+    sac.removeAccess({"pan"});
+    LOG("SAC accessed 0 (pan)? " << sac.accessed(0));
+    LOG("SAC accessed 1 (tilt)? " << sac.accessed(1));
 
 
 	return 0;

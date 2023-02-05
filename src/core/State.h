@@ -8,8 +8,8 @@
 #include "core/StateSpace.h"
 
 
+namespace TP {
 namespace DiscreteModel {
-
 
 	//class StateSpace;
 
@@ -43,6 +43,8 @@ namespace DiscreteModel {
 
 		 	const std::string& operator[](const std::string& label);
 			inline void operator|=(const StateAccessCapture& other) {m_accessed_bit_field |= other.m_accessed_bit_field;}
+			inline void operator&=(const StateAccessCapture& other) {m_accessed_bit_field &= other.m_accessed_bit_field;}
+			void removeAccess(const std::vector<std::string>& lbls);
 
 			bool accessed(dimension_t dim) const {
 				return m_accessed_bit_field & (1 << dim);
@@ -78,6 +80,7 @@ namespace DiscreteModel {
 			std::pair<bool, const std::string&> argFindGroup(const std::string& var_find, const std::string& group_label) const;
 
 			bool operator== (const State& other) const;
+			bool operator== (const std::vector<std::string>& vars) const;
 			void operator= (const std::vector<std::string>& vars);
 			void operator= (const Containers::SizedArray<uint32_t>& var_indices);
 		 	inline const std::string& operator[](const std::string& label) const {
@@ -104,13 +107,14 @@ namespace DiscreteModel {
 
 
 } // namespace DiscreteModel
+} // namespace TP
 
 namespace std {
 	template <>
-	struct hash<DiscreteModel::State> {
-		std::size_t operator()(const DiscreteModel::State& state) const {
+	struct hash<TP::DiscreteModel::State> {
+		std::size_t operator()(const TP::DiscreteModel::State& state) const {
 			std::size_t hash = state.m_state_index_buffer[0];
-			for (DiscreteModel::dimension_t dim = 0; dim < state.m_ss->rank(); ++dim) {
+			for (TP::DiscreteModel::dimension_t dim = 0; dim < state.m_ss->rank(); ++dim) {
 				hash = hash ^ (state.m_state_index_buffer[dim] << dim);
 			}
 			return hash;

@@ -7,8 +7,10 @@
 #include "core/State.h"
 #include "tools/Logging.h"
 
+namespace TP {
 namespace DiscreteModel {
-	std::pair<bool, StateAccessCapture> _ConditionBase::subEvaluate(const State& state, const SubCondition& cond) {
+
+	std::pair<bool, StateAccessCapture> _ConditionBase::subEvaluate(const State& state, const SubCondition& cond) const {
 		
 		StateAccessCapture sac = state.getStateAccessCapture();
 
@@ -85,13 +87,13 @@ namespace DiscreteModel {
 							case ConditionArg::Variable:
 							  	{
 									auto[found, label] = state.argFindGroup(cond.rhs, cond.lhs);
-									if (found) addArgValues(cond.condition_name, &sac[label], label);
+									if (found) addArgValues(cond.condition_name, &state[label], label); // Access thru state since storing variable is not needed for excl eq
 									return {(!negate) ? found : !found, sac};
 								}
 							case ConditionArg::Label:
 							  	{
-									auto[found, label] = state.argFindGroup(sac[cond.rhs], cond.lhs);
-									if (found) addArgValues(cond.condition_name, &sac[label], label);
+									auto[found, label] = state.argFindGroup(state[cond.rhs], cond.lhs);
+									if (found) addArgValues(cond.condition_name, &state[label], label); // Access thru state since storing variable is not needed for excl eq
 									return {(!negate) ? found : !found, sac};
 								}
 						}
@@ -101,7 +103,7 @@ namespace DiscreteModel {
 		return {false, sac};
 	}	
 
-	bool Condition::evaluate(const State& state) {
+	bool Condition::evaluate(const State& state) const {
 		clearArgValues();
 	
 		if (m_junction_type == ConditionJunction::Conjunction) {
@@ -119,7 +121,7 @@ namespace DiscreteModel {
 		}
 	}
 
-	bool TransitionCondition::evaluate(const State& pre_state, const State& post_state) {
+	bool TransitionCondition::evaluate(const State& pre_state, const State& post_state) const {
 		clearArgValues();
 	
 	 	// Pre-Conditions
@@ -162,6 +164,19 @@ namespace DiscreteModel {
 			}
 			if (!post_eval) return false;
 		}
-		return (m_excl_eq) ? pre_state.exclEquals(post_state, all_sac) : true;
+
+		if (m_excl_eq) {
+			// Omit exclusion comparison labels:
+			for (const auto& lbl : m_omit_excl_eq_labels) all_sac[lbl];
+
+			// Apply force exclusion comparison labels	
+			all_sac.removeAccess(m_force_excl_eq_labels);
+
+			return pre_state.exclEquals(post_state, all_sac);
+		}
+
+		return true;
 	}
+
 } // namespace DiscreteModel
+} // namespace TP

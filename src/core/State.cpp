@@ -4,19 +4,31 @@
 #include<vector>
 #include<iostream>
 #include<unordered_map>
+#include<bitset>
 
 #include "tools/Logging.h"
 #include "core/StateSpace.h"
 
 
+namespace TP {
 namespace DiscreteModel {
 
+	// StateAccessCapture
 
 	const std::string& StateAccessCapture::operator[](const std::string& label) {
 		dimension_t dim = m_state->getStateSpace()->getDimension(label);
 		m_accessed_bit_field |= (1 << dim);
 		return (*m_state)[dim];
 	}
+
+	void StateAccessCapture::removeAccess(const std::vector<std::string>& lbls) {
+		for (const auto& label : lbls) {
+			dimension_t dim = m_state->getStateSpace()->getDimension(label);
+			m_accessed_bit_field &= ~(1 << dim);
+		}
+	}
+
+ 	//	State
 
 	State::State(const StateSpace* ss) : m_ss(ss) {
 		m_state_index_buffer = new uint32_t[m_ss->rank()];
@@ -84,6 +96,15 @@ namespace DiscreteModel {
 		return true;
 	}
 
+	bool State::operator== (const std::vector<std::string>& vars) const {
+		for (dimension_t dim=0; dim < m_ss->rank(); ++dim) {
+			auto[var_ind, found] = m_ss->variableIndex(dim, vars[dim]);
+			ASSERT(found, "Variable '" << vars[dim] << "' was not found along dimension " << (uint32_t)dim);
+			if (m_state_index_buffer[dim] != var_ind) return false;
+		}
+		return true;
+	}
+
 	void State::operator= (const std::vector<std::string>& vars) {
 		ASSERT(vars.size() == m_ss->rank(), "Attempting to set state of size: " << vars.size() << " when state space is of rank: " << m_ss->rank());
 		for (dimension_t dim=0; dim < m_ss->rank(); ++dim) {
@@ -101,4 +122,5 @@ namespace DiscreteModel {
 		}
 	}
 
-}
+} // namespace DiscreteModel
+} // namespace TP

@@ -5,6 +5,7 @@
 
 #include "tools/Logging.h"
 
+namespace TP {
 namespace DiscreteModel {
 
 	class State;
@@ -78,10 +79,10 @@ namespace DiscreteModel {
 			};
 
 		protected:
-			std::unordered_map<std::string, ArgumentValues> m_arg_values;
+			mutable std::unordered_map<std::string, ArgumentValues> m_arg_values;
 
 		private:
-			void addArgValues(const std::string& condition_name, const std::string* variable, const std::string& label) {
+			void addArgValues(const std::string& condition_name, const std::string* variable, const std::string& label) const {
 				m_arg_values.emplace(std::piecewise_construct, std::forward_as_tuple(condition_name), std::forward_as_tuple(variable, label));
 			}
 			const ArgumentValues& getArgValues(const std::string& condition_name) const {
@@ -92,8 +93,8 @@ namespace DiscreteModel {
 		protected:
 		  	_ConditionBase() = default;
 		 	virtual ~_ConditionBase() {}
-			std::pair<bool, StateAccessCapture> subEvaluate(const State& state, const SubCondition& cond);
-			inline void clearArgValues() {m_arg_values.clear();}
+			std::pair<bool, StateAccessCapture> subEvaluate(const State& state, const SubCondition& cond) const;
+			inline void clearArgValues() const {m_arg_values.clear();}
 			virtual void print() const = 0;
 	};
 
@@ -113,7 +114,7 @@ namespace DiscreteModel {
 			inline void setName(const std::string& name) {m_name = name;}
 			inline const std::string& getName() const {return m_name;}
 
-			bool evaluate(const State& state);
+			bool evaluate(const State& state) const;
 
 			// TODO
 			virtual void print() const override {}
@@ -154,12 +155,17 @@ namespace DiscreteModel {
 						return;
 				}
 			}
+
 			inline void toggleExclusionComparision(bool excl_eq) {m_excl_eq = excl_eq;}
+			inline void omitExclusionComparison(const std::vector<std::string> excl_eq_lbls) {m_omit_excl_eq_labels = excl_eq_lbls;}
+			inline void omitExclusionComparison(const std::string& excl_eq_lbl) {m_omit_excl_eq_labels.push_back(excl_eq_lbl);}
+			inline void forceExclusionComparison(const std::vector<std::string> excl_eq_lbls) {m_force_excl_eq_labels = excl_eq_lbls;}
+			inline void forceExclusionComparison(const std::string& excl_eq_lbl) {m_force_excl_eq_labels.push_back(excl_eq_lbl);}
 
 			inline const std::string& getActionLabel() const {return m_action_label;}
 			inline float getActionCost() const {return m_action_cost;}
 
-			bool evaluate(const State& pre_state, const State& post_state);
+			bool evaluate(const State& pre_state, const State& post_state) const;
 
 			// TODO
 			virtual void print() const override {}
@@ -167,12 +173,13 @@ namespace DiscreteModel {
 		private:
 			std::vector<SubCondition> m_pre_conditions;
 			std::vector<SubCondition> m_post_conditions;
+			std::vector<std::string> m_omit_excl_eq_labels;
+			std::vector<std::string> m_force_excl_eq_labels;
 			ConditionJunction m_pre_junction_type = ConditionJunction::Conjunction;
 			ConditionJunction m_post_junction_type = ConditionJunction::Conjunction;
 			bool m_excl_eq = true;
 			std::string m_action_label;
 			float m_action_cost;
 	};
-
-
+}
 }

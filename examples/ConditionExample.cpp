@@ -6,7 +6,8 @@
 
 #include "tools/Logging.h"
 
-using namespace DiscreteModel;
+using namespace TP;
+using namespace TP::DiscreteModel;
 
 void printConditionEvaluation(const std::string& condition_name, Condition& cond, const State& state) {
 	LOG("Input state for condition '" << condition_name << "':");
@@ -180,8 +181,8 @@ int main() {
 	cond.addCondition(ConditionType::Post, ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "F"); 
 	cond.addCondition(ConditionType::Post, ConditionArg::Label, "ee_loc", ConditionOperator::Equals, ConditionArg::ArgLabel, "", "arg_2"); 
 	
-	State pre_state(&ss_manipulator, {"L4", "L2", "ee", "L0", "T"});
-	State post_state(&ss_manipulator, {"L4", "L2", "L4", "L0", "F"});
+	State pre_state(&ss_manipulator, {"L0", "ee", "L3", "L1", "T"});
+	State post_state(&ss_manipulator, {"L0", "L0", "L3", "L1", "F"});
 	printTransitionConditionEvaluation("Release", cond, pre_state, post_state);
 
 	pre_state = {"L4", "L2", "ee", "L0", "T"};

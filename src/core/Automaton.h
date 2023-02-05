@@ -8,11 +8,12 @@
 
 #include "core/Graph.h"
 
+namespace TP {
 namespace FormalMethods {
 
     typedef std::unordered_set<std::string> Alphabet;
 
-    typedef std::set<uint32_t> StateSet;
+    typedef std::set<Node> StateSet;
 
     template<class T>
     class Automaton : public Graph<T> {
@@ -27,18 +28,18 @@ namespace FormalMethods {
                     m_accepting_states.insert(ind);
             }
 
-            bool addAcceptingState(uint32_t accepting_state) {return m_accepting_states.insert(accepting_state).second;}
+            bool addAcceptingState(Node accepting_state) {return m_accepting_states.insert(accepting_state).second;}
 
-            bool isAccepting(uint32_t ind) const {return m_accepting_states.contains(ind);}
+            bool isAccepting(Node ind) const {return m_accepting_states.contains(ind);}
 
-            const std::set<uint32_t>& getAcceptingStates() const {return m_accepting_states;}
+            const std::set<Node>& getAcceptingStates() const {return m_accepting_states;}
 
-            void setInitStates(const std::vector<uint32_t>& init_states) {
+            void setInitStates(const std::vector<Node>& init_states) {
                 for (auto ind : init_states) 
                     m_init_states.insert(ind);
             }
 
-            const std::set<uint32_t>& getInitStates() const {return m_init_states;}
+            const std::set<Node>& getInitStates() const {return m_init_states;}
 
             void setAlphabet(const Alphabet& alphabet) {m_alphabet = alphabet;}
 
@@ -68,7 +69,7 @@ namespace FormalMethods {
             DFA(bool reversible = true, Graph<std::string>::EdgeToStrFunction edgeToStr = nullptr) 
                 : Automaton<std::string>(reversible, edgeToStr) {}
 
-            virtual bool connect(uint32_t src, uint32_t dst, const std::string& edge) override {
+            virtual bool connect(Node src, Node dst, const std::string& edge) override {
                 if (src < size()) {
                     const std::vector<std::string>& outgoing_edges = getOutgoingEdges(src);
                     for (const auto& label : outgoing_edges) {
@@ -94,7 +95,7 @@ namespace FormalMethods {
                     for (auto[src, destinations] : connections) {
                         for (uint32_t i = 0; i <destinations.size(); ++i) {
                             const std::string& label = labels[src][i];
-                            uint32_t dst = destinations[i];
+                            Node dst = destinations[i];
                             connect(src, dst, label);
                         }
                     }
@@ -117,31 +118,32 @@ namespace FormalMethods {
                 for (auto state : m_accepting_states) accepting_states_str += (std::to_string(state) + ", ");
                 PRINT_NAMED("Accepting states:", accepting_states_str);
 
-                uint32_t node_ind = 0;
+                Node node = 0;
                 for (const auto& list : m_graph) {
-                    PRINT_NAMED("State " << node_ind++, "is connected to:");
                     for (uint32_t i=0; i < list.forward.size(); ++i) {
-                        std::string edge_str = (m_edgeToStr) ? m_edgeToStr(list.forward.edges[i]) : list.forward.edges[i];
-                        PRINT_NAMED("    - child state " << list.forward.nodes[i], "with edge: " << list.forward.edges[i]);
+                        if (i == 0) PRINT_NAMED("State " << node, "is connected to:");
+                        PRINT_NAMED("    - child state " << list.forward.nodes[i], "with edge: " << m_edgeToStr(list.forward.edges[i]));
                     }
+                    node++;
                 }
             }
-
             ~DFA() {}
     };
-}
+} // namespace FormalMethods
+} // namespace TP
+
 
 // YAML parsing
 
 namespace YAML {
     template <>
-    struct convert<FormalMethods::Alphabet> {
-        static Node encode(const FormalMethods::Alphabet& alphabet) {
+    struct convert<TP::FormalMethods::Alphabet> {
+        static Node encode(const TP::FormalMethods::Alphabet& alphabet) {
             Node node;
             for (auto letter : alphabet) node.push_back(letter);
             return node;
         }
-        static bool decode(const Node& node, FormalMethods::Alphabet& alphabet) {
+        static bool decode(const Node& node, TP::FormalMethods::Alphabet& alphabet) {
             if (!node.IsSequence()) return false;
 
             std::vector<std::string> alphabet_vector = node.as<std::vector<std::string>>();
@@ -151,13 +153,13 @@ namespace YAML {
     };
 
     template <>
-    struct convert<FormalMethods::StateSet> {
-        static Node encode(const FormalMethods::StateSet& state_set) {
+    struct convert<TP::FormalMethods::StateSet> {
+        static Node encode(const TP::FormalMethods::StateSet& state_set) {
             Node node;
             for (auto state : state_set) node.push_back(state);
             return node;
         }
-        static bool decode(const Node& node, FormalMethods::StateSet& state_set) {
+        static bool decode(const Node& node, TP::FormalMethods::StateSet& state_set) {
             if (!node.IsSequence()) return false;
 
             std::vector<uint32_t> state_set_vector = node.as<std::vector<uint32_t>>();
@@ -165,4 +167,4 @@ namespace YAML {
             return true;
         }
     };
-}
+} // namespace YAML

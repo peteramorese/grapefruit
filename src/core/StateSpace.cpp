@@ -18,6 +18,7 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::unordered_set<std::st
 	return out;
 }
 
+namespace TP {
 namespace DiscreteModel {
 
 	void StateSpace::addDomain(const std::string& domain_name, const std::vector<std::string>& vars) {
@@ -215,6 +216,7 @@ namespace DiscreteModel {
 		return {0, false};
 	}
 }
+} // namespace TP
 
 namespace YAML {
     template <>
