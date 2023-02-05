@@ -64,19 +64,19 @@ class Graph {
 
 		std::size_t size() const {return m_graph.size();}
 
-		const std::vector<T>& getOutgoingEdges(Node node) {
+		inline const std::vector<T>& getOutgoingEdges(Node node) {
 			return m_graph[node].forward.edges;
 		}
 
-		const std::vector<Node>& getChildren(Node node) {
+		inline const std::vector<Node>& getChildren(Node node) {
 			return m_graph[node].forward.nodes;
 		}
 		
-		const std::vector<T>& getIncomingEdges(Node node) {
+		inline const std::vector<T>& getIncomingEdges(Node node) {
 			return m_graph[node].backward.edges;
 		}
 
-		const std::vector<Node>& getParents(Node node) {
+		inline const std::vector<Node>& getParents(Node node) {
 			return m_graph[node].backward.nodes;
 		}
 		
@@ -93,7 +93,7 @@ class Graph {
 		}
 
 		virtual void print() const {
-			if (!m_edgeToStr) {
+			if (!m_edgeToStr) { // Allow program to continue even if print function is not provided
 				ERROR("No 'edgeToStr' function provided, cannot print");
 				return;
 			}
