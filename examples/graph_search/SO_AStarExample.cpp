@@ -33,30 +33,61 @@ int main() {
     graph->connect(1, 4, {11, 'm'});
     graph->connect(2, 4, {8, 'i'});
     graph->connect(2, 5, {15, 'j'});
-    graph->connect(3, 4, {3, 'e'});
+    graph->connect(3, 4, {3, 'c'});
     graph->connect(4, 5, {2, 'd'});
     graph->connect(4, 7, {9, 'k'});
-    graph->connect(4, 6, {7, 'l'});
+    graph->connect(6, 4, {17, 'l'});
     graph->connect(5, 8, {2, 'e'});
-    graph->connect(7, 6, {3, 'g'});
+    graph->connect(6, 7, {3, 'g'});
     graph->connect(8, 7, {1, 'f'});
+
+    graph->print();
  
+    {
+    QuantitativeGraphSearchProblem<Edge, uint32_t> dijkstras_problem(graph, 1, 6, &Edge::edgeToCost);
+
+    NEW_LINE;
+    LOG("Searching...");
+    auto result = AStar<Node, Edge, uint32_t, decltype(dijkstras_problem)>::search(dijkstras_problem);
+
+    LOG("Finished!");
+    LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));
+    if (result.success) {
+        LOG("Path length: " << result.path_cost);
+
+        std::string path_str = std::to_string(result.node_path.front());
+        auto edge_path_it = result.edge_path.begin();
+        for (auto it = ++result.node_path.begin(); it != result.node_path.end(); ++it) {
+            path_str += " --(";
+            path_str.push_back(edge_path_it++->edge_action);
+            path_str += ")-> " + std::to_string(*it);
+        }
+
+        LOG("Path: " << path_str); 
+    }
+    }
+
+    {
     QuantitativeGraphSearchProblem<Edge, uint32_t> dijkstras_problem(graph, 1, 6, &Edge::edgeToCost);
 
     LOG("Searching...");
     auto result = AStar<Node, Edge, uint32_t, decltype(dijkstras_problem)>::search(dijkstras_problem);
 
     LOG("Finished!");
-    LOG("Success: " << ((result.success) ? "true" : "false"));
+    LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));
     if (result.success) {
         LOG("Path length: " << result.path_cost);
 
-        std::stringstream path_str;
-        path_str << std::to_string(result.node_path.front());
+        std::string path_str = std::to_string(result.node_path.front());
         auto edge_path_it = result.edge_path.begin();
-        //for (auto it = ++result.node_path.begin(); it != result.node_path.end(); ++it) path_str << (" --" << (edge_path_it++->edge_action) << "-> " << std::to_string(*it));
+        for (auto it = ++result.node_path.begin(); it != result.node_path.end(); ++it) {
+            path_str += " --(";
+            path_str.push_back(edge_path_it++->edge_action);
+            path_str += ")-> " + std::to_string(*it);
+        }
 
-        //LOG("Path: " << path_str); 
+        LOG("Path: " << path_str); 
+    }
     }
 
 	return 0;

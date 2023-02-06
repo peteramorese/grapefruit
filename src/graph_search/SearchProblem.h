@@ -10,17 +10,22 @@ namespace GraphSearch {
     /* Type requirements
 
     NODE_T:
-        - must be ordered hashable (std::map)
-        - must be copy constructable
+        - Must be ordered hashable (std::map)
+        - Must be copy constructable
     EDGE_T:
-        - none
+        - None
     COST_T:
-        - must contain a 'less than' or 'dominates' operator< 
-        - default constructed value must be the respective 'zero' value
-        - must be copy constructable
+        - Must contain a 'less than' or 'dominates' operator< 
+        - Default constructed value must be the respective 'zero' value
+        - Must be copy constructable
     HEURISTIC_T:
-        - user specified
-        - must contain operator() which retrieves the heuristic COST_T value given a node
+        - User specified
+        - Must contain operator() which retrieves the heuristic COST_T value given a node
+    EDGE_STORAGE_T:
+        By default, edges are copied inside the search result (i.e. search tree, edge path). If the graph is explicit, and the 
+        edge type is large or non-copyable, the user can specify template parameter 'EDGE_STORAGE_T' as 'const EDGE_T*' 
+        to store pointers to the edges stored in the explicit graph to prevent duplicates and minimize memory usage
+        - Must be equal to 'EDGE_T' or 'const EDGE_T*'
 
     */
 
