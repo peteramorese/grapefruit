@@ -15,9 +15,11 @@ namespace GraphSearch {
     EDGE_T:
         - None
     COST_T:
-        - Must contain a 'less than' or 'dominates' operator< 
+        - Must contain 'less than' or 'dominates' operator< 
+        - Must contain 'addition' operator+ and 'subtraction' operator-
         - Default constructed value must be the respective 'zero' value
         - Must be copy constructable
+        - For use with CostVector, must have a cast-from-double method (operator COST_T() const)
     HEURISTIC_T:
         - User specified
         - Must contain operator() which retrieves the heuristic COST_T value given a node

@@ -86,7 +86,7 @@ namespace GraphSearch {
             COST_T g_score; // g_score at the time of insertion ()
             COST_T f_score; // f_score (g_score + h)
         };
-        auto less = [](const OpenSetElement& lhs, const OpenSetElement& rhs) -> bool {return lhs.f_score > rhs.f_score;}; // Open set element comparator
+        auto less = [](const OpenSetElement& lhs, const OpenSetElement& rhs) -> bool {return rhs.f_score < lhs.f_score;}; // Open set element comparator (lhs and rhs are swapped for increasing order)
         std::priority_queue<OpenSetElement, std::vector<OpenSetElement>, decltype(less)> open_set;
         ASSERT(problem.initial_node_set.size(), "Must supply at least one initial node");
 
