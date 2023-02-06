@@ -71,20 +71,33 @@ namespace GraphSearch {
         - Must be an admissible heuristic (single objective: underestimates the min-cost-go)
 
     */
+    
     template <class NODE_T, class COST_T>
     struct ZeroHeuristic {
         COST_T operator()(const NODE_T& node) const {return COST_T();}
     };
 
-    template <class EDGE_T, class COST_T, class HEURISTIC_T = ZeroHeuristic<Node, COST_T>>
+    // Search direction
+    enum class SearchDirection {Forward, Backward};
+
+    template <class EDGE_T, class COST_T, SearchDirection SEARCH_DIRECTION, class HEURISTIC_T = ZeroHeuristic<Node, COST_T>>
     struct QuantitativeGraphSearchProblem {
         public: // Methods & members required by any search problem
             
             // Extension methods
-            inline const std::vector<Node>& children(Node node) const {return m_graph->getChildren(node);}
-            inline const std::vector<EDGE_T>& outgoingEdges(Node node) const {return m_graph->getOutgoingEdges(node);}
-            inline const std::vector<Node>& parents(Node node) const {return m_graph->getParents(node);}
-            inline const std::vector<EDGE_T>& incomingEdges(Node node) const {return m_graph->getIncomingEdges(node);}
+            inline const std::vector<Node>& neighbors(Node node) const {
+                if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
+                    return m_graph->getChildren(node);
+                else 
+                    return m_graph->getParents(node);
+            }
+
+            inline const std::vector<EDGE_T>& neighborEdges(Node node) const {
+                if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
+                    return m_graph->getOutgoingEdges(node);
+                else
+                    return m_graph->getIncomingEdges(node);
+            }
 
             // Termination goal node
             inline bool goal(const Node& node) const {return node == m_goal_node;}
@@ -94,14 +107,14 @@ namespace GraphSearch {
             COST_T hScore(const Node& node) const {return heuristic.operator()(node);}
 
             // Member variables
-            Node initial_node;
+            std::vector<Node> initial_node_set;
             HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
         public:
             typedef COST_T(*edgeToCostFunction)(const EDGE_T&);
 
-            QuantitativeGraphSearchProblem(const std::shared_ptr<Graph<EDGE_T>>& graph, Node initial_node_, Node goal_node, edgeToCostFunction edgeToCost) 
-                : initial_node(initial_node_) 
+            QuantitativeGraphSearchProblem(const std::shared_ptr<Graph<EDGE_T>>& graph, const std::vector<Node> initial_node_set_, Node goal_node, edgeToCostFunction edgeToCost) 
+                : initial_node_set(initial_node_set_) 
                 , m_graph(graph)
                 , m_goal_node(goal_node)
                 , m_edgeToCost(edgeToCost)

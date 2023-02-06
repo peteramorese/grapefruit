@@ -23,6 +23,12 @@ struct Edge {
     static std::string edgeToStr(const Edge& edge) {return "cost: " + std::to_string(edge.cost) + " edge action: " + edge.edge_action;}
 };
 
+class MyHeuristic {
+    public:
+        uint32_t operator()(Node node) const {return m_heuristic_values.at(node);}
+        std::map<Node, uint32_t> m_heuristic_values; 
+};
+
 int main() {
 
     std::shared_ptr<Graph<Edge>> graph(std::make_shared<Graph<Edge>>(true, true, &Edge::edgeToStr));
@@ -36,19 +42,31 @@ int main() {
     graph->connect(3, 4, {3, 'c'});
     graph->connect(4, 5, {2, 'd'});
     graph->connect(4, 7, {9, 'k'});
-    graph->connect(6, 4, {17, 'l'});
+    graph->connect(4, 6, {17, 'l'});
     graph->connect(5, 8, {2, 'e'});
-    graph->connect(6, 7, {3, 'g'});
+    graph->connect(7, 6, {3, 'g'});
     graph->connect(8, 7, {1, 'f'});
 
     graph->print();
  
     {
-    QuantitativeGraphSearchProblem<Edge, uint32_t> dijkstras_problem(graph, 1, 6, &Edge::edgeToCost);
+    QuantitativeGraphSearchProblem<Edge, uint32_t, SearchDirection::Forward, MyHeuristic> astar_problem(graph, {1}, 6, &Edge::edgeToCost);
+
+    // Manually insert heuristic values (i.e. integer min number of edges to goal):
+    MyHeuristic& heuristic = astar_problem.heuristic;
+    heuristic.m_heuristic_values[0] = 3;
+    heuristic.m_heuristic_values[1] = 2;
+    heuristic.m_heuristic_values[2] = 2;
+    heuristic.m_heuristic_values[3] = 2;
+    heuristic.m_heuristic_values[4] = 1;
+    heuristic.m_heuristic_values[5] = 3;
+    heuristic.m_heuristic_values[6] = 0;
+    heuristic.m_heuristic_values[7] = 1;
+    heuristic.m_heuristic_values[8] = 2;
 
     NEW_LINE;
     LOG("Searching...");
-    auto result = AStar<Node, Edge, uint32_t, decltype(dijkstras_problem)>::search(dijkstras_problem);
+    auto result = AStar<Node, Edge, uint32_t, decltype(astar_problem), MyHeuristic>::search(astar_problem);
 
     LOG("Finished!");
     LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));
@@ -67,28 +85,6 @@ int main() {
     }
     }
 
-    {
-    QuantitativeGraphSearchProblem<Edge, uint32_t> dijkstras_problem(graph, 1, 6, &Edge::edgeToCost);
-
-    LOG("Searching...");
-    auto result = AStar<Node, Edge, uint32_t, decltype(dijkstras_problem)>::search(dijkstras_problem);
-
-    LOG("Finished!");
-    LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));
-    if (result.success) {
-        LOG("Path length: " << result.path_cost);
-
-        std::string path_str = std::to_string(result.node_path.front());
-        auto edge_path_it = result.edge_path.begin();
-        for (auto it = ++result.node_path.begin(); it != result.node_path.end(); ++it) {
-            path_str += " --(";
-            path_str.push_back(edge_path_it++->edge_action);
-            path_str += ")-> " + std::to_string(*it);
-        }
-
-        LOG("Path: " << path_str); 
-    }
-    }
 
 	return 0;
 }
