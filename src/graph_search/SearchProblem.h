@@ -149,6 +149,8 @@ namespace GraphSearch {
 
     template <class NODE_T, class EDGE_STORAGE_T, class COST_T>
     struct PathSolution {
+        PathSolution() = default;
+        PathSolution(PathSolution&& other) : node_path(std::move(other.node_path)), edge_path(std::move(other.edge_path)), path_cost(std::move(other.path_cost)) {}
         std::vector<NODE_T> node_path;
         std::vector<EDGE_STORAGE_T> edge_path;
         COST_T path_cost = COST_T{};

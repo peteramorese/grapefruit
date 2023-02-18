@@ -47,7 +47,7 @@ int main() {
     NEW_LINE;
     LOG("Default search example");
     {
-    QuantitativeGraphSearchProblem<Edge, uint32_t, SearchDirection::Forward> dijkstras_problem(graph, {1}, 6, &Edge::edgeToCost);
+    QuantitativeGraphSearchProblem<Edge, uint32_t, SearchDirection::Forward> dijkstras_problem(graph, {1}, {6}, &Edge::edgeToCost);
 
     NEW_LINE;
     LOG("Searching...");
@@ -73,7 +73,7 @@ int main() {
     NEW_LINE;
     LOG("Memory minimal example");
     {
-    QuantitativeGraphSearchProblem<Edge, uint32_t, SearchDirection::Forward> dijkstras_problem(graph, {1}, 6, &Edge::edgeToCost);
+    QuantitativeGraphSearchProblem<Edge, uint32_t, SearchDirection::Forward> dijkstras_problem(graph, {1}, {6}, &Edge::edgeToCost);
 
     LOG("Searching...");
     auto result = AStar<Node, Edge, uint32_t, decltype(dijkstras_problem), ZeroHeuristic<Node, uint32_t>, const Edge*>::search(dijkstras_problem);

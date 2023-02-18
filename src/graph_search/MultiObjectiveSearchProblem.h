@@ -7,6 +7,7 @@
 #include <unordered_map>
 
 #include "core/Graph.h"
+#include "graph_search/SearchProblem.h"
 
 #define TP_COST_VECTOR_EQUIVALENCE_TOLERANCE 0.0000000001
 
@@ -84,17 +85,15 @@ namespace GraphSearch {
 
     template<ObjectiveCount M, class COST_T>
     struct CostVector {
+        inline static const COST_T s_numerical_tolerance = static_cast<COST_T>(TP_COST_VECTOR_EQUIVALENCE_TOLERANCE);
 
         CostVector() = default;
         CostVector(const std::array<COST_T, M>& values_) : values(values_) {}
         CostVector(const CostVector& other) = default;
 
-        inline static const COST_T s_numerical_tolerance = static_cast<COST_T>(TP_COST_VECTOR_EQUIVALENCE_TOLERANCE);
 
         std::array<COST_T, M> values = std::array<COST_T, M>();
 
-        CostVector() = default;
-        
         COST_T& operator[](ObjectiveCount i) {return values[i];}
         const COST_T& operator[](ObjectiveCount i) const {return values[i];}
 
@@ -128,17 +127,27 @@ namespace GraphSearch {
             }
             return false;
         }
+        // Element-wise addition
+        void operator+=(const CostVector& other) {for (ObjectiveCount i=0; i < M; ++i) values[i] += other.values[i];}
+        friend CostVector operator+<M, COST_T>(const CostVector& lhs, const CostVector& rhs);
     };
+
+    // Cost vector non-member operators
+    template<ObjectiveCount M, class COST_T>
+    static CostVector<M, COST_T> operator+(const CostVector<M, COST_T>& lhs, const CostVector<M, COST_T>& rhs) {
+        CostVector<M, COST_T> ret_cv;
+        for (ObjectiveCount i=0; i < M; ++i) ret_cv.values[i] = lhs.values[i] + rhs.values[i];
+        return ret_cv;
+    }
+
     
-    template <class NODE_T, class COST_T>
-    struct ZeroHeuristic {
-        COST_T operator()(const NODE_T& node) const {return COST_T();}
+    // Default zero heuristic for multi-objective problems
+    template <ObjectiveCount M, class NODE_T, class COST_T>
+    struct MOZeroHeuristic {
+        CostVector<M, COST_T> operator()(const NODE_T& node) const {return CostVector<M, COST_T>{};}
     };
 
-    // Search direction
-    enum class SearchDirection {Forward, Backward};
-
-    template <ObjectiveCount M, class EDGE_T, class COST_T, SearchDirection SEARCH_DIRECTION, class HEURISTIC_T = ZeroHeuristic<Node, COST_T>>
+    template <ObjectiveCount M, class EDGE_T, class COST_T, SearchDirection SEARCH_DIRECTION, class HEURISTIC_T = MOZeroHeuristic<M, Node, COST_T>>
     struct MOQuantitativeGraphSearchProblem {
         public: // Methods & members required by any search problem
             
@@ -161,7 +170,7 @@ namespace GraphSearch {
             inline bool goal(const Node& node) const {return m_goal_node_set.contains(node);}
 
             // Quantative methods
-            inline CostVector<M, COST_T> gScore(const COST_T& parent_g_score, const EDGE_T& edge) const {return parent_g_score + m_edgeToCost(edge);}
+            inline CostVector<M, COST_T> gScore(const CostVector<M, COST_T>& parent_g_score, const EDGE_T& edge) const {return parent_g_score + m_edgeToCostVector(edge);}
             CostVector<M, COST_T> hScore(const Node& node) const {return heuristic.operator()(node);}
 
             // Member variables
@@ -230,7 +239,7 @@ namespace GraphSearch {
                 {}
 
             bool success = false;
-            std::vector<PathSolution<Node, EDGE_STORAGE_T, COST_T>> solution_set;
+            std::vector<PathSolution<Node, EDGE_STORAGE_T, CostVector<M, COST_T>>> solution_set;
             std::shared_ptr<SearchGraph<EDGE_STORAGE_T>> search_graph;
             std::shared_ptr<NonDominatedCostMap<CostVector<M, COST_T>>> non_dominated_cost_map;
 

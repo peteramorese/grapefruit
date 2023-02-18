@@ -51,7 +51,7 @@ int main() {
     graph->print();
  
     {
-    QuantitativeGraphSearchProblem<Edge, uint32_t, SearchDirection::Forward, MyHeuristic> astar_problem(graph, {1}, 6, &Edge::edgeToCost);
+    QuantitativeGraphSearchProblem<Edge, uint32_t, SearchDirection::Forward, MyHeuristic> astar_problem(graph, {1}, {6}, &Edge::edgeToCost);
 
     // Manually insert heuristic values (i.e. integer min number of edges to goal):
     MyHeuristic& heuristic = astar_problem.heuristic;
