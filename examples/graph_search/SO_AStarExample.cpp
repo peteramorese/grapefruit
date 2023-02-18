@@ -2,6 +2,7 @@
 #include<string>
 #include<sstream>
 #include<memory>
+#include<map>
 
 #include "tools/Logging.h"
 #include "core/Graph.h"
@@ -71,11 +72,11 @@ int main() {
     LOG("Finished!");
     LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));
     if (result.success) {
-        LOG("Path length: " << result.path_cost);
+        LOG("Path length: " << result.solution.path_cost);
 
-        std::string path_str = std::to_string(result.node_path.front());
-        auto edge_path_it = result.edge_path.begin();
-        for (auto it = ++result.node_path.begin(); it != result.node_path.end(); ++it) {
+        std::string path_str = std::to_string(result.solution.node_path.front());
+        auto edge_path_it = result.solution.edge_path.begin();
+        for (auto it = ++result.solution.node_path.begin(); it != result.solution.node_path.end(); ++it) {
             path_str += " --(";
             path_str.push_back(edge_path_it++->edge_action);
             path_str += ")-> " + std::to_string(*it);

@@ -22,28 +22,7 @@ namespace DiscreteModel {
 		std::string action;
 	};
 
-	class BijectiveStateContainer {
-		public:
-			inline State& operator[](uint32_t state_ind) {return m_ind_to_state[state_ind];}
-			inline const State& operator[](uint32_t state_ind) const {return m_ind_to_state[state_ind];}
-			inline uint32_t operator[](const State& state) const {return m_state_to_ind.at(state);}
-			std::pair<uint32_t, bool> tryInsert(const State& state) {
-				if (!m_state_to_ind.contains(state)) {
-					m_ind_to_state.push_back(state);
-					uint32_t ind = m_ind_to_state.size() - 1;
-					m_state_to_ind[state] = ind;
-					return {ind, true};
-				} else {
-					return {m_state_to_ind.at(state), false};
-				}
-			}
-			inline std::size_t size() const {return m_ind_to_state.size();}
-		protected:
-			std::vector<State> m_ind_to_state;
-			std::unordered_map<State, uint32_t> m_state_to_ind;
-	};
-
-	class BijectiveStateObservationContainer : public BijectiveStateContainer {
+	class BijectiveObservationContainer {
 		public:
 			void addObservationToState(const std::string& observation, uint32_t state_ind) {
 				if (state_ind > m_ind_to_observations.size()) {
@@ -57,16 +36,12 @@ namespace DiscreteModel {
 			std::vector<std::vector<std::string>> m_ind_to_observations;
 	};
 
-	class TransitionSystem : public Graph<TransitionSystemLabel> {
+	class TransitionSystem : public NodeGenericGraph<State, TransitionSystemLabel> {
 		public:
 			TransitionSystem() = default;
 			TransitionSystem(const std::string& filepath);
 
 			
-			bool connect(const State& src_state, const State& dst_state, const TransitionSystemLabel& edge) {
-				return Graph<TransitionSystemLabel>::connect(m_state_container.tryInsert(src_state).first, m_state_container.tryInsert(dst_state).first, edge);
-			}
-
 			virtual void print() const override;
 
 		 	bool parseObservationAndEvaluate(const State& state, const std::string& observation) const;
@@ -78,7 +53,7 @@ namespace DiscreteModel {
 				for (const auto&[name, _] : m_propositions) PRINT(" - " << name);
 			}
 
-			const BijectiveStateContainer& getStateContainer() {return m_state_container;}
+			const BijectiveObservationContainer& getStateContainer() const {return m_observation_container;}
 
 		private:
 			void deserialize(const std::string& filepath);
@@ -90,7 +65,7 @@ namespace DiscreteModel {
 			}
 
 		protected:
-		 	BijectiveStateObservationContainer m_state_container;
+		 	BijectiveObservationContainer m_observation_container;
 			std::unordered_map<std::string, Condition> m_propositions;
 			
 			friend class TransitionSystemGenerator;

@@ -73,7 +73,6 @@ namespace DiscreteModel {
 			inline const StateSpace* getStateSpace() const {return m_ss;}
 			StateAccessCapture getStateAccessCapture() const {return StateAccessCapture(this);}
 			void print() const;
-			std::string to_str() const;
 			bool exclEquals(const State& other, const StateAccessCapture& sac) const;
 
 			// Find an instance of 'var_find' among dimensions that are within group 'group_label'
@@ -91,6 +90,11 @@ namespace DiscreteModel {
 				dimension_t dim = m_ss->m_data.getDimension(label);
 				return VariableReference(m_ss, dim, &m_state_index_buffer[dim]);
 			}
+			
+			// String conversion;
+			std::string to_str() const;
+			static inline std::string to_str(const State& state) {return state.to_str();}
+
 
 		protected:
 		 	inline const std::string& operator[](dimension_t dim) const {

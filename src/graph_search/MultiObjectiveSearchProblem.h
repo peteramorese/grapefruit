@@ -135,51 +135,102 @@ namespace GraphSearch {
     };
 
 
-    // Single-Objective tools
+    // Multi-Objective tools
 
-    template <class NODE_T, class EDGE_STORAGE_T>
-    struct Connection {
-        Connection() = delete;
-        Connection(const NODE_T& node_, const EDGE_STORAGE_T& edge_) : node(node_), edge(edge_) {}
-        Connection(const Connection& other) : node(other.node), edge(other.edge) {}
-        NODE_T node;
-        EDGE_STORAGE_T edge;
+    using ObjectiveCount = uint8_t;
+
+    template<ObjectiveCount M, class COST_T>
+    struct CostVector {
+
+        inline static const COST_T s_numerical_tolerance = static_cast<COST_T>(TP_COST_VECTOR_EQUIVALENCE_TOLERANCE);
+
+        std::array<COST_T, M> values = std::array<COST_T, M>();
+
+        CostVector() = default;
+        
+        // Floating point error numerical comparison for hashing/sorting
+        bool operator==(const CostVector& other) const {
+            for (ObjectiveCount i=0; i < M; ++i) {
+                if (abs(values[i] - other.values[i]) > s_numerical_tolerance) return false;
+            }
+            return true;
+        }
+        // 'Dominates' operator
+        bool dominates(const CostVector& other) const {
+            bool equal = true;
+            for (ObjectiveCount i=0; i < M; ++i) {
+                if (values[i] > (other.values[i] + s_numerical_tolerance)) {
+                    return false;
+                } else {
+                    if (equal && values[i] < (other.values[i] - s_numerical_tolerance)) equal = false;
+                }
+            }
+            return !equal;
+        }
+        // Lexicographic ordering
+        bool operator<(const CostVector& other) const {
+            for (ObjectiveCount i=0; i < M; ++i) {
+                if (values[i] < (other.values[i] - s_numerical_tolerance)) {
+                    return true;
+                } else if (values[i] > (other.values[i] + s_numerical_tolerance)) {
+                    return false;
+                }
+            }
+            return false;
+        }
     };
 
-    template <class NODE_T, class EDGE_STORAGE_T, class COST_T>
-    struct PathSolution {
-        std::vector<NODE_T> node_path;
-        std::vector<EDGE_STORAGE_T> edge_path;
-        COST_T path_cost = COST_T{};
-    };
+    template <class EDGE_STORAGE_T>
+    using SearchGraph = Graph<EDGE_STORAGE_T>;
 
-    template <class NODE_T, class EDGE_STORAGE_T>
-    using SearchTree = std::map<NODE_T, Connection<NODE_T, EDGE_STORAGE_T>>;
-    
-    template <class NODE_T, class COST_T>
-    using MinCostMap = std::map<NODE_T, COST_T>;
-
-    template <class NODE_T, class EDGE_STORAGE_T, class COST_T>
-    struct SingleObjectiveSearchResult {
+    template <class COST_VECTOR_T>
+    struct NonDominatedCostMap {
         public:
-            SingleObjectiveSearchResult(bool retain_search_tree = true, bool retain_min_cost_map = true)
-                : search_tree(std::make_shared<SearchTree<NODE_T, EDGE_STORAGE_T>>())
-                , min_cost_map(std::make_shared<MinCostMap<NODE_T, COST_T>>()) 
-                , m_retain_search_tree(retain_search_tree)
-                , m_retain_min_cost_map(retain_min_cost_map)
+            class OrderedCostSet {
+                public:
+                    OrderedCostSet() = default;
+                    inline void eraseDominated(const COST_VECTOR_T& cost_vector) {
+                        for (auto it = m_set.begin(); it != m_set.end();) {
+                            if (cost_vector.dominates(it->first)) {
+                                m_set.erase(it++);
+                            } else {
+                                ++it;
+                            }
+                        }
+                    }
+                    inline void addToOpen(const COST_VECTOR_T& v) {m_set[v] = true;}
+                    inline void addToClosed(const COST_VECTOR_T& v) {m_set[v] = false;}
+                    inline void moveToClosed(const COST_VECTOR_T& v) {m_set[v] = false;}
+                    inline bool contains(const COST_VECTOR_T& v) const {return m_set.contains(v);}
+                private:
+                    std::map<COST_VECTOR_T, bool> m_set;
+            };
+
+        public:
+            std::map<Node, OrderedCostSet> cost_map;
+    };
+
+    template <ObjectiveCount M, class EDGE_STORAGE_T, class COST_T>
+    struct MultiObjectiveSearchResult {
+        public:
+            MultiObjectiveSearchResult(bool retain_search_graph = true, bool retain_non_dominated_cost_map = true)
+                : search_graph(std::make_shared<SearchGraph<EDGE_STORAGE_T>>(true, true))
+                , non_dominated_cost_map(std::make_shared<NonDominatedCostMap<CostVector<M, COST_T>>>()) 
+                , m_retain_search_graph(retain_search_graph)
+                , m_retain_non_dominated_cost_map(retain_non_dominated_cost_map)
                 {}
 
             bool success = false;
-            PathSolution<NODE_T, EDGE_STORAGE_T, COST_T> solution;
-            std::shared_ptr<SearchTree<NODE_T, EDGE_STORAGE_T>> search_tree;
-            std::shared_ptr<MinCostMap<NODE_T, COST_T>> min_cost_map;
+            std::vector<PathSolution<Node, EDGE_STORAGE_T, COST_T>> solution_set;
+            std::shared_ptr<SearchGraph<EDGE_STORAGE_T>> search_graph;
+            std::shared_ptr<NonDominatedCostMap<CostVector<M, COST_T>>> non_dominated_cost_map;
 
             void package() { // Free the memory of the search tree and min cost map if the user desires
-                if (!m_retain_search_tree) search_tree.reset();
-                if (!m_retain_min_cost_map) min_cost_map.reset();
+                if (!m_retain_search_graph) search_graph.reset();
+                if (!m_retain_non_dominated_cost_map) non_dominated_cost_map.reset();
             }
         private:
-            bool m_retain_search_tree, m_retain_min_cost_map;
+            bool m_retain_search_graph, m_retain_non_dominated_cost_map;
     };
 
 }

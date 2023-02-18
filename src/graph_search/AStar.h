@@ -13,47 +13,6 @@
 namespace TP {
 namespace GraphSearch {
 
-    template <class NODE_T, class EDGE_STORAGE_T>
-    struct Connection {
-        Connection() = delete;
-        Connection(const NODE_T& node_, const EDGE_STORAGE_T& edge_) : node(node_), edge(edge_) {}
-        Connection(const Connection& other) : node(other.node), edge(other.edge) {}
-        NODE_T node;
-        EDGE_STORAGE_T edge;
-    };
-
-    template <class NODE_T, class EDGE_STORAGE_T>
-    using SearchTree = std::map<NODE_T, Connection<NODE_T, EDGE_STORAGE_T>>;
-    
-    template <class NODE_T, class COST_T>
-    using MinCostMap = std::map<NODE_T, COST_T>;
-
-    template <class NODE_T, class EDGE_STORAGE_T, class COST_T>
-    struct SingleObjectiveSearchResult {
-        public:
-            SingleObjectiveSearchResult(bool retain_search_tree = true, bool retain_min_cost_map = true)
-                : search_tree(std::make_shared<SearchTree<NODE_T, EDGE_STORAGE_T>>())
-                , min_cost_map(std::make_shared<MinCostMap<NODE_T, COST_T>>()) 
-                , m_retain_search_tree(retain_search_tree)
-                , m_retain_min_cost_map(retain_min_cost_map)
-                {}
-
-            bool success = false;
-            std::vector<NODE_T> node_path;
-            std::vector<EDGE_STORAGE_T> edge_path;
-            COST_T path_cost = COST_T{};
-            std::shared_ptr<SearchTree<NODE_T, EDGE_STORAGE_T>> search_tree;
-            std::shared_ptr<MinCostMap<NODE_T, COST_T>> min_cost_map;
-
-            void package() { // Free the memory of the search tree and min cost map if the user desires
-                if (!m_retain_search_tree) search_tree.reset();
-                if (!m_retain_min_cost_map) min_cost_map.reset();
-            }
-        private:
-            bool m_retain_search_tree, m_retain_min_cost_map;
-    };
-
-
 
     template <class NODE_T, class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, class HEURISTIC_T = ZeroHeuristic<NODE_T, COST_T>, typename EDGE_STORAGE_T = EDGE_T>
     class AStar {
@@ -109,7 +68,7 @@ namespace GraphSearch {
             
             // If the insertion-time g-score does not match the optimal g-score, ignore it
             const COST_T& curr_node_g_score = g_score.at(curr_node);
-            if (inserted_g_score > curr_node_g_score) continue;
+            if (curr_node_g_score < inserted_g_score ) continue;
             ASSERT(inserted_g_score == curr_node_g_score, "Inserted g-score is less than the min_cost_map g-score");
 
             // If current node satisfies goal condition, extract path and terminate
@@ -164,22 +123,22 @@ namespace GraphSearch {
     void AStar<NODE_T, EDGE_T, COST_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const NODE_T& goal_node, SingleObjectiveSearchResult<NODE_T, EDGE_STORAGE_T, COST_T>& result) {
 
         result.success = true;
-        result.path_cost = (*result.min_cost_map)[goal_node];
+        result.solution.path_cost = (*result.min_cost_map)[goal_node];
 
         NODE_T curr_node = goal_node;
-        result.node_path.push_back(curr_node);
+        result.solution.node_path.push_back(curr_node);
 
         auto found_it = result.search_tree->find(curr_node);
         while (found_it != result.search_tree->end()) { // While the key is contained
             const auto&[curr_node, edge] = found_it->second;
 
-            result.node_path.emplace_back(curr_node);
-            result.edge_path.emplace_back(edge);
+            result.solution.node_path.emplace_back(curr_node);
+            result.solution.edge_path.emplace_back(edge);
 
             found_it = result.search_tree->find(curr_node);
         }
-        std::reverse(result.node_path.begin(), result.node_path.end());
-        std::reverse(result.edge_path.begin(), result.edge_path.end());
+        std::reverse(result.solution.node_path.begin(), result.solution.node_path.end());
+        std::reverse(result.solution.edge_path.begin(), result.solution.edge_path.end());
     }
 }
 }
