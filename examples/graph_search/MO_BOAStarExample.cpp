@@ -24,6 +24,12 @@ struct Edge {
     static std::string edgeToStr(const Edge& edge) {return "cost: " + cvToStr(edge.cv) + " edge action: " + edge.edge_action;}
 };
 
+class MyHeuristic {
+    public:
+        CostVector<2, uint32_t> operator()(Node node) const {return m_heuristic_values.at(node);}
+        std::map<Node, CostVector<2, uint32_t>> m_heuristic_values; 
+};
+
 int main() {
 
     std::shared_ptr<Graph<Edge>> graph(std::make_shared<Graph<Edge>>(true, true, &Edge::edgeToStr));
@@ -34,7 +40,7 @@ int main() {
     graph->connect(1, 3, {0, 5, 'd'});
     graph->connect(2, 3, {3, 4, 'f'});
     graph->connect(2, 4, {5, 1, 'e'});
-    graph->connect(4, 3, {3, 0, 'g'});
+    graph->connect(4, 3, {3, 2, 'g'});
 
     graph->print();
  
@@ -42,11 +48,19 @@ int main() {
     NEW_LINE;
     LOG("Default Bi-Objective search example");
     {
-    MOQuantitativeGraphSearchProblem<2, Edge, uint32_t, SearchDirection::Forward> dijkstras_problem(graph, {0}, {3}, &Edge::edgeToCostVector);
+    MOQuantitativeGraphSearchProblem<2, Edge, uint32_t, SearchDirection::Forward, MyHeuristic> astar_problem(graph, {0}, {3}, &Edge::edgeToCostVector);
+
+    // Manually insert heuristic values (i.e. integer min number of edges to goal):
+    MyHeuristic& heuristic = astar_problem.heuristic;
+    heuristic.m_heuristic_values[0] = {{0, 2}};
+    heuristic.m_heuristic_values[1] = {{0, 1}};
+    heuristic.m_heuristic_values[2] = {{1, 1}};
+    heuristic.m_heuristic_values[3] = {{0, 0}};
+    heuristic.m_heuristic_values[4] = {{1, 0}};
 
     NEW_LINE;
     LOG("Searching...");
-    auto result = BOAStar<Edge, uint32_t, decltype(dijkstras_problem)>::search(dijkstras_problem);
+    auto result = BOAStar<Edge, uint32_t, decltype(astar_problem)>::search(astar_problem);
 
     LOG("Finished!");
     LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));

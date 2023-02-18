@@ -12,9 +12,16 @@ target_include_directories(SO_AStarExample PUBLIC
 	${TP_INCLUDE_DIRS}
 )
 
-add_executable(MO_DijkstraExample MO_DijkstraExample.cpp)
-target_link_libraries(MO_DijkstraExample PUBLIC
+add_executable(MO_BODijkstraExample MO_BODijkstraExample.cpp)
+target_link_libraries(MO_BODijkstraExample PUBLIC
 )
-target_include_directories(MO_DijkstraExample PUBLIC
+target_include_directories(MO_BODijkstraExample PUBLIC
+	${TP_INCLUDE_DIRS}
+)
+
+add_executable(MO_BOAStarExample MO_BOAStarExample.cpp)
+target_link_libraries(MO_BOAStarExample PUBLIC
+)
+target_include_directories(MO_BOAStarExample PUBLIC
 	${TP_INCLUDE_DIRS}
 )
