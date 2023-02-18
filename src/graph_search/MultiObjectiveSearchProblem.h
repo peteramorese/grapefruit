@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <map>
+#include <set>
 #include <memory>
 #include <unordered_map>
 
@@ -78,69 +79,15 @@ namespace GraphSearch {
         - Must be an admissible heuristic (single objective: underestimates the min-cost-go)
 
     */
-    
-    template <class NODE_T, class COST_T>
-    struct ZeroHeuristic {
-        COST_T operator()(const NODE_T& node) const {return COST_T();}
-    };
-
-    // Search direction
-    enum class SearchDirection {Forward, Backward};
-
-    template <class EDGE_T, class COST_T, SearchDirection SEARCH_DIRECTION, class HEURISTIC_T = ZeroHeuristic<Node, COST_T>>
-    struct QuantitativeGraphSearchProblem {
-        public: // Methods & members required by any search problem
-            
-            // Extension methods
-            inline const std::vector<Node>& neighbors(Node node) const {
-                if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
-                    return m_graph->getChildren(node);
-                else 
-                    return m_graph->getParents(node);
-            }
-
-            inline const std::vector<EDGE_T>& neighborEdges(Node node) const {
-                if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
-                    return m_graph->getOutgoingEdges(node);
-                else
-                    return m_graph->getIncomingEdges(node);
-            }
-
-            // Termination goal node
-            inline bool goal(const Node& node) const {return node == m_goal_node;}
-
-            // Quantative methods
-            inline COST_T gScore(const COST_T& parent_g_score, const EDGE_T& edge) const {return parent_g_score + m_edgeToCost(edge);}
-            COST_T hScore(const Node& node) const {return heuristic.operator()(node);}
-
-            // Member variables
-            std::vector<Node> initial_node_set;
-            HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
-
-        public:
-            typedef COST_T(*edgeToCostFunction)(const EDGE_T&);
-
-            QuantitativeGraphSearchProblem(const std::shared_ptr<Graph<EDGE_T>>& graph, const std::vector<Node> initial_node_set_, Node goal_node, edgeToCostFunction edgeToCost) 
-                : initial_node_set(initial_node_set_) 
-                , m_graph(graph)
-                , m_goal_node(goal_node)
-                , m_edgeToCost(edgeToCost)
-                {}
-
-        private:
-            const std::shared_ptr<Graph<EDGE_T>> m_graph;
-            Node m_goal_node;
-            edgeToCostFunction m_edgeToCost;
-
-    };
-
-
-    // Multi-Objective tools
 
     using ObjectiveCount = uint8_t;
 
     template<ObjectiveCount M, class COST_T>
     struct CostVector {
+
+        CostVector() = default;
+        CostVector(const std::array<COST_T, M>& values_) : values(values_) {}
+        CostVector(const CostVector& other) = default;
 
         inline static const COST_T s_numerical_tolerance = static_cast<COST_T>(TP_COST_VECTOR_EQUIVALENCE_TOLERANCE);
 
@@ -148,6 +95,9 @@ namespace GraphSearch {
 
         CostVector() = default;
         
+        COST_T& operator[](ObjectiveCount i) {return values[i];}
+        const COST_T& operator[](ObjectiveCount i) const {return values[i];}
+
         // Floating point error numerical comparison for hashing/sorting
         bool operator==(const CostVector& other) const {
             for (ObjectiveCount i=0; i < M; ++i) {
@@ -179,6 +129,65 @@ namespace GraphSearch {
             return false;
         }
     };
+    
+    template <class NODE_T, class COST_T>
+    struct ZeroHeuristic {
+        COST_T operator()(const NODE_T& node) const {return COST_T();}
+    };
+
+    // Search direction
+    enum class SearchDirection {Forward, Backward};
+
+    template <ObjectiveCount M, class EDGE_T, class COST_T, SearchDirection SEARCH_DIRECTION, class HEURISTIC_T = ZeroHeuristic<Node, COST_T>>
+    struct MOQuantitativeGraphSearchProblem {
+        public: // Methods & members required by any search problem
+            
+            // Extension methods
+            inline const std::vector<Node>& neighbors(Node node) const {
+                if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
+                    return m_graph->getChildren(node);
+                else 
+                    return m_graph->getParents(node);
+            }
+
+            inline const std::vector<EDGE_T>& neighborEdges(Node node) const {
+                if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
+                    return m_graph->getOutgoingEdges(node);
+                else
+                    return m_graph->getIncomingEdges(node);
+            }
+
+            // Termination goal node
+            inline bool goal(const Node& node) const {return m_goal_node_set.contains(node);}
+
+            // Quantative methods
+            inline CostVector<M, COST_T> gScore(const COST_T& parent_g_score, const EDGE_T& edge) const {return parent_g_score + m_edgeToCost(edge);}
+            CostVector<M, COST_T> hScore(const Node& node) const {return heuristic.operator()(node);}
+
+            // Member variables
+            std::vector<Node> initial_node_set;
+            HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
+
+        public:
+            typedef CostVector<M, COST_T>(*edgeToCostVectorFunction)(const EDGE_T&);
+
+            MOQuantitativeGraphSearchProblem(const std::shared_ptr<Graph<EDGE_T>>& graph, const std::vector<Node> initial_node_set_, const std::set<Node>& goal_node_set, edgeToCostVectorFunction edgeToCostVector) 
+                : initial_node_set(initial_node_set_) 
+                , m_graph(graph)
+                , m_goal_node_set(goal_node_set)
+                , m_edgeToCostVector(edgeToCostVector)
+                {}
+
+        private:
+            const std::shared_ptr<Graph<EDGE_T>> m_graph;
+            std::set<Node> m_goal_node_set;
+            edgeToCostVectorFunction m_edgeToCostVector;
+
+    };
+
+
+    // Multi-Objective tools
+
 
     template <class EDGE_STORAGE_T>
     using SearchGraph = Graph<EDGE_STORAGE_T>;

@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <map>
+#include <set>
 #include <memory>
 #include <unordered_map>
 
@@ -107,7 +108,7 @@ namespace GraphSearch {
             }
 
             // Termination goal node
-            inline bool goal(const Node& node) const {return node == m_goal_node;}
+            inline bool goal(const Node& node) const {return m_goal_node_set.contains(node);}
 
             // Quantative methods
             inline COST_T gScore(const COST_T& parent_g_score, const EDGE_T& edge) const {return parent_g_score + m_edgeToCost(edge);}
@@ -120,16 +121,16 @@ namespace GraphSearch {
         public:
             typedef COST_T(*edgeToCostFunction)(const EDGE_T&);
 
-            QuantitativeGraphSearchProblem(const std::shared_ptr<Graph<EDGE_T>>& graph, const std::vector<Node> initial_node_set_, Node goal_node, edgeToCostFunction edgeToCost) 
+            QuantitativeGraphSearchProblem(const std::shared_ptr<Graph<EDGE_T>>& graph, const std::vector<Node>& initial_node_set_, const std::set<Node>& goal_node_set, edgeToCostFunction edgeToCost) 
                 : initial_node_set(initial_node_set_) 
                 , m_graph(graph)
-                , m_goal_node(goal_node)
+                , m_goal_node_set(goal_node_set)
                 , m_edgeToCost(edgeToCost)
                 {}
 
         private:
             const std::shared_ptr<Graph<EDGE_T>> m_graph;
-            Node m_goal_node;
+            std::set<Node> m_goal_node_set;
             edgeToCostFunction m_edgeToCost;
 
     };
