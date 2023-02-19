@@ -22,18 +22,25 @@ namespace DiscreteModel {
 		std::string action;
 	};
 
-	class BijectiveObservationContainer {
+	class ObservationContainer {
 		public:
-			void addObservationToState(const std::string& observation, uint32_t state_ind) {
-				if (state_ind > m_ind_to_observations.size()) {
-					m_ind_to_observations.resize(state_ind);
+			void addObservationToNode(Node node, const std::string& observation) {
+				if (nodeInContainer(node)) {
+					m_observations.resize(node);
 				}
-				m_ind_to_observations[state_ind].push_back(observation);
+				m_observations[node].insert(observation);
 			}
-			inline const std::vector<std::string>& getObservations(uint32_t state_ind) {return m_ind_to_observations[state_ind];}
-
+			inline const std::unordered_set<std::string>& getObservations(Node node) {
+				return m_observations[node];
+			}
+			inline bool observe(Node node, const std::string& observation) const {
+				ASSERT(nodeInContainer(node), "Node " << node << " is not in observation container");
+				return m_observations[node].contains(observation);
+			}
+			void resize(std::size_t size) {m_observations.resize(size);}
+			inline bool nodeInContainer(Node node) const {return node >= m_observations.size();}
 		private:
-			std::vector<std::vector<std::string>> m_ind_to_observations;
+			std::vector<std::unordered_set<std::string>> m_observations;
 	};
 
 	class TransitionSystem : public NodeGenericGraph<State, TransitionSystemLabel> {
@@ -41,22 +48,30 @@ namespace DiscreteModel {
 			TransitionSystem() = default;
 			TransitionSystem(const std::string& filepath);
 
+			// Parses observation and evaluates it according to state
+		 	bool parseAndObserve(const State& state, const std::string& observation) const;
+
+			// Evalues observation based on pre-parsed labels
+		 	inline bool observe(const State& state, const std::string& observation) const {return m_observation_container.observe(m_node_container[state], observation);}
+		 	inline bool observe(Node node, const std::string& observation) const {return m_observation_container.observe(node, observation);}
 			
+			// TODO: Checks if the observation is in the alphabet, if not parse and observe. Cache the observation in observation container if cache is true
+			bool smartObserve(Node node, const std::string& observation, bool cache = false);
+
+			void addAlphabet(const FormalMethods::Alphabet& alphabet);
+
 			virtual void print() const override;
-
-		 	bool parseObservationAndEvaluate(const State& state, const std::string& observation) const;
-
-			void mapStatesToLabels(const FormalMethods::Alphabet& alphabet);
 
 			void listPropositions() const {
 				LOG("Listing proposition names");
 				for (const auto&[name, _] : m_propositions) PRINT(" - " << name);
 			}
 
-			const BijectiveObservationContainer& getStateContainer() const {return m_observation_container;}
+			const ObservationContainer& getObservationContainer() const {return m_observation_container;}
 
 		private:
 			void deserialize(const std::string& filepath);
+			void addObservationsToNode(Node node, const FormalMethods::Alphabet& alphabet);
 
 		protected:
 			const Condition& getProposition(const std::string& name) const {
@@ -65,7 +80,8 @@ namespace DiscreteModel {
 			}
 
 		protected:
-		 	BijectiveObservationContainer m_observation_container;
+		  	FormalMethods::Alphabet m_alphabet;
+		 	ObservationContainer m_observation_container;
 			std::unordered_map<std::string, Condition> m_propositions;
 			
 			friend class TransitionSystemGenerator;

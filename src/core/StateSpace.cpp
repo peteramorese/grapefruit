@@ -7,6 +7,7 @@
 
 #include "tools/Logging.h"
 #include "tools/Containers.h"
+#include "tools/Algorithms.h"
 #include "core/State.h"
 
 // YAML OVERLOADS
@@ -38,30 +39,23 @@ namespace DiscreteModel {
 	void StateSpace::generateAllStates(std::vector<State>& all_states) const {
 		// Count the number of possible states using a permutation.
 		uint32_t counter = 1;
-		Containers::SizedArray<uint32_t> column_wrapper(rank());
+		Containers::SizedArray<uint32_t> n_options(rank());
 		Containers::SizedArray<uint32_t> digits(rank());
 		for (dimension_t dim=0; dim<rank(); ++dim) {
 			uint32_t num_variables = m_data.getVariables(dim).size();
 			counter *= num_variables;
-			column_wrapper[dim] = num_variables;
+			n_options[dim] = num_variables;
 			digits[dim] = 0;
 		}
 		all_states.resize(counter, State(this));
 
-		int a = 0;
-		int b = 0;
-		for (uint32_t i=0; i<counter; i++) {
-			all_states[i] = digits;
-			digits[0]++;
-			for (dimension_t dim=0; dim < rank(); dim++){
-				if (digits[dim] >= column_wrapper[dim]) {
-					digits[dim] = 0;
-					if (dim < rank() -1) {
-						++digits[dim+1];
-					}
-				}
-			}
-		}
+		uint32_t i = 0;
+		auto onPermutation = [&] (const Containers::SizedArray<uint32_t>& option_indices) {
+			all_states[i++] = option_indices;
+		};
+
+		Algorithms::Combinatorics::permutations(n_options, onPermutation);
+
 	}
 
 	void StateSpace::serialize(const std::string& filepath) const {

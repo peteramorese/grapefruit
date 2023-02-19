@@ -40,14 +40,24 @@ namespace Containers {
     class SizedArray {
         public:
             SizedArray(std::size_t size) : m_array(new T[size]), m_size(size) {}
+            SizedArray(std::size_t size, const T& fill_val) : m_array(new T[size]), m_size(size) {
+                for (std::size_t i=0; i < m_size; ++i) {
+                    m_array[i] = T{};
+                }
+            }
             SizedArray(const SizedArray& other) : m_array(new T[other.m_size]), m_size(other.m_size) {
                 for (std::size_t i=0; i < m_size; ++i) {
                     m_array[i] = other.m_array[i];
                 }
             }
             ~SizedArray() {delete[] m_array;}
+
             T& operator[](std::size_t i) {return m_array[i];}
             const T& operator[](std::size_t i) const {return m_array[i];}
+
+            T& back() {return m_array[m_size - 1];}
+            const T& back() const {return m_array[m_size - 1];}
+
             std::size_t size() const {return m_size;}
         private:
             T* m_array;

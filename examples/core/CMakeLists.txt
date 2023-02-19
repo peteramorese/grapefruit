@@ -58,3 +58,15 @@ target_include_directories(TransitionSystemExample PUBLIC
 	${TP_INCLUDE_DIRS}
 	${YAML_INCLUDE_DIRS}
 )
+
+add_executable(SymbolicProductAutomatonExample SymbolicProductAutomatonExample.cpp)
+target_link_libraries(SymbolicProductAutomatonExample PUBLIC
+	State
+	StateSpace
+	Condition
+	TransitionSystem
+)
+target_include_directories(SymbolicProductAutomatonExample PUBLIC
+	${TP_INCLUDE_DIRS}
+	${YAML_INCLUDE_DIRS}
+)

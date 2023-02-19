@@ -38,13 +38,13 @@ namespace DiscreteModel {
             }
             ++state_ind;
         }
-        ts->mapStatesToLabels(props.alphabet);
+        ts->addAlphabet(props.alphabet);
         return ts;
     }
 
     // TransitionSystem
 
-    bool TransitionSystem::parseObservationAndEvaluate(const State& state, const std::string& observation) const {
+    bool TransitionSystem::parseAndObserve(const State& state, const std::string& observation) const {
         if (observation == "1") return true;
 
         std::vector<std::string> proposition_stack(1);
@@ -107,16 +107,18 @@ namespace DiscreteModel {
         return bool_stack.front();
     }
 
-    void TransitionSystem::mapStatesToLabels(const FormalMethods::Alphabet& alphabet) {
+    void TransitionSystem::addAlphabet(const FormalMethods::Alphabet& alphabet) {
         if (alphabet.size() == 0) return;
+        m_observation_container.resize(size());
         for (uint32_t state_ind = 0; state_ind < m_node_container.size(); ++state_ind) {
-            std::unordered_map<std::string, bool> included;
-            for (const auto& observation : alphabet) {
-                if (included[observation]) continue;
-                if (parseObservationAndEvaluate(m_node_container[state_ind], observation)) {
-                    m_observation_container.addObservationToState(observation, state_ind);
-                }
-                included[observation] = true;
+            addObservationsToNode(state_ind, alphabet);
+        }
+    }
+
+    void TransitionSystem::addObservationsToNode(Node node, const FormalMethods::Alphabet& alphabet) {
+        for (const auto& observation : alphabet) {
+            if (parseAndObserve(m_node_container[node], observation)) {
+                m_observation_container.addObservationToNode(node, observation);
             }
         }
     }

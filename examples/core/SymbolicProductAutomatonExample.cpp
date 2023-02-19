@@ -4,6 +4,8 @@
 #include "core/StateSpace.h"
 #include "core/State.h"
 #include "core/TransitionSystem.h"
+#include "core/Automaton.h"
+#include "core/SymbolicProductAutomaton.h"
 
 #include "tools/Logging.h"
 
@@ -129,22 +131,53 @@ int main() {
 	ts->listPropositions();
 
 
-	/////////////////   Test Propositions   /////////////////
+	/////////////////   DFAs   /////////////////
 
-	//FormalMethods::Alphabet alphabet = {"!(obj_0_L2 | obj_0_L1)"};
+	// Formula: F(obj_0_loc_L2 & F obj_1_L1) 
+	std::shared_ptr<FormalMethods::DFA> dfa_1;
+	dfa_1->setAcceptingStates({0});
+	dfa_1->setInitStates({2});
+	dfa_1->setAlphabet({"!obj_0_loc_L2", "obj_0_loc_L2 & !obj_1_L1", "obj_0_loc_L2 & obj_1_L1", "!obj_1_L1", "obj_1_L1", "1"});
+	dfa_1->connect(0, 0, "1");
+	dfa_1->connect(1, 0, "obj_1_L1");
+	dfa_1->connect(1, 1, "!obj_1_L1");
+	dfa_1->connect(2, 1, "obj_0_loc_L2 & !obj_1_L1");
+	dfa_1->connect(2, 0, "obj_0_loc_L2 & obj_1_L1");
+	dfa_1->connect(2, 2, "!obj_0_loc_L2");
 
-	//ts->mapStatesToLabels(alphabet);
+	// Formula: F(obj_1_loc_L1)
+	std::shared_ptr<FormalMethods::DFA> dfa_2;
+	dfa_2->setAcceptingStates({0});
+	dfa_2->setInitStates({1});
+	dfa_2->setAlphabet({"!obj_1_loc_L1", "obj_1_loc_L1", "1"});
+	dfa_2->connect(0, 0, "1");
+	dfa_2->connect(1, 0, "obj_1_loc_L1");
+	dfa_2->connect(1, 1, "!obj_1_loc_L1");
 
-	{
-	State test_state(&ss_manipulator, {"stow", "L1", "L3", "F"});
-	std::string observation = "!(obj_0_loc_L2 | obj_0_loc_L1)";
-	LOG("Observation: " << observation << ", State: " << test_state.to_str() << " Result: " << ts->parseAndObserve(test_state, observation));
-	}
+	std::vector<std::shared_ptr<FormalMethods::DFA>> dfas = {dfa_1, dfa_2};
 
-	{
-	State test_state(&ss_manipulator, {"stow", "L2", "L3", "F"});
-	std::string observation = "!(obj_0_loc_L2 | obj_0_loc_L1)";
-	LOG("Observation: " << observation << ", State: " << test_state.to_str() << " Result: " << ts->parseAndObserve(test_state, observation));
+
+	/////////////////   Symbolic Product   /////////////////
+
+	SymbolicProductAutomaton<TransitionSystem, FormalMethods::DFA> product(ts, dfas);
+
+	Containers::SizedArray<Node> p_unwrapped(product.rank());
+	// Set transition system node:
+	p_unwrapped[0] = 0;
+	
+	// Set automaton nodes:
+	p_unwrapped[1] = 0;
+	p_unwrapped[2] = 0;
+
+	WideNode p = AugmentedNodeIndex::wrap(p_unwrapped, product.getGraphSizes());
+
+	auto children = product.getChildren(p);
+
+	NEW_LINE;
+	LOG("Node p: " << p);
+	for (auto pp : children) {
+		auto pp_unwrapped = AugmentedNodeIndex::unwrap(pp, product.getGraphSizes());
+		LOG("   connects to pp: " << pp << " (ts: " << pp_unwrapped[0] << ", dfa 1: " << pp_unwrapped[1] << ", dfa 2:" << pp_unwrapped[2] <<")");
 	}
 
 	return 0;

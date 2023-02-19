@@ -10,13 +10,16 @@
 
 namespace TP {
 
+using Node = uint32_t;
+using WideNode = uint64_t;
+
 namespace AugmentedNodeIndex {
-	static uint64_t wrap(const std::vector<uint32_t>& inds, const std::vector<uint32_t>& graph_sizes) {
-		uint64_t ret_ind = 0;
-		uint64_t prod_size = 1;
+	static WideNode wrap(const Containers::SizedArray<Node>& inds, const Containers::SizedArray<std::size_t>& graph_sizes) {
+		WideNode ret_ind = 0;
+		WideNode prod_size = 1;
 		ASSERT(inds.size() == graph_sizes.size(), "Parameters need to have same number of elements");
 		for (uint8_t i=0; i<inds.size(); ++i) {
-			uint64_t temp = 1;
+			WideNode temp = 1;
 			for (uint8_t j=0; j<i; ++j) {
 				temp *= graph_sizes[j];	
 			}
@@ -27,13 +30,13 @@ namespace AugmentedNodeIndex {
 		return ret_ind;
 	}
 
-	static std::vector<uint32_t> unwrap(const std::vector<int>& graph_sizes, uint64_t ind_prod) {
-		std::vector<uint32_t> ret_inds(graph_sizes.size());
-		uint64_t prod_size = 1;
-		uint64_t temp_mod = ind_prod;
+	static const Containers::SizedArray<Node> unwrap(WideNode ind_prod, const Containers::SizedArray<std::size_t>& graph_sizes) {
+		Containers::SizedArray<Node> ret_inds(graph_sizes.size());
+		WideNode prod_size = 1;
+		WideNode temp_mod = ind_prod;
 		for (int i=0; i<graph_sizes.size(); ++i) {
 			prod_size *= graph_sizes[i];
-			uint64_t temp = 1;
+			WideNode temp = 1;
 			for (uint8_t j=0; j<(graph_sizes.size() - i - 1); ++j) {
 				temp *= graph_sizes[j];
 			}
@@ -46,11 +49,11 @@ namespace AugmentedNodeIndex {
 }
 
 
-using Node = uint32_t;
 
 template<class EDGE_T>
 class Graph {
 	public:
+	 	typedef EDGE_T edge_t; // used for dependent types
 		typedef std::string(*EdgeToStrFunction)(const EDGE_T&);
 	public:
 		Graph(bool directed = true, bool reversible = false, EdgeToStrFunction edgeToStr = nullptr)
@@ -186,6 +189,7 @@ class BijectiveGenericNodeContainer {
 template<class NODE_T, class EDGE_T>
 class NodeGenericGraph : public Graph<EDGE_T> {
 	public:
+	 	typedef NODE_T node_t;
 		typedef std::string(*NodeToStrFunction)(const NODE_T&);
 	public:
 		NodeGenericGraph(bool directed = true, bool reversible = false, Graph<EDGE_T>::EdgeToStrFunction edgeToStr = nullptr, NodeToStrFunction nodeToStr = nullptr)
