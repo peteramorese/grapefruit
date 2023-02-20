@@ -2,6 +2,8 @@
 
 #include <list>
 
+#include "tools/Logging.h"
+
 namespace TP {
 namespace Containers {
 
@@ -39,6 +41,7 @@ namespace Containers {
     template<class T>
     class SizedArray {
         public:
+            SizedArray() = delete;
             SizedArray(std::size_t size) : m_array(new T[size]), m_size(size) {}
             SizedArray(std::size_t size, const T& fill_val) : m_array(new T[size]), m_size(size) {
                 for (std::size_t i=0; i < m_size; ++i) {
@@ -50,6 +53,7 @@ namespace Containers {
                     m_array[i] = other.m_array[i];
                 }
             }
+            SizedArray(SizedArray&& other) : m_array(other.m_array), m_size(other.m_size) {}
             ~SizedArray() {delete[] m_array;}
 
             T& operator[](std::size_t i) {return m_array[i];}
@@ -61,7 +65,7 @@ namespace Containers {
             std::size_t size() const {return m_size;}
         private:
             T* m_array;
-            const std::size_t m_size;
+            std::size_t m_size;
     };
 
 } // namespace Containers

@@ -18,40 +18,31 @@ namespace FormalMethods {
     template<class T>
     class Automaton : public Graph<T> {
         public:
-        public:
-            Automaton(bool reversible = true, Graph<T>::EdgeToStrFunction edgeToStr = nullptr) 
+            Automaton(bool reversible = true, Graph<std::string>::EdgeToStrFunction edgeToStr = nullptr) 
                 : Graph<T>(true, reversible, edgeToStr) 
             {}
+
 
             void setAcceptingStates(const std::vector<uint32_t>& accepting_states) {
                 for (auto ind : accepting_states) 
                     m_accepting_states.insert(ind);
             }
 
-            bool addAcceptingState(Node accepting_state) {return m_accepting_states.insert(accepting_state).second;}
+            inline bool addAcceptingState(Node accepting_state) {return m_accepting_states.insert(accepting_state).second;}
+            inline bool isAccepting(Node ind) const {return m_accepting_states.contains(ind);}
+            inline const std::set<Node>& getAcceptingStates() const {return m_accepting_states;}
 
-            bool isAccepting(Node ind) const {return m_accepting_states.contains(ind);}
+            inline void setInitStates(const std::vector<Node>& init_states) {for (auto ind : init_states) m_init_states.insert(ind);}
+            inline const std::set<Node>& getInitStates() const {return m_init_states;}
 
-            const std::set<Node>& getAcceptingStates() const {return m_accepting_states;}
-
-            void setInitStates(const std::vector<Node>& init_states) {
-                for (auto ind : init_states) 
-                    m_init_states.insert(ind);
-            }
-
-            const std::set<Node>& getInitStates() const {return m_init_states;}
-
-            void setAlphabet(const Alphabet& alphabet) {m_alphabet = alphabet;}
-
-            const Alphabet& getAlphabet() const {return m_alphabet;}
-
-            bool inAlphabet(const std::string& letter) const {return m_alphabet.contains(letter);}
+            inline void setAlphabet(const Alphabet& alphabet) {m_alphabet = alphabet;}
+            inline const Alphabet& getAlphabet() const {return m_alphabet;}
+            inline bool inAlphabet(const std::string& letter) const {return m_alphabet.contains(letter);}
 
             void setAtomicPropositions(const std::vector<std::string>& aps) {
                 for (auto ap : aps) 
                     m_atomic_propositions.insert(ap);
             }
-
             const Alphabet& getAtomicPropositions() const {
                 return m_atomic_propositions;
             }
@@ -66,8 +57,8 @@ namespace FormalMethods {
 
     class DFA : public Automaton<std::string> {
         public:
-            DFA(bool reversible = true, Graph<std::string>::EdgeToStrFunction edgeToStr = nullptr) 
-                : Automaton<std::string>(reversible, edgeToStr) {}
+            DFA(bool reversible = true) 
+                : Automaton<std::string>(reversible) {}
 
             virtual bool connect(Node src, Node dst, const std::string& edge) override {
                 if (src < size()) {
@@ -122,7 +113,7 @@ namespace FormalMethods {
                 for (const auto& list : m_graph) {
                     for (uint32_t i=0; i < list.forward.size(); ++i) {
                         if (i == 0) PRINT_NAMED("State " << node, "is connected to:");
-                        PRINT_NAMED("    - child state " << list.forward.nodes[i], "with edge: " << m_edgeToStr(list.forward.edges[i]));
+                        PRINT_NAMED("    - child state " << list.forward.nodes[i], "with edge: " << list.forward.edges[i]);
                     }
                     node++;
                 }
@@ -168,3 +159,10 @@ namespace YAML {
         }
     };
 } // namespace YAML
+
+// Alphabet merging operator
+static TP::FormalMethods::Alphabet operator+(const TP::FormalMethods::Alphabet& alph_1, const TP::FormalMethods::Alphabet& alph_2) {
+    TP::FormalMethods::Alphabet merged = alph_1;
+    merged.merge(TP::FormalMethods::Alphabet(alph_2));
+    return merged;
+}

@@ -8,82 +8,9 @@
 
 #include "core/Graph.h"
 
-#define TP_COST_VECTOR_EQUIVALENCE_TOLERANCE 0.0000000001
-
 namespace TP {
 namespace GraphSearch {
 
-    /* Type requirements
-
-    NODE_T:
-        - Must be ordered hashable (std::map)
-        - Must be copy constructable
-    EDGE_T:
-        - None
-    COST_T:
-        - Must contain 'less than' or 'dominates' operator< 
-        - Must contain 'addition' operator+ and 'subtraction' operator-
-        - Default constructed value must be the respective 'zero' value
-        - Must be copy constructable
-        - For use with CostVector, must have a cast-from-double method (operator COST_T() const)
-    HEURISTIC_T:
-        - User specified
-        - Must contain operator() which retrieves the heuristic COST_T value given a node
-    EDGE_STORAGE_T:
-        By default, edges are copied inside the search result (i.e. search tree, edge path). If the graph is explicit, and the 
-        edge type is large or non-copyable, the user can specify template parameter 'EDGE_STORAGE_T' as 'const EDGE_T*' 
-        to store pointers to the edges stored in the explicit graph to prevent duplicates and minimize memory usage
-        - Must be equal to 'EDGE_T' or 'const EDGE_T*'
-
-    */
-
-    /* Search Problem requirements
-
-    Required methods:
-    
-    const std::vector<NODE_T>& children(const NODE_T& node) const; (explicit)
-    std::vector<NODE_T> children(const NODE_T& node) const; (symbolic)
-        - Required for forward search algorithms
-        - Returns a set of children/neighbor nodes to the node 'node'
-        - (explicit) Must return a persistent const reference
-    
-    const std::vector<EDGE_T>& outgoingEdges(const NODE_T& node) const; (explicit)
-    std::vector<EDGE_T> outgoingEdges(const NODE_T& node) const; (symbolic)
-        - Required for forward search algorithms
-        - Returns the set of edges to each respective child node in 'children(node)'
-        - Both 'children()' and 'outgoingEdges()' must return containers in the same order
-        - (explicit) Must return a persistent const reference
-    
-    const std::vector<NODE_T>& parents(const NODE_T& node) const; (explicit)
-    std::vector<NODE_T> parents(const NODE_T& node) const; (symbolic)
-        - Required for backwards search algorithms
-        - Returns the set of parent nodes to the node 'node'
-        - (explicit) Must return a persistent const reference
-    
-    const std::vector<EDGE_T>& incomingEdges(const NODE_T& node) const; (explicit) 
-    std::vector<EDGE_T> incomingEdges(const NODE_T& node) const; (symbolic)
-        - Required for backwards search algorithms
-        - Returns the set of edges to each respective parent node in 'parents(node)'
-        - Both 'parents()' and 'incomingEdges()' must return containers in the same order
-        - (explicit) Must return a persistent const reference
-    
-    bool goal(const NODE_T& node) const;
-        - Returns 'true' if the input 'node' satisfies the goal condition, and false otherwise
-    
-    COST_T gScore(const COST_T& parent_g_score, const EDGE_T& edge) const;
-        - Returns the new cost of a node with cost 'parent_g_score' exploring through the edge 'edge'. For a typical search problem,
-            this method would be equivalent to adding the edge cost to 'parent_g_score'
-    
-    COST_T hScore(const NODE_T& node) const {return heuristic.operator()(node);}
-        - Returns the heuristic cost-to-go for a node 'node'
-        - Must be an admissible heuristic (single objective: underestimates the min-cost-go)
-
-    */
-    
-    template <class NODE_T, class COST_T>
-    struct ZeroHeuristic {
-        COST_T operator()(const NODE_T& node) const {return COST_T();}
-    };
 
     // Search direction
     enum class SearchDirection {Forward, Backward};

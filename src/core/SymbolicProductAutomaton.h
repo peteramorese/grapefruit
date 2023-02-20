@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <memory>
 
 #include "tools/Containers.h"
@@ -22,17 +23,10 @@ namespace DiscreteModel {
 
         public:
             SymbolicProductAutomaton() = delete;
-            SymbolicProductAutomaton(const std::shared_ptr<MODEL_T>& model, const std::vector<std::shared_ptr<AUTOMATON_T>>& automata, uint32_t cache_size = 1) 
-                : m_model(model)
-                , m_automata(automata)
-                , m_graph_sizes(m_automata.size() + 1)
-                , m_cache(cache_size)
-            {
-                for (ProductRank i=0; i < rank(); ++i) m_graph_sizes[i] = (i != 0) ? m_automata[i]->size() : model->size();
-            }
+            SymbolicProductAutomaton(const std::shared_ptr<MODEL_T>& model, const std::vector<std::shared_ptr<AUTOMATON_T>>& automata, uint32_t cache_size = 1);
 
             // Number of graphs in the product
-            inline ProductRank rank() const {return m_automata.size() + 1;};
+            inline ProductRank rank() const {return m_graph_sizes.size();};
             inline const Containers::SizedArray<std::size_t>& getGraphSizes() const {return m_graph_sizes;}
 
             // This method should be specialized for the desired application
@@ -40,139 +34,117 @@ namespace DiscreteModel {
             EDGE_T getEdge(const MODEL_T::edge_t& model_edge, const std::vector<typename AUTOMATON_T::edge_t>& automaton_edges);
 
             template <class EDGE_T>
-		    std::vector<EDGE_T> getOutgoingEdges(WideNode node) {
+		    std::vector<EDGE_T> getOutgoingEdges(WideNode node);
 
-		    }
+		    std::vector<WideNode> getChildren(WideNode node);
 
-		    std::vector<WideNode> getChildren(WideNode node) {
-                const StatePermutaton& perm = post(node);
-                const auto& n_options = perm.getOptionsArray();
-                const auto& unwrapped_nodes = perm.unwrapped_nodes;
-
-                std::vector<WideNode> children(Algorithms::Combinatorics::permutationsSize(n_options));
-
-                uint32_t child_ind = 0;
-                auto onPermutation = [this] (const Containers::SizedArray<uint32_t>& option_indices) {
-                    Containers::SizedArray<Node> unwrapped_pp(rank());
-
-                    for (ProductRank i=0; i<rank(); ++i) {
-                        if (i != 0)  {
-                            const auto& children = m_automata[i - 1]->getChildren(unwrapped_nodes[i]);
-                            unwrapped_pp[i] == children[option_indices[i]];
-                        } else {
-                            const auto& children = m_model->getChildren(unwrapped_nodes[i]);
-                            unwrapped_pp[i] == children[option_indices[i]];
-                        }
-                    }
-
-                    children[child_ind++] = AugmentedNodeIndex::wrap(unwrapped_pp, this->m_graph_sizes);
-                };
-
-                Algorithms::Combinatorics::permutations(n_options, onPermutation);
-                
-                return children;
-		    }
-		
             template <class EDGE_T>
-		    std::vector<EDGE_T> getIncomingEdges(WideNode node) {
-		    }
+		    std::vector<EDGE_T> getIncomingEdges(WideNode node);
 
-		    std::vector<WideNode> getParents(WideNode node) {
-		    }
+		    std::vector<WideNode> getParents(WideNode node);
 
         private:
-            struct StatePermutaton {
-                Containers::SizedArray<Node> unwrapped_nodes;
-                Containers::SizedArray<std::vector<Node>> dst_set_ind_options;
 
-                StatePermutaton(Node node) : unwrapped_nodes(AugmentedNodeIndex::unwrap(node, m_graph_sizes)), dst_set_ind_options(rank()) {}
+            enum CacheElementType {Forward, Backward};
+            
+            template<CacheElementType TYPE>
+            static inline constexpr CacheElementType getCacheElementType() {
+                if constexpr (TYPE == CacheElementType::Forward) {return CacheElementType::Forward;}
+                if constexpr (TYPE == CacheElementType::Backward) {return CacheElementType::Backward;}
+            }
 
-                Containers::SizedArray<uint32_t> getOptionsArray() const {
-                    Containers::SizedArray<uint32_t> ret_arr(dst_set_ind_options.size());
-                    for (ProductRank i=0; i<dst_set_ind_options.size(); ++i) ret_arr[i] = dst_set_ind_options[i].size();
-                    return ret_arr;
-                }
+            struct AugmentedNodePermutationArray {
+                public:
+                    struct AugmentedNodePermutation {
+                        AugmentedNodePermutation(ProductRank automata_rank) : dst_automaton_set_ind_options(automata_rank) {}
+                        Node dst_ts_node;
+                        Containers::SizedArray<std::vector<Node>> dst_automaton_set_ind_options;
 
-                void addOption(ProductRank graph_ind, uint32_t dst_set_ind) {
-                    dst_set_ind_options[graph_ind].push_back(dst_set_ind);
-                }
+                        void addOption(ProductRank graph_ind, uint32_t dst_set_ind) {
+                            dst_automaton_set_ind_options[graph_ind].push_back(dst_set_ind);
+                        }
+
+                        Containers::SizedArray<uint32_t> getAutomatonOptionsArray() const {
+                            Containers::SizedArray<uint32_t> ret_arr(dst_automaton_set_ind_options.size());
+                            for (ProductRank i=0; i<dst_automaton_set_ind_options.size(); ++i) ret_arr[i] = dst_automaton_set_ind_options[i].size();
+                            return ret_arr;
+                        }
+
+                        uint32_t getSetIndex(ProductRank automaton_ind, uint32_t option_index) const {return dst_automaton_set_ind_options[automaton_ind][option_index];}
+                    };
+                public:
+                    Containers::SizedArray<Node> src_unwrapped_nodes;
+                    std::vector<AugmentedNodePermutation> array;
+
+                    AugmentedNodePermutationArray(WideNode src_node, const Containers::SizedArray<std::size_t>& graph_sizes) 
+                        : src_unwrapped_nodes(AugmentedNodeIndex::unwrap(src_node, graph_sizes))
+                        {}
+
+                    void insert(AugmentedNodePermutation&& perm) {
+                        ASSERT(perm.dst_automaton_set_ind_options.size() == src_unwrapped_nodes.size() - 1, "Cannot insert state permutation with incorrect size (" << perm.dst_automaton_set_ind_options.size() << ")");
+                        array.push_back(perm);
+                    }
+
+                    std::size_t getPermutationSize() const {
+                        std::size_t size = 0;
+                        for (const auto& perm : array) {
+                            size += Algorithms::Combinatorics::permutationsSizeFromOptions(perm.dst_automaton_set_ind_options);
+                        }
+                        return size; 
+                    }
+
+                    inline bool empty() const {return array.empty();}
+                    inline void clear() {array.clear();}
             };
 
             // Symbolic method cache (i.e. for calling 'getOutgoingEdges' right before/after 'children' for the same node)
             class SymbolicCache {
+                private:
+                    struct CacheElementKey {
+                        CacheElementKey(WideNode node_, CacheElementType type_) : node(node_), type(type_) {}
+                        WideNode node;
+                        CacheElementType type;
+                        bool operator<(const CacheElementKey& other) const {return node < other.node;}
+                    };
                 public:
-                    SymbolicCache(uint32_t max_size = 1) : m_max_size(max_size) {};
+                    SymbolicCache() = delete;
+                    SymbolicCache(const Containers::SizedArray<std::size_t>& graph_sizes, uint32_t max_size = 1) 
+                        : m_graph_sizes(graph_sizes)
+                        , m_max_size(max_size) {};
+
                     void clear() {m_cache.clear();}
-                    bool has(WideNode node) const {return m_cache.contains(node);}
-                    const StatePermutaton& get(WideNode node) const {
-                        ASSERT(has(node), "Undefined behavior calling 'get' when 'has' returns false for a node");
-                        return m_cache.at(node);
+                    
+                    template <CacheElementType CACHE_ELEMENT_T>
+                    inline bool has(WideNode node) const {
+                        return m_cache.contains(CacheElementKey(node, CACHE_ELEMENT_T));
                     }
 
-                    StatePermutaton& make(WideNode node) {
+                    template <CacheElementType CACHE_ELEMENT_T>
+                    inline const AugmentedNodePermutationArray& get(WideNode node) const {return m_cache.at(CacheElementKey(node, CACHE_ELEMENT_T));}
+
+                    template <CacheElementType CACHE_ELEMENT_T>
+                    AugmentedNodePermutationArray& make(WideNode node) {
                         // If the cache is at size, erase an element (for simplicity erase the first)
-                        if (m_cache.size() >= m_max_size) m_cache.erase(m_cache.begin());
-                        StatePermutaton& fresh_value = *(m_cache.try_emplace(node, node).first);
+                        if (m_cache.size() >= m_max_size)
+                            m_cache.erase(m_cache.begin());
+                        auto [it, inserted] = m_cache.try_emplace(CacheElementKey(node, CACHE_ELEMENT_T), node, m_graph_sizes);
 
-                        //TODO
-                        //// If the cache happened to have a value that matched the node, clear it
-                        //fresh_value.clear();
-                        return fresh_value;
+                        // If the cache happened to have a value that matched the node, clear it
+                        if (!inserted)
+                            it->second.clear();
+
+                        return it->second;
                     }
+
                 private:
                     uint32_t m_max_size = 1;
-                    std::map<WideNode, StatePermutaton> m_cache;
+                    std::map<CacheElementKey, AugmentedNodePermutationArray> m_cache;
+                    const Containers::SizedArray<std::size_t>& m_graph_sizes;
             };
 
         private:
-            const StatePermutaton& post(WideNode node) const {
-                // Retrieve from cache if it has the node
-                if (m_cache.has(node)) return m_cache.get(node);
-
-                StatePermutaton& perm = m_cache.make(node);
-
-                // Unwrap the product node (done automatically when constructing cache element)
-                const Containers::SizedArray<Node>& unwrapped_nodes = perm.unwrapped_nodes;
-
-                // Get the children of the model
-                const auto& model_children = m_model->getChildren(unwrapped_nodes[0]);
-                const auto& model_outgoing_edges = m_model->getOutgoingEdges(unwrapped_nodes[0]);
-
-                uint32_t sp_ind = 0;
-                for (auto sp : model_children) {
-                    bool enabled = true;
-
-
-                    ProductRank automaton_ind = 0;
-                    for (const auto& automaton : m_automata) {
-                        bool transition_enabled = false;
-                        const auto &automaton_children = automaton->getChildren(unwrapped_nodes[automaton_ind]);
-                        const auto &automaton_outgoing_edges = automaton->getOutgoingEdges(unwrapped_nodes[automaton_ind]);
-
-                        for (uint32_t i=0; i<automaton_children.size(); ++i) {
-                            if (m_model->observe(sp, automaton_outgoing_edges[i])) {
-                                perm.addOption(automaton_ind + 1, i);
-                                transition_enabled = true;
-                            }
-                        }
-                        
-                        if (!transition_enabled) {
-                            enabled = false;
-                            break;
-                        }
-
-                        ++automaton_ind;
-                    }
-
-                    if (enabled) {
-                        perm.addOption(0, sp_ind);
-                    } 
-
-                    ++sp_ind;
-                }
-
-                return perm;
-            }
+            const AugmentedNodePermutationArray& pre(WideNode node) const;
+            const AugmentedNodePermutationArray& post(WideNode node) const;
 
         private:
             const std::shared_ptr<MODEL_T> m_model;
@@ -184,3 +156,5 @@ namespace DiscreteModel {
 
 } // namespace DiscreteModel
 } // namespace TP
+
+#include "SymbolicProductAutomaton_impl.hpp"

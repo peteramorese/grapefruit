@@ -12,6 +12,15 @@ namespace Algorithms {
             /*
             Computes all permutations amongst options specified by n_options_arr 
             */
+
+            // RA_2D_ARRAY must be an array of arrays (both contain size() methods, first array must have random access indices)
+            template <typename RA_2D_ARRAY>
+            static uint32_t permutationsSizeFromOptions(const RA_2D_ARRAY& options_arr) {
+                uint32_t sz = 1;
+                for (uint32_t i=0; i<options_arr.size(); ++i) sz *= options_arr[i].size();
+                return sz;
+            }
+
             static uint32_t permutationsSize(const Containers::SizedArray<uint32_t>& n_options_arr) {
                 uint32_t sz = 1;
                 for (uint32_t i=0; i<n_options_arr.size(); ++i) sz *= n_options_arr[i];

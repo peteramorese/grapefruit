@@ -25,8 +25,8 @@ namespace DiscreteModel {
 	class ObservationContainer {
 		public:
 			void addObservationToNode(Node node, const std::string& observation) {
-				if (nodeInContainer(node)) {
-					m_observations.resize(node);
+				if (!nodeInContainer(node)) {
+					resize(node + 1);
 				}
 				m_observations[node].insert(observation);
 			}
@@ -37,7 +37,7 @@ namespace DiscreteModel {
 				ASSERT(nodeInContainer(node), "Node " << node << " is not in observation container");
 				return m_observations[node].contains(observation);
 			}
-			void resize(std::size_t size) {m_observations.resize(size);}
+			inline void resize(std::size_t size) {m_observations.resize(size);}
 			inline bool nodeInContainer(Node node) const {return node >= m_observations.size();}
 		private:
 			std::vector<std::unordered_set<std::string>> m_observations;
@@ -45,8 +45,12 @@ namespace DiscreteModel {
 
 	class TransitionSystem : public NodeGenericGraph<State, TransitionSystemLabel> {
 		public:
-			TransitionSystem() = default;
-			TransitionSystem(const std::string& filepath);
+			TransitionSystem(bool reversible = true) : NodeGenericGraph<State, TransitionSystemLabel>(true, reversible) {};
+			TransitionSystem(const std::string& filepath) 
+				: NodeGenericGraph<State, TransitionSystemLabel>()
+			{
+				//deserialize
+			}
 
 			// Parses observation and evaluates it according to state
 		 	bool parseAndObserve(const State& state, const std::string& observation) const;
