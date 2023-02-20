@@ -24,5 +24,9 @@ namespace Planner {
             const std::shared_ptr<DiscreteModel::TransitionSystem> m_ts;
             const std::vector<std::shared_ptr<FormalMethods::DFA>> m_automata;
     };
+
+    class DeterministicTaskPlanningProblem {
+
+    };
 }
 }

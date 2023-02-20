@@ -13,13 +13,16 @@
 
 namespace TP {
 namespace DiscreteModel {
+
+    using Action = std::string;
+
 	struct TransitionSystemLabel {
-		TransitionSystemLabel(float cost_, const std::string& action_) 
+		TransitionSystemLabel(float cost_, const Action& action_) 
 			: cost(cost_)
 			, action(action_)
 			{}
 		float cost;
-		std::string action;
+		Action action;
 
 		std::string to_str() const {return "(action: " + action + ", cost: " + std::to_string(cost) + ")";}
 	};

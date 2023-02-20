@@ -6,8 +6,6 @@
 namespace TP {
 namespace Planner {
 
-    using Action = std::string;
-
     struct Plan {
         bool success;
         std::vector<Node> node_sequence;
