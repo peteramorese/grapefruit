@@ -7,7 +7,7 @@ namespace DiscreteModel {
     // TransitionSystemGenerator
 
     std::shared_ptr<TransitionSystem> TransitionSystemGenerator::generate(TransitionSystemProperties& props) {
-        std::shared_ptr<TransitionSystem> ts = std::make_shared<TransitionSystem>();
+        std::shared_ptr<TransitionSystem> ts = std::make_shared<TransitionSystem>(props.ss);
 
         // Copy the propositions into the transition system
         for (const auto& prop : props.propositions) {
@@ -110,7 +110,7 @@ namespace DiscreteModel {
     void TransitionSystem::addAlphabet(const FormalMethods::Alphabet& alphabet) {
         if (alphabet.size() == 0) return;
         m_observation_container.resize(size());
-        for (uint32_t state_ind = 0; state_ind < m_node_container.size(); ++state_ind) {
+        for (Node state_ind = 0; state_ind < m_node_container.size(); ++state_ind) {
             addObservationsToNode(state_ind, alphabet);
         }
     }

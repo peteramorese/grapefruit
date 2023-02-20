@@ -61,7 +61,6 @@ namespace DiscreteModel {
 
         std::vector<WideNode> product_parents;
         if (perm_array.empty()) return product_parents;
-        LOG("perm array size: " << perm_array.array.size());
 
         ASSERT(perm_array.array.size() == 1, "Cache element for pre contains does not contain one AugmentedNodePermutation");
         const auto perm = perm_array.array[0];
@@ -86,8 +85,6 @@ namespace DiscreteModel {
             };
 
             const auto& n_options = perm.getAutomatonOptionsArray();
-            LOG("ts state : " << model_parent << " n_options: ");
-            for (uint32_t i=0; i< n_options.size(); ++i) LOG(" -" << n_options[i]);
             Algorithms::Combinatorics::permutations(n_options, onPermutation);
         }
         
@@ -171,11 +168,8 @@ namespace DiscreteModel {
             const auto& automaton_parents = automaton->getParents(unwrapped_nodes[automaton_ind]);
             const auto& automaton_incoming_edges = automaton->getIncomingEdges(unwrapped_nodes[automaton_ind]);
 
-            LOG("working automaton: " << (int)automaton_ind);
             for (uint32_t i=0; i<automaton_parents.size(); ++i) {
-                LOG("observing label " << automaton_incoming_edges[i]);
                 if (m_model->observe(sp, automaton_incoming_edges[i])) {
-                    LOG("  found");
                     perm.addOption(automaton_ind - 1, i);
                     transition_enabled = true;
                 }
@@ -190,7 +184,6 @@ namespace DiscreteModel {
         }
 
         if (enabled) {
-            LOG("inserting!");
             perm.dst_ts_node = sp;
             perm_array.insert(std::move(perm));
         } 

@@ -65,6 +65,7 @@ target_link_libraries(SymbolicProductAutomatonExample PUBLIC
 	StateSpace
 	Condition
 	TransitionSystem
+	Manipulator
 )
 target_include_directories(SymbolicProductAutomatonExample PUBLIC
 	${TP_INCLUDE_DIRS}

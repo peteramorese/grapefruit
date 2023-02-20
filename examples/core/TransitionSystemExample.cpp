@@ -21,7 +21,7 @@ int main() {
 
 	/////////////////   State Space   /////////////////
 
-	StateSpace ss_manipulator(objects.size() + 2);
+	std::shared_ptr<StateSpace> ss_manipulator = std::make_shared<StateSpace>(objects.size() + 2);
 
 	std::vector<std::string> ee_locations = locations;
 	ee_locations.push_back("stow");
@@ -30,18 +30,18 @@ int main() {
 	obj_locations.push_back("ee");
 	
 	// Create state space:
-	ss_manipulator.setDimension(0, "ee_loc", ee_locations); // end effector locations
+	ss_manipulator->setDimension(0, "ee_loc", ee_locations); // end effector locations
     uint32_t i = 1;
-    for (const auto& obj : objects) ss_manipulator.setDimension(i++, obj, obj_locations); 
-	ss_manipulator.setDimension(i, "holding", {"T", "F"}); // end effector is holding an object
+    for (const auto& obj : objects) ss_manipulator->setDimension(i++, obj, obj_locations); 
+	ss_manipulator->setDimension(i, "holding", {"T", "F"}); // end effector is holding an object
 
 	// Add a label group denoting the obj locations
-	ss_manipulator.addGroup("obj_locations", objects);
+	ss_manipulator->addGroup("obj_locations", objects);
 
 	// Add a domain capturing only the locations that an object can be dropped in ('locations')
-	ss_manipulator.addDomain("drop_locs", locations);
+	ss_manipulator->addDomain("drop_locs", locations);
 
-    TransitionSystemProperties props(&ss_manipulator);
+    TransitionSystemProperties props(ss_manipulator);
 
 	/////////////////   TransitionConditions   /////////////////
 
@@ -136,13 +136,13 @@ int main() {
 	//ts->mapStatesToLabels(alphabet);
 
 	{
-	State test_state(&ss_manipulator, {"stow", "L1", "L3", "F"});
+	State test_state(ss_manipulator.get(), {"stow", "L1", "L3", "F"});
 	std::string observation = "!(obj_0_loc_L2 | obj_0_loc_L1)";
 	LOG("Observation: " << observation << ", State: " << test_state.to_str() << " Result: " << ts->parseAndObserve(test_state, observation));
 	}
 
 	{
-	State test_state(&ss_manipulator, {"stow", "L2", "L3", "F"});
+	State test_state(ss_manipulator.get(), {"stow", "L2", "L3", "F"});
 	std::string observation = "!(obj_0_loc_L2 | obj_0_loc_L1)";
 	LOG("Observation: " << observation << ", State: " << test_state.to_str() << " Result: " << ts->parseAndObserve(test_state, observation));
 	}

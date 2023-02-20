@@ -45,12 +45,16 @@ namespace DiscreteModel {
 
 	class TransitionSystem : public NodeGenericGraph<State, TransitionSystemLabel> {
 		public:
-			TransitionSystem(bool reversible = true) : NodeGenericGraph<State, TransitionSystemLabel>(true, reversible) {};
+			TransitionSystem(const std::shared_ptr<StateSpace>& ss, bool reversible = true) 
+				: NodeGenericGraph<State, TransitionSystemLabel>(true, reversible) 
+				, m_ss(ss)
+				{};
 			TransitionSystem(const std::string& filepath) 
 				: NodeGenericGraph<State, TransitionSystemLabel>()
 			{
 				//deserialize
 			}
+			virtual ~TransitionSystem() {};
 
 			// Parses observation and evaluates it according to state
 		 	bool parseAndObserve(const State& state, const std::string& observation) const;
@@ -84,6 +88,8 @@ namespace DiscreteModel {
 			}
 
 		protected:
+			std::shared_ptr<StateSpace> m_ss;
+
 		  	FormalMethods::Alphabet m_alphabet;
 		 	ObservationContainer m_observation_container;
 			std::unordered_map<std::string, Condition> m_propositions;
@@ -94,12 +100,14 @@ namespace DiscreteModel {
  
 	// Generator
 	struct TransitionSystemProperties {
-		TransitionSystemProperties(const StateSpace* ss) : init_state(ss) {}
+		TransitionSystemProperties(const std::shared_ptr<StateSpace>& ss_) : ss(ss_), init_state(ss_.get()) {}
+
 		std::vector<Condition> propositions;
 		std::vector<TransitionCondition> conditions;
 		State init_state;
 		bool global_unique_actions = true;
 		FormalMethods::Alphabet alphabet;
+		std::shared_ptr<StateSpace> ss;
 	};
 
 	class TransitionSystemGenerator {
