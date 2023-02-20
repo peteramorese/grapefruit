@@ -17,7 +17,7 @@ namespace DiscreteModel {
     using Action = std::string;
 
 	struct TransitionSystemLabel {
-		TransitionSystemLabel(float cost_, const std::string& action_) 
+		TransitionSystemLabel(float cost_, const Action& action_) 
 			: cost(cost_)
 			, action(action_)
 			{}

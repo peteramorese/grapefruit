@@ -3,10 +3,13 @@ from posixpath import dirname
 import spot, os, glob, random, json, yaml
 import argparse
 
-def remove_dfa_files(dirname_prefix):
+def remove_dfa_files(dirname_prefix, file_prefix, verbose=False):
     # Remove all dfa files in directory:
     for file in os.scandir(dirname_prefix):
-        os.remove(file.path)
+        if (str(file).startswith(file_prefix)):
+            os.remove(file.path)
+            if verbose:
+                print("Removing: ", str(file))
         #print(file.path)
 
 def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose=False, f_complete=False):
@@ -131,6 +134,8 @@ if __name__ == "__main__":
     parser.add_argument("-x", "--use-txt", action='store_true', default=False, help="Use '.txt' interpretation instead of '.json'")
     parser.add_argument("-r", "--random-ordering", action='store_true', default=False, help="Randomly the order of the input formulas")
     args = parser.parse_args()
+    if args.formulas:
+        print(args.formulas)
 
     if not args.dfa_path.endswith("/"):
         WRITE_FILE_DIR_NAME_PREFIX = args.dfa_path + "/"
