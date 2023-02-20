@@ -14,12 +14,55 @@ namespace DiscreteModel {
 
     using ProductRank = uint8_t;
 
+    /*
+    Specialize the product edge inerhitor for your purpose
+
+    Specialization container must include:
+    1. template class parameters for the model and automaton
+    2. the custom edge type under the alias 'type'
+    3. the static method 'type inherit(const MODEL_T::edge_t& model_edge, const std::vector<typename AUTOMATON_T::edge_t>& automaton_edges)'
+
+    Common used examples can be found below
+    */
+
     template <class MODEL_T, class AUTOMATON_T>
+    struct CombinedProductEdgeInheritor {
+        // Full combined edge type: (model_edge_t, (automaton_edge_1, ...))
+        typedef struct {MODEL_T::edge_t model_edge_t; Containers::SizedArray<typename AUTOMATON_T::edge_t> automaton_edge_t;} type;
+
+        static inline type inherit(const MODEL_T::edge_t& model_edge, Containers::SizedArray<typename AUTOMATON_T::edge_t>&& automaton_edges) {
+            return type{model_edge, automaton_edges};
+        }
+    };
+
+    template <class MODEL_T, class AUTOMATON_T>
+    struct ModelEdgeInheritor {
+        // Full combined edge type: (model_edge_t, (automaton_edge_1, ...))
+        typedef MODEL_T::edge_t type;
+
+        static inline type inherit(const MODEL_T::edge_t& model_edge, Containers::SizedArray<typename AUTOMATON_T::edge_t>&& automaton_edges) {
+            return model_edge;
+        }
+    };
+
+    template <class MODEL_T, class AUTOMATON_T>
+    struct AutomataEdgeInheritor {
+        // Full combined edge type: (model_edge_t, (automaton_edge_1, ...))
+        typedef std::vector<typename AUTOMATON_T::edge_t> type;
+
+        static inline type inherit(const MODEL_T::edge_t& model_edge, Containers::SizedArray<typename AUTOMATON_T::edge_t>&& automaton_edges) {
+            return automaton_edges;
+        }
+    };
+
+    template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR = ModelEdgeInheritor<MODEL_T, AUTOMATON_T>>
     class SymbolicProductAutomaton {
         // Dependent types
         public:
-            // Full combined edge type: (model_edge_t, (automaton_edge_1, ...))
-            typedef struct {MODEL_T::edge_t model_edge_t; std::vector<typename AUTOMATON_T::edge_t> automaton_edge_t;} combined_edge_t;
+
+            // Capture only the model/automata
+            typedef MODEL_T::edge_t model_edge_t;
+            typedef std::vector<typename AUTOMATON_T::edge_t> automaton_edge_t;
 
         public:
             SymbolicProductAutomaton() = delete;
@@ -29,19 +72,14 @@ namespace DiscreteModel {
             inline ProductRank rank() const {return m_graph_sizes.size();};
             inline const Containers::SizedArray<std::size_t>& getGraphSizes() const {return m_graph_sizes;}
 
-            // This method should be specialized for the desired application
-            template <class EDGE_T>
-            EDGE_T getEdge(const MODEL_T::edge_t& model_edge, const std::vector<typename AUTOMATON_T::edge_t>& automaton_edges);
-
-            template <class EDGE_T>
-		    std::vector<EDGE_T> getOutgoingEdges(WideNode node);
+		    std::vector<typename EDGE_INHERITOR::type> getOutgoingEdges(WideNode node);
 
 		    std::vector<WideNode> getChildren(WideNode node);
 
-            template <class EDGE_T>
-		    std::vector<EDGE_T> getIncomingEdges(WideNode node);
+		    std::vector<typename EDGE_INHERITOR::type> getIncomingEdges(WideNode node);
 
 		    std::vector<WideNode> getParents(WideNode node);
+
 
         private:
 
@@ -57,7 +95,7 @@ namespace DiscreteModel {
                 public:
                     struct AugmentedNodePermutation {
                         AugmentedNodePermutation(ProductRank automata_rank) : dst_automaton_set_ind_options(automata_rank) {}
-                        Node dst_ts_node;
+                        uint32_t dst_ts_ind_option;
                         Containers::SizedArray<std::vector<Node>> dst_automaton_set_ind_options;
 
                         void addOption(ProductRank graph_ind, uint32_t dst_set_ind) {
@@ -70,7 +108,9 @@ namespace DiscreteModel {
                             return ret_arr;
                         }
 
+                        // Automaton
                         uint32_t getSetIndex(ProductRank automaton_ind, uint32_t option_index) const {return dst_automaton_set_ind_options[automaton_ind][option_index];}
+
                     };
                 public:
                     Containers::SizedArray<Node> src_unwrapped_nodes;

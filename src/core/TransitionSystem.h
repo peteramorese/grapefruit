@@ -20,6 +20,8 @@ namespace DiscreteModel {
 			{}
 		float cost;
 		std::string action;
+
+		std::string to_str() const {return "(action: " + action + ", cost: " + std::to_string(cost) + ")";}
 	};
 
 	class ObservationContainer {

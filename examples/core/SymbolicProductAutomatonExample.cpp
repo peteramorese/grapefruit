@@ -14,6 +14,28 @@
 using namespace TP;
 using namespace TP::DiscreteModel;
 
+
+struct MyEdgeInheritor {
+	// Custom edge inheritor
+	typedef struct {
+		double cost_double;
+		std::string automata_edge_combined = std::string();
+	} type;
+
+	static inline type inherit(const TransitionSystemLabel& model_edge, Containers::SizedArray<std::string>&& automaton_edges) {
+		type ret_edge;
+		ret_edge.cost_double = static_cast<double>(model_edge.cost);
+		for (uint32_t i=0; i<automaton_edges.size(); ++i) {
+			ret_edge.automata_edge_combined += "dfa_" + std::to_string(i) + " (" + automaton_edges[i] + ") ";
+		}
+		return ret_edge;
+	}
+
+	static std::string toStr(const type& edge) {
+		return "(cost_double: " + std::to_string(edge.cost_double) + " automaton_edge_combined: " + edge.automata_edge_combined + ")";
+	}
+};
+
 int main() {
  
 
@@ -68,6 +90,8 @@ int main() {
 
 	/////////////////   Symbolic Product   /////////////////
 
+	{
+	// Edge inheritor defaults to inheriting the model edge
 	SymbolicProductAutomaton<TransitionSystem, FormalMethods::DFA> product(ts, dfas);
 
 	// Get the children symbolically
@@ -83,14 +107,17 @@ int main() {
 	WideNode p = AugmentedNodeIndex::wrap(p_unwrapped, product.getGraphSizes());
 
 	auto children = product.getChildren(p);
+	auto outgoing_edges = product.getOutgoingEdges(p);
 
 	NEW_LINE;
 	LOG("Children");
 	PRINT_NAMED("Node p: " << p << " (ts: " << p_unwrapped[0] << ", dfa 1: " << p_unwrapped[1] << ", dfa 2:" << p_unwrapped[2] <<")", "connects to");
+	uint32_t child_ind = 0;
 	for (auto pp : children) {
 		auto pp_unwrapped = AugmentedNodeIndex::unwrap(pp, product.getGraphSizes());
-		PRINT("   pp: " << pp << " (ts: " << pp_unwrapped[0] << ", dfa 1: " << pp_unwrapped[1] << ", dfa 2:" << pp_unwrapped[2] <<")");
+		PRINT("   pp: " << pp << " (ts: " << pp_unwrapped[0] << ", dfa 1: " << pp_unwrapped[1] << ", dfa 2:" << pp_unwrapped[2] <<") with edge: " << outgoing_edges[child_ind++].to_str());
 	}
+
 	}
 
 	// Get the parents symbolically
@@ -113,6 +140,38 @@ int main() {
 	for (auto p : parents) {
 		auto p_unwrapped = AugmentedNodeIndex::unwrap(p, product.getGraphSizes());
 		PRINT("   p: " << p << " (ts: " << p_unwrapped[0] << ", dfa 1: " << p_unwrapped[1] << ", dfa 2:" << p_unwrapped[2] <<")");
+	}
+	}
+	}
+
+	/////////////////   Symbolic Product with Custom Edge Inheritor   /////////////////
+
+	{
+	SymbolicProductAutomaton<TransitionSystem, FormalMethods::DFA, MyEdgeInheritor> product(ts, dfas);
+
+	// Get the children symbolically
+	{
+	Containers::SizedArray<Node> p_unwrapped(product.rank());
+	// Set transition system node:
+	p_unwrapped[0] = 6;
+	
+	// Set automaton nodes:
+	p_unwrapped[1] = 2;
+	p_unwrapped[2] = 1;
+
+	WideNode p = AugmentedNodeIndex::wrap(p_unwrapped, product.getGraphSizes());
+
+	auto children = product.getChildren(p);
+	auto outgoing_edges = product.getOutgoingEdges(p);
+
+	NEW_LINE;
+	LOG("Children");
+	PRINT_NAMED("Node p: " << p << " (ts: " << p_unwrapped[0] << ", dfa 1: " << p_unwrapped[1] << ", dfa 2:" << p_unwrapped[2] <<")", "connects to");
+	uint32_t child_ind = 0;
+	for (auto pp : children) {
+		auto pp_unwrapped = AugmentedNodeIndex::unwrap(pp, product.getGraphSizes());
+		PRINT("   pp: " << pp << " (ts: " << pp_unwrapped[0] << ", dfa 1: " << pp_unwrapped[1] << ", dfa 2:" << pp_unwrapped[2] <<") with edge: " << MyEdgeInheritor::toStr(outgoing_edges[child_ind++]));
+	}
 	}
 	}
 	return 0;
