@@ -8,37 +8,37 @@
 
 #include "core/Graph.h"
 
+#include "graph_search/SearchProblem.h"
+
 namespace TP {
 namespace GraphSearch {
 
-
-    // Search direction
-    enum class SearchDirection {Forward, Backward};
-
-    template <class EDGE_T, class COST_T, SearchDirection SEARCH_DIRECTION, class HEURISTIC_T = ZeroHeuristic<Node, COST_T>>
-    struct QuantitativeGraphSearchProblem {
+    template <class SYMBOLIC_GRAPH_T, class COST_T, SearchDirection SEARCH_DIRECTION, class HEURISTIC_T = ZeroHeuristic<Node, COST_T>>
+    struct SymbolicSearchProblem {
+        public:
+            typedef 
         public: // Methods & members required by any search problem
             
             // Extension methods
-            inline const std::vector<Node>& neighbors(Node node) const {
+            inline std::vector<Node> neighbors(Node node) const {
                 if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
                     return m_graph->getChildren(node);
                 else 
                     return m_graph->getParents(node);
             }
 
-            inline const std::vector<EDGE_T>& neighborEdges(Node node) const {
+            inline std::vector<typename SYMBOLIC_GRAPH_T::edge_t> neighborEdges(Node node) const {
                 if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
                     return m_graph->getOutgoingEdges(node);
                 else
                     return m_graph->getIncomingEdges(node);
             }
 
-            // Termination goal node
-            inline bool goal(const Node& node) const {return m_goal_node_set.contains(node);}
+            // Termination goal function
+            virtual inline bool goal(const Node& node) const {return m_goal_node_set.contains(node);}
 
             // Quantative methods
-            inline COST_T gScore(const COST_T& parent_g_score, const EDGE_T& edge) const {return parent_g_score + m_edgeToCost(edge);}
+            inline COST_T gScore(const COST_T& parent_g_score, const SYMBOLIC_GRAPH_T::edge_t& edge) const {return parent_g_score + m_edgeToCost(edge);}
             COST_T hScore(const Node& node) const {return heuristic.operator()(node);}
 
             // Member variables
@@ -48,7 +48,7 @@ namespace GraphSearch {
         public:
             typedef COST_T(*edgeToCostFunction)(const EDGE_T&);
 
-            QuantitativeGraphSearchProblem(const std::shared_ptr<Graph<EDGE_T>>& graph, const std::vector<Node>& initial_node_set_, const std::set<Node>& goal_node_set, edgeToCostFunction edgeToCost) 
+            QuantitativeGraphSearchProblem(const std::shared_ptr<SYMBOLIC_GRAPH_T>& graph, const std::vector<Node>& initial_node_set_, const std::set<Node>& goal_node_set, edgeToCostFunction edgeToCost) 
                 : initial_node_set(initial_node_set_) 
                 , m_graph(graph)
                 , m_goal_node_set(goal_node_set)
@@ -56,7 +56,7 @@ namespace GraphSearch {
                 {}
 
         private:
-            const std::shared_ptr<Graph<EDGE_T>> m_graph;
+            const std::shared_ptr<SYMBOLIC_GRAPH_T> m_graph;
             std::set<Node> m_goal_node_set;
             edgeToCostFunction m_edgeToCost;
 

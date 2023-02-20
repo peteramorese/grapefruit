@@ -147,7 +147,7 @@ namespace GraphSearch {
         CostVector<M, COST_T> operator()(const NODE_T& node) const {return CostVector<M, COST_T>{};}
     };
 
-    template <ObjectiveCount M, class EDGE_T, class COST_T, SearchDirection SEARCH_DIRECTION, class HEURISTIC_T = MOZeroHeuristic<M, Node, COST_T>>
+    template <ObjectiveCount M, class EXPLICIT_GRAPH_T, class COST_T, SearchDirection SEARCH_DIRECTION, class HEURISTIC_T = MOZeroHeuristic<M, Node, COST_T>>
     struct MOQuantitativeGraphSearchProblem {
         public: // Methods & members required by any search problem
             
@@ -159,7 +159,7 @@ namespace GraphSearch {
                     return m_graph->getParents(node);
             }
 
-            inline const std::vector<EDGE_T>& neighborEdges(Node node) const {
+            inline const std::vector<typename EXPLICIT_GRAPH_T::edge_t>& neighborEdges(Node node) const {
                 if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
                     return m_graph->getOutgoingEdges(node);
                 else
@@ -170,7 +170,7 @@ namespace GraphSearch {
             inline bool goal(const Node& node) const {return m_goal_node_set.contains(node);}
 
             // Quantative methods
-            inline CostVector<M, COST_T> gScore(const CostVector<M, COST_T>& parent_g_score, const EDGE_T& edge) const {return parent_g_score + m_edgeToCostVector(edge);}
+            inline CostVector<M, COST_T> gScore(const CostVector<M, COST_T>& parent_g_score, const EXPLICIT_GRAPH_T::edge_t& edge) const {return parent_g_score + m_edgeToCostVector(edge);}
             CostVector<M, COST_T> hScore(const Node& node) const {return heuristic.operator()(node);}
 
             // Member variables
@@ -178,9 +178,9 @@ namespace GraphSearch {
             HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
         public:
-            typedef CostVector<M, COST_T>(*edgeToCostVectorFunction)(const EDGE_T&);
+            typedef CostVector<M, COST_T>(*edgeToCostVectorFunction)(const EXPLICIT_GRAPH_T::edge_t&);
 
-            MOQuantitativeGraphSearchProblem(const std::shared_ptr<Graph<EDGE_T>>& graph, const std::vector<Node> initial_node_set_, const std::set<Node>& goal_node_set, edgeToCostVectorFunction edgeToCostVector) 
+            MOQuantitativeGraphSearchProblem(const std::shared_ptr<EXPLICIT_GRAPH_T>& graph, const std::vector<Node> initial_node_set_, const std::set<Node>& goal_node_set, edgeToCostVectorFunction edgeToCostVector) 
                 : initial_node_set(initial_node_set_) 
                 , m_graph(graph)
                 , m_goal_node_set(goal_node_set)
@@ -188,7 +188,7 @@ namespace GraphSearch {
                 {}
 
         private:
-            const std::shared_ptr<Graph<EDGE_T>> m_graph;
+            const std::shared_ptr<EXPLICIT_GRAPH_T> m_graph;
             std::set<Node> m_goal_node_set;
             edgeToCostVectorFunction m_edgeToCostVector;
 

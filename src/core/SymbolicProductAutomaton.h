@@ -57,12 +57,9 @@ namespace DiscreteModel {
 
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR = ModelEdgeInheritor<MODEL_T, AUTOMATON_T>>
     class SymbolicProductAutomaton {
-        // Dependent types
         public:
 
-            // Capture only the model/automata
-            typedef MODEL_T::edge_t model_edge_t;
-            typedef std::vector<typename AUTOMATON_T::edge_t> automaton_edge_t;
+            typedef EDGE_INHERITOR::type edge_t;
 
         public:
             SymbolicProductAutomaton() = delete;

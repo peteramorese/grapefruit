@@ -42,7 +42,7 @@ int main() {
     NEW_LINE;
     LOG("Default Bi-Objective search example");
     {
-    MOQuantitativeGraphSearchProblem<2, Edge, uint32_t, SearchDirection::Forward> dijkstras_problem(graph, {0}, {3}, &Edge::edgeToCostVector);
+    MOQuantitativeGraphSearchProblem<2, Graph<Edge>, uint32_t, SearchDirection::Forward> dijkstras_problem(graph, {0}, {3}, &Edge::edgeToCostVector);
 
     NEW_LINE;
     LOG("Searching...");
