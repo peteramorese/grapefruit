@@ -28,9 +28,9 @@ namespace Planner {
             const std::shared_ptr<SymbolicProductGraph> m_sym_graph;
     };
 
-    class DeterministicTaskPlanningProblem : public GraphSearch::QuantitativeSymbolicSearchProblem<DeterministicTaskPlanner::SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t, GraphSearch::SearchDirection::Forward> {
+    class DeterministicTaskPlannerSearchProblem : public GraphSearch::QuantitativeSymbolicSearchProblem<DeterministicTaskPlanner::SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t, GraphSearch::SearchDirection::Forward> {
         public:
-            DeterministicTaskPlanningProblem(const std::shared_ptr<DeterministicTaskPlanner::SymbolicProductGraph>& sym_graph, const DiscreteModel::State& init_state);
+            DeterministicTaskPlannerSearchProblem(const std::shared_ptr<DeterministicTaskPlanner::SymbolicProductGraph>& sym_graph, const DiscreteModel::State& init_state);
 
             virtual bool goal(const Node& node) const override;
     };

@@ -5,7 +5,7 @@
 namespace TP {
 namespace Planner {
 
-    DeterministicTaskPlanningProblem::DeterministicTaskPlanningProblem(const std::shared_ptr<DeterministicTaskPlanner::SymbolicProductGraph>& sym_graph, const DiscreteModel::State& init_state) 
+    DeterministicTaskPlannerSearchProblem::DeterministicTaskPlannerSearchProblem(const std::shared_ptr<DeterministicTaskPlanner::SymbolicProductGraph>& sym_graph, const DiscreteModel::State& init_state) 
         : GraphSearch::QuantitativeSymbolicSearchProblem<DeterministicTaskPlanner::SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t, GraphSearch::SearchDirection::Forward>(
             sym_graph,
             {},
@@ -19,7 +19,7 @@ namespace Planner {
 
         }
 
-    bool DeterministicTaskPlanningProblem::goal(const Node& node) const {
+    bool DeterministicTaskPlannerSearchProblem::goal(const Node& node) const {
         auto unwrapped_node = m_graph->getUnwrappedNode(node);
         const auto& automata = m_graph->extractAutomata();
         for (uint32_t i=0; i<unwrapped_node.automata_nodes.size(); ++i) {
@@ -36,7 +36,7 @@ namespace Planner {
     {}
 
     Plan DeterministicTaskPlanner::plan(const DiscreteModel::State& init_state) const {
-        DeterministicTaskPlanningProblem problem(m_sym_graph, init_state);
+        DeterministicTaskPlannerSearchProblem problem(m_sym_graph, init_state);
 
         auto result = GraphSearch::AStar<Node, SymbolicProductGraph::edge_t, DiscreteModel::TransitionSystemLabel::cost_t, decltype(problem)>::search(problem);
         return Plan(result.solution, m_sym_graph, result.success);
