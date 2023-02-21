@@ -54,6 +54,8 @@ template<class EDGE_T>
 class Graph {
 	public:
 	 	typedef EDGE_T edge_t; // used for dependent types
+	 	typedef Node node_t; // used for dependent types
+		
 		typedef std::string(*EdgeToStrFunction)(const EDGE_T&);
 	public:
 		Graph(bool directed = true, bool reversible = false, EdgeToStrFunction edgeToStr = nullptr)

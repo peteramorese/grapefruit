@@ -60,6 +60,14 @@ namespace DiscreteModel {
         public:
 
             typedef EDGE_INHERITOR::type edge_t;
+            typedef WideNode node_t;
+
+            struct UnwrappedNode {
+                UnwrappedNode() = delete;
+                UnwrappedNode(const SymbolicProductAutomaton& outter) : automata_nodes(outter.rank() - 1) {}
+                Node ts_node;
+                Containers::SizedArray<std::size_t> automata_nodes;
+            };
 
         public:
             SymbolicProductAutomaton() = delete;
@@ -69,6 +77,7 @@ namespace DiscreteModel {
             inline ProductRank rank() const {return m_graph_sizes.size();};
             inline const Containers::SizedArray<std::size_t>& getGraphSizes() const {return m_graph_sizes;}
 
+            // Graph movement methods
 		    std::vector<typename EDGE_INHERITOR::type> getOutgoingEdges(WideNode node);
 
 		    std::vector<WideNode> getChildren(WideNode node);
@@ -76,6 +85,16 @@ namespace DiscreteModel {
 		    std::vector<typename EDGE_INHERITOR::type> getIncomingEdges(WideNode node);
 
 		    std::vector<WideNode> getParents(WideNode node);
+
+            // Access the graphs
+            const MODEL_T& getModel() const {return *m_model;}
+            const std::shared_ptr<MODEL_T>& extractModel() const {return m_model;}
+            const AUTOMATON_T& getAutomaton(ProductRank i) const {return *(m_automata[i]);}
+            const std::vector<std::shared_ptr<AUTOMATON_T>>& extractAutomata() const {return m_automata;}
+
+            // Convert between augmented nodes
+            WideNode getWrappedNode(Node ts_node, const Containers::SizedArray<Node>& automata_nodes) const;
+            UnwrappedNode getUnwrappedNode(WideNode wrapped_node) const ;
 
 
         private:

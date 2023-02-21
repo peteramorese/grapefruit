@@ -7,26 +7,34 @@
 #include "core/Automaton.h"
 #include "core/SymbolicProductAutomaton.h"
 
+#include "graph_search/SymbolicSearchProblem.h"
+
 #include "planners/PlanningProblem.h"
 
 namespace TP {
 namespace Planner {
 
+    using DiscreteModel::TransitionSystem;
+    using FormalMethods::DFA;
+
     class DeterministicTaskPlanner {
         public:
-            DeterministicTaskPlanner(const std::shared_ptr<DiscreteModel::TransitionSystem>& ts, const std::vector<std::shared_ptr<FormalMethods::DFA>>& automata)
-                : m_ts(ts)
-                , m_automata(automata)
-                {}
+            using SymbolicProductGraph = DiscreteModel::SymbolicProductAutomaton<TransitionSystem, DFA, DiscreteModel::ModelEdgeInheritor<TransitionSystem, DFA>>;
+        public:
+            DeterministicTaskPlanner(const std::shared_ptr<TransitionSystem>& ts, const std::vector<std::shared_ptr<DFA>>& automata);
 
             Plan plan(const DiscreteModel::State& init_state) const;
         private:
-            const std::shared_ptr<DiscreteModel::TransitionSystem> m_ts;
-            const std::vector<std::shared_ptr<FormalMethods::DFA>> m_automata;
+            const std::shared_ptr<SymbolicProductGraph> m_sym_graph;
     };
 
-    class DeterministicTaskPlanningProblem {
+    class DeterministicTaskPlanningProblem : public GraphSearch::QuantitativeSymbolicSearchProblem<DeterministicTaskPlanner::SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t, GraphSearch::SearchDirection::Forward> {
+        public:
+            DeterministicTaskPlanningProblem(const std::shared_ptr<DeterministicTaskPlanner::SymbolicProductGraph>& sym_graph, const DiscreteModel::State& init_state);
 
+            virtual bool goal(const Node& node) const override;
     };
+
+
 }
 }

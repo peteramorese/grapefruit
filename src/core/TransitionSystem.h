@@ -17,14 +17,18 @@ namespace DiscreteModel {
     using Action = std::string;
 
 	struct TransitionSystemLabel {
-		TransitionSystemLabel(float cost_, const Action& action_) 
-			: cost(cost_)
-			, action(action_)
-			{}
-		float cost;
-		Action action;
+		public:
+			typedef float cost_t;
+		public:
+			TransitionSystemLabel(float cost_, const Action& action_) 
+				: cost(cost_)
+				, action(action_)
+				{}
+			float cost;
+			Action action;
 
-		std::string to_str() const {return "(action: " + action + ", cost: " + std::to_string(cost) + ")";}
+			inline static float getCost(const TransitionSystemLabel& label) {return label.cost;}
+			std::string to_str() const {return "(action: " + action + ", cost: " + std::to_string(cost) + ")";}
 	};
 
 	class ObservationContainer {
@@ -43,7 +47,7 @@ namespace DiscreteModel {
 				return m_observations[node].contains(observation);
 			}
 			inline void resize(std::size_t size) {m_observations.resize(size);}
-			inline bool nodeInContainer(Node node) const {return node >= m_observations.size();}
+			inline bool nodeInContainer(Node node) const {return node < m_observations.size();}
 		private:
 			std::vector<std::unordered_set<std::string>> m_observations;
 	};
@@ -72,6 +76,8 @@ namespace DiscreteModel {
 			bool smartObserve(Node node, const std::string& observation, bool cache = false);
 
 			void addAlphabet(const FormalMethods::Alphabet& alphabet);
+
+			inline std::weak_ptr<StateSpace> getStateSpace() const {return std::weak_ptr(m_ss);}
 
 			virtual void print() const override;
 

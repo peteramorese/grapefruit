@@ -45,8 +45,6 @@ int main() {
 	ts_props.init_obj_locations = {0, 1};
 
 	std::shared_ptr<TransitionSystem> ts = Manipulator::generate(ts_props);
-        LOG("ptr: " << ts.get());
-	ts->size();
 
 	ts->print();
 	NEW_LINE;

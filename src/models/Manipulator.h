@@ -11,7 +11,6 @@ namespace DiscreteModel {
 
     class Manipulator {
         public:
-        public:
             struct ManipulatorModelProperties {
                 uint32_t n_locations;
                 uint32_t n_objects;
@@ -31,10 +30,18 @@ namespace DiscreteModel {
                 inline static const int32_t s_stow = -2;
             };
 
+        private:
+            struct ConvertedProperties {
+                std::vector<std::string> locations;
+                std::vector<std::string> objects;
+                std::vector<std::string> init_state_vars;
+            };
         public:
-            static std::shared_ptr<TransitionSystem> generate(const ManipulatorModelProperties model_props);
+            static std::shared_ptr<TransitionSystem> generate(const ManipulatorModelProperties& model_props);
+            static State makeInitState(const ManipulatorModelProperties& model_props, const std::shared_ptr<TransitionSystem>& ts);
 
         private:
+            static ConvertedProperties convertProperties(const ManipulatorModelProperties& model_props);
             static std::string templateToLabel(std::string label_template, uint32_t num);
 
     };

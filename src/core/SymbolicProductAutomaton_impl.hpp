@@ -24,6 +24,33 @@ namespace DiscreteModel {
     }
 
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR>
+    WideNode SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getWrappedNode(Node ts_node, const Containers::SizedArray<Node>& automata_nodes) const {
+        Containers::SizedArray<Node> unwrapped_node(rank());
+        for (uint32_t i=0; i<unwrapped_node.size(); ++i) {
+            if (i != 0) {
+                unwrapped_node[i] = automata_nodes[i - 1];
+            } else {
+                unwrapped_node[0] = ts_node;
+            }
+        }
+        return AugmentedNodeIndex::wrap(unwrapped_node, m_graph_sizes);
+    }
+
+    template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR>
+    SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::UnwrappedNode SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getUnwrappedNode(WideNode wrapped_node) const {
+        UnwrappedNode unwrapped_node_converted(*this);
+        auto unwrapped_node = AugmentedNodeIndex::unwrap(wrapped_node, m_graph_sizes);
+        for (uint32_t i=0; i<unwrapped_node.size(); ++i) {
+            if (i != 0) {
+                unwrapped_node_converted.automata_nodes[i - 1] = unwrapped_node[i];
+            } else {
+                unwrapped_node_converted.ts_node = unwrapped_node[0];
+            }
+        }
+        return unwrapped_node_converted;
+    }
+
+    template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR>
     std::vector<typename EDGE_INHERITOR::type> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getOutgoingEdges(WideNode node) {
         const AugmentedNodePermutationArray& perm_array = post(node);
 

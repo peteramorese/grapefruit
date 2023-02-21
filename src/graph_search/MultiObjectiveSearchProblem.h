@@ -152,7 +152,7 @@ namespace GraphSearch {
         public: // Methods & members required by any search problem
             
             // Extension methods
-            inline const std::vector<Node>& neighbors(Node node) const {
+            inline const std::vector<typename EXPLICIT_GRAPH_T::node_t>& neighbors(Node node) const {
                 if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
                     return m_graph->getChildren(node);
                 else 

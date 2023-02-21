@@ -1,0 +1,12 @@
+add_executable(DeterministicTaskPlannerExample DeterministicTaskPlannerExample.cpp)
+target_link_libraries(DeterministicTaskPlannerExample PUBLIC
+	Condition
+	StateSpace
+	State
+	TransitionSystem
+	DeterministicTaskPlanner
+	Manipulator
+)
+target_include_directories(DeterministicTaskPlannerExample PUBLIC
+	${TP_INCLUDE_DIRS}
+)

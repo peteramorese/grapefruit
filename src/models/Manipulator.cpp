@@ -3,20 +3,24 @@
 namespace TP {
 namespace DiscreteModel {
 
-    std::shared_ptr<TransitionSystem> Manipulator::generate(const ManipulatorModelProperties model_props) {
+    Manipulator::ConvertedProperties Manipulator::convertProperties(const ManipulatorModelProperties& model_props) {
+        ConvertedProperties converted_props;
 
-        /////////////////   Set up the system   /////////////////
-
+        // Set up
         ASSERT(model_props.n_locations > model_props.n_objects, "Number of locations must be greater than number of objects");
         ASSERT(model_props.init_obj_locations.size() == model_props.n_objects, "Number of init obj locations must match the number of objects");
 
-        std::vector<std::string> locations(model_props.n_locations);
+        converted_props.locations.resize(model_props.n_locations);
+        auto& locations = converted_props.locations;
         for (uint32_t i=0; i<model_props.n_locations; ++i) locations[i] = templateToLabel(model_props.location_label_template, i);
 
-        std::vector<std::string> objects(model_props.n_objects);
+        converted_props.objects.resize(model_props.n_objects);
+        auto& objects = converted_props.objects;
         for (uint32_t i=0; i<model_props.n_objects; ++i) objects[i] = templateToLabel(model_props.object_location_label_template, i);
 
-        std::vector<std::string> init_state_vars(model_props.n_objects + 2);
+        // Init state
+        converted_props.init_state_vars.resize(model_props.n_objects + 2);
+        auto& init_state_vars = converted_props.init_state_vars;
 
         if (model_props.init_ee_location >= 0) {
             init_state_vars[0] = locations[model_props.init_ee_location];
@@ -39,6 +43,18 @@ namespace DiscreteModel {
             }
         }
         init_state_vars.back() = (holding) ? "T" : "F";
+
+        return converted_props;
+    }
+
+    State Manipulator::makeInitState(const ManipulatorModelProperties& model_props, const std::shared_ptr<TransitionSystem>& ts) {
+        return State(ts->getStateSpace().lock().get(), Manipulator::convertProperties(model_props).init_state_vars);
+    }
+
+    std::shared_ptr<TransitionSystem> Manipulator::generate(const ManipulatorModelProperties& model_props) {
+
+
+        auto[locations, objects, init_state_vars] = Manipulator::convertProperties(model_props);
 
 
         /////////////////   State Space   /////////////////
