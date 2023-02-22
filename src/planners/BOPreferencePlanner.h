@@ -36,13 +36,13 @@ namespace Planner {
 
     // Bi-objective Preference Cost Set Edge Converter
     template <class PCS_T, class OBJ_COST_T, class OBJ_1_T, class OBJ_2_T>
-    struct BOPCSEdgeConverter {
-        BOPCSEdgeConverter() = delete;
-        BOPCSEdgeConverter(const OBJ_1_T& objective_1_, const OBJ_2_T& objective_2_) = delete;
+    struct BOPCVEdgeConverter {
+        BOPCVEdgeConverter() = delete;
+        BOPCVEdgeConverter(const OBJ_1_T& objective_1_, const OBJ_2_T& objective_2_) = delete;
         
         // Conversion from PCS to CV (Edges are temporarily constructed)
-        CostVector<2, OBJ_COST_T> operator()(WideNode node, PCS_T&& edge) {
-            return {{objective_1(node, edge), objective_2(node, edge)}}
+        Containers::TypeGenericArray<typename OBJ_1_T::type, typename OBJ_2_T::type> operator()(WideNode node, PCS_T&& edge) {
+            Containers::TypeGenericArray<typename OBJ_1_T::type, typename OBJ_2_T::type> cost_vector(objective_1(node, edge), objective_2(node, edge))
         }
 
         OBJ_1_T objective_1;

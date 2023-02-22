@@ -166,14 +166,21 @@ namespace Containers {
             friend FixedArray operator+<M, T>(const FixedArray& lhs, const FixedArray& rhs);
     };
 
-    // Cost vector non-member operators
+    // Fixed Array non-member operators
     template<std::size_t M, class T>
     static FixedArray<M, T> operator+(const FixedArray<M, T>& lhs, const FixedArray<M, T>& rhs) {
-        FixedArray<M, T> ret_cv;
-        for (std::size_t i=0; i < M; ++i) ret_cv.values[i] = lhs.values[i] + rhs.values[i];
-        return ret_cv;
+        FixedArray<M, T> ret_fa;
+        for (std::size_t i=0; i < M; ++i) ret_fa.values[i] = lhs.values[i] + rhs.values[i];
+        return ret_fa;
     }
 
+
+    // Forward declaration of Type Generic Array non member functions
+    template <class... T_ARGS>
+    class TypeGenericArray;
+
+    template <class... T_ARGS>
+    static TypeGenericArray<T_ARGS...> operator+(const TypeGenericArray<T_ARGS...>& lhs, const TypeGenericArray<T_ARGS...>& rhs);
 
     // Method signature is made to match FixedArray (except compare)
     template <class... T_ARGS>
@@ -204,7 +211,7 @@ namespace Containers {
             // Element-wise conjunctive comparison. Uses type-generic templated lambda ([]<typename T, uint32_t I>(const T& element))
             template <typename LAMBDA_T>
             bool compare(const TypeGenericArray& other, LAMBDA_T compareElement) const {
-                return _compare<0>(compareElement);
+                return _forEachWithI<0>(compareElement);
             }
 
             // Implemented comparison operators
@@ -212,35 +219,35 @@ namespace Containers {
                 auto equals = [&other]<typename T, uint32_t I>(const T& element) {
                     return other.template get<I>() == element;
                 };
-                return _compare<0>(equals);
+                return _forEachWithI<0>(equals);
             }
 
             bool operator<(const TypeGenericArray& other) const {
                 auto less_than = [&other]<typename T, uint32_t I>(const T& element) {
                     return other.template get<I>() < element;
                 };
-                return _compare<0>(less_than);
+                return _forEachWithI<0>(less_than);
             }
 
             bool operator>(const TypeGenericArray& other) const {
                 auto greater_than = [&other]<typename T, uint32_t I>(const T& element) {
                     return other.template get<I>() > element;
                 };
-                return _compare<0>(greater_than);
+                return _forEachWithI<0>(greater_than);
             }
 
             bool operator<=(const TypeGenericArray& other) const {
                 auto leq = [&other]<typename T, uint32_t I>(const T& element) {
                     return other.template get<I>() <= element;
                 };
-                return _compare<0>(leq);
+                return _forEachWithI<0>(leq);
             }
 
             bool operator>=(const TypeGenericArray& other) const {
                 auto geq = [&other]<typename T, uint32_t I>(const T& element) {
                     return other.template get<I>() >= element;
                 };
-                return _compare<0>(geq);
+                return _forEachWithI<0>(geq);
             }
 
             // 'Dominates' operator
@@ -256,7 +263,7 @@ namespace Containers {
                     // Continue
                     return true;
                 };
-                return (_compare<0>(dominates_)) ? !equal : false;
+                return (_forEachWithI<0>(dominates_)) ? !equal : false;
             }
 
             // Lexicographic less than
@@ -272,7 +279,7 @@ namespace Containers {
                     // Continue
                     return true;
                 };
-                _compare<0>(lexicographicLess_);
+                _forEachWithI<0>(lexicographicLess_);
                 return result;
             }
 
@@ -289,17 +296,23 @@ namespace Containers {
                     // Continue
                     return true;
                 };
-                _compare<0>(lexicographicGreater_);
+                _forEachWithI<0>(lexicographicGreater_);
                 return result;
             }
 
+            bool operator+=(const TypeGenericArray& other) const {
+                auto peq = [&other]<typename T, uint32_t I>(const T& element) {
+                    return element += other.template get<I>();
+                };
+                return _forEachWithI<0>(peq);
+            }
         protected:
 
             template<uint32_t I, typename LAMBDA_T>
-            bool _compare(LAMBDA_T compareElement) const {
+            bool _forEachWithI(LAMBDA_T compareElement) const {
                 if (compareElement.template operator()<typename std::tuple_element<I, tuple_t>::type, I>(std::get<I>(elements))) {
                     if constexpr (I != (sizeof...(T_ARGS) - 1)) {
-                        return _compare<I + 1, LAMBDA_T>(compareElement);
+                        return _forEachWithI<I + 1, LAMBDA_T>(compareElement);
                     } else {
                         return true;
                     }
@@ -322,7 +335,24 @@ namespace Containers {
             }
 
             std::tuple<T_ARGS...> elements;
+
+        private:
+            friend TypeGenericArray operator+<T_ARGS...>(const TypeGenericArray& lhs, const TypeGenericArray& rhs);
+            
     };
+
+    // Type Generic Array non-member operators
+    template <class... T_ARGS>
+    static TypeGenericArray<T_ARGS...> operator+(const TypeGenericArray<T_ARGS...>& lhs, const TypeGenericArray<T_ARGS...>& rhs) {
+        TypeGenericArray<T_ARGS...> ret_tga;
+        auto add = [&ret_tga, &rhs]<typename T, uint32_t I>(const T& element) {
+            // ret_tga = lhs + rhs
+            return ret_tga.template get<I>() = element + rhs.template get<I>() ;
+        };
+        lhs.forEach(add);
+        return ret_tga;
+    }
+
 
 } // namespace Containers
 } // namespace TP
