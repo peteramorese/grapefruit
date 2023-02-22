@@ -26,14 +26,14 @@ T abs(const T& x) {return (x < T{}) ? -x : x;}
 namespace GraphSearch {
 
 
-    template <class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, class HEURISTIC_T = ZeroHeuristic<Node, CostVector<2, COST_T>>, typename EDGE_STORAGE_T = EDGE_T>
+    template <class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, class HEURISTIC_T = ZeroHeuristic<Node, Containers::FixedArray<2, COST_T>>, typename EDGE_STORAGE_T = EDGE_T>
     class BOAStar {
         public:
             static MultiObjectiveSearchResult<2, EDGE_STORAGE_T, COST_T> search(const SEARCH_PROBLEM_T& problem);
 
         private:
             using EnumeratedNode = int32_t;
-            using CV_T = CostVector<2, COST_T>;
+            using CV_T = Containers::FixedArray<2, COST_T>;
             
             class PathEnumeratedNodeMap {
                 private:
@@ -91,7 +91,7 @@ namespace GraphSearch {
             CV_T g_score; // g_score at the time of insertion ()
             CV_T f_score; // f_score (g_score + h)
         };
-        auto less = [](const OpenSetElement& lhs, const OpenSetElement& rhs) -> bool {return rhs.f_score < lhs.f_score;}; // Open set element lexicographic comparator (lhs and rhs are swapped for increasing order)
+        auto less = [](const OpenSetElement& lhs, const OpenSetElement& rhs) -> bool {return rhs.f_score.lexicographicLess(lhs.f_score);}; // Open set element lexicographic comparator (lhs and rhs are swapped for increasing order)
         std::priority_queue<OpenSetElement, std::vector<OpenSetElement>, decltype(less)> open_set;
 
         // Enum node map (maps 'nodes' AKA EnumeratedNode to 'states' AKA Node in BOA), includes parent map

@@ -26,7 +26,7 @@ namespace GraphSearch {
 
 
 
-    template <ObjectiveCount M, class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, class HEURISTIC_T = ZeroHeuristic<Node, CostVector<M, COST_T>>, typename EDGE_STORAGE_T = EDGE_T>
+    template <ObjectiveCount M, class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, class HEURISTIC_T = ZeroHeuristic<Node, Containers::FixedArray<M, COST_T>>, typename EDGE_STORAGE_T = EDGE_T>
     class NAMOAStar {
         public:
             static MultiObjectiveSearchResult<M, EDGE_STORAGE_T, COST_T> search(const SEARCH_PROBLEM_T& problem);
@@ -36,7 +36,7 @@ namespace GraphSearch {
 
     template <ObjectiveCount M, class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
     MultiObjectiveSearchResult<M, EDGE_STORAGE_T, COST_T> NAMOAStar<M, EDGE_T, COST_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::search(const SEARCH_PROBLEM_T& problem) {
-        using CV_T = CostVector<M, COST_T>;
+        using CV_T = Containers::FixedArray<M, COST_T>;
 
         // If custom edge storage type is used with explicit search, assert that the outgoingEdges method is explicit (returns a persistent const reference)
         constexpr bool _PTR_EDGE_STORAGE_TYPE = !std::is_same<EDGE_STORAGE_T, EDGE_T>::value;

@@ -16,18 +16,18 @@ struct Edge {
     Edge() = delete;
 
     Edge(uint32_t cost_1, uint32_t cost_2, char edge_action_) : cv({cost_1, cost_2}), edge_action(edge_action_) {}
-    CostVector<2, uint32_t> cv;
+    Containers::FixedArray<2, uint32_t> cv;
     char edge_action = '\0';
 
-    static CostVector<2, uint32_t> edgeToCostVector(const Edge& edge) {return edge.cv;}
-    static std::string cvToStr(const CostVector<2, uint32_t>& cv) {return "(" + std::to_string(cv[0]) + ", " + std::to_string(cv[1]) + ")";}
+    static Containers::FixedArray<2, uint32_t> edgeToCostVector(const Edge& edge) {return edge.cv;}
+    static std::string cvToStr(const Containers::FixedArray<2, uint32_t>& cv) {return "(" + std::to_string(cv[0]) + ", " + std::to_string(cv[1]) + ")";}
     static std::string edgeToStr(const Edge& edge) {return "cost: " + cvToStr(edge.cv) + " edge action: " + edge.edge_action;}
 };
 
 class MyHeuristic {
     public:
-        CostVector<2, uint32_t> operator()(Node node) const {return m_heuristic_values.at(node);}
-        std::map<Node, CostVector<2, uint32_t>> m_heuristic_values; 
+        Containers::FixedArray<2, uint32_t> operator()(Node node) const {return m_heuristic_values.at(node);}
+        std::map<Node, Containers::FixedArray<2, uint32_t>> m_heuristic_values; 
 };
 
 int main() {

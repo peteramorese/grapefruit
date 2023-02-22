@@ -5,17 +5,24 @@ namespace Planner {
 
     // Collection of inerhited costs for each task
     template <typename INHERITED_COST_T>
-    using PreferenceCostSet = Containers::SizedArray<INHERITED_COST_T>;
+    struct PreferenceCostSet {
+        PreferenceCostSet(uint32_t size) : pcs(size) {}
+        Containers::SizedArray<INHERITED_COST_T> pcs;
+    };
+    
 
     /*
     Preference cost objective converts the inherited product edge into an objective cost. PreferenceCostObjective is an instantiated plugin to allow
     the user monitor/interact with the function
     */
-    template <typename OBJECTIVE_COST_T>
+    template <class INHERITED_EDGE_T, class OBJ_COST_T>
     struct OrderedPreferenceCostObjective {
-        typedef OBJECTIVE_COST_T
+        //typedef OBJ_COST_T
 
-        OBJECTIVE_COST_T operator()
+        //
+        OBJ_COST_T operator(WideNode node, INHERITED_EDGE_T&& edge) {
+
+        }
     };
     
 } // namespace Planner

@@ -35,37 +35,35 @@ namespace Planner {
     };
 
     // Bi-objective Preference Cost Set Edge Converter
-    template <class EDGE_T, class COST_T, class OBJ_1_T, class OBJ_2_T>
+    template <class PCS_T, class OBJ_COST_T, class OBJ_1_T, class OBJ_2_T>
     struct BOPCSEdgeConverter {
         BOPCSEdgeConverter() = delete;
-        BOPCSEdgeConverter(const OBJ_1_T objective_1_, const OBJ_2_T objective_2_) = delete;
+        BOPCSEdgeConverter(const OBJ_1_T& objective_1_, const OBJ_2_T& objective_2_) = delete;
         
-        // Conversion from PCS to CV
-        CostVector<2, COST_T> operator()(const EDGE_T& edge) {
-            return {{objective_1(edge), objective_2(edge)}}
+        // Conversion from PCS to CV (Edges are temporarily constructed)
+        CostVector<2, OBJ_COST_T> operator()(WideNode node, PCS_T&& edge) {
+            return {{objective_1(node, edge), objective_2(node, edge)}}
         }
 
         OBJ_1_T objective_1;
         OBJ_2_T objective_2;
     };
 
-    template <class SYMBOLIC_GRAPH_T, class COST_T, class EDGE_CONVERTER, class HEURISTIC_T = GraphSearch::MOZeroHeuristic<2, Node, COST_T>>
+    template <class SYMBOLIC_GRAPH_T, class COST_T, class EDGE_CONVERTER, class HEURISTIC_T = GraphSearch::MOZeroHeuristic<2, WideNode, COST_T>>
     class BOPreferencePlannerSearchProblem {
-        public: // Custom search problem methods
-
-            inline static CostVector<2, COST_T> convert(const SYMBOLIC_GRAPH_T::edge_t& edge) {
-
-            }
+        public:
+            using GraphSearch::CostVector;
 
         public: // Methods & members required by any search problem
             
             // Extension methods
-            inline const std::vector<typename EXPLICIT_GRAPH_T::node_t>& neighbors(Node node) const {
+            inline std::vector<typename SYMBOLIC_GRAPH_T::node_t> neighbors(WideNode node) const {
                 return m_graph->getChildren(node);
             }
 
-            inline const std::vector<CostVector<2, COST_T>>& neighborEdges(Node node) const {
-                // TODO use edge converter here
+            // Direct conversion 
+            inline std::vector<CostVector<2, PreferenceCostSet<COST_T>>> neighborEdges(WideNode node) const {
+                std::vector<CostVector<2, PreferenceCostSet<COST_T>>> 
                 return m_graph->getOutgoingEdges(node);
             }
 
@@ -73,11 +71,11 @@ namespace Planner {
             inline bool goal(const Node& node) const {return m_goal_node_set.contains(node);}
 
             // Quantative methods
-            inline CostVector<2, COST_T> gScore(const CostVector<2, COST_T>& parent_g_score, const EXPLICIT_GRAPH_T::edge_t& edge) const {return parent_g_score + m_edgeToCostVector(edge);}
-            CostVector<2, COST_T> hScore(const Node& node) const {return heuristic.operator()(node);}
+            inline CostVector<2, COST_T> gScore(const CostVector<2, COST_T>& parent_g_score, const CostVector<2, COST_T>& edge) const {return parent_g_score + edge;}
+            CostVector<2, COST_T> hScore(const WideNode& node) const {return heuristic.operator()(node);}
 
             // Member variables
-            std::vector<Node> initial_node_set;
+            std::vector<WideNode> initial_node_set;
             HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
         public:
