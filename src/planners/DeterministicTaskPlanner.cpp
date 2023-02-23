@@ -12,12 +12,12 @@ namespace Planner {
             {}, // Empty goal node set
             &DiscreteModel::TransitionSystemLabel::getCost
         )
-        {
-            Containers::SizedArray<Node> init_aut_nodes(sym_graph->rank() - 1);
-            for (uint32_t i=0; i<init_aut_nodes.size(); ++i) init_aut_nodes[i] = *(sym_graph->getAutomaton(i).getInitStates().begin());
-            initial_node_set = {sym_graph->getWrappedNode(sym_graph->getModel().getGenericNodeContainer()[init_state], init_aut_nodes)};
+    {
+        Containers::SizedArray<Node> init_aut_nodes(sym_graph->rank() - 1);
+        for (uint32_t i=0; i<init_aut_nodes.size(); ++i) init_aut_nodes[i] = *(sym_graph->getAutomaton(i).getInitStates().begin());
+        initial_node_set = {sym_graph->getWrappedNode(sym_graph->getModel().getGenericNodeContainer()[init_state], init_aut_nodes)};
 
-        }
+    }
 
     bool DeterministicTaskPlannerSearchProblem::goal(const Node& node) const {
         auto unwrapped_node = m_graph->getUnwrappedNode(node);

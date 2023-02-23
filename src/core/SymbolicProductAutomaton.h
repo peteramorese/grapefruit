@@ -59,6 +59,8 @@ namespace DiscreteModel {
     class SymbolicProductAutomaton {
         public:
 
+            typedef MODEL_T model_t;
+
             typedef EDGE_INHERITOR::type edge_t;
             typedef WideNode node_t;
 

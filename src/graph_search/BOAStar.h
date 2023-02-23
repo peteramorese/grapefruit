@@ -26,14 +26,13 @@ T abs(const T& x) {return (x < T{}) ? -x : x;}
 namespace GraphSearch {
 
 
-    template <class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, class HEURISTIC_T = ZeroHeuristic<Node, Containers::FixedArray<2, COST_T>>, typename EDGE_STORAGE_T = EDGE_T>
+    template <class EDGE_T, class COST_T, class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T = ZeroHeuristic<Node, Containers::FixedArray<2, COST_T>>, typename EDGE_STORAGE_T = EDGE_T>
     class BOAStar {
         public:
-            static MultiObjectiveSearchResult<2, EDGE_STORAGE_T, COST_T> search(const SEARCH_PROBLEM_T& problem);
+            static MultiObjectiveSearchResult<EDGE_STORAGE_T, COST_VECTOR_T> search(const SEARCH_PROBLEM_T& problem);
 
         private:
             using EnumeratedNode = int32_t;
-            using CV_T = Containers::FixedArray<2, COST_T>;
             
             class PathEnumeratedNodeMap {
                 private:
@@ -66,11 +65,11 @@ namespace GraphSearch {
             };
 
         private:
-            static void extractPath(const EnumeratedNode& goal_node, PathSolution<Node, EDGE_STORAGE_T, CV_T>& path_solution, const PathEnumeratedNodeMap& node_map);
+            static void extractPath(const EnumeratedNode& goal_node, PathSolution<Node, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap& node_map);
     };
 
-    template <class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    MultiObjectiveSearchResult<2, EDGE_STORAGE_T, COST_T> BOAStar<EDGE_T, COST_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::search(const SEARCH_PROBLEM_T& problem) {
+    template <class EDGE_T, class COST_T, class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
+    MultiObjectiveSearchResult<EDGE_STORAGE_T, COST_VECTOR_T> BOAStar<EDGE_T, COST_T, COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::search(const SEARCH_PROBLEM_T& problem) {
 
         // If custom edge storage type is used with explicit search, assert that the outgoingEdges method is explicit (returns a persistent const reference)
         constexpr bool _PTR_EDGE_STORAGE_TYPE = !std::is_same<EDGE_STORAGE_T, EDGE_T>::value;
@@ -80,16 +79,17 @@ namespace GraphSearch {
             static_assert(_IS_EXPLICIT, "Must use explicit graph construction with non-default EDGE_STORAGE_T");
             static_assert(std::is_same<EDGE_STORAGE_T, const EDGE_T*>::value, "EDGE_STORAGE_T must be a persistent const COST_T pointer");
         }
+        static_assert(COST_VECTOR_T::size() == 2, "BOA can only use two objectives");
 
         // Instantiate return value (search graph and non-dominated cost map are allocated, but not used for this algorithm)
-        MultiObjectiveSearchResult<2, EDGE_STORAGE_T, COST_T> result(false, false);
+        MultiObjectiveSearchResult<EDGE_STORAGE_T, COST_VECTOR_T> result(false, false);
 
         // Open set
         struct OpenSetElement {
-            OpenSetElement(const EnumeratedNode& node_, const CV_T& g_score_, const CV_T& f_score_) : node(node_), g_score(g_score_), f_score(f_score_) {}
+            OpenSetElement(const EnumeratedNode& node_, const COST_VECTOR_T& g_score_, const COST_VECTOR_T& f_score_) : node(node_), g_score(g_score_), f_score(f_score_) {}
             EnumeratedNode node; 
-            CV_T g_score; // g_score at the time of insertion ()
-            CV_T f_score; // f_score (g_score + h)
+            COST_VECTOR_T g_score; // g_score at the time of insertion ()
+            COST_VECTOR_T f_score; // f_score (g_score + h)
         };
         auto less = [](const OpenSetElement& lhs, const OpenSetElement& rhs) -> bool {return rhs.f_score.lexicographicLess(lhs.f_score);}; // Open set element lexicographic comparator (lhs and rhs are swapped for increasing order)
         std::priority_queue<OpenSetElement, std::vector<OpenSetElement>, decltype(less)> open_set;
@@ -103,7 +103,7 @@ namespace GraphSearch {
             EnumeratedNode init_enum_node = path_enum_node_map.newInitNode(init_node);
 
             // Add initial node to open set
-            open_set.emplace(init_enum_node, CV_T{}, problem.hScore(init_node));
+            open_set.emplace(init_enum_node, COST_VECTOR_T{}, problem.hScore(init_node));
         }
 
         // Keep track of the min cost to any goal node
@@ -124,7 +124,7 @@ namespace GraphSearch {
             // If current node satisfies goal condition, extract path and terminate
             if (problem.goal(curr_node)) {
                 result.success = true;
-                PathSolution<Node, EDGE_STORAGE_T, CV_T> sol;
+                PathSolution<Node, EDGE_STORAGE_T, COST_VECTOR_T> sol;
                 sol.path_cost = inserted_g_score;
                 extractPath(curr_enum_node, sol, path_enum_node_map);
                 result.solution_set.push_back(std::move(sol));
@@ -153,14 +153,14 @@ namespace GraphSearch {
                         return to_neighbor_edges[i];
                 }();
 
-                CV_T tentative_g_score = [&] {
+                COST_VECTOR_T tentative_g_score = [&] {
                     if constexpr (_PTR_EDGE_STORAGE_TYPE)
                         return problem.gScore(inserted_g_score, *to_neighbor_edge);
                     else
                         return problem.gScore(inserted_g_score, to_neighbor_edge);
                 }();
 
-                CV_T tentative_h_score = tentative_g_score;
+                COST_VECTOR_T tentative_h_score = tentative_g_score;
                 tentative_h_score += problem.hScore(neighbor);
 
                 // Prune nodes
@@ -177,8 +177,8 @@ namespace GraphSearch {
         return result;
     };
 
-    template <class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    void BOAStar<EDGE_T, COST_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<Node, EDGE_STORAGE_T, CV_T>& path_solution, const PathEnumeratedNodeMap& node_map) {
+    template <class EDGE_T, class COST_T, class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
+    void BOAStar<EDGE_T, COST_T, COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<Node, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap& node_map) {
         EnumeratedNode curr_enum_node = goal_node;
         path_solution.node_path.emplace_back(node_map.getNode(curr_enum_node));
 

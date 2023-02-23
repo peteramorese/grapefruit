@@ -48,7 +48,7 @@ int main() {
     NEW_LINE;
     LOG("Default Bi-Objective search example");
     {
-    MOQuantitativeGraphSearchProblem<2, Graph<Edge>, uint32_t, SearchDirection::Forward, MyHeuristic> astar_problem(graph, {0}, {3}, &Edge::edgeToCostVector);
+    MOQuantitativeGraphSearchProblem<Graph<Edge>, uint32_t, Containers::FixedArray<2, uint32_t>, SearchDirection::Forward, MyHeuristic> astar_problem(graph, {0}, {3}, &Edge::edgeToCostVector);
 
     // Manually insert heuristic values (i.e. integer min number of edges to goal):
     MyHeuristic& heuristic = astar_problem.heuristic;
@@ -60,7 +60,7 @@ int main() {
 
     NEW_LINE;
     LOG("Searching...");
-    auto result = BOAStar<Edge, uint32_t, decltype(astar_problem)>::search(astar_problem);
+    auto result = BOAStar<Edge, uint32_t, Containers::FixedArray<2, uint32_t>, decltype(astar_problem)>::search(astar_problem);
 
     LOG("Finished!");
     LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));

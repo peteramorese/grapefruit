@@ -77,7 +77,7 @@ int main() {
 	Plan plan = planner.plan(init_state);
 	LOG("Finished.");
 
-	if (plan.success) {
+	if (plan.success()) {
 		LOG("Planner success!");
 		plan.print();	
 	} else {

@@ -42,11 +42,11 @@ int main() {
     NEW_LINE;
     LOG("Default Bi-Objective search example");
     {
-    MOQuantitativeGraphSearchProblem<2, Graph<Edge>, uint32_t, SearchDirection::Forward> dijkstras_problem(graph, {0}, {3}, &Edge::edgeToCostVector);
+    MOQuantitativeGraphSearchProblem<Graph<Edge>, uint32_t, Containers::FixedArray<2, uint32_t>, SearchDirection::Forward> dijkstras_problem(graph, {0}, {3}, &Edge::edgeToCostVector);
 
     NEW_LINE;
     LOG("Searching...");
-    auto result = BOAStar<Edge, uint32_t, decltype(dijkstras_problem)>::search(dijkstras_problem);
+    auto result = BOAStar<Edge, uint32_t, Containers::FixedArray<2, uint32_t>, decltype(dijkstras_problem)>::search(dijkstras_problem);
 
     LOG("Finished!");
     LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));

@@ -58,17 +58,35 @@ namespace Containers {
             SizedArray(SizedArray&& other) : m_array(other.m_array), m_size(other.m_size) {}
             ~SizedArray() {delete[] m_array;}
 
-            T& operator[](std::size_t i) {return m_array[i];}
-            const T& operator[](std::size_t i) const {return m_array[i];}
+            inline T& operator[](std::size_t i) {return m_array[i];}
+            inline const T& operator[](std::size_t i) const {return m_array[i];}
 
-            T& back() {return m_array[m_size - 1];}
-            const T& back() const {return m_array[m_size - 1];}
+            inline T& back() {return m_array[m_size - 1];}
+            inline const T& back() const {return m_array[m_size - 1];}
 
-            std::size_t size() const {return m_size;}
+            inline std::size_t size() const {return m_size;}
         private:
             T* m_array;
             std::size_t m_size;
+            friend SizedArray operator+<T>(const SizedArray& lhs, const SizedArray& rhs);
     };
+
+    // Sized Array non-member operators
+    template <typename T>
+    static SizedArray<T> operator+(const SizedArray<T>& lhs, const SizedArray<T>& rhs) {
+        ASSERT(lhs.size() == rhs.size(), "Operand sizes do not match");
+        SizedArray<T> ret_sa(lhs.size());
+        for (std::size_t i=0; i < lhs.size(); ++i) ret_sa[i] = lhs[i] + rhs[i];
+        return ret_sa;
+    }
+
+
+    // Forward declaration of Fixed Array non member functions
+    template <std::size_t M, class T>
+    class FixedArray;
+
+    template <std::size_t M, class T>
+    static FixedArray<M, T> operator+(const FixedArray<M, T>& lhs, const FixedArray<M, T>& rhs);
 
     // Method signature is made to match TypeGenericArray (except compare)
     template<std::size_t M, class T>
@@ -77,6 +95,8 @@ namespace Containers {
             FixedArray() = default;
             FixedArray(const std::array<T, M>& values_) : values(values_) {}
             FixedArray(const FixedArray& other) = default;
+
+            static constexpr uint32_t size() {return M;}
 
             T& operator[](std::size_t i) {return values[i];}
 
@@ -194,7 +214,7 @@ namespace Containers {
             TypeGenericArray(const TypeGenericArray&) = default;
             TypeGenericArray(TypeGenericArray&&) = default;
 
-            constexpr uint32_t size() const {return sizeof...(T_ARGS);}
+            static constexpr uint32_t size() {return sizeof...(T_ARGS);}
 
             template <uint32_t I>
             inline std::tuple_element<I, tuple_t>::type& get() {return std::get<I>(elements);}
