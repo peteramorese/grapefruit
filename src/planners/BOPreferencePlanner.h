@@ -16,7 +16,7 @@ namespace Planner {
     using FormalMethods::DFA;
 
 
-    template <class OBJ_1_T, class OBJ_2_T>
+    template <class EDGE_INHERITOR, class OBJ_1_T, class OBJ_2_T>
     class BOPreferencePlanner {
         public:
             using SymbolicProductGraph = DiscreteModel::SymbolicProductAutomaton<TransitionSystem, DFA, EDGE_INHERITOR>;
@@ -26,7 +26,7 @@ namespace Planner {
 
             Plan plan(const DiscreteModel::State& init_state) const;
         private:
-            BOPreferencePlannerSearchProblem<SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost, OBJ_1_T, OBJ_2_T> m_problem;
+            const std::shared_ptr<SymbolicProductGraph> m_sym_graph;
     };
 
 

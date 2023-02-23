@@ -1,6 +1,8 @@
 
 #include <string>
 #include <sstream>
+#include <algorithm>
+#include <vector>
 #include "tools/Logging.h"
 #include "tools/Containers.h"
 
@@ -49,6 +51,14 @@ int main() {
     PRINT_NAMED("D dominates F", std::boolalpha << D.dominates(F));
     PRINT_NAMED("A dominates E", std::boolalpha << A.dominates(E));
 
+    SizedArray<int> test(4);
+    std::vector<int> test_v = {1, 4, 2, 0};
+    for (int i=0; i<4; ++i) test[i] = test_v[i];
+    //LOG("vector sz: "<< sizeof(test_v) << " sa sz: " << sizeof(test));
+
+    //auto v = test.toVector();
+    std::sort(test.begin(), test.end());
+    for (int i=0; i<4; ++i) LOG(test[i]);
 
     return 0;
 }

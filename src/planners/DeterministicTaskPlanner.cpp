@@ -35,11 +35,11 @@ namespace Planner {
         : m_sym_graph(std::make_shared<SymbolicProductGraph>(ts, automata))
     {}
 
-    Plan DeterministicTaskPlanner::plan(const DiscreteModel::State& init_state) const {
+    Plan<DeterministicTaskPlanner::SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t> DeterministicTaskPlanner::plan(const DiscreteModel::State& init_state) const {
         DeterministicTaskPlannerSearchProblem problem(m_sym_graph, init_state);
 
         auto result = GraphSearch::AStar<Node, SymbolicProductGraph::edge_t, DiscreteModel::TransitionSystemLabel::cost_t, decltype(problem)>::search(problem);
-        return Plan(result.solution, m_sym_graph, result.success);
+        return Plan<SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t>(result.solution, m_sym_graph, result.success);
     }
 
 }

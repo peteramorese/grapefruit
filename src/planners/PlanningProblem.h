@@ -10,12 +10,11 @@
 namespace TP {
 namespace Planner {
 
+    template <class SYMBOLIC_GRAPH_T, class ACTION_T, class COST_T>
     struct Plan {
-        public:
-            using SymbolicProductGraph = DiscreteModel::SymbolicProductAutomaton<DiscreteModel::TransitionSystem, FormalMethods::DFA, DiscreteModel::ModelEdgeInheritor<DiscreteModel::TransitionSystem, FormalMethods::DFA>>;
 
         public:
-            Plan(const GraphSearch::PathSolution<Node, DiscreteModel::TransitionSystemLabel, DiscreteModel::TransitionSystemLabel::cost_t>& path, std::shared_ptr<SymbolicProductGraph> sym_graph, bool success) 
+            Plan(const GraphSearch::PathSolution<typename SYMBOLIC_GRAPH_T::node_t, ACTION_T, COST_T>& path, std::shared_ptr<SYMBOLIC_GRAPH_T> sym_graph, bool success) 
                 : product_node_sequence(path.node_path)
             {
                 if (success) {
@@ -60,12 +59,13 @@ namespace Planner {
             }
 
         public:
-            std::vector<Node> product_node_sequence;
+            std::vector<typename SYMBOLIC_GRAPH_T::node_t> product_node_sequence;
             std::vector<Node> ts_node_sequence;
             std::vector<DiscreteModel::State> state_sequence;
             std::vector<DiscreteModel::Action> action_sequence;
     };
 
-    using PlanSet = std::vector<Plan>;
+    template <class SYMBOLIC_GRAPH_T, class COST_T>
+    using PlanSet = std::vector<Plan<SYMBOLIC_GRAPH_T, COST_T>>;
 }
 }

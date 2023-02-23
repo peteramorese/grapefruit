@@ -65,12 +65,26 @@ namespace Containers {
             inline const T& back() const {return m_array[m_size - 1];}
 
             inline std::size_t size() const {return m_size;}
+
+            std::vector<T> toVector() const {
+                std::vector<T> v(m_size);
+                for (uint32_t i=0; i<size(); ++i) v[i] = operator[](i);
+                return v;
+            }
+
+            // Pseudo iterators
+            T* begin() {return m_array;}
+            const T* begin() const {return m_array;}
+            T* end() {return m_array + m_size;}
+            const T* end() const {return m_array + m_size;}
+
         private:
             T* m_array;
             std::size_t m_size;
             friend SizedArray operator+<T>(const SizedArray& lhs, const SizedArray& rhs);
     };
 
+    //TODO: move these out of ns
     // Sized Array non-member operators
     template <typename T>
     static SizedArray<T> operator+(const SizedArray<T>& lhs, const SizedArray<T>& rhs) {
