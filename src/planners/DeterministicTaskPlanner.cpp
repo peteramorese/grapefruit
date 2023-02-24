@@ -9,8 +9,8 @@ namespace Planner {
         : GraphSearch::QuantitativeSymbolicSearchProblem<DeterministicTaskPlanner::SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t, GraphSearch::SearchDirection::Forward>(
             sym_graph,
             {},
-            {}, // Empty goal node set
-            &DiscreteModel::TransitionSystemLabel::getCost
+            {} // Empty goal node set
+            //&DiscreteModel::TransitionSystemLabel::getCost
         )
     {
         Containers::SizedArray<Node> init_aut_nodes(sym_graph->rank() - 1);

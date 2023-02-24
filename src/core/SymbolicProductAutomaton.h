@@ -25,13 +25,32 @@ namespace DiscreteModel {
     Common used examples can be found below
     */
 
+
     template <class MODEL_T, class AUTOMATON_T>
     struct CombinedProductEdgeInheritor {
         // Full combined edge type: (model_edge_t, (automaton_edge_1, ...))
-        typedef struct {MODEL_T::edge_t model_edge_t; Containers::SizedArray<typename AUTOMATON_T::edge_t> automaton_edge_t;} type;
+        typedef MODEL_T::edge_t::cost_t cost_t;
+        struct CombinedEdge {
+            MODEL_T::edge_t model_edge; 
+            Containers::SizedArray<typename AUTOMATON_T::edge_t> automaton_edge;
+            
+            // Cost conversion operators
+            operator cost_t&() {return static_cast<cost_t&>(model_edge);}
+            operator const cost_t&() const {return static_cast<const cost_t&>(model_edge);}
+            operator cost_t&&() {return static_cast<cost_t&&>(std::move(model_edge));}
+        };
+        typedef CombinedEdge type;
 
         static inline type inherit(const MODEL_T::edge_t& model_edge, Containers::SizedArray<typename AUTOMATON_T::edge_t>&& automaton_edges) {
             return type{model_edge, automaton_edges};
+        }
+
+        static inline cost_t toCost(const type& inherited_edge) {
+            return inherited_edge.model_edge_t.toCost();
+        }
+
+        static inline cost_t&& toCost(type&& inherited_edge) {
+            return inherited_edge.model_edge_t.toCost();
         }
     };
 
@@ -39,28 +58,37 @@ namespace DiscreteModel {
     struct ModelEdgeInheritor {
         // Full combined edge type: (model_edge_t, (automaton_edge_1, ...))
         typedef MODEL_T::edge_t type;
+        typedef MODEL_T::edge_t::cost_t cost_t;
 
         static inline type inherit(const MODEL_T::edge_t& model_edge, Containers::SizedArray<typename AUTOMATON_T::edge_t>&& automaton_edges) {
             return model_edge;
         }
+
+        //static inline cost_t toCost(const type& inherited_edge) {
+        //    return inherited_edge.toCost();
+        //}
+
+        //static inline cost_t&& toCost(type&& inherited_edge) {
+        //    return inherited_edge.toCost();
+        //}
     };
 
-    template <class MODEL_T, class AUTOMATON_T>
-    struct AutomataEdgeInheritor {
-        // Full combined edge type: (model_edge_t, (automaton_edge_1, ...))
-        typedef std::vector<typename AUTOMATON_T::edge_t> type;
+    //template <class MODEL_T, class AUTOMATON_T>
+    //struct AutomataEdgeInheritor {
+    //    // Full combined edge type: (model_edge_t, (automaton_edge_1, ...))
+    //    typedef std::vector<typename AUTOMATON_T::edge_t> type;
 
-        static inline type inherit(const MODEL_T::edge_t& model_edge, Containers::SizedArray<typename AUTOMATON_T::edge_t>&& automaton_edges) {
-            return automaton_edges;
-        }
-    };
+    //    static inline type inherit(const MODEL_T::edge_t& model_edge, Containers::SizedArray<typename AUTOMATON_T::edge_t>&& automaton_edges) {
+    //        return automaton_edges;
+    //    }
+    //};
 
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR = ModelEdgeInheritor<MODEL_T, AUTOMATON_T>>
     class SymbolicProductAutomaton {
         public:
 
             typedef MODEL_T model_t;
-
+            typedef EDGE_INHERITOR edge_inheritor_t;
             typedef EDGE_INHERITOR::type edge_t;
             typedef WideNode node_t;
 
@@ -97,7 +125,6 @@ namespace DiscreteModel {
             // Convert between augmented nodes
             WideNode getWrappedNode(Node ts_node, const Containers::SizedArray<Node>& automata_nodes) const;
             UnwrappedNode getUnwrappedNode(WideNode wrapped_node) const ;
-
 
         private:
 

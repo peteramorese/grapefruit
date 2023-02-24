@@ -20,7 +20,8 @@ namespace Planner {
 
     template <class EDGE_INHERITOR, class OBJ_1_T, class OBJ_2_T>
     PlanSet<typename BOPreferencePlanner<EDGE_INHERITOR, OBJ_1_T, OBJ_2_T>::SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t> BOPreferencePlanner<EDGE_INHERITOR, OBJ_1_T, OBJ_2_T>::plan(const DiscreteModel::State& init_state) const {
-        BOPreferencePlannerSearchProblem<SymbolicProductGraph, typename DiscreteModel::TransitionSystemLabel::cost_t, OBJ_1_T, OBJ_2_T> problem(m_sym_graph);
+        using Problem = BOPreferencePlannerSearchProblem<SymbolicProductGraph, typename DiscreteModel::TransitionSystemLabel::cost_t, OBJ_1_T, OBJ_2_T>;
+        Problem problem(m_sym_graph);
 
         // Find and add the init node
         Containers::SizedArray<Node> init_aut_nodes(m_sym_graph->rank() - 1);
@@ -28,7 +29,7 @@ namespace Planner {
         problem.initial_node_set = {m_sym_graph->getWrappedNode(m_sym_graph->getModel().getGenericNodeContainer()[init_state], init_aut_nodes)};
 
         using CostVector = Containers::TypeGenericArray<OBJ_1_T, OBJ_2_T>;
-        auto mo_result = GraphSearch::BOAStar<typename SymbolicProductGraph::edge_t, typename DiscreteModel::TransitionSystemLabel::cost_t, CostVector, decltype(problem)>::search(problem);
+        auto mo_result = GraphSearch::BOAStar<typename Problem::CostVector, typename DiscreteModel::TransitionSystemLabel::cost_t, CostVector, decltype(problem)>::search(problem);
         
         // Convert path solutions to plans
         PlanSet<SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t> plan_set;

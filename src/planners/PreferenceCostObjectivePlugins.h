@@ -22,13 +22,13 @@ namespace Planner {
         SumDelayPreferenceCostObjective(const SYMBOLIC_GRAPH_T& sym_graph, const SYMBOLIC_GRAPH_T::node_t& node, SYMBOLIC_GRAPH_T::edge_t&& edge) 
             : PreferenceCostSet<INHERITED_COST_T>(sym_graph.rank() - 1) 
         {
-            auto unwrapped_node = sym_graph->getUnwrappedNode(node);
-            const auto& automata = sym_graph->extractAutomata();
+            auto unwrapped_node = sym_graph.getUnwrappedNode(node);
+            const auto& automata = sym_graph.extractAutomata();
             for (uint32_t i=0; i<unwrapped_node.automata_nodes.size(); ++i) {
                 Node automaton_node = unwrapped_node.automata_nodes[i];
                 
                 // Assign the edge cost if the automaton is not accepting
-                this->m_pcs[i] = (!automata[i]->isAccepting(automaton_node)) ? edge.toCost() : INHERITED_COST_T{};
+                this->m_pcs[i] = (!automata[i]->isAccepting(automaton_node)) ? static_cast<INHERITED_COST_T>(edge) : INHERITED_COST_T{};
             }
         }
 
@@ -49,7 +49,7 @@ namespace Planner {
         CostPreferenceObjective() = default;
         CostPreferenceObjective(const CostPreferenceObjective&) = default;
         CostPreferenceObjective(const SYMBOLIC_GRAPH_T& graph, const SYMBOLIC_GRAPH_T::node_t& node, SYMBOLIC_GRAPH_T::edge_t&& edge) {
-            cost = edge.toCost();
+            cost = static_cast<INHERITED_COST_T>(edge);
         }
 
         INHERITED_COST_T cost = INHERITED_COST_T{};

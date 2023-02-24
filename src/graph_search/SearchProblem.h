@@ -25,7 +25,7 @@ namespace GraphSearch {
         - Must contain 'addition' operator+ and 'subtraction' operator-
         - Default constructed value must be the respective 'zero' value
         - Must be copy constructable
-        - For use with CostVector, must have a cast-from-double method (operator COST_T() const)
+        - For use with Containers::FixedArray, must have a cast-from-double method (operator COST_T() const)
     HEURISTIC_T:
         - User specified
         - Must contain operator() which retrieves the heuristic COST_T value given a node
@@ -111,7 +111,8 @@ namespace GraphSearch {
             virtual inline bool goal(const Node& node) const {return m_goal_node_set.contains(node);}
 
             // Quantative methods
-            inline COST_T gScore(const COST_T& parent_g_score, const EXPLICIT_GRAPH_T::edge_t& edge) const {return parent_g_score + m_edgeToCost(edge);}
+            inline COST_T gScore(const COST_T& parent_g_score, const EXPLICIT_GRAPH_T::edge_t& edge) const {return parent_g_score + static_cast<COST_T>(edge);}
+            //inline COST_T gScore(const COST_T& parent_g_score, const EXPLICIT_GRAPH_T::edge_t& edge) const {return parent_g_score + m_edgeToCost(edge);}
             COST_T hScore(const EXPLICIT_GRAPH_T::node_t& node) const {return heuristic.operator()(node);}
 
             // Member variables
@@ -119,19 +120,20 @@ namespace GraphSearch {
             HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
         public:
-            typedef COST_T(*edgeToCostFunction)(const EXPLICIT_GRAPH_T::edge_t&);
+            //typedef COST_T(*edgeToCostFunction)(const EXPLICIT_GRAPH_T::edge_t&);
 
-            QuantitativeGraphSearchProblem(const std::shared_ptr<EXPLICIT_GRAPH_T>& graph, const std::vector<typename EXPLICIT_GRAPH_T::node_t>& initial_node_set_, const std::set<typename EXPLICIT_GRAPH_T::node_t>& goal_node_set, edgeToCostFunction edgeToCost) 
+            //QuantitativeGraphSearchProblem(const std::shared_ptr<EXPLICIT_GRAPH_T>& graph, const std::vector<typename EXPLICIT_GRAPH_T::node_t>& initial_node_set_, const std::set<typename EXPLICIT_GRAPH_T::node_t>& goal_node_set, edgeToCostFunction edgeToCost) 
+            QuantitativeGraphSearchProblem(const std::shared_ptr<EXPLICIT_GRAPH_T>& graph, const std::vector<typename EXPLICIT_GRAPH_T::node_t>& initial_node_set_, const std::set<typename EXPLICIT_GRAPH_T::node_t>& goal_node_set) 
                 : initial_node_set(initial_node_set_) 
                 , m_graph(graph)
                 , m_goal_node_set(goal_node_set)
-                , m_edgeToCost(edgeToCost)
+                //, m_edgeToCost(edgeToCost)
                 {}
 
         private:
             const std::shared_ptr<EXPLICIT_GRAPH_T> m_graph;
             std::set<typename EXPLICIT_GRAPH_T::node_t> m_goal_node_set;
-            edgeToCostFunction m_edgeToCost;
+            //edgeToCostFunction m_edgeToCost;
 
     };
 

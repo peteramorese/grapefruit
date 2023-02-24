@@ -20,7 +20,9 @@ struct Edge {
     uint32_t cost = 0;
     char edge_action = '\0';
 
-    static uint32_t edgeToCost(const Edge& edge) {return edge.cost;}
+    operator uint32_t() const {return cost;}
+    operator uint32_t&&() {return std::move(cost);}
+
     static std::string edgeToStr(const Edge& edge) {return "cost: " + std::to_string(edge.cost) + " edge action: " + edge.edge_action;}
 };
 
@@ -51,7 +53,7 @@ int main() {
     graph->print();
  
     {
-    QuantitativeGraphSearchProblem<Graph<Edge>, uint32_t, SearchDirection::Forward, MyHeuristic> astar_problem(graph, {1}, {6}, &Edge::edgeToCost);
+    QuantitativeGraphSearchProblem<Graph<Edge>, uint32_t, SearchDirection::Forward, MyHeuristic> astar_problem(graph, {1}, {6});
 
     // Manually insert heuristic values (i.e. integer min number of edges to goal):
     MyHeuristic& heuristic = astar_problem.heuristic;

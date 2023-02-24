@@ -27,7 +27,11 @@ namespace DiscreteModel {
 			float cost;
 			Action action;
 
-			inline static float getCost(const TransitionSystemLabel& label) {return label.cost;}
+			// Cost Conversion operator;
+			operator float() const {return cost;}
+			operator float&&() {return std::move(cost);}
+
+			//inline static float getCost(const TransitionSystemLabel& label) {return label.cost;}
 			std::string to_str() const {return "(action: " + action + ", cost: " + std::to_string(cost) + ")";}
 	};
 

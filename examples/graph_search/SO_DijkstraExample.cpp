@@ -19,6 +19,9 @@ struct Edge {
     uint32_t cost = 0;
     char edge_action = '\0';
 
+    operator uint32_t() const {return cost;}
+    operator uint32_t&&() {return std::move(cost);}
+
     static uint32_t edgeToCost(const Edge& edge) {return edge.cost;}
     static std::string edgeToStr(const Edge& edge) {return "cost: " + std::to_string(edge.cost) + " edge action: " + edge.edge_action;}
 };
@@ -47,7 +50,7 @@ int main() {
     NEW_LINE;
     LOG("Default search example");
     {
-    QuantitativeGraphSearchProblem<Graph<Edge>, uint32_t, SearchDirection::Forward> dijkstras_problem(graph, {1}, {6}, &Edge::edgeToCost);
+    QuantitativeGraphSearchProblem<Graph<Edge>, uint32_t, SearchDirection::Forward> dijkstras_problem(graph, {1}, {6});
 
     NEW_LINE;
     LOG("Searching...");
@@ -73,7 +76,7 @@ int main() {
     NEW_LINE;
     LOG("Memory minimal example");
     {
-    QuantitativeGraphSearchProblem<Graph<Edge>, uint32_t, SearchDirection::Forward> dijkstras_problem(graph, {1}, {6}, &Edge::edgeToCost);
+    QuantitativeGraphSearchProblem<Graph<Edge>, uint32_t, SearchDirection::Forward> dijkstras_problem(graph, {1}, {6});
 
     LOG("Searching...");
     auto result = AStar<Node, Edge, uint32_t, decltype(dijkstras_problem), ZeroHeuristic<Node, uint32_t>, const Edge*>::search(dijkstras_problem);
