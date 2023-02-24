@@ -168,7 +168,7 @@ namespace DiscreteModel {
     std::string Manipulator::templateToLabel(std::string label_template, uint32_t num) {
         uint32_t i = 0;
         while (i < label_template.size()) {
-            if (label_template[i] == Manipulator::ManipulatorModelProperties::s_delimeter) {
+            if (label_template[i] == ManipulatorModelProperties::s_delimeter) {
                 label_template.replace(i, 1, std::to_string(num));
             }
             ++i;

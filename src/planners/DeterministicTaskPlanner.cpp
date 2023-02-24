@@ -38,7 +38,7 @@ namespace Planner {
     Plan<DeterministicTaskPlanner::SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t> DeterministicTaskPlanner::plan(const DiscreteModel::State& init_state) const {
         DeterministicTaskPlannerSearchProblem problem(m_sym_graph, init_state);
 
-        auto result = GraphSearch::AStar<Node, SymbolicProductGraph::edge_t, DiscreteModel::TransitionSystemLabel::cost_t, decltype(problem)>::search(problem);
+        auto result = GraphSearch::AStar<SymbolicProductGraph::node_t, SymbolicProductGraph::edge_t, DiscreteModel::TransitionSystemLabel::cost_t, decltype(problem)>::search(problem);
         return Plan<SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t>(result.solution, m_sym_graph, result.success);
     }
 

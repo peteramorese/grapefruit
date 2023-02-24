@@ -10,3 +10,16 @@ target_link_libraries(DeterministicTaskPlannerExample PUBLIC
 target_include_directories(DeterministicTaskPlannerExample PUBLIC
 	${TP_INCLUDE_DIRS}
 )
+
+add_executable(BOPreferencePlannerExample BOPreferencePlannerExample.cpp)
+target_link_libraries(BOPreferencePlannerExample PUBLIC
+	Condition
+	StateSpace
+	State
+	TransitionSystem
+	GridWorldAgent
+	
+)
+target_include_directories(BOPreferencePlannerExample PUBLIC
+	${TP_INCLUDE_DIRS}
+)

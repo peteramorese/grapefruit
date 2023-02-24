@@ -54,6 +54,7 @@ namespace DiscreteModel {
 
 	class TransitionSystem : public NodeGenericGraph<State, TransitionSystemLabel> {
 		public:
+		 	TransitionSystem() = delete;
 			TransitionSystem(const std::shared_ptr<StateSpace>& ss, bool reversible = true) 
 				: NodeGenericGraph<State, TransitionSystemLabel>(true, reversible) 
 				, m_ss(ss)
@@ -87,6 +88,8 @@ namespace DiscreteModel {
 			}
 
 			const ObservationContainer& getObservationContainer() const {return m_observation_container;}
+
+			void addProposition(const Condition& prop) {m_propositions[prop.getName()] = prop;}
 
 		private:
 			void deserialize(const std::string& filepath);

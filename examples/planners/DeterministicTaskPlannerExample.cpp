@@ -20,7 +20,7 @@ using namespace TP::Planner;
 int main() {
  
 
-	DiscreteModel::Manipulator::ManipulatorModelProperties ts_props;
+	DiscreteModel::ManipulatorModelProperties ts_props;
 	ts_props.n_locations = 3;
 	ts_props.n_objects = 2;
 	ts_props.init_obj_locations = {0, 1};

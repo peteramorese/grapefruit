@@ -223,18 +223,18 @@ namespace Containers {
             using tuple_t = std::tuple<T_ARGS...>;
 
         public:
-            TypeGenericArray() = delete;
-            TypeGenericArray(T_ARGS&&... elements_) : elements(std::forward<T_ARGS>(elements_)...) {}
+            TypeGenericArray() = default; // value initializes each element
+            TypeGenericArray(T_ARGS&&... elements) : m_elements(std::forward<T_ARGS>(elements)...) {}
             TypeGenericArray(const TypeGenericArray&) = default;
             TypeGenericArray(TypeGenericArray&&) = default;
 
             static constexpr uint32_t size() {return sizeof...(T_ARGS);}
 
             template <uint32_t I>
-            inline std::tuple_element<I, tuple_t>::type& get() {return std::get<I>(elements);}
+            inline std::tuple_element<I, tuple_t>::type& get() {return std::get<I>(m_elements);}
 
             template <uint32_t I>
-            inline const std::tuple_element<I, tuple_t>::type& get() const {return std::get<I>(elements);}
+            inline const std::tuple_element<I, tuple_t>::type& get() const {return std::get<I>(m_elements);}
 
             // Elementwise access. Uses type-generic templated lambda ([]<typename T>(const T& element))
             template <typename LAMBDA_T>
@@ -301,7 +301,7 @@ namespace Containers {
             }
 
             // Lexicographic less than
-            bool lexicographicLess(const TypeGenericArray& other) {
+            bool lexicographicLess(const TypeGenericArray& other) const {
                 bool result = true;
                 auto lexicographicLess_ = [&other, &result]<typename T, uint32_t I>(const T& element) {
                     if (element < other.template get<I>()) {
@@ -318,7 +318,7 @@ namespace Containers {
             }
 
             // Lexicographic greater than
-            bool lexicographicGreater(const TypeGenericArray& other) {
+            bool lexicographicGreater(const TypeGenericArray& other) const {
                 bool result = true;
                 auto lexicographicGreater_ = [&other, &result]<typename T, uint32_t I>(const T& element) {
                     if (element < other.template get<I>()) {
@@ -334,17 +334,21 @@ namespace Containers {
                 return result;
             }
 
-            bool operator+=(const TypeGenericArray& other) const {
-                auto peq = [&other]<typename T, uint32_t I>(const T& element) {
+            void operator+=(const TypeGenericArray& other) {
+                auto peq = [&other]<typename T, uint32_t I>(T& element) {
                     return element += other.template get<I>();
                 };
-                return _forEachWithI<0>(peq);
+                _forEachWithI<0>(peq);
+            }
+
+            void operator=(const TypeGenericArray& other) {
+                m_elements = other.m_elements;
             }
         protected:
 
             template<uint32_t I, typename LAMBDA_T>
             bool _forEachWithI(LAMBDA_T compareElement) const {
-                if (compareElement.template operator()<typename std::tuple_element<I, tuple_t>::type, I>(std::get<I>(elements))) {
+                if (compareElement.template operator()<typename std::tuple_element<I, tuple_t>::type, I>(std::get<I>(m_elements))) {
                     if constexpr (I != (sizeof...(T_ARGS) - 1)) {
                         return _forEachWithI<I + 1, LAMBDA_T>(compareElement);
                     } else {
@@ -357,7 +361,7 @@ namespace Containers {
 
             template<uint32_t I, typename LAMBDA_T>
             bool _forEach(LAMBDA_T onElement) const {
-                if (onElement.template operator()<typename std::tuple_element<I, tuple_t>::type>(std::get<I>(elements))) {
+                if (onElement.template operator()<typename std::tuple_element<I, tuple_t>::type>(std::get<I>(m_elements))) {
                     if constexpr (I != (sizeof...(T_ARGS) - 1)) {
                         return _forEach<I + 1, LAMBDA_T>(onElement);
                     }  else {
@@ -368,7 +372,7 @@ namespace Containers {
                 }
             }
 
-            std::tuple<T_ARGS...> elements;
+            std::tuple<T_ARGS...> m_elements;
 
         private:
             friend TypeGenericArray operator+<T_ARGS...>(const TypeGenericArray& lhs, const TypeGenericArray& rhs);

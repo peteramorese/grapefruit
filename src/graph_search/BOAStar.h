@@ -66,6 +66,9 @@ namespace GraphSearch {
 
         private:
             static void extractPath(const EnumeratedNode& goal_node, PathSolution<Node, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap& node_map);
+
+            template <typename RETURN_T, typename... ARGS_T>
+            RETURN_T returnVal(RETURN_T(ARGS_T...));
     };
 
     template <class EDGE_T, class COST_T, class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
@@ -98,7 +101,10 @@ namespace GraphSearch {
         PathEnumeratedNodeMap path_enum_node_map;
 
         // G-score container (g_2 min cost map for second objective)
-        MinCostMap<Node, COST_T> g_2_min;
+        auto deduce_val = (COST_VECTOR_T{}).template get<1>();
+        using cost_2_t = decltype(deduce_val); //std::result_of<decltype(&COST_VECTOR_T::get<2>)(COST_VECTOR_T)>::type;
+        //using cost_2_t = decltype(deduce_val.template get<1>()); //std::result_of<decltype(&COST_VECTOR_T::get<2>)(COST_VECTOR_T)>::type;
+        MinCostMap<Node, cost_2_t> g_2_min;
         for (const auto& init_node : problem.initial_node_set) {
             EnumeratedNode init_enum_node = path_enum_node_map.newInitNode(init_node);
 
@@ -106,9 +112,10 @@ namespace GraphSearch {
             open_set.emplace(init_enum_node, COST_VECTOR_T{}, problem.hScore(init_node));
         }
 
+
         // Keep track of the min cost to any goal node
         bool g_2_min_goal_set = false;
-        COST_T g_2_min_goal = COST_T{};
+        cost_2_t g_2_min_goal = cost_2_t{};
 
 
         while (!open_set.empty()) {
@@ -117,9 +124,16 @@ namespace GraphSearch {
             open_set.pop(); 
             
             // If the insertion-time g-score does not match the optimal g-score, ignore it
-            if ((g_2_min.contains(curr_node) && !(inserted_g_score[1] < g_2_min.at(curr_node))) || (g_2_min_goal_set && !(inserted_f_score[1] < g_2_min_goal))) continue;
+            bool g_2_min_contains = g_2_min.contains(curr_node);
+            g_2_min.find(curr_node)->second;
+            //if ((g_2_min_contains && !((inserted_g_score.template get<1>()) < g_2_min.find(curr_node)->second)) || (g_2_min_goal_set && !((inserted_f_score.template get<1>()) < g_2_min_goal))) continue;
 
-            g_2_min[curr_node] = inserted_g_score[1];
+            if (g_2_min_contains) {
+                g_2_min.find(curr_node)->second = inserted_g_score.template get<1>();
+            } else {
+                g_2_min.try_emplace(curr_node, inserted_g_score.template get<1>());
+            }
+            //g_2_min[curr_node] = inserted_g_score[1];
 
             // If current node satisfies goal condition, extract path and terminate
             if (problem.goal(curr_node)) {
@@ -130,9 +144,9 @@ namespace GraphSearch {
                 result.solution_set.push_back(std::move(sol));
 
                 // Update the g_2_min across all goal nodes
-                if (!g_2_min_goal_set || inserted_g_score[1] < g_2_min_goal) {
+                if (!g_2_min_goal_set || inserted_g_score.template get<1>() < g_2_min_goal) {
                     g_2_min_goal_set = true;
-                    g_2_min_goal = inserted_g_score[1];
+                    g_2_min_goal = inserted_g_score.template get<1>();
                 }
                 continue;
             }
@@ -164,7 +178,7 @@ namespace GraphSearch {
                 tentative_h_score += problem.hScore(neighbor);
 
                 // Prune nodes
-                if ((g_2_min.contains(neighbor) && !(tentative_g_score[1] < g_2_min.at(neighbor))) || (g_2_min_goal_set && !(inserted_f_score[1] < g_2_min_goal))) continue;
+                if ((g_2_min.contains(neighbor) && !(tentative_g_score.template get<1>() < g_2_min.find(neighbor)->second)) || (g_2_min_goal_set && !(inserted_f_score.template get<1>() < g_2_min_goal))) continue;
 
                 EnumeratedNode neighbor_enum_node = path_enum_node_map.newNode(neighbor, curr_enum_node, to_neighbor_edge);
                 open_set.emplace(neighbor_enum_node, tentative_g_score, tentative_h_score);

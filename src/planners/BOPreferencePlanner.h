@@ -24,7 +24,7 @@ namespace Planner {
         public:
             BOPreferencePlanner(const std::shared_ptr<TransitionSystem>& ts, const std::vector<std::shared_ptr<DFA>>& automata);
 
-            Plan plan(const DiscreteModel::State& init_state) const;
+            PlanSet<SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t> plan(const DiscreteModel::State& init_state) const;
         private:
             const std::shared_ptr<SymbolicProductGraph> m_sym_graph;
     };

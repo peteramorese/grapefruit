@@ -6,6 +6,8 @@
 
 #include "tools/Containers.h"
 
+#include "graph_search/BOAStar.h"
+
 namespace TP {
 namespace Planner {
 
@@ -17,17 +19,24 @@ namespace Planner {
     }
 
     template <class EDGE_INHERITOR, class OBJ_1_T, class OBJ_2_T>
-    Plan BOPreferencePlanner<EDGE_INHERITOR, OBJ_1_T, OBJ_2_T>::plan(const DiscreteModel::State& init_state) const {
-        BOPreferencePlannerSearchProblem<SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost, OBJ_1_T, OBJ_2_T> problem(m_sym_graph);
+    PlanSet<typename BOPreferencePlanner<EDGE_INHERITOR, OBJ_1_T, OBJ_2_T>::SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t> BOPreferencePlanner<EDGE_INHERITOR, OBJ_1_T, OBJ_2_T>::plan(const DiscreteModel::State& init_state) const {
+        BOPreferencePlannerSearchProblem<SymbolicProductGraph, typename DiscreteModel::TransitionSystemLabel::cost_t, OBJ_1_T, OBJ_2_T> problem(m_sym_graph);
 
         // Find and add the init node
-        Containers::SizedArray<Node> init_aut_nodes(sym_graph->rank() - 1);
-        for (uint32_t i=0; i<init_aut_nodes.size(); ++i) init_aut_nodes[i] = *(sym_graph->getAutomaton(i).getInitStates().begin());
-        m_problem.initial_node_set = {sym_graph->getWrappedNode(sym_graph->getModel().getGenericNodeContainer()[init_state], init_aut_nodes)};
+        Containers::SizedArray<Node> init_aut_nodes(m_sym_graph->rank() - 1);
+        for (uint32_t i=0; i<init_aut_nodes.size(); ++i) init_aut_nodes[i] = *(m_sym_graph->getAutomaton(i).getInitStates().begin());
+        problem.initial_node_set = {m_sym_graph->getWrappedNode(m_sym_graph->getModel().getGenericNodeContainer()[init_state], init_aut_nodes)};
 
         using CostVector = Containers::TypeGenericArray<OBJ_1_T, OBJ_2_T>;
-        auto result = GraphSearch::BOAStar<SymbolicProductGraph::edge_t, DiscreteModel::TransitionSystemLabel::cost_t, CostVector, decltype(problem)>::search(problem);
-        return Plan(result.solution, m_sym_graph, result.success);
+        auto mo_result = GraphSearch::BOAStar<typename SymbolicProductGraph::edge_t, typename DiscreteModel::TransitionSystemLabel::cost_t, CostVector, decltype(problem)>::search(problem);
+        
+        // Convert path solutions to plans
+        PlanSet<SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t> plan_set;
+        plan_set.reserve(mo_result.solution_set.size());
+
+        for (const auto& sol : mo_result.solution_set) plan_set.emplace_back(sol, m_sym_graph, mo_result.success);
+
+        return plan_set;
     }
 
 }

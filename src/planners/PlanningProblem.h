@@ -10,11 +10,11 @@
 namespace TP {
 namespace Planner {
 
-    template <class SYMBOLIC_GRAPH_T, class ACTION_T, class COST_T>
+    template <class SYMBOLIC_GRAPH_T, class COST_T>
     struct Plan {
-
+            typedef SYMBOLIC_GRAPH_T::model_t::edge_t model_edge_t;
         public:
-            Plan(const GraphSearch::PathSolution<typename SYMBOLIC_GRAPH_T::node_t, ACTION_T, COST_T>& path, std::shared_ptr<SYMBOLIC_GRAPH_T> sym_graph, bool success) 
+            Plan(const GraphSearch::PathSolution<typename SYMBOLIC_GRAPH_T::node_t, model_edge_t, COST_T>& path, std::shared_ptr<SYMBOLIC_GRAPH_T> sym_graph, bool success) 
                 : product_node_sequence(path.node_path)
             {
                 if (success) {

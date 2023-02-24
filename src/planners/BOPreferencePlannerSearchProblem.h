@@ -19,7 +19,7 @@ namespace Planner {
     template <class SYMBOLIC_GRAPH_T, class INHERITED_COST_T, class OBJ_1_T, class OBJ_2_T, class HEURISTIC_T = GraphSearch::MOZeroHeuristic<WideNode, Containers::TypeGenericArray<OBJ_1_T, OBJ_2_T>>>
     class BOPreferencePlannerSearchProblem {
         public:
-            using CostVector = Containers::TypeGenericArray<typename OBJ_1_T, typename OBJ_2_T>;
+            using CostVector = Containers::TypeGenericArray<OBJ_1_T, OBJ_2_T>;
             using ProdNode = SYMBOLIC_GRAPH_T::node_t;
 
         public: // Methods & members required by any search problem
@@ -57,7 +57,8 @@ namespace Planner {
             // Quantative methods
             inline CostVector gScore(const CostVector& parent_g_score, const CostVector& edge) const {
                 // Element-wise add each of the objectives
-                return parent_g_score + edge;
+                parent_g_score += edge;
+                return parent_g_score;
             }
 
             CostVector hScore(const ProdNode& node) const {return heuristic.operator()(node);}
@@ -67,7 +68,7 @@ namespace Planner {
             HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
         public:
-            BOPreferencePlanningProblem(const std::shared_ptr<SYMBOLIC_GRAPH_T>& sym_graph);
+            BOPreferencePlannerSearchProblem(const std::shared_ptr<SYMBOLIC_GRAPH_T>& sym_graph);
 
         private:
             std::shared_ptr<SYMBOLIC_GRAPH_T> m_graph;
