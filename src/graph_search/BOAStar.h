@@ -26,66 +26,71 @@ T abs(const T& x) {return (x < T{}) ? -x : x;}
 namespace GraphSearch {
 
 
-    template <class EDGE_T, class COST_T, class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T = ZeroHeuristic<Node, Containers::FixedArray<2, COST_T>>, typename EDGE_STORAGE_T = EDGE_T>
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T = ZeroHeuristic<Node, Containers::FixedArray<2, typename SEARCH_PROBLEM_T::cost_t>>, typename EDGE_STORAGE_T = typename SEARCH_PROBLEM_T::edge_t>
     class BOAStar {
         public:
-            static MultiObjectiveSearchResult<EDGE_STORAGE_T, COST_VECTOR_T> search(const SEARCH_PROBLEM_T& problem);
+            using GraphNode = SEARCH_PROBLEM_T::node_t;
+            typedef SEARCH_PROBLEM_T::edge_t edge_t;
+            typedef SEARCH_PROBLEM_T::cost_t cost_t;
+
+        public:
+            static MultiObjectiveSearchResult<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T> search(const SEARCH_PROBLEM_T& problem);
 
         private:
-            using EnumeratedNode = int32_t;
+            using EnumeratedNode = GraphNode;
             
             class PathEnumeratedNodeMap {
                 private:
                     struct Value {
                         Value() = delete;
-                        Value(Node node_, EnumeratedNode parent_, EDGE_STORAGE_T parent_edge_) : node(node_), parent(parent_), parent_edge(parent_edge_) {}
-                        Node node;
+                        Value(GraphNode node_, EnumeratedNode parent_, EDGE_STORAGE_T parent_edge_) : node(node_), parent(parent_), parent_edge(parent_edge_) {}
+                        GraphNode node;
                         EnumeratedNode parent;
                         EDGE_STORAGE_T parent_edge;
                     };
                 public:
                     inline bool isInit(EnumeratedNode enumerated_node) const {return m_init_nodes.contains(enumerated_node);}
-                    inline Node getNode(EnumeratedNode enumerated_node) const {
+                    inline GraphNode getNode(EnumeratedNode enumerated_node) const {
                         return (isInit(enumerated_node)) ? m_init_nodes.at(enumerated_node) : m_map.at(enumerated_node).node;
                     }
                     inline EnumeratedNode getParentEnumeratedNode(EnumeratedNode enumerated_node) const {return m_map.at(enumerated_node).parent;}
                     inline const EDGE_STORAGE_T& getParentEdge(EnumeratedNode enumerated_node) const {return m_map.at(enumerated_node).parent_edge;}
-                    inline EnumeratedNode newNode(Node node, EnumeratedNode parent, const EDGE_STORAGE_T& parent_edge) {
+                    inline EnumeratedNode newNode(GraphNode node, EnumeratedNode parent, const EDGE_STORAGE_T& parent_edge) {
                         m_map.try_emplace(m_next_node, node, parent, parent_edge);
                         return m_next_node++;
                     }
-                    inline EnumeratedNode newInitNode(Node init_node) {
+                    inline EnumeratedNode newInitNode(GraphNode init_node) {
                         m_init_nodes.try_emplace(m_next_node, init_node);
                         return m_next_node++;
                     }
                 private:
                     EnumeratedNode m_next_node = EnumeratedNode{};
                     std::map<EnumeratedNode, Value> m_map; // Maps enum node key to the actual node and the parent enum node
-                    std::map<EnumeratedNode, Node> m_init_nodes;
+                    std::map<EnumeratedNode, GraphNode> m_init_nodes;
             };
 
         private:
-            static void extractPath(const EnumeratedNode& goal_node, PathSolution<Node, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap& node_map);
+            static void extractPath(const EnumeratedNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap& node_map);
 
             template <typename RETURN_T, typename... ARGS_T>
             RETURN_T returnVal(RETURN_T(ARGS_T...));
     };
 
-    template <class EDGE_T, class COST_T, class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    MultiObjectiveSearchResult<EDGE_STORAGE_T, COST_VECTOR_T> BOAStar<EDGE_T, COST_T, COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::search(const SEARCH_PROBLEM_T& problem) {
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
+    MultiObjectiveSearchResult<typename SEARCH_PROBLEM_T::node_t, EDGE_STORAGE_T, COST_VECTOR_T> BOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::search(const SEARCH_PROBLEM_T& problem) {
 
         // If custom edge storage type is used with explicit search, assert that the outgoingEdges method is explicit (returns a persistent const reference)
-        constexpr bool _PTR_EDGE_STORAGE_TYPE = !std::is_same<EDGE_STORAGE_T, EDGE_T>::value;
+        constexpr bool _PTR_EDGE_STORAGE_TYPE = !std::is_same<EDGE_STORAGE_T, edge_t>::value;
         if constexpr (_PTR_EDGE_STORAGE_TYPE) {
-            using _EDGE_CONTAINER_T = std::result_of<decltype(&SEARCH_PROBLEM_T::neighborEdges)(SEARCH_PROBLEM_T, Node)>::type;
+            using _EDGE_CONTAINER_T = std::result_of<decltype(&SEARCH_PROBLEM_T::neighborEdges)(SEARCH_PROBLEM_T, GraphNode)>::type;
             constexpr bool _IS_EXPLICIT = std::is_reference<_EDGE_CONTAINER_T>();
             static_assert(_IS_EXPLICIT, "Must use explicit graph construction with non-default EDGE_STORAGE_T");
-            static_assert(std::is_same<EDGE_STORAGE_T, const EDGE_T*>::value, "EDGE_STORAGE_T must be a persistent const COST_T pointer");
+            static_assert(std::is_same<EDGE_STORAGE_T, const edge_t*>::value, "EDGE_STORAGE_T must be a persistent const COST_T pointer");
         }
         static_assert(COST_VECTOR_T::size() == 2, "BOA can only use two objectives");
 
         // Instantiate return value (search graph and non-dominated cost map are allocated, but not used for this algorithm)
-        MultiObjectiveSearchResult<EDGE_STORAGE_T, COST_VECTOR_T> result(false, false);
+        MultiObjectiveSearchResult<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T> result(false, false);
 
         // Open set
         struct OpenSetElement {
@@ -104,7 +109,7 @@ namespace GraphSearch {
         auto deduce_val = (COST_VECTOR_T{}).template get<1>();
         using cost_2_t = decltype(deduce_val); //std::result_of<decltype(&COST_VECTOR_T::get<2>)(COST_VECTOR_T)>::type;
         //using cost_2_t = decltype(deduce_val.template get<1>()); //std::result_of<decltype(&COST_VECTOR_T::get<2>)(COST_VECTOR_T)>::type;
-        MinCostMap<Node, cost_2_t> g_2_min;
+        MinCostMap<GraphNode, cost_2_t> g_2_min;
         for (const auto& init_node : problem.initial_node_set) {
             EnumeratedNode init_enum_node = path_enum_node_map.newInitNode(init_node);
 
@@ -120,13 +125,13 @@ namespace GraphSearch {
 
         while (!open_set.empty()) {
             auto[curr_enum_node, inserted_g_score, inserted_f_score] = open_set.top();
-            Node curr_node = path_enum_node_map.getNode(curr_enum_node);
+            GraphNode curr_node = path_enum_node_map.getNode(curr_enum_node);
             open_set.pop(); 
             
             // If the insertion-time g-score does not match the optimal g-score, ignore it
             bool g_2_min_contains = g_2_min.contains(curr_node);
             g_2_min.find(curr_node)->second;
-            //if ((g_2_min_contains && !((inserted_g_score.template get<1>()) < g_2_min.find(curr_node)->second)) || (g_2_min_goal_set && !((inserted_f_score.template get<1>()) < g_2_min_goal))) continue;
+            if ((g_2_min_contains && !((inserted_g_score.template get<1>()) < g_2_min.find(curr_node)->second)) || (g_2_min_goal_set && !((inserted_f_score.template get<1>()) < g_2_min_goal))) continue;
 
             if (g_2_min_contains) {
                 g_2_min.find(curr_node)->second = inserted_g_score.template get<1>();
@@ -138,7 +143,7 @@ namespace GraphSearch {
             // If current node satisfies goal condition, extract path and terminate
             if (problem.goal(curr_node)) {
                 result.success = true;
-                PathSolution<Node, EDGE_STORAGE_T, COST_VECTOR_T> sol;
+                PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T> sol;
                 sol.path_cost = inserted_g_score;
                 extractPath(curr_enum_node, sol, path_enum_node_map);
                 result.solution_set.push_back(std::move(sol));
@@ -152,12 +157,12 @@ namespace GraphSearch {
             }
             
             // If neighbors() and outgoingEdges() return a persistent const reference, do not copy, otherwise do copy
-            typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighbors)(SEARCH_PROBLEM_T, Node)>::type neighbors = problem.neighbors(curr_node);
-            typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighborEdges)(SEARCH_PROBLEM_T, Node)>::type to_neighbor_edges = problem.neighborEdges(curr_node);
+            typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighbors)(SEARCH_PROBLEM_T, GraphNode)>::type neighbors = problem.neighbors(curr_node);
+            typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighborEdges)(SEARCH_PROBLEM_T, GraphNode)>::type to_neighbor_edges = problem.neighborEdges(curr_node);
             ASSERT(neighbors.size() == to_neighbor_edges.size(), "Number of neighbors does not match the number of outgoing edges");
 
             for (uint32_t i = 0; i < neighbors.size(); ++i) {
-                Node neighbor = neighbors[i];
+                GraphNode neighbor = neighbors[i];
                 
                 // Extract pointer if the edge storage type is a const pointer
                 EDGE_STORAGE_T to_neighbor_edge = [&] {
@@ -191,8 +196,8 @@ namespace GraphSearch {
         return result;
     };
 
-    template <class EDGE_T, class COST_T, class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    void BOAStar<EDGE_T, COST_T, COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<Node, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap& node_map) {
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
+    void BOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<typename SEARCH_PROBLEM_T::node_t, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap& node_map) {
         EnumeratedNode curr_enum_node = goal_node;
         path_solution.node_path.emplace_back(node_map.getNode(curr_enum_node));
 

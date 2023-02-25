@@ -80,6 +80,7 @@ namespace DiscreteModel {
 
 			bool operator== (const State& other) const;
 			bool operator== (const std::vector<std::string>& vars) const;
+			void operator= (const State& other);
 			void operator= (const std::vector<std::string>& vars);
 			void operator= (const Containers::SizedArray<uint32_t>& var_indices);
 		 	inline const std::string& operator[](const std::string& label) const {

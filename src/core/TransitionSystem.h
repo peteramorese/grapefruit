@@ -19,6 +19,7 @@ namespace DiscreteModel {
 	struct TransitionSystemLabel {
 		public:
 			typedef float cost_t;
+			typedef Action action_t;
 		public:
 			TransitionSystemLabel(float cost_, const Action& action_) 
 				: cost(cost_)
@@ -31,7 +32,10 @@ namespace DiscreteModel {
 			operator float() const {return cost;}
 			operator float&&() {return std::move(cost);}
 
-			//inline static float getCost(const TransitionSystemLabel& label) {return label.cost;}
+			operator Action&() {return action;}
+			operator const Action&() const {return action;}
+			operator Action&&() {return std::move(action);}
+
 			std::string to_str() const {return "(action: " + action + ", cost: " + std::to_string(cost) + ")";}
 	};
 

@@ -105,6 +105,13 @@ namespace DiscreteModel {
 		return true;
 	}
 
+	void State::operator= (const State& other) {
+		m_ss = other.m_ss;
+		for (dimension_t dim=0; dim < m_ss->rank(); ++dim) {
+			m_state_index_buffer[dim] = other.m_state_index_buffer[dim];
+		}
+	}
+
 	void State::operator= (const std::vector<std::string>& vars) {
 		ASSERT(vars.size() == m_ss->rank(), "Attempting to set state of size: " << vars.size() << " when state space is of rank: " << m_ss->rank());
 		for (dimension_t dim=0; dim < m_ss->rank(); ++dim) {

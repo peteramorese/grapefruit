@@ -63,7 +63,7 @@ int main() {
 
 	std::vector<std::shared_ptr<FormalMethods::DFA>> dfas = {dfa_1, dfa_2};
 
-	FormalMethods::Alphabet combined_alphbet = dfa_1->getAlphabet() + dfa_1->getAlphabet();
+	FormalMethods::Alphabet combined_alphbet = dfa_1->getAlphabet() + dfa_2->getAlphabet();
 	ts->addAlphabet(combined_alphbet);
 
 

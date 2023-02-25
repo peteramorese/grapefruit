@@ -5,8 +5,8 @@
 namespace TP {
 namespace Planner {
 
-    DeterministicTaskPlannerSearchProblem::DeterministicTaskPlannerSearchProblem(const std::shared_ptr<DeterministicTaskPlanner::SymbolicProductGraph>& sym_graph, const DiscreteModel::State& init_state) 
-        : GraphSearch::QuantitativeSymbolicSearchProblem<DeterministicTaskPlanner::SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t, GraphSearch::SearchDirection::Forward>(
+    DeterministicTaskPlannerSearchProblem::DeterministicTaskPlannerSearchProblem(const std::shared_ptr<SymbolicProductGraph>& sym_graph, const DiscreteModel::State& init_state) 
+        : GraphSearch::QuantitativeSymbolicSearchProblem<SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t, GraphSearch::SearchDirection::Forward>(
             sym_graph,
             {},
             {} // Empty goal node set
@@ -35,11 +35,11 @@ namespace Planner {
         : m_sym_graph(std::make_shared<SymbolicProductGraph>(ts, automata))
     {}
 
-    Plan<DeterministicTaskPlanner::SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t> DeterministicTaskPlanner::plan(const DiscreteModel::State& init_state) const {
+    Plan<DeterministicTaskPlannerSearchProblem> DeterministicTaskPlanner::plan(const DiscreteModel::State& init_state) const {
         DeterministicTaskPlannerSearchProblem problem(m_sym_graph, init_state);
 
         auto result = GraphSearch::AStar<SymbolicProductGraph::node_t, SymbolicProductGraph::edge_t, DiscreteModel::TransitionSystemLabel::cost_t, decltype(problem)>::search(problem);
-        return Plan<SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t>(result.solution, m_sym_graph, result.success);
+        return Plan<DeterministicTaskPlannerSearchProblem>(result.solution, m_sym_graph, result.success);
     }
 
 }

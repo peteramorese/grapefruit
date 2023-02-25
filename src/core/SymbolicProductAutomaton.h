@@ -30,6 +30,7 @@ namespace DiscreteModel {
     struct CombinedProductEdgeInheritor {
         // Full combined edge type: (model_edge_t, (automaton_edge_1, ...))
         typedef MODEL_T::edge_t::cost_t cost_t;
+        typedef MODEL_T::edge_t::action_t action_t;
         struct CombinedEdge {
             MODEL_T::edge_t model_edge; 
             Containers::SizedArray<typename AUTOMATON_T::edge_t> automaton_edge;
@@ -38,6 +39,11 @@ namespace DiscreteModel {
             operator cost_t&() {return static_cast<cost_t&>(model_edge);}
             operator const cost_t&() const {return static_cast<const cost_t&>(model_edge);}
             operator cost_t&&() {return static_cast<cost_t&&>(std::move(model_edge));}
+
+            // Action conversion operators
+            operator action_t&() {return static_cast<action_t&>(model_edge);}
+            operator const action_t&() const {return static_cast<const action_t&>(model_edge);}
+            operator action_t&&() {return static_cast<action_t&&>(std::move(model_edge));}
         };
         typedef CombinedEdge type;
 
@@ -58,7 +64,6 @@ namespace DiscreteModel {
     struct ModelEdgeInheritor {
         // Full combined edge type: (model_edge_t, (automaton_edge_1, ...))
         typedef MODEL_T::edge_t type;
-        typedef MODEL_T::edge_t::cost_t cost_t;
 
         static inline type inherit(const MODEL_T::edge_t& model_edge, Containers::SizedArray<typename AUTOMATON_T::edge_t>&& automaton_edges) {
             return model_edge;

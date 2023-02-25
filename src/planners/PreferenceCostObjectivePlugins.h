@@ -36,24 +36,35 @@ namespace Planner {
         virtual INHERITED_COST_T preferenceFunction() const override {
             Containers::SizedArray sorted_pcs = this->m_pcs;
             std::sort(sorted_pcs.begin(), sorted_pcs.end());
+            //
+            //LOG("pcs size: " << this->m_pcs.size());
+            //for (uint32_t i=0; i<this->m_pcs.size(); ++i) LOG("pcs[i]: " << this->m_pcs[i] << " sorted pcs[i]: " <<  sorted_pcs[i]);
+            //
 
             INHERITED_COST_T sum_delay = INHERITED_COST_T{};
             for (uint32_t i=0; i<this->m_pcs.size(); ++i) sum_delay += (this->m_pcs[i] > sorted_pcs[i]) ? this->m_pcs[i] - sorted_pcs[i] : INHERITED_COST_T{};
-
+            
             return sum_delay;
         }
     };
 
     template<class SYMBOLIC_GRAPH_T, class INHERITED_COST_T> 
-    struct CostPreferenceObjective {
-        CostPreferenceObjective() = default;
-        CostPreferenceObjective(const CostPreferenceObjective&) = default;
-        CostPreferenceObjective(const SYMBOLIC_GRAPH_T& graph, const SYMBOLIC_GRAPH_T::node_t& node, SYMBOLIC_GRAPH_T::edge_t&& edge) {
+    struct CostObjective {
+        CostObjective() = default;
+        CostObjective(const CostObjective&) = default;
+        CostObjective(CostObjective&&) = default;
+        CostObjective(const SYMBOLIC_GRAPH_T& graph, const SYMBOLIC_GRAPH_T::node_t& node, SYMBOLIC_GRAPH_T::edge_t&& edge) {
             cost = static_cast<INHERITED_COST_T>(edge);
         }
 
         INHERITED_COST_T cost = INHERITED_COST_T{};
-        operator INHERITED_COST_T() const {return cost;}
+
+        bool operator<(const CostObjective& other) const {return cost < other.cost;}
+        void operator+=(const CostObjective& other) {cost += other.cost;}
+        void operator=(const CostObjective& other) {cost = other.cost;}
+
+        operator INHERITED_COST_T() {return cost;}
+        operator const INHERITED_COST_T&() const {return cost;}
     };
 
 }

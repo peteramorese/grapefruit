@@ -47,7 +47,7 @@ int main() {
 
     NEW_LINE;
     LOG("Searching...");
-    auto result = BOAStar<Edge, uint32_t, Containers::FixedArray<2, uint32_t>, decltype(dijkstras_problem)>::search(dijkstras_problem);
+    auto result = BOAStar<Containers::FixedArray<2, uint32_t>, decltype(dijkstras_problem)>::search(dijkstras_problem);
 
     LOG("Finished!");
     LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));

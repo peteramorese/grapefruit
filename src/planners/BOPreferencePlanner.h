@@ -21,10 +21,11 @@ namespace Planner {
         public:
             using SymbolicProductGraph = DiscreteModel::SymbolicProductAutomaton<TransitionSystem, DFA, EDGE_INHERITOR>;
 
+            using Problem = BOPreferencePlannerSearchProblem<SymbolicProductGraph, typename DiscreteModel::TransitionSystemLabel::cost_t, OBJ_1_T, OBJ_2_T>;
         public:
             BOPreferencePlanner(const std::shared_ptr<TransitionSystem>& ts, const std::vector<std::shared_ptr<DFA>>& automata);
 
-            PlanSet<SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t> plan(const DiscreteModel::State& init_state) const;
+            PlanSet<Problem> plan(const DiscreteModel::State& init_state) const;
         private:
             const std::shared_ptr<SymbolicProductGraph> m_sym_graph;
     };

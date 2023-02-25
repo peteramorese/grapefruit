@@ -10,11 +10,11 @@
 namespace TP {
 namespace Planner {
 
-    template <class SYMBOLIC_GRAPH_T, class COST_T>
+    template <class SEARCH_PROBLEM_T>
     struct Plan {
-            typedef SYMBOLIC_GRAPH_T::model_t::edge_t model_edge_t;
+            typedef SEARCH_PROBLEM_T::graph_t::model_t::edge_t model_edge_t;
         public:
-            Plan(const GraphSearch::PathSolution<typename SYMBOLIC_GRAPH_T::node_t, model_edge_t, COST_T>& path, std::shared_ptr<SYMBOLIC_GRAPH_T> sym_graph, bool success) 
+            Plan(const GraphSearch::PathSolution<typename SEARCH_PROBLEM_T::node_t, typename SEARCH_PROBLEM_T::edge_t, typename SEARCH_PROBLEM_T::cost_t>& path, const std::shared_ptr<typename SEARCH_PROBLEM_T::graph_t> sym_graph, bool success) 
                 : product_node_sequence(path.node_path)
             {
                 if (success) {
@@ -27,7 +27,9 @@ namespace Planner {
                     }
 
                     action_sequence.reserve(path.edge_path.size());
-                    for (auto edge : path.edge_path) action_sequence.push_back(edge.action);
+                    for (auto edge : path.edge_path) action_sequence.push_back(static_cast<const SEARCH_PROBLEM_T::action_t&>(edge));
+
+                    cost = path.path_cost;
                 } else {
                     product_node_sequence.clear();
                 }
@@ -59,13 +61,14 @@ namespace Planner {
             }
 
         public:
-            std::vector<typename SYMBOLIC_GRAPH_T::node_t> product_node_sequence;
+            std::vector<typename SEARCH_PROBLEM_T::node_t> product_node_sequence;
             std::vector<Node> ts_node_sequence;
-            std::vector<DiscreteModel::State> state_sequence;
-            std::vector<DiscreteModel::Action> action_sequence;
+            std::vector<typename SEARCH_PROBLEM_T::graph_t::model_t::node_t> state_sequence;
+            std::vector<typename SEARCH_PROBLEM_T::action_t> action_sequence;
+            typename SEARCH_PROBLEM_T::cost_t cost;
     };
 
-    template <class SYMBOLIC_GRAPH_T, class COST_T>
-    using PlanSet = std::vector<Plan<SYMBOLIC_GRAPH_T, COST_T>>;
+    template <class SEARCH_PROBLEM_T>
+    using PlanSet = std::vector<Plan<SEARCH_PROBLEM_T>>;
 }
 }

@@ -22,6 +22,24 @@ namespace Planner {
             using CostVector = Containers::TypeGenericArray<OBJ_1_T, OBJ_2_T>;
             using ProdNode = SYMBOLIC_GRAPH_T::node_t;
 
+            typedef SYMBOLIC_GRAPH_T graph_t;
+            typedef ProdNode node_t;
+            typedef graph_t::edge_t::action_t action_t;
+            typedef CostVector cost_t;
+
+            struct CostVectorActionEdge {
+                CostVectorActionEdge() = delete;
+                CostVectorActionEdge(OBJ_1_T&& obj_1, OBJ_2_T&& obj_2, graph_t::edge_t::action_t&& action_) : cv(std::move(obj_1), std::move(obj_2)), action(action_) {}
+                CostVector cv;
+                action_t action;
+
+                // Search problem action_t must be convertable to the base action_t
+                operator action_t&() {return action;}
+                operator const action_t&() const {return action;}
+                operator action_t&&() const {return std::move(action);}
+            };
+            typedef CostVectorActionEdge edge_t;
+
         public: // Methods & members required by any search problem
             
             // Extension methods
@@ -30,13 +48,13 @@ namespace Planner {
             }
 
             // Direct conversion 
-            inline std::vector<CostVector> neighborEdges(ProdNode node) const {
+            inline std::vector<edge_t> neighborEdges(ProdNode node) const {
                 std::vector<typename SYMBOLIC_GRAPH_T::edge_t> inherited_edges = m_graph->getOutgoingEdges(node);
-                std::vector<CostVector> converted_edges;
+                std::vector<edge_t> converted_edges;
 
                 converted_edges.reserve(inherited_edges.size());
                 for (auto& inherited_edge : inherited_edges) {
-                    converted_edges.emplace_back(OBJ_1_T(*m_graph, node, std::move(inherited_edge)), OBJ_2_T(*m_graph, node, std::move(inherited_edge)));
+                    converted_edges.emplace_back(OBJ_1_T(*m_graph, node, std::move(inherited_edge)), OBJ_2_T(*m_graph, node, std::move(inherited_edge)), static_cast<action_t&&>(inherited_edge));
                 }
                 return converted_edges;
             }
@@ -55,9 +73,11 @@ namespace Planner {
             }
 
             // Quantative methods
-            inline CostVector gScore(CostVector parent_g_score, const CostVector& edge) const {
-                // Element-wise add each of the objectives
-                parent_g_score += edge;
+            inline CostVector gScore(CostVector parent_g_score, const edge_t& edge) const {
+                // Element-wise add each of the objectives (edge_t is alias for CostVector)
+                //LOG("b4 g score: " << parent_g_score.template get<1>().preferenceFunction() << " edge action: " << edge.action);
+                parent_g_score += edge.cv;
+
                 return parent_g_score;
             }
 
@@ -68,7 +88,7 @@ namespace Planner {
             HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
         public:
-            BOPreferencePlannerSearchProblem(const std::shared_ptr<SYMBOLIC_GRAPH_T>& sym_graph);
+            BOPreferencePlannerSearchProblem(const std::shared_ptr<SYMBOLIC_GRAPH_T>& sym_graph) : m_graph(sym_graph) {}
 
         private:
             std::shared_ptr<SYMBOLIC_GRAPH_T> m_graph;

@@ -14,7 +14,6 @@ namespace Planner {
             PreferenceCostSet(uint32_t size) : m_pcs(size) {}
             PreferenceCostSet(const PreferenceCostSet&) = default;
 
-            inline bool empty() const {return (m_pcs.size() == 0) ? true : false;}
 
             // For general cases, represents the conversion from the member pcs into the quantitative comparison
             virtual INHERITED_COST_T preferenceFunction() const = 0;
@@ -24,8 +23,15 @@ namespace Planner {
 
         public:
             // Used for comparing paths during graph search
+            inline bool empty() const {return (m_pcs.size() == 0) ? true : false;}
             bool operator<(const PreferenceCostSet& other) const {return preferenceFunction() < other.preferenceFunction();}
-            void operator+=(const PreferenceCostSet& other) const {for (uint32_t i=0; i<m_pcs.size(); ++i) m_pcs[i] += other.m_pcs[i];}
+            void operator+=(const PreferenceCostSet& other) {
+                if (!empty() && !other.empty()) {
+                    for (uint32_t i=0; i<m_pcs.size(); ++i) m_pcs[i] += other.m_pcs[i];
+                } else if (empty()) {
+                    operator=(other);
+                } 
+            }
             void operator=(const PreferenceCostSet& other) {m_pcs = other.m_pcs;}
 
             //friend PreferenceCostSet operator+<INHERITED_COST_T>(const PreferenceCostSet& lhs, const PreferenceCostSet& rhs);

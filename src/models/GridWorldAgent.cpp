@@ -6,8 +6,8 @@ namespace DiscreteModel {
     std::shared_ptr<TransitionSystem> GridWorldAgent::generate(const GridWorldAgentProperties& model_props) {
         ConvertedProperties converted_props;
 
-        ASSERT(model_props.init_coordinate_x < model_props.n_x, "Init x coordinate exceeds the x-grid-dimension");
-        ASSERT(model_props.init_coordinate_y < model_props.n_y, "Init y coordinate exceeds the y-grid-dimension");
+        ASSERT(model_props.init_coordinate_x < model_props.n_x, "Init x coordinate (" << model_props.init_coordinate_x << ") exceeds the x-grid-dimension");
+        ASSERT(model_props.init_coordinate_y < model_props.n_y, "Init y coordinate (" << model_props.init_coordinate_y << ") exceeds the y-grid-dimension");
 
 
         /////////////////   State Space   /////////////////
@@ -17,10 +17,10 @@ namespace DiscreteModel {
         std::vector<std::string> x_labels(model_props.n_x);
         std::vector<std::string> y_labels(model_props.n_y);
         for (int i=0; i<model_props.n_x; ++i) {
-            x_labels.push_back("x" + std::to_string(i));
+            x_labels[i] = "x" + std::to_string(i);
         }
         for (int i=0; i<model_props.n_y; ++i) {
-            y_labels.push_back("y" + std::to_string(i));
+            y_labels[i] = "y" + std::to_string(i);
         }
 
         ss_grid_agent->setDimension(0, s_x_coord_label, x_labels); 
@@ -38,16 +38,16 @@ namespace DiscreteModel {
         for (uint32_t i=0; i<model_props.n_x; ++i) { // x
             for (uint32_t j=0; j<model_props.n_y; ++j) { // y
                 State src_state(ss_grid_agent.get());
-                State dst_state(ss_grid_agent.get());
 
                 src_state = {x_labels[i], y_labels[j]};
 
                 bool stay_put = false;
                 for (uint8_t dir=0; dir<4; ++dir) {
+                    State dst_state = src_state;
                     switch (dir) {
                         case 0: // left 
                             if (i > 0) {
-                                dst_state = {x_labels[i - 1], y_labels[j]};
+                                dst_state[s_x_coord_label] = x_labels[i - 1];
                                 ts->connect(src_state, dst_state, TransitionSystemLabel(1.0f, "left"));
                             } else {
                                 if (!stay_put) {
@@ -57,8 +57,8 @@ namespace DiscreteModel {
                             }
                             continue;
                         case 1: // right
-                            if (i < model_props.n_x) {
-                                dst_state = {x_labels[i + 1], y_labels[j]};
+                            if (i < (model_props.n_x - 1)) {
+                                dst_state[s_x_coord_label] = x_labels[i + 1];
                                 ts->connect(src_state, dst_state, TransitionSystemLabel(1.0f, "right"));
                             } else {
                                 if (!stay_put) {
@@ -70,23 +70,23 @@ namespace DiscreteModel {
                             continue;
                         case 2: // down
                             if (j > 0) {
-                                dst_state = {x_labels[i], y_labels[j - 1]};
+                                dst_state[s_y_coord_label] = y_labels[j - 1];
                                 ts->connect(src_state, dst_state, TransitionSystemLabel(1.0f, "down"));
                             } else {
                                 if (!stay_put) {
-                                    ts->connect(src_state, dst_state, TransitionSystemLabel(1.0f, "stay"));
+                                    ts->connect(src_state, dst_state, TransitionSystemLabel(0.0f, "stay"));
                                     stay_put = true;
                                 } 
                             }
 
                             continue;
                         case 3: // up
-                            if (j < model_props.n_y) {
-                                dst_state = {x_labels[i], y_labels[j + 1]};
+                            if (j < (model_props.n_y - 1)) {
+                                dst_state[s_y_coord_label] = y_labels[j + 1];
                                 ts->connect(src_state, dst_state, TransitionSystemLabel(1.0f, "up"));
                             } else {
                                 if (!stay_put) {
-                                    ts->connect(src_state, dst_state, TransitionSystemLabel(1.0f, "stay"));
+                                    ts->connect(src_state, dst_state, TransitionSystemLabel(0.0f, "stay"));
                                     stay_put = true;
                                 } 
                             }
@@ -119,14 +119,17 @@ namespace DiscreteModel {
     std::string GridWorldAgent::templateToLabel(std::string label_template, uint32_t x, uint32_t y) {
         uint32_t i = 0;
         bool on_x = true;
+        bool on_y = false;
         while (i < label_template.size()) {
             if (label_template[i] == GridWorldAgentProperties::s_delimeter) {
                 uint32_t num = (on_x) ? x : y;
                 label_template.replace(i, 1, std::to_string(num));
                 if (on_x) {
                     on_x = false;
+                    on_y = true;
                 } else {
-                    ASSERT(false, "Too many delimeters in label template: " << label_template);
+                    ASSERT(on_y, "Too many delimeters in label template: " << label_template);
+                    on_y = false;
                 }
             }
             ++i;
