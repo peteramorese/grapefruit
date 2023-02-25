@@ -54,14 +54,9 @@ namespace Planner {
 
                 converted_edges.reserve(inherited_edges.size());
                 for (auto& inherited_edge : inherited_edges) {
-                    LOG("B$");
                     converted_edges.emplace_back(OBJ_1_T(*m_graph, node, std::move(inherited_edge)), OBJ_2_T(*m_graph, node, std::move(inherited_edge)), static_cast<action_t&&>(inherited_edge));
-
-                    LOG("AFD");
                 }
-                LOG("af for");
                 std::vector<edge_t> test = converted_edges;
-                LOG("af test");
                 return converted_edges;
             }
 

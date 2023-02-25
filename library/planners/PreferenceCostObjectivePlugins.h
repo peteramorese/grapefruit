@@ -81,6 +81,7 @@ namespace Planner {
                     Node automaton_node = unwrapped_node.automata_nodes[i];
                     
                     // Assign the edge cost if the automaton is not accepting
+                    //this->m_pcs[i] = (!automata[i]->isAccepting(automaton_node)) ? COLLAPSED_COST_T{} : COLLAPSED_COST_T{};
                     this->m_pcs[i] = (!automata[i]->isAccepting(automaton_node)) ? edge.getAutomatonCost()[i] : COLLAPSED_COST_T{};
                 }
             }

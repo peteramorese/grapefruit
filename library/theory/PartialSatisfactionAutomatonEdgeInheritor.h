@@ -33,7 +33,7 @@ namespace DiscreteModel {
                 operator cost_t&&() {return std::move(model_cost);}
 
                 // Automaton cost conversion operators
-                automaton_cost_t getAutomatonCost() {return automaton_cost;}
+                automaton_cost_t& getAutomatonCost() {return automaton_cost;}
                 const automaton_cost_t& getAutomatonCost() const {return automaton_cost;}
 
             public: 

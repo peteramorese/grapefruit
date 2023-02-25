@@ -42,7 +42,7 @@ namespace FormalMethods {
                 return true;
             }
 
-            bool deserialize(const std::string& dfa_filepath, const std::string& sub_map_filepath) {
+            bool deserialize(const std::string& dfa_filepath, const std::string& sub_map_filepath = std::string()) {
                 YAML::Node data;
                 try {
                     data = YAML::LoadFile(dfa_filepath);
@@ -64,6 +64,8 @@ namespace FormalMethods {
                 } catch (YAML::ParserException e) {
                     ERROR("Failed to load file" << dfa_filepath << " ("<< e.what() <<")");
                 }
+
+                if (sub_map_filepath.empty()) return true;
 
                 try {
                     data = YAML::LoadFile(sub_map_filepath);

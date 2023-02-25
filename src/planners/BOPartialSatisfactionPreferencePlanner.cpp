@@ -39,18 +39,20 @@ int main() {
 	/////////////////   DFAs   /////////////////
 
 	std::shared_ptr<FormalMethods::PartialSatisfactionDFA> dfa_1 = std::make_shared<FormalMethods::PartialSatisfactionDFA>();
-	dfa_1->deserialize("dfas/dfa_0.yaml", "dfas/sub_map_0.yaml");
+	//dfa_1->deserialize("dfas/dfa_0.yaml", "dfas/sub_map_0.yaml");
+	dfa_1->deserialize("dfas/dfa_0.yaml");
 	dfa_1->print();
 
 	std::shared_ptr<FormalMethods::PartialSatisfactionDFA> dfa_2 = std::make_shared<FormalMethods::PartialSatisfactionDFA>();
 	dfa_2->deserialize("dfas/dfa_1.yaml", "dfas/sub_map_1.yaml");
+	//dfa_2->deserialize("dfas/dfa_1.yaml");
 	dfa_2->print();
 
 	std::vector<std::shared_ptr<FormalMethods::PartialSatisfactionDFA>> dfas = {dfa_1, dfa_2};
 
 	FormalMethods::Alphabet combined_alphbet = dfa_1->getAlphabet() + dfa_2->getAlphabet();
 
-	for (const auto& obs : combined_alphbet) LOG("obs: " << obs);
+	//for (const auto& obs : combined_alphbet) LOG("obs: " << obs);
 
 	ts->addAlphabet(combined_alphbet);
 	

@@ -44,19 +44,28 @@ namespace Containers {
     class SizedArray {
         public:
             SizedArray() = delete;
-            SizedArray(std::size_t size) : m_array(new T[size]), m_size(size) {}
-            SizedArray(std::size_t size, const T& fill_val) : m_array(new T[size]), m_size(size) {
+            SizedArray(std::size_t size) : m_size(size) {
+                m_array = (m_size) ? new T[m_size] : nullptr;
+            }
+            SizedArray(std::size_t size, const T& fill_val) : m_size(size) {
+                m_array = (m_size) ? new T[m_size] : nullptr;
                 for (std::size_t i=0; i < m_size; ++i) {
                     m_array[i] = T{};
                 }
             }
-            SizedArray(const SizedArray& other) : m_array(new T[other.m_size]), m_size(other.m_size) {
+            SizedArray(const SizedArray& other) : m_size(other.m_size) {
+                m_array = (m_size) ? new T[m_size] : nullptr;
                 for (std::size_t i=0; i < m_size; ++i) {
                     m_array[i] = other.m_array[i];
                 }
             }
-            SizedArray(SizedArray&& other) : m_array(other.m_array), m_size(other.m_size) {}
-            ~SizedArray() {delete[] m_array;}
+            SizedArray(SizedArray&& other) : m_array(other.m_array), m_size(other.m_size) {
+                other.m_array = nullptr;
+                other.m_size = 0;
+            }
+            ~SizedArray() {
+                safeDelete();
+            }
 
             inline T& operator[](std::size_t i) {return m_array[i];}
             inline const T& operator[](std::size_t i) const {return m_array[i];}
@@ -80,13 +89,22 @@ namespace Containers {
 
             void operator=(const SizedArray& other) {
                 if (size() != other.size()) {
-                    delete[] m_array;
+                    safeDelete();
                     m_size = other.m_size;
+
+                    m_array = (m_size) ? new T[m_size] : nullptr;
                     m_array = new T[m_size];
                 }
                 for (std::size_t i=0; i < size(); ++i) m_array[i] = other.m_array[i];
             }
             void operator=(SizedArray&& other) {m_array = other.m_array; m_size = other.m_size;}
+
+        private:
+            inline void safeDelete() {
+                if (m_array) 
+                    delete[] m_array;
+            }
+
         private:
             T* m_array;
             std::size_t m_size;
