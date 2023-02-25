@@ -11,5 +11,5 @@ add_subdirectory(dependencies/yaml-cpp)
 set(YAML_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/dependencies/yaml-cpp)
 set(TP_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src)
 
-add_subdirectory(src)
+add_subdirectory(library)
 add_subdirectory(examples)
