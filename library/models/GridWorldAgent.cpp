@@ -1,5 +1,8 @@
 #include "GridWorldAgent.h"
 
+#include <fstream>
+#include <yaml-cpp/yaml.h>
+
 namespace TP {
 namespace DiscreteModel {
 
@@ -135,6 +138,20 @@ namespace DiscreteModel {
             ++i;
         }
         return label_template;
+    }
+
+    void GridWorldAgent::serializeConfig(const GridWorldAgentProperties& model_props, const std::string& filepath) {
+
+        YAML::Emitter out;
+
+        out << YAML::BeginMap;
+
+        out << YAML::Key << "Grid X" << YAML::Value << model_props.n_x;
+        out << YAML::Key << "Grid Y" << YAML::Value << model_props.n_y;
+
+        out << YAML::EndMap;
+        std::ofstream fout(filepath);
+        fout << out.c_str();
     }
 }
 }

@@ -36,6 +36,7 @@ namespace DiscreteModel {
         public:
             static std::shared_ptr<TransitionSystem> generate(const GridWorldAgentProperties& model_props);
             static State makeInitState(const GridWorldAgentProperties& model_props, const std::shared_ptr<TransitionSystem>& ts);
+            static void serializeConfig(const GridWorldAgentProperties& model_props, const std::string& filepath);
 
         private:
             static std::string templateToLabel(std::string label_template, uint32_t x, uint32_t y);

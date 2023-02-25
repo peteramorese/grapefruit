@@ -1,11 +1,14 @@
 #pragma once
 
+#include <fstream>
+
 #include "core/State.h"
 #include "core/TransitionSystem.h"
 #include "core/Graph.h"
 
 #include "graph_search/SearchProblem.h"
 
+#include <yaml-cpp/yaml.h>
 
 namespace TP {
 namespace Planner {
@@ -58,6 +61,23 @@ namespace Planner {
                     }
 
                 }
+            }
+
+            void serialize(const std::string& filepath) const {
+                YAML::Emitter out;
+
+                out << YAML::BeginMap;
+
+                out << YAML::Key << "Action Sequence" << YAML::Value << action_sequence;
+                out << YAML::Key << "State Sequence" << YAML::Value << YAML::BeginSeq;
+
+                for (const auto& s : state_sequence) {
+                    out << s.to_str();
+                }
+                YAML::EndSeq;
+                out << YAML::EndMap;
+                std::ofstream fout(filepath);
+                fout << out.c_str();
             }
 
         public:

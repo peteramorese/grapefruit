@@ -13,5 +13,5 @@ set(TP_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/library)
 
 add_subdirectory(library)
 
-#add_subdirectory(examples)
+add_subdirectory(examples)
 add_subdirectory(src)

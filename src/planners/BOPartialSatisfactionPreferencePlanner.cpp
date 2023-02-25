@@ -39,8 +39,8 @@ int main() {
 	/////////////////   DFAs   /////////////////
 
 	std::shared_ptr<FormalMethods::PartialSatisfactionDFA> dfa_1 = std::make_shared<FormalMethods::PartialSatisfactionDFA>();
-	//dfa_1->deserialize("dfas/dfa_0.yaml", "dfas/sub_map_0.yaml");
-	dfa_1->deserialize("dfas/dfa_0.yaml");
+	dfa_1->deserialize("dfas/dfa_0.yaml", "dfas/sub_map_0.yaml");
+	//dfa_1->deserialize("dfas/dfa_0.yaml");
 	dfa_1->print();
 
 	std::shared_ptr<FormalMethods::PartialSatisfactionDFA> dfa_2 = std::make_shared<FormalMethods::PartialSatisfactionDFA>();
@@ -73,7 +73,7 @@ int main() {
 	DiscreteModel::State init_state = ts->getGenericNodeContainer()[0];
 
 	// Set the partial satisfaction weights
-	std::vector<FormalMethods::SubstitutionCost> weights = {1, 5};
+	std::vector<FormalMethods::SubstitutionCost> weights = {1, 1};
 
 	WeightedSumPreferenceCostObjective<SymbolicGraph, FormalMethods::SubstitutionCost>::setWeights(weights);
 
@@ -88,7 +88,9 @@ int main() {
 		for (const auto& plan : plan_set) {
 			LOG("Plan " << i << " Cost: " << plan.cost.template get<0>().cost << " Preference Cost: " << plan.cost.template get<1>().preferenceFunction());
 			plan.print();	
+			plan.serialize("test_plan.yaml");
 		}
+		DiscreteModel::GridWorldAgent::serializeConfig(ts_props, "test_grid_world_config.yaml");
 	} else {
 		LOG("Planner failed using init state: " << init_state.to_str());
 	}

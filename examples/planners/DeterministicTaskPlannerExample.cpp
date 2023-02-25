@@ -80,6 +80,8 @@ int main() {
 	if (plan.success()) {
 		LOG("Planner success!");
 		plan.print();	
+		plan.serialize("test_plan.yaml");
+		LOG("Serialized plan");
 	} else {
 		LOG("Planner failed using init state: " << init_state.to_str());
 	}
