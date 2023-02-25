@@ -1,27 +1,27 @@
-add_executable(SO_DijkstraExample SO_DijkstraExample.cpp)
-target_link_libraries(SO_DijkstraExample PUBLIC
+add_executable(DijkstraExample DijkstraExample.cpp)
+target_link_libraries(DijkstraExample PUBLIC
 )
-target_include_directories(SO_DijkstraExample PUBLIC
+target_include_directories(DijkstraExample PUBLIC
 	${TP_INCLUDE_DIRS}
 )
 
-add_executable(SO_AStarExample SO_AStarExample.cpp)
-target_link_libraries(SO_AStarExample PUBLIC
+add_executable(AStarExample AStarExample.cpp)
+target_link_libraries(AStarExample PUBLIC
 )
-target_include_directories(SO_AStarExample PUBLIC
+target_include_directories(AStarExample PUBLIC
 	${TP_INCLUDE_DIRS}
 )
 
-add_executable(MO_BODijkstraExample MO_BODijkstraExample.cpp)
-target_link_libraries(MO_BODijkstraExample PUBLIC
+add_executable(BODijkstraExample BODijkstraExample.cpp)
+target_link_libraries(BODijkstraExample PUBLIC
 )
-target_include_directories(MO_BODijkstraExample PUBLIC
+target_include_directories(BODijkstraExample PUBLIC
 	${TP_INCLUDE_DIRS}
 )
 
-add_executable(MO_BOAStarExample MO_BOAStarExample.cpp)
-target_link_libraries(MO_BOAStarExample PUBLIC
+add_executable(BOAStarExample BOAStarExample.cpp)
+target_link_libraries(BOAStarExample PUBLIC
 )
-target_include_directories(MO_BOAStarExample PUBLIC
+target_include_directories(BOAStarExample PUBLIC
 	${TP_INCLUDE_DIRS}
 )

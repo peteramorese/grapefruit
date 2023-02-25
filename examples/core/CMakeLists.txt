@@ -6,6 +6,15 @@ target_include_directories(GraphExample PUBLIC
 	#${SPOT_INCLUDE_DIRS}
 )
 
+add_executable(AutomatonExample AutomatonExample.cpp)
+target_link_libraries(AutomatonExample PUBLIC
+	yaml-cpp
+)
+target_include_directories(AutomatonExample PUBLIC
+	${TP_INCLUDE_DIRS}
+	#${SPOT_INCLUDE_DIRS}
+)
+
 add_executable(YAMLExample YAMLExample.cpp)
 target_link_libraries(YAMLExample PUBLIC
 	yaml-cpp

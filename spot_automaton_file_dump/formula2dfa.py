@@ -3,20 +3,18 @@ from posixpath import dirname
 import spot, os, glob, random, json, yaml
 import argparse
 
-def remove_dfa_files(dirname_prefix, file_prefix, verbose=False):
+def remove_dfa_files(dirname_prefix, verbose=False):
     # Remove all dfa files in directory:
     for file in os.scandir(dirname_prefix):
-        if (str(file).startswith(file_prefix)):
-            os.remove(file.path)
-            if verbose:
-                print("Removing: ", str(file))
-        #print(file.path)
+        os.remove(file.path)
+        if verbose:
+            print("Removing: ", str(file))
 
-def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose=False, f_complete=False):
+def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose=False, f_complete=False, create_sub_map = False):
 
     file_dict = dict()
 
-    remove_dfa_files(dirname_prefix)
+    remove_dfa_files(dirname_prefix, verbose)
     inds = list(range(0, len(F_arr)))
     if random_ordering:
         random.shuffle(inds)
@@ -25,10 +23,14 @@ def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose
         file_ind = inds[i]
         if custom_filename is None:
             filename = dirname_prefix + "dfa_{}".format(file_ind) + ".yaml"
+            if create_sub_map:
+                sub_map_filename = dirname_prefix + "sub_map_{}".format(file_ind) + ".yaml"
             if verbose:
                 print("    > Writing to: dfa_{}".format(file_ind))
         else:
             filename = dirname_prefix + custom_filename + ".yaml"
+            if create_sub_map:
+                sub_map_filename = dirname_prefix + custom_filename + ".yaml"
         i = i + 1
         lines_list = list()
         accepting_list = list()
@@ -53,7 +55,22 @@ def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose
                 file_dict["Labels"][s].append(str(spot.bdd_format_formula(bdict, s_con.cond)))
                 if "{}".format(s_con.acc) != "{}":
                     file_dict["Accepting States"].append(s)
-                print()
+
+        if create_sub_map:
+            if verbose:
+                print("Creating sub map: ", sub_map_filename)
+            unique_obs_set = set()
+            sub_map_file_dict = dict()
+            for _, labels in file_dict["Labels"].items():
+                for label in labels:
+                    unique_obs_set.add(label)
+            sub_map_file_dict["From Observations"] = list(unique_obs_set)
+            sub_map_file_dict["To Observations"] = ["INSERT_HERE" for _ in range(0, len(unique_obs_set))]
+            sub_map_file_dict["Costs"] = [99 for _ in range(0, len(unique_obs_set))]
+            with open(sub_map_filename, "w+") as file:
+                yaml.dump(sub_map_file_dict, file)
+                
+
         with open(filename, "w+") as file:
             yaml.dump(file_dict, file)
 
@@ -98,7 +115,7 @@ def read_write_txt(read_file_name, write_file_dir_name_prefix, write_file_name=N
     create_file(F_arr, write_file_dir_name_prefix, write_file_name, random_ordering, verbose=verbose, f_complete=f_complete)
     return len(F_arr)
 
-def read_write_json(read_json_name, formula_list_name, write_file_dir_name_prefix, write_file_name=None, random_ordering=False, verbose=False, f_complete=False):
+def read_write_json(read_json_name, formula_list_name, write_file_dir_name_prefix, write_file_name=None, random_ordering=False, verbose=False, f_complete=False, create_sub_map=False):
     with open(read_json_name) as f:
         formulas = json.load(f)
 
@@ -120,7 +137,7 @@ def read_write_json(read_json_name, formula_list_name, write_file_dir_name_prefi
             print("  > Number of formulas: ", len(F_arr))
         else:
             print("  > Running as single custom filename...")
-    create_file(F_arr, write_file_dir_name_prefix, write_file_name, random_ordering, verbose=verbose, f_complete=f_complete)
+    create_file(F_arr, write_file_dir_name_prefix, write_file_name, random_ordering, verbose=verbose, f_complete=f_complete, create_sub_map=create_sub_map)
     return len(F_arr)
 
 if __name__ == "__main__":
@@ -133,6 +150,7 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--complete", action='store_true', default=False, help="DFA is complete (instead of minimal)")
     parser.add_argument("-x", "--use-txt", action='store_true', default=False, help="Use '.txt' interpretation instead of '.json'")
     parser.add_argument("-r", "--random-ordering", action='store_true', default=False, help="Randomly the order of the input formulas")
+    parser.add_argument("--sub-map", action='store_true', default=False, help="Create a submap template")
     args = parser.parse_args()
     if args.formulas:
         print(args.formulas)
@@ -144,7 +162,8 @@ if __name__ == "__main__":
     WRITE_FILE_NAME = args.dfa_filename
     if args.formulas:
         print("Argument formulas: ", args.formulas)
-        create_file(args.formulas, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=False, verbose=True, f_complete=args.complete)
+        print("using submap: ", args.sub_map)
+        create_file(args.formulas, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=False, verbose=True, f_complete=args.complete, create_sub_map=args.sub_map)
     else:
         print("Reading file: ", args.filepath)
         if args.filepath is not None:
@@ -154,6 +173,6 @@ if __name__ == "__main__":
 
         READ_FILE_NAME = args.filepath
         if not args.use_txt:
-            read_write_json(READ_FILE_NAME, args.formula_list, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete)
+            read_write_json(READ_FILE_NAME, args.formula_list, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete, create_sub_map=args.sub_map)
         else: 
             read_write_txt(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete)

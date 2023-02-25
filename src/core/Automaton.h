@@ -18,7 +18,7 @@ namespace FormalMethods {
     template<class T>
     class Automaton : public Graph<T> {
         public:
-            Automaton(bool reversible = true, Graph<std::string>::EdgeToStrFunction edgeToStr = nullptr) 
+            Automaton(bool reversible = true, Graph<T>::EdgeToStrFunction edgeToStr = nullptr) 
                 : Graph<T>(true, reversible, edgeToStr) 
             {}
 
@@ -72,7 +72,7 @@ namespace FormalMethods {
                 return true;
             }
 
-            bool deserialize(const std::string& filepath) {
+            virtual bool deserialize(const std::string& filepath) {
                 YAML::Node data;
                 try {
                     data = YAML::LoadFile(filepath);
