@@ -63,10 +63,13 @@ namespace Planner {
                 }
             }
 
-            void serialize(const std::string& filepath) const {
+            void serialize(const std::string& filepath, const std::string& title = std::string()) const {
                 YAML::Emitter out;
 
                 out << YAML::BeginMap;
+
+                if (!title.empty()) 
+                    out << YAML::Key << "Title" << YAML::Value << title;
 
                 out << YAML::Key << "Action Sequence" << YAML::Value << action_sequence;
                 out << YAML::Key << "State Sequence" << YAML::Value << YAML::BeginSeq;

@@ -32,7 +32,7 @@ class GridWorldAgentVisualizer:
         assert len(split_str) == 2
         return (int(split_str[0].replace('x', '')), int(split_str[1].replace('y', '')))
         
-    def __create_figure(self):
+    def __create_figure(self, show_endpoints = True):
         x_seq = list()
         y_seq = list()
         for s in self.__plan_properties["State Sequence"]:
@@ -41,13 +41,24 @@ class GridWorldAgentVisualizer:
             y_seq.append(s_coord[1])
 
         plt.figure()
+
+        if "Title" in self.__plan_properties:
+            plt.title(self.__plan_properties["Title"])
+
         plt.xticks(range(self.__grid_size[0]))
         plt.yticks(range(self.__grid_size[1]))
         ax = plt.gca()
         ax.set_xticks(np.arange(0.5, self.__grid_size[0] + 0.5, 1), minor=True)
         ax.set_yticks(np.arange(0.5, self.__grid_size[1] + 0.5, 1), minor=True)
         plt.grid(which="minor", ls="-", lw=1)
+
         plt.plot(x_seq, y_seq)
+
+        if show_endpoints:
+            plt.scatter(x_seq[0], y_seq[0], c="r")
+            plt.text(x_seq[0] + 0.1, y_seq[0] + 0.1, "I")
+            plt.scatter(x_seq[-1], y_seq[-1], c="g")
+            plt.text(x_seq[-1] + 0.1, y_seq[-1] + 0.1, "F")
 
     def display(self):
         plt.show()
