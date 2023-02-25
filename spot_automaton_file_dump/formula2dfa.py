@@ -39,7 +39,7 @@ def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose
         else:
             A = spot.formula(F).translate("BA","deterministic","sbacc")
         bdict = A.get_dict()	
-        file_dict["Alphabet"] = [str(ap) for ap in A.ap()]
+        file_dict["Atomic Propositions"] = [str(ap) for ap in A.ap()]
         file_dict["Initial States"] = [A.get_init_state_number()]
         file_dict["Connections"] = dict()
         file_dict["Labels"] = dict()

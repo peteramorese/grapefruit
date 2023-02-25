@@ -13,9 +13,14 @@ namespace FormalMethods {
     using SubstitutionCost = uint32_t;
 
     struct PartialSatisfactionEdge {
-        PartialSatisfactionEdge(const std::string& label_, SubstitutionCost substitution_cost_ = SubstitutionCost{}) : label(label_), substitution_cost(substitution_cost_) {}
-        std::string label;
+        PartialSatisfactionEdge() = default;
+        PartialSatisfactionEdge(const std::string& observation_, SubstitutionCost substitution_cost_ = SubstitutionCost{}) : observation(observation_), substitution_cost(substitution_cost_) {}
+        Observation observation = Observation{};
         SubstitutionCost substitution_cost = SubstitutionCost{};
+
+        operator Observation&() {return observation;}
+        operator const Observation&() const {return observation;}
+        operator Observation&&() {return std::move(observation);}
     };
 
     using LetterSubstitutionMap = std::map<std::string, std::pair<std::string, SubstitutionCost>>;
@@ -30,7 +35,7 @@ namespace FormalMethods {
                     const std::vector<PartialSatisfactionEdge>& outgoing_edges = getOutgoingEdges(src);
                     for (const auto& curr_edge : outgoing_edges) {
                         // Do not connect if there is already
-                        if (curr_edge.label == edge.label) return false;
+                        if (curr_edge.observation == edge.observation) return false;
                     }
                 }
                 Graph<PartialSatisfactionEdge>::connect(src, dst, edge);
@@ -42,7 +47,7 @@ namespace FormalMethods {
                 try {
                     data = YAML::LoadFile(dfa_filepath);
 
-                    m_alphabet = data["Alphabet"].as<Alphabet>();
+                    m_atomic_propositions = data["Alphabet"].as<Alphabet>();
                     m_init_states = data["Initial States"].as<StateSet>();
                     m_accepting_states = data["Accepting States"].as<StateSet>();
 
@@ -52,6 +57,7 @@ namespace FormalMethods {
                         for (uint32_t i = 0; i <destinations.size(); ++i) {
                             const std::string& label = labels[src][i];
                             Node dst = destinations[i];
+                            m_alphabet.insert(label);
                             connect(src, dst, PartialSatisfactionEdge(label));
                         }
                     }
@@ -76,13 +82,14 @@ namespace FormalMethods {
                         std::vector<Node> children = getChildren(src_node);
                         std::vector<PartialSatisfactionEdge> edges = getOutgoingEdges(src_node);
                         for (uint32_t i=0; i<children.size(); ++i) {
-                            const auto it = sub_map.find(edges[i].label);
+                            const auto it = sub_map.find(edges[i].observation);
                             if (it != sub_map.end()) {
                                 m_alphabet.insert(it->second.first);
                                 connect(src_node, children[i], PartialSatisfactionEdge(it->second.first, it->second.second));
                             }
                         }
                     }
+
                 } catch (YAML::ParserException e) {
                     ERROR("Failed to load file" << sub_map_filepath << " ("<< e.what() <<")");
                 }
@@ -107,7 +114,7 @@ namespace FormalMethods {
                 for (const auto& list : m_graph) {
                     for (uint32_t i=0; i < list.forward.size(); ++i) {
                         if (i == 0) PRINT_NAMED("State " << node, "is connected to:");
-                        PRINT_NAMED("    - child state " << list.forward.nodes[i], "with observation: " << list.forward.edges[i].label << " and cost: " << list.forward.edges[i].substitution_cost);
+                        PRINT_NAMED("    - child state " << list.forward.nodes[i], "with observation: " << list.forward.edges[i].observation << " and cost: " << list.forward.edges[i].substitution_cost);
                     }
                     node++;
                 }

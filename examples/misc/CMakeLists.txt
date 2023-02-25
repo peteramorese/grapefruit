@@ -2,5 +2,5 @@ add_executable(TypeGenericArrayExample TypeGenericArrayExample.cpp)
 target_link_libraries(TypeGenericArrayExample PUBLIC
 )
 target_include_directories(TypeGenericArrayExample PUBLIC
-	${TP_INCLUDE_DIRS}
+	${TP_LIBRARY_DIR}
 )

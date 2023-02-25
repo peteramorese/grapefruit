@@ -9,7 +9,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_subdirectory(dependencies/yaml-cpp)
 
 set(YAML_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/dependencies/yaml-cpp)
-set(TP_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src)
+set(TP_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/library)
 
 add_subdirectory(library)
-add_subdirectory(examples)
+
+#add_subdirectory(examples)
+add_subdirectory(src)

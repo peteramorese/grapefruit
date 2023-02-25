@@ -89,6 +89,7 @@ namespace GraphSearch {
         }
         static_assert(COST_VECTOR_T::size() == 2, "BOA can only use two objectives");
 
+        LOG("b4 search");
         // Instantiate return value (search graph and non-dominated cost map are allocated, but not used for this algorithm)
         MultiObjectiveSearchResult<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T> result(false, false);
 
@@ -124,15 +125,18 @@ namespace GraphSearch {
 
 
         while (!open_set.empty()) {
+            LOG("in while");
             auto[curr_enum_node, inserted_g_score, inserted_f_score] = open_set.top();
             GraphNode curr_node = path_enum_node_map.getNode(curr_enum_node);
             open_set.pop(); 
+            LOG("af 1");
             
             // If the insertion-time g-score does not match the optimal g-score, ignore it
             bool g_2_min_contains = g_2_min.contains(curr_node);
             g_2_min.find(curr_node)->second;
             if ((g_2_min_contains && !((inserted_g_score.template get<1>()) < g_2_min.find(curr_node)->second)) || (g_2_min_goal_set && !((inserted_f_score.template get<1>()) < g_2_min_goal))) continue;
 
+            LOG("af 2");
             if (g_2_min_contains) {
                 g_2_min.find(curr_node)->second = inserted_g_score.template get<1>();
             } else {
@@ -155,10 +159,13 @@ namespace GraphSearch {
                 }
                 continue;
             }
+            LOG("af 3");
             
             // If neighbors() and outgoingEdges() return a persistent const reference, do not copy, otherwise do copy
             typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighbors)(SEARCH_PROBLEM_T, GraphNode)>::type neighbors = problem.neighbors(curr_node);
+            LOG("af 4");
             typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighborEdges)(SEARCH_PROBLEM_T, GraphNode)>::type to_neighbor_edges = problem.neighborEdges(curr_node);
+            LOG("af 5");
             ASSERT(neighbors.size() == to_neighbor_edges.size(), "Number of neighbors does not match the number of outgoing edges");
 
             for (uint32_t i = 0; i < neighbors.size(); ++i) {

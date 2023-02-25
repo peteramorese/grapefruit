@@ -216,8 +216,11 @@ namespace DiscreteModel {
                 const auto& automaton_children = automaton->getChildren(unwrapped_nodes[automaton_ind]);
                 const auto& automaton_outgoing_edges = automaton->getOutgoingEdges(unwrapped_nodes[automaton_ind]);
 
+                //LOG("working automaton " << automaton_ind);
                 for (uint32_t i=0; i<automaton_children.size(); ++i) {
-                    if (m_model->observe(sp, automaton_outgoing_edges[i])) {
+                    //LOG("observing edge: " << static_cast<const FormalMethods::Observation&>(automaton_outgoing_edges[i]));
+                    if (m_model->observe(sp, static_cast<const FormalMethods::Observation&>(automaton_outgoing_edges[i]))) {
+                        //LOG(" found!");
                         perm.addOption(automaton_ind - 1, i);
                         transition_enabled = true;
                     }

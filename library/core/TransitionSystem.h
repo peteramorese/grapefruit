@@ -75,14 +75,14 @@ namespace DiscreteModel {
 			virtual ~TransitionSystem() {};
 
 			// Parses observation and evaluates it according to state
-		 	bool parseAndObserve(const State& state, const std::string& observation) const;
+		 	bool parseAndObserve(const State& state, const FormalMethods::Observation& observation) const;
 
 			// Evalues observation based on pre-parsed labels
-		 	inline bool observe(const State& state, const std::string& observation) const {return m_observation_container.observe(m_node_container[state], observation);}
-		 	inline bool observe(Node node, const std::string& observation) const {return m_observation_container.observe(node, observation);}
+		 	inline bool observe(const State& state, const FormalMethods::Observation& observation) const {return m_observation_container.observe(m_node_container[state], observation);}
+		 	inline bool observe(Node node, const FormalMethods::Observation& observation) const {return m_observation_container.observe(node, observation);}
 			
 			// TODO: Checks if the observation is in the alphabet, if not parse and observe. Cache the observation in observation container if cache is true
-			bool smartObserve(Node node, const std::string& observation, bool cache = false);
+			bool smartObserve(Node node, const FormalMethods::Observation& observation, bool cache = false);
 
 			void addAlphabet(const FormalMethods::Alphabet& alphabet);
 

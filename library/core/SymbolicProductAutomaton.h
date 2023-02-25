@@ -18,9 +18,8 @@ namespace DiscreteModel {
     Specialize the product edge inerhitor for your purpose
 
     Specialization container must include:
-    1. template class parameters for the model and automaton
-    2. the custom edge type under the alias 'type'
-    3. the static method 'type inherit(const MODEL_T::edge_t& model_edge, const std::vector<typename AUTOMATON_T::edge_t>& automaton_edges)'
+    1. the custom edge type under the alias 'type'
+    2. the static method 'type inherit(const MODEL_T::edge_t& model_edge, const std::vector<typename AUTOMATON_T::edge_t>& automaton_edges)'
 
     Common used examples can be found below
     */
@@ -35,15 +34,15 @@ namespace DiscreteModel {
             MODEL_T::edge_t model_edge; 
             Containers::SizedArray<typename AUTOMATON_T::edge_t> automaton_edge;
             
-            // Cost conversion operators
-            operator cost_t&() {return static_cast<cost_t&>(model_edge);}
-            operator const cost_t&() const {return static_cast<const cost_t&>(model_edge);}
-            operator cost_t&&() {return static_cast<cost_t&&>(std::move(model_edge));}
+            //// Cost conversion operators
+            //operator cost_t&() {return static_cast<cost_t&>(model_edge);}
+            //operator const cost_t&() const {return static_cast<const cost_t&>(model_edge);}
+            //operator cost_t&&() {return static_cast<cost_t&&>(std::move(model_edge));}
 
-            // Action conversion operators
-            operator action_t&() {return static_cast<action_t&>(model_edge);}
-            operator const action_t&() const {return static_cast<const action_t&>(model_edge);}
-            operator action_t&&() {return static_cast<action_t&&>(std::move(model_edge));}
+            //// Action conversion operators
+            //operator action_t&() {return static_cast<action_t&>(model_edge);}
+            //operator const action_t&() const {return static_cast<const action_t&>(model_edge);}
+            //operator action_t&&() {return static_cast<action_t&&>(std::move(model_edge));}
         };
         typedef CombinedEdge type;
 
@@ -69,24 +68,8 @@ namespace DiscreteModel {
             return model_edge;
         }
 
-        //static inline cost_t toCost(const type& inherited_edge) {
-        //    return inherited_edge.toCost();
-        //}
-
-        //static inline cost_t&& toCost(type&& inherited_edge) {
-        //    return inherited_edge.toCost();
-        //}
     };
-
-    //template <class MODEL_T, class AUTOMATON_T>
-    //struct AutomataEdgeInheritor {
-    //    // Full combined edge type: (model_edge_t, (automaton_edge_1, ...))
-    //    typedef std::vector<typename AUTOMATON_T::edge_t> type;
-
-    //    static inline type inherit(const MODEL_T::edge_t& model_edge, Containers::SizedArray<typename AUTOMATON_T::edge_t>&& automaton_edges) {
-    //        return automaton_edges;
-    //    }
-    //};
+    
 
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR = ModelEdgeInheritor<MODEL_T, AUTOMATON_T>>
     class SymbolicProductAutomaton {

@@ -4,5 +4,5 @@ target_link_libraries(DeterministicTaskPlanner PUBLIC
     TransitionSystem
 )
 target_include_directories(DeterministicTaskPlanner PUBLIC
-    ${TP_INCLUDE_DIRS}
+    ${TP_LIBRARY_DIR}
 )

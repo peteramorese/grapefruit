@@ -11,9 +11,11 @@
 namespace TP {
 namespace FormalMethods {
 
-    typedef std::unordered_set<std::string> Alphabet;
+    using Observation = std::string;
 
-    typedef std::set<Node> StateSet;
+    using Alphabet = std::unordered_set<std::string>;
+
+    using StateSet = std::set<Node>;
 
     template<class T>
     class Automaton : public Graph<T> {
@@ -37,7 +39,7 @@ namespace FormalMethods {
 
             inline void setAlphabet(const Alphabet& alphabet) {m_alphabet = alphabet;}
             inline const Alphabet& getAlphabet() const {return m_alphabet;}
-            inline bool inAlphabet(const std::string& letter) const {return m_alphabet.contains(letter);}
+            inline bool inAlphabet(const Observation& obs) const {return m_alphabet.contains(obs);}
 
             void setAtomicPropositions(const std::vector<std::string>& aps) {
                 for (auto ap : aps) 
@@ -55,20 +57,20 @@ namespace FormalMethods {
     };
 
 
-    class DFA : public Automaton<std::string> {
+    class DFA : public Automaton<Observation> {
         public:
             DFA(bool reversible = true) 
-                : Automaton<std::string>(reversible) {}
+                : Automaton<Observation>(reversible) {}
 
-            virtual bool connect(Node src, Node dst, const std::string& edge) override {
+            virtual bool connect(Node src, Node dst, const Observation& edge) override {
                 if (src < size()) {
-                    const std::vector<std::string>& outgoing_edges = getOutgoingEdges(src);
+                    const std::vector<Observation>& outgoing_edges = getOutgoingEdges(src);
                     for (const auto& label : outgoing_edges) {
                         // Do not connect if there is already
                         if (label == edge) return false;
                     }
                 }
-                Graph<std::string>::connect(src, dst, edge);
+                Graph<Observation>::connect(src, dst, edge);
                 return true;
             }
 
@@ -77,17 +79,18 @@ namespace FormalMethods {
                 try {
                     data = YAML::LoadFile(filepath);
 
-                    m_alphabet = data["Alphabet"].as<Alphabet>();
+                    m_atomic_propositions = data["Atomic Propositions"].as<Alphabet>();
                     m_init_states = data["Initial States"].as<StateSet>();
                     m_accepting_states = data["Accepting States"].as<StateSet>();
 
                     std::map<uint32_t, std::vector<uint32_t>> connections = data["Connections"].as<std::map<uint32_t, std::vector<uint32_t>>>();
-                    std::map<uint32_t, std::vector<std::string>> labels = data["Labels"].as<std::map<uint32_t, std::vector<std::string>>>();
+                    std::map<uint32_t, std::vector<Observation>> observations = data["Labels"].as<std::map<uint32_t, std::vector<Observation>>>();
                     for (auto[src, destinations] : connections) {
                         for (uint32_t i = 0; i <destinations.size(); ++i) {
-                            const std::string& label = labels[src][i];
+                            const Observation& observation = observations[src][i];
                             Node dst = destinations[i];
-                            connect(src, dst, label);
+                            m_alphabet.insert(observation);
+                            connect(src, dst, observation);
                         }
                     }
                 } catch (YAML::ParserException e) {

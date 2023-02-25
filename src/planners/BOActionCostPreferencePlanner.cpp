@@ -35,6 +35,7 @@ int main() {
 
 	/////////////////   DFAs   /////////////////
 
+	// Formula: F(obj_0_loc_L2 & F obj_1_L1) 
 	std::shared_ptr<FormalMethods::DFA> dfa_1 = std::make_shared<FormalMethods::DFA>();
 	dfa_1->setAcceptingStates({0});
 	dfa_1->setInitStates({2});
@@ -50,6 +51,7 @@ int main() {
 	dfa_1->print();
 	//const auto& automaton_children = automaton->getChildren(unwrapped_nodes[automaton_ind]);
 
+	// Formula: F(obj_1_loc_L1)
 	std::shared_ptr<FormalMethods::DFA> dfa_2 = std::make_shared<FormalMethods::DFA>();
 	dfa_2->setAcceptingStates({0});
 	dfa_2->setInitStates({1});

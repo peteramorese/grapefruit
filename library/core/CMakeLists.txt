@@ -4,7 +4,7 @@ target_link_libraries(StateSpace PUBLIC
     State
 )
 target_include_directories(StateSpace PUBLIC
-    ${TP_INCLUDE_DIRS}
+    ${TP_LIBRARY_DIR}
 )
 
 add_library(State State.cpp)
@@ -12,7 +12,7 @@ target_link_libraries(State PUBLIC
     StateSpace
 )
 target_include_directories(State PUBLIC
-    ${TP_INCLUDE_DIRS}
+    ${TP_LIBRARY_DIR}
 )
 
 add_library(Condition Condition.cpp)
@@ -21,7 +21,7 @@ target_link_libraries(Condition PUBLIC
     StateSpace
 )
 target_include_directories(Condition PUBLIC
-    ${TP_INCLUDE_DIRS}
+    ${TP_LIBRARY_DIR}
 )
 
 add_library(TransitionSystem TransitionSystem.cpp)
@@ -31,5 +31,5 @@ target_link_libraries(TransitionSystem PUBLIC
     Condition
 )
 target_include_directories(TransitionSystem PUBLIC
-    ${TP_INCLUDE_DIRS}
+    ${TP_LIBRARY_DIR}
 )

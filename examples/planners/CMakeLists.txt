@@ -8,7 +8,7 @@ target_link_libraries(DeterministicTaskPlannerExample PUBLIC
 	Manipulator
 )
 target_include_directories(DeterministicTaskPlannerExample PUBLIC
-	${TP_INCLUDE_DIRS}
+	${TP_LIBRARY_DIR}
 )
 
 add_executable(BOPreferencePlannerExample BOPreferencePlannerExample.cpp)
@@ -21,5 +21,5 @@ target_link_libraries(BOPreferencePlannerExample PUBLIC
 	
 )
 target_include_directories(BOPreferencePlannerExample PUBLIC
-	${TP_INCLUDE_DIRS}
+	${TP_LIBRARY_DIR}
 )

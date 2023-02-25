@@ -6,8 +6,10 @@
 #include "core/StateSpace.h"
 #include "core/State.h"
 #include "core/TransitionSystem.h"
-#include "core/Automaton.h"
 #include "core/SymbolicProductAutomaton.h"
+
+#include "theory/PartialSatisfactionAutomaton.h"
+#include "theory/PartialSatisfactionAutomatonEdgeInheritor.h"
 
 #include "planners/BOPreferencePlanner.h"
 #include "planners/PreferenceCostObjectivePlugins.h"
@@ -30,58 +32,50 @@ int main() {
 	std::shared_ptr<DiscreteModel::TransitionSystem> ts = DiscreteModel::GridWorldAgent::generate(ts_props);
 
 	ts->print();
-	//NEW_LINE;
-	//ts->listPropositions();
+	NEW_LINE;
+	ts->listPropositions();
+	NEW_LINE;
 
 	/////////////////   DFAs   /////////////////
 
-	std::shared_ptr<FormalMethods::DFA> dfa_1 = std::make_shared<FormalMethods::DFA>();
-	dfa_1->setAcceptingStates({0});
-	dfa_1->setInitStates({2});
-	dfa_1->setAlphabet({"!x_5_y_0", "x_5_y_0 & !x_4_y_9", "x_5_y_0 & x_4_y_9", "!x_4_y_9", "x_4_y_9", "1"});
-	dfa_1->connect(0, 0, "1");
-	dfa_1->connect(1, 0, "x_4_y_9");
-	dfa_1->connect(1, 1, "!x_4_y_9");
-	dfa_1->connect(2, 1, "x_5_y_0 & !x_4_y_9");
-	dfa_1->connect(2, 0, "x_5_y_0 & x_4_y_9");
-	dfa_1->connect(2, 2, "!x_5_y_0");
-
-	NEW_LINE;
+	std::shared_ptr<FormalMethods::PartialSatisfactionDFA> dfa_1 = std::make_shared<FormalMethods::PartialSatisfactionDFA>();
+	dfa_1->deserialize("dfas/dfa_0.yaml", "dfas/sub_map_0.yaml");
 	dfa_1->print();
-	//const auto& automaton_children = automaton->getChildren(unwrapped_nodes[automaton_ind]);
 
-	std::shared_ptr<FormalMethods::DFA> dfa_2 = std::make_shared<FormalMethods::DFA>();
-	dfa_2->setAcceptingStates({0});
-	dfa_2->setInitStates({1});
-	dfa_2->setAlphabet({"!x_3_y_2", "x_3_y_2", "1"});
-	dfa_2->connect(0, 0, "1");
-	dfa_2->connect(1, 0, "x_3_y_2");
-	dfa_2->connect(1, 1, "!x_3_y_2");
-
-	NEW_LINE;
+	std::shared_ptr<FormalMethods::PartialSatisfactionDFA> dfa_2 = std::make_shared<FormalMethods::PartialSatisfactionDFA>();
+	dfa_2->deserialize("dfas/dfa_1.yaml", "dfas/sub_map_1.yaml");
 	dfa_2->print();
 
-	std::vector<std::shared_ptr<FormalMethods::DFA>> dfas = {dfa_1, dfa_2};
+	std::vector<std::shared_ptr<FormalMethods::PartialSatisfactionDFA>> dfas = {dfa_1, dfa_2};
 
 	FormalMethods::Alphabet combined_alphbet = dfa_1->getAlphabet() + dfa_2->getAlphabet();
-	//for (const auto& letter : combined_alphbet) LOG("letter: " << letter);
+
+	for (const auto& obs : combined_alphbet) LOG("obs: " << obs);
+
 	ts->addAlphabet(combined_alphbet);
+	
 
 
 	/////////////////   Planner   /////////////////
 
-	using EdgeInheritor = DiscreteModel::ModelEdgeInheritor<DiscreteModel::TransitionSystem, FormalMethods::DFA>;
-	using SymbolicGraph = DiscreteModel::SymbolicProductAutomaton<DiscreteModel::TransitionSystem, FormalMethods::DFA, EdgeInheritor>;
+	using EdgeInheritor = DiscreteModel::PartialSatisfactionAutomataEdgeInheritor<DiscreteModel::TransitionSystem>;
+	using SymbolicGraph = DiscreteModel::SymbolicProductAutomaton<DiscreteModel::TransitionSystem, FormalMethods::PartialSatisfactionDFA, EdgeInheritor>;
 
 	BOPreferencePlanner<
 		EdgeInheritor, 
-		FormalMethods::DFA,
+		FormalMethods::PartialSatisfactionDFA,
 		CostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>, 
-		SumDelayPreferenceCostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>
+		WeightedSumPreferenceCostObjective<SymbolicGraph, FormalMethods::SubstitutionCost>
 	> planner(ts, dfas);
 
 	DiscreteModel::State init_state = ts->getGenericNodeContainer()[0];
 
+	// Set the partial satisfaction weights
+	std::vector<FormalMethods::SubstitutionCost> weights = {1, 5};
+
+	WeightedSumPreferenceCostObjective<SymbolicGraph, FormalMethods::SubstitutionCost>::setWeights(weights);
+
+	// Plan
 	LOG("Planning...");
 	auto plan_set = planner.plan(init_state);
 	LOG("Finished.");

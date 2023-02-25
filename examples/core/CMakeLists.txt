@@ -2,7 +2,7 @@ add_executable(GraphExample GraphExample.cpp)
 target_link_libraries(GraphExample PUBLIC
 )
 target_include_directories(GraphExample PUBLIC
-	${TP_INCLUDE_DIRS}
+	${TP_LIBRARY_DIR}
 	#${SPOT_INCLUDE_DIRS}
 )
 
@@ -11,7 +11,7 @@ target_link_libraries(AutomatonExample PUBLIC
 	yaml-cpp
 )
 target_include_directories(AutomatonExample PUBLIC
-	${TP_INCLUDE_DIRS}
+	${TP_LIBRARY_DIR}
 	#${SPOT_INCLUDE_DIRS}
 )
 
@@ -20,7 +20,7 @@ target_link_libraries(YAMLExample PUBLIC
 	yaml-cpp
 )
 target_include_directories(YAMLExample PUBLIC
-	${TP_INCLUDE_DIRS}
+	${TP_LIBRARY_DIR}
 	${YAML_INCLUDE_DIRS}
 )
 
@@ -31,7 +31,7 @@ target_link_libraries(StateExample PUBLIC
 	yaml-cpp
 )
 target_include_directories(StateExample PUBLIC
-	${TP_INCLUDE_DIRS}
+	${TP_LIBRARY_DIR}
 	${YAML_INCLUDE_DIRS}
 )
 
@@ -41,7 +41,7 @@ target_link_libraries(StateSpaceExample PUBLIC
 	yaml-cpp
 )
 target_include_directories(StateSpaceExample PUBLIC
-	${TP_INCLUDE_DIRS}
+	${TP_LIBRARY_DIR}
 	${YAML_INCLUDE_DIRS}
 )
 
@@ -52,7 +52,7 @@ target_link_libraries(ConditionExample PUBLIC
 	Condition
 )
 target_include_directories(ConditionExample PUBLIC
-	${TP_INCLUDE_DIRS}
+	${TP_LIBRARY_DIR}
 	${YAML_INCLUDE_DIRS}
 )
 
@@ -64,7 +64,7 @@ target_link_libraries(TransitionSystemExample PUBLIC
 	TransitionSystem
 )
 target_include_directories(TransitionSystemExample PUBLIC
-	${TP_INCLUDE_DIRS}
+	${TP_LIBRARY_DIR}
 	${YAML_INCLUDE_DIRS}
 )
 
@@ -77,6 +77,6 @@ target_link_libraries(SymbolicProductAutomatonExample PUBLIC
 	Manipulator
 )
 target_include_directories(SymbolicProductAutomatonExample PUBLIC
-	${TP_INCLUDE_DIRS}
+	${TP_LIBRARY_DIR}
 	${YAML_INCLUDE_DIRS}
 )
