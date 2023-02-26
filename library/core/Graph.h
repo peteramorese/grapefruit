@@ -100,6 +100,15 @@ class Graph {
 			return true;
 		}
 
+		virtual bool disconnect(NATIVE_NODE_T src, NATIVE_NODE_T dst) {
+			ASSERT(src < size() && dst < size(), "Disconnection nodes not found");
+			bool found = m_graph[src].forward.disconnect(dst);
+			if (!found) return false;
+			found = m_graph[dst].backward.disconnect(src);
+			ASSERT(found, "Disconnection found in forward, but not backward");
+			return true;
+		}
+
 		virtual bool disconnect(NATIVE_NODE_T src, NATIVE_NODE_T dst, const EDGE_T& edge) {
 			ASSERT(src < size() && dst < size(), "Disconnection nodes not found");
 			bool found = m_graph[src].forward.disconnect(dst, edge);
@@ -170,6 +179,21 @@ class Graph {
 			constexpr void emplaceConnect(NATIVE_NODE_T dst_node, Args&& ... args) {
 				edges.emplace_back(std::forward<Args>(args)...);
 				nodes.push_back(dst_node);
+			}
+			bool disconnect(NATIVE_NODE_T dst_node) {
+				bool found = false;
+				auto e_it = edges.begin();
+				for (auto n_it = nodes.begin(); n_it != nodes.end();) {
+					if (*n_it == dst_node) {
+						nodes.erase(n_it);
+						edges.erase(e_it);
+						found = true;
+					} else {
+						n_it++;
+						e_it++;
+					}
+				}
+				return found;
 			}
 			bool disconnect(NATIVE_NODE_T dst_node, const EDGE_T& edge) {
 				bool found = false;

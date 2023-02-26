@@ -10,7 +10,6 @@ namespace Planner {
             sym_graph,
             {},
             {} // Empty goal node set
-            //&DiscreteModel::TransitionSystemLabel::getCost
         )
     {
         Containers::SizedArray<Node> init_aut_nodes(sym_graph->rank() - 1);

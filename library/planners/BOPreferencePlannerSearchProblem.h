@@ -86,7 +86,7 @@ namespace Planner {
             CostVector hScore(const ProdNode& node) const {return heuristic.operator()(node);}
 
             // Member variables
-            std::vector<WideNode> initial_node_set;
+            std::set<WideNode> initial_node_set;
             HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
         public:

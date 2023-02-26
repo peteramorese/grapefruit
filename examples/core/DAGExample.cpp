@@ -16,7 +16,11 @@ int main() {
     LOG("Connected 1 to 3?: " << ((graph.connect(1, 3, 1)) ? "yes" : "no"));
     LOG("Connected 3 to 4?: " << ((graph.connect(3, 4, 1)) ? "yes" : "no"));
     LOG("Connected 4 to 2?: " << ((graph.connect(4, 2, 1)) ? "yes" : "no"));
+    LOG("Connected 2 to 5?: " << ((graph.connect(2, 5, 1)) ? "yes" : "no"));
 
+    graph.print();
+    LOG("Removing dead leaves starting at 4");
+    graph.removeDeadLeaves(4);
     graph.print();
 	return 0;
 }

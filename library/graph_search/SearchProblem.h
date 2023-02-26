@@ -116,14 +116,14 @@ namespace GraphSearch {
             COST_T hScore(const EXPLICIT_GRAPH_T::node_t& node) const {return heuristic.operator()(node);}
 
             // Member variables
-            std::vector<typename EXPLICIT_GRAPH_T::node_t> initial_node_set;
+            std::set<typename EXPLICIT_GRAPH_T::node_t> initial_node_set;
             HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
         public:
             //typedef COST_T(*edgeToCostFunction)(const EXPLICIT_GRAPH_T::edge_t&);
 
             //QuantitativeGraphSearchProblem(const std::shared_ptr<EXPLICIT_GRAPH_T>& graph, const std::vector<typename EXPLICIT_GRAPH_T::node_t>& initial_node_set_, const std::set<typename EXPLICIT_GRAPH_T::node_t>& goal_node_set, edgeToCostFunction edgeToCost) 
-            QuantitativeGraphSearchProblem(const std::shared_ptr<EXPLICIT_GRAPH_T>& graph, const std::vector<typename EXPLICIT_GRAPH_T::node_t>& initial_node_set_, const std::set<typename EXPLICIT_GRAPH_T::node_t>& goal_node_set) 
+            QuantitativeGraphSearchProblem(const std::shared_ptr<EXPLICIT_GRAPH_T>& graph, const std::set<typename EXPLICIT_GRAPH_T::node_t>& initial_node_set_, const std::set<typename EXPLICIT_GRAPH_T::node_t>& goal_node_set) 
                 : initial_node_set(initial_node_set_) 
                 , m_graph(graph)
                 , m_goal_node_set(goal_node_set)
@@ -152,7 +152,10 @@ namespace GraphSearch {
     template <class NODE_T, class EDGE_STORAGE_T, class COST_T>
     struct PathSolution {
         PathSolution() = default;
-        PathSolution(PathSolution&& other) : node_path(std::move(other.node_path)), edge_path(std::move(other.edge_path)), path_cost(std::move(other.path_cost)) {}
+        PathSolution(PathSolution&& other) 
+            : node_path(std::move(other.node_path)), edge_path(std::move(other.edge_path)), path_cost(std::move(other.path_cost)) {}
+        PathSolution(std::vector<NODE_T>&& node_path_, std::vector<EDGE_STORAGE_T>&& edge_path_, const COST_T& path_cost_) 
+            : node_path(std::move(node_path_)), edge_path(std::move(edge_path_)), path_cost(path_cost_) {}
         std::vector<NODE_T> node_path;
         std::vector<EDGE_STORAGE_T> edge_path;
         COST_T path_cost = COST_T{};

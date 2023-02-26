@@ -124,13 +124,13 @@ namespace GraphSearch {
             COST_VECTOR_T hScore(const Node& node) const {return heuristic.operator()(node);}
 
             // Member variables
-            std::vector<Node> initial_node_set;
+            std::set<Node> initial_node_set;
             HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
         public:
             typedef COST_VECTOR_T(*edgeToCostVectorFunction)(const edge_t&);
 
-            MOQuantitativeGraphSearchProblem(const std::shared_ptr<EXPLICIT_GRAPH_T>& graph, const std::vector<Node> initial_node_set_, const std::set<Node>& goal_node_set, edgeToCostVectorFunction edgeToCostVector) 
+            MOQuantitativeGraphSearchProblem(const std::shared_ptr<EXPLICIT_GRAPH_T>& graph, const std::set<Node> initial_node_set_, const std::set<Node>& goal_node_set, edgeToCostVectorFunction edgeToCostVector) 
                 : initial_node_set(initial_node_set_) 
                 , m_graph(graph)
                 , m_goal_node_set(goal_node_set)
@@ -147,9 +147,22 @@ namespace GraphSearch {
 
     // Multi-Objective tools
 
+    template <class CV_STORAGE_T, class EDGE_STORAGE_T>
+    struct SearchGraphEdge {
+        SearchGraphEdge(const CV_STORAGE_T& cv_, const EDGE_STORAGE_T& edge_) : cv(cv_), edge(edge_) {}
+        SearchGraphEdge(const CV_STORAGE_T& cv_, EDGE_STORAGE_T&& edge_) : cv(cv_), edge(std::move(edge_)) {}
+        //SearchGraphEdge(const SearchGraphEdge&) = default;
+        //SearchGraphEdge(SearchGraphEdge&&) = default;
+        
+        // Comaprison only uses cv since the cost makes an edge unique (the edge is just tied for ease of extracting a plan)
+        bool operator==(const SearchGraphEdge& other) const {return cv == other.cv;}
 
-    template <class EDGE_STORAGE_T, typename NATIVE_NODE_T>
-    using SearchGraph = DirectedAcyclicGraph<EDGE_STORAGE_T, NATIVE_NODE_T>;
+        CV_STORAGE_T cv;
+        EDGE_STORAGE_T edge;
+    };
+
+    template <class SG_EDGE_T, typename NATIVE_NODE_T>
+    using SearchGraph = DirectedAcyclicGraph<SG_EDGE_T, NATIVE_NODE_T>;
 
     template <class COST_VECTOR_T>
     struct NonDominatedCostMap {
@@ -209,7 +222,7 @@ namespace GraphSearch {
     struct MultiObjectiveSearchResult {
         public:
             MultiObjectiveSearchResult(bool retain_search_graph = true, bool retain_non_dominated_cost_map = true)
-                : search_graph(std::make_shared<SearchGraph<const COST_VECTOR_T*, NODE_T>>())
+                : search_graph(std::make_shared<SearchGraph<SearchGraphEdge<const COST_VECTOR_T*, EDGE_STORAGE_T>, NODE_T>>())
                 , non_dominated_cost_map(std::make_shared<NonDominatedCostMap<COST_VECTOR_T>>()) 
                 , m_retain_search_graph(retain_search_graph)
                 , m_retain_non_dominated_cost_map(retain_non_dominated_cost_map)
@@ -217,7 +230,7 @@ namespace GraphSearch {
 
             bool success = false;
             std::vector<PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>> solution_set;
-            std::shared_ptr<SearchGraph<const COST_VECTOR_T*, NODE_T>> search_graph;
+            std::shared_ptr<SearchGraph<SearchGraphEdge<const COST_VECTOR_T*, EDGE_STORAGE_T>, NODE_T>> search_graph;
             std::shared_ptr<NonDominatedCostMap<COST_VECTOR_T>> non_dominated_cost_map;
 
             void package() { // Free the memory of the search tree and min cost map if the user desires

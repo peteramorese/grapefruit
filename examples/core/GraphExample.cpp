@@ -29,11 +29,13 @@ int main() {
     graph.print();
     graph.printReverse();
 
-    LOG("Diconnecting all edges from 1 that have cost less than 3.0f");
+    const auto& children = graph.getChildren(1); // demonstrate pointer stability
+    LOG("Diconnecting all edges from 1 that have cost less than 3.0f (size before: " << children.size() << ")");
     auto disconnect_if = [](Node dst, const Edge& edge) -> bool {
         return edge.cost < 3.0f;
     };
     graph.disconnectIf(1, disconnect_if);
+    LOG("(size after: " << children.size() << ")");
     graph.print();
     graph.printReverse();
 	return 0;

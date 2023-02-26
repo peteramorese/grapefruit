@@ -34,11 +34,22 @@ namespace GraphSearch {
             typedef SEARCH_PROBLEM_T::edge_t edge_t;
             typedef SEARCH_PROBLEM_T::cost_t cost_t;
 
+        private:
+            using CostMapItem = typename NonDominatedCostMap<COST_VECTOR_T>::Item;
+            struct GSetEntry {
+                GSetEntry(GSetEntry&&) = default;
+                GSetEntry(GraphNode node_, const CostMapItem* g_score_) 
+                    : node(node_), g_score(g_score_) {}
+                bool operator==(const GSetEntry& other) const {return node == other.node && g_score == other.g_score;}
+                const CostMapItem* g_score;
+                GraphNode node;
+            };
+
         public:
             static MultiObjectiveSearchResult<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T> search(const SEARCH_PROBLEM_T& problem);
 
         private:
-            //static void extractPath(const NODE_T& goal_node, MultiObjectiveSearchResult<NODE_T, EDGE_STORAGE_T, COST_T>& result);
+            static void extractPaths(std::vector<GSetEntry> goal_set, MultiObjectiveSearchResult<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>& result, const SEARCH_PROBLEM_T& problem);
     };
 
 }

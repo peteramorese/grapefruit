@@ -38,15 +38,6 @@ namespace GraphSearch {
         MultiObjectiveSearchResult<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T> result(true, true);
 
         // Open set
-        using CostMapItem = typename NonDominatedCostMap<COST_VECTOR_T>::Item;
-        struct GSetEntry {
-            GSetEntry(GSetEntry&&) = default;
-            GSetEntry(GraphNode node_, const CostMapItem* g_score_) 
-                : node(node_), g_score(g_score_) {}
-            bool operator==(const GSetEntry& other) const {return node == other.node && g_score == other.g_score;}
-            const CostMapItem* g_score;
-            GraphNode node;
-        };
         struct OpenSetElement {
             OpenSetElement() = delete;
             
@@ -70,7 +61,7 @@ namespace GraphSearch {
         std::set<OpenSetElement> open_set;
 
         // Parent map is represented as an acyclic graph
-        SearchGraph<const COST_VECTOR_T*, GraphNode>& parent_graph = *(result.search_graph);
+        SearchGraph<SearchGraphEdge<const COST_VECTOR_T*, EDGE_STORAGE_T>, GraphNode>& parent_graph = *(result.search_graph);
 
         // G-score container
         NonDominatedCostMap<COST_VECTOR_T>& G_set = *(result.non_dominated_cost_map);
@@ -106,8 +97,6 @@ namespace GraphSearch {
                     }
                 }
                 result.success = true;
-                result.solution_set.push_back(PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>{});
-                result.solution_set.back().path_cost = curr_g_score->cv;
                 continue;
             }
             
@@ -144,8 +133,8 @@ namespace GraphSearch {
                     // Signal when element is pruned
                     auto onErase = [&](const CostMapItem& item) {
                         // Remove edges from the search graph
-                        auto disconnectEdge = [&item](GraphNode dst, const COST_VECTOR_T* edge) {
-                            return edge == &item.cv; 
+                        auto disconnectEdge = [&item](GraphNode dst, const SearchGraphEdge<const COST_VECTOR_T*, EDGE_STORAGE_T>& edge) {
+                            return edge.cv == &item.cv; 
                         };
                         parent_graph.disconnectIf(neighbor, disconnectEdge);
 
@@ -175,7 +164,7 @@ namespace GraphSearch {
 
                 open_set.emplace(neighbor, g_score_item, std::move(tentative_h_score));
 
-                parent_graph.connect(curr_node, neighbor, &(g_score_item->cv));
+                parent_graph.connect(curr_node, neighbor, SearchGraphEdge<const COST_VECTOR_T*, EDGE_STORAGE_T>(&(g_score_item->cv), std::move(to_neighbor_edge)));
                     
             }
         }
@@ -184,6 +173,52 @@ namespace GraphSearch {
         result.package();
         return result;
     };
+
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T, class OBJECTIVE_NORM_T>
+    void NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T, OBJECTIVE_NORM_T>::extractPaths(std::vector<GSetEntry> goal_set, MultiObjectiveSearchResult<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>& result, const SEARCH_PROBLEM_T& problem) {
+
+        // Copy the search graph so that edges can be removed
+        SearchGraph<SearchGraphEdge<const COST_VECTOR_T*, EDGE_STORAGE_T>, GraphNode> graph_copy = *result.search_graph;
+
+        // While there are remaining goal nodes
+        while (!goal_set.empty()) {
+            auto[g_score, goal_node] = goal_set.back();
+            goal_set.pop_back();
+
+            // Assign the solution cost
+            std::vector<GraphNode> node_path;
+            std::vector<EDGE_STORAGE_T> edge_path;
+
+            // Search graph is reversed, so traverse backwards
+            GraphNode parent = goal_node;
+            GraphNode child = goal_node;
+            const std::vector<GraphNode>* children = &graph_copy.getChildren(parent);
+            while (!children->empty()) {
+                child = (*children)[0];
+                node_path.push_back(child);
+                edge_path.push_back(graph_copy.getChildren(parent)[0].edge);
+
+                if (children.size() > 1) { // More than one child, branch exists, need to prune
+                    graph_copy.disconnect(parent, child);
+                }
+
+                // If the child is a leaf, terminate
+                if (graph_copy.getChildren(child).empty()) break;
+
+                // Otherwise set parent to child and continue
+                parent = child;
+                children = &graph_copy.getChildren(parent);
+            } 
+
+            if (problem.initial_node_set.contains(child)) {
+                std::reverse(node_path.begin(), node_path.end());
+                std::reverse(edge_path.begin(), edge_path.end());
+                result.solution_set.emplace_back(std::move(node_path), std::move(edge_path), g_score->cv);
+            } else {
+                graph_copy.dis
+            }
+        }
+    }
 
     //template <class NODE_T, class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
     //void AStar<NODE_T, EDGE_T, COST_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const NODE_T& goal_node, SingleObjectiveSearchResult<NODE_T, EDGE_STORAGE_T, COST_T>& result) {
@@ -203,8 +238,6 @@ namespace GraphSearch {
 
     //        found_it = result.search_tree->find(curr_node);
     //    }
-    //    std::reverse(result.node_path.begin(), result.node_path.end());
-    //    std::reverse(result.edge_path.begin(), result.edge_path.end());
     //}
 }
 }

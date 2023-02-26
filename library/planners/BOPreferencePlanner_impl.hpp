@@ -14,9 +14,7 @@ namespace Planner {
     template <class EDGE_INHERITOR, class AUTOMATON_T, class OBJ_1_T, class OBJ_2_T>
     BOPreferencePlanner<EDGE_INHERITOR, AUTOMATON_T, OBJ_1_T, OBJ_2_T>::BOPreferencePlanner(const std::shared_ptr<TransitionSystem>& ts, const std::vector<std::shared_ptr<AUTOMATON_T>>& automata) 
         : m_sym_graph(std::make_shared<SymbolicProductGraph>(ts, automata))
-    {
-
-    }
+    {}
 
 
     template <class EDGE_INHERITOR, class AUTOMATON_T, class OBJ_1_T, class OBJ_2_T>

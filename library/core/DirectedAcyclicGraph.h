@@ -38,6 +38,30 @@ class DirectedAcyclicGraph : public Graph<EDGE_T, NATIVE_NODE_T> {
             this->Graph<EDGE_T, NATIVE_NODE_T>::connect(src, dst, edge);
             return true;
         }
+
+        void removeDeadLeaves(NATIVE_NODE_T dead_leaf) {
+            ASSERT(this->m_reversible, "Cannot remove dead leaves on irreversible graphs");
+
+            std::vector<NATIVE_NODE_T> dead_leaf_stack = {dead_leaf};
+            while (!dead_leaf_stack.empty()) {
+                
+                // Child is dead leaf
+                NATIVE_NODE_T curr_dead_leaf = dead_leaf_stack.back();
+                dead_leaf_stack.pop_back();
+
+                for (auto par : this->getParents(curr_dead_leaf)) {
+
+                    // If the parent is only leads to the dead leaf, it itself is dead
+                    if (this->getChildren(par).size() == 1) {
+                        dead_leaf_stack.push_back(par);
+                    }
+
+                    // Disconnect the dead leaf from the search graph
+                    this->disconnect(par, curr_dead_leaf);
+                }
+            }
+        }
+
     private:
         struct CacheEntry {
             bool empty = true;
