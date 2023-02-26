@@ -15,6 +15,7 @@ namespace FormalMethods {
     struct PartialSatisfactionEdge {
         PartialSatisfactionEdge() = default;
         PartialSatisfactionEdge(const std::string& observation_, SubstitutionCost substitution_cost_ = SubstitutionCost{}) : observation(observation_), substitution_cost(substitution_cost_) {}
+        bool operator==(const PartialSatisfactionEdge& other) const {return observation == other.observation && substitution_cost == other.substitution_cost;}
         Observation observation = Observation{};
         SubstitutionCost substitution_cost = SubstitutionCost{};
 

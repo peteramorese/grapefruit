@@ -6,7 +6,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include "core/Graph.h"
+#include "core/DirectedAcyclicGraph.h"
 #include "graph_search/SearchProblem.h"
 
 #define TP_COST_VECTOR_EQUIVALENCE_TOLERANCE 0.0000000001
@@ -90,7 +90,7 @@ namespace GraphSearch {
         COST_VECTOR_T operator()(const NODE_T& node) const {return COST_VECTOR_T{};}
     };
 
-    template <class EXPLICIT_GRAPH_T, class COST_T, class COST_VECTOR_T, SearchDirection SEARCH_DIRECTION, class HEURISTIC_T = MOZeroHeuristic<Node, COST_VECTOR_T>>
+    template <class EXPLICIT_GRAPH_T, class COST_VECTOR_T, SearchDirection SEARCH_DIRECTION, class HEURISTIC_T = MOZeroHeuristic<Node, COST_VECTOR_T>>
     struct MOQuantitativeGraphSearchProblem {
         public: // Dependent types required by any search problem
 
@@ -148,41 +148,68 @@ namespace GraphSearch {
     // Multi-Objective tools
 
 
-    template <class EDGE_STORAGE_T>
-    using SearchGraph = Graph<EDGE_STORAGE_T>;
+    template <class EDGE_STORAGE_T, typename NATIVE_NODE_T>
+    using SearchGraph = DirectedAcyclicGraph<EDGE_STORAGE_T, NATIVE_NODE_T>;
 
     template <class COST_VECTOR_T>
     struct NonDominatedCostMap {
         public:
-            class OrderedCostSet {
+            struct Item {
+                Item(COST_VECTOR_T&& cv_, bool in_open_) : cv(std::move(cv_)), in_open(in_open_) {}
+                COST_VECTOR_T cv;
+                mutable bool in_open;
+            };
+        public:
+            class CostSet {
                 public:
-                    OrderedCostSet() = default;
-                    inline void eraseDominated(const COST_VECTOR_T& cost_vector) {
+                    CostSet() = default;
+
+                    // Erase all elements in the set that are dominated by v (call a signal onErase before erasing the element)
+                    template <typename LAM>
+                    inline void eraseDominated(const COST_VECTOR_T& v, LAM onErase) {
                         for (auto it = m_set.begin(); it != m_set.end();) {
-                            if (cost_vector.dominates(it->first)) {
+                            if (v.dominates(it->cv) == Containers::ArrayComparison::Dominates) {
+                                onErase(*it);
                                 m_set.erase(it++);
                             } else {
                                 ++it;
                             }
                         }
                     }
-                    inline void addToOpen(const COST_VECTOR_T& v) {m_set[v] = true;}
-                    inline void addToClosed(const COST_VECTOR_T& v) {m_set[v] = false;}
-                    inline void moveToClosed(const COST_VECTOR_T& v) {m_set[v] = false;}
-                    inline bool contains(const COST_VECTOR_T& v) const {return m_set.contains(v);}
+                    inline const Item* addToOpen(COST_VECTOR_T&& v) {return &m_set.emplace_back(std::move(v), true);}
+                    inline const Item* addToClosed(COST_VECTOR_T&& v) {return &m_set.emplace_back(std::move(v), false);}
+                    static inline void moveToClosed(const Item* item) {item->in_open = false;}
+                    static inline void moveToOpen(const Item* item) {item->in_open = true;}
+                    static inline bool isOpen(const Item* item) {return item->in_open;}
+                    
+                    // Checks if any element in the set dominates v
+                    inline Containers::ArrayComparison dominates(const COST_VECTOR_T& v) const {
+                        for (const auto&[cv, in_open] : m_set) {
+                            auto result = cv.dominates(v);
+                            if (result == Containers::ArrayComparison::Dominates) {
+                                // The set dominates v
+                                return Containers::ArrayComparison::Dominates;
+                            } else if (result == Containers::ArrayComparison::Equal) {
+                                return Containers::ArrayComparison::Equal;
+                            }
+                        }
+                        return Containers::ArrayComparison::DoesNotDominate;
+                    }
+
                 private:
-                    std::map<COST_VECTOR_T, bool> m_set;
+                    // List is used for pointer stability
+                    std::list<Item> m_set;
             };
 
         public:
-            std::map<Node, OrderedCostSet> cost_map;
+            std::map<Node, CostSet> cost_map;
     };
 
     template <class NODE_T, class EDGE_STORAGE_T, class COST_VECTOR_T>
     struct MultiObjectiveSearchResult {
         public:
             MultiObjectiveSearchResult(bool retain_search_graph = true, bool retain_non_dominated_cost_map = true)
-                : search_graph(std::make_shared<SearchGraph<EDGE_STORAGE_T>>(true, true))
+                : search_graph(std::make_shared<SearchGraph<const COST_VECTOR_T*, NODE_T>>())
                 , non_dominated_cost_map(std::make_shared<NonDominatedCostMap<COST_VECTOR_T>>()) 
                 , m_retain_search_graph(retain_search_graph)
                 , m_retain_non_dominated_cost_map(retain_non_dominated_cost_map)
@@ -190,7 +217,7 @@ namespace GraphSearch {
 
             bool success = false;
             std::vector<PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>> solution_set;
-            std::shared_ptr<SearchGraph<EDGE_STORAGE_T>> search_graph;
+            std::shared_ptr<SearchGraph<const COST_VECTOR_T*, NODE_T>> search_graph;
             std::shared_ptr<NonDominatedCostMap<COST_VECTOR_T>> non_dominated_cost_map;
 
             void package() { // Free the memory of the search tree and min cost map if the user desires

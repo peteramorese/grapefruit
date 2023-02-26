@@ -21,6 +21,15 @@ void printTGA(const std::string& name, const T& tga) {
     PRINT_NAMED(name, stream.str());
 }
 
+std::string getACstr(ArrayComparison ac) {
+    switch (ac) {
+        case ArrayComparison::Equal: return "equal";
+        case ArrayComparison::Dominates: return "equal";
+        case ArrayComparison::DoesNotDominate: return "equal";
+    }
+    return "err";
+}
+
 int main() {
     TypeGenericArray<double, int, float> A(0.0, 1, 3.0f);
     TypeGenericArray<double, int, float> B(0.0, 1, 3.0f);
@@ -29,6 +38,7 @@ int main() {
     TypeGenericArray<double, int, float> E(0.9, 2, 3.3f);
     TypeGenericArray<double, int, float> F(0.9, 1, 3.4f);
     TypeGenericArray<double, int, float> Zero;
+
 
     // Iterate thru each element
     printTGA("Zero", Zero);
@@ -50,8 +60,9 @@ int main() {
     PRINT_NAMED("E lexicographicLess D", std::boolalpha << E.lexicographicLess(D));
     PRINT_NAMED("E lexicographicGreater F", std::boolalpha << E.lexicographicGreater(F));
 
-    PRINT_NAMED("D dominates F", std::boolalpha << D.dominates(F));
-    PRINT_NAMED("A dominates E", std::boolalpha << A.dominates(E));
+    PRINT_NAMED("D dominates F", getACstr(D.dominates(F)));
+    PRINT_NAMED("A dominates E", getACstr(A.dominates(E)));
+    PRINT_NAMED("A dominates B", getACstr(A.dominates(B)));
 
     return 0;
 }

@@ -129,6 +129,12 @@ namespace Containers {
     template <std::size_t M, class T>
     static FixedArray<M, T> operator+(const FixedArray<M, T>& lhs, const FixedArray<M, T>& rhs);
 
+    enum class ArrayComparison {
+        Dominates,
+        DoesNotDominate,
+        Equal
+    };
+
     // Method signature is made to match TypeGenericArray (except compare)
     template<std::size_t M, class T>
     struct FixedArray {
@@ -183,16 +189,17 @@ namespace Containers {
             }
 
             // 'Dominates' operator
-            bool dominates(const FixedArray& other) const {
+            ArrayComparison dominates(const FixedArray& other) const {
                 bool equal = true;
                 for (std::size_t i=0; i < M; ++i) {
                     if (values[i] > other.values[i]) {
-                        return false;
+                        return ArrayComparison::DoesNotDominate;
                     } else {
                         if (equal && values[i] < other.values[i]) equal = false;
                     }
                 }
-                return !equal;
+                if (equal) return ArrayComparison::Equal;
+                return ArrayComparison::Dominates;
             }
 
             // Lexicographic less than
@@ -318,7 +325,7 @@ namespace Containers {
             }
 
             // 'Dominates' operator
-            bool dominates(const TypeGenericArray& other) const {
+            ArrayComparison dominates(const TypeGenericArray& other) const {
                 bool equal = true;
                 auto dominates_ = [&other, &equal]<typename T, uint32_t I>(const T& element) {
                     if (other.template get<I>() < element) {
@@ -330,7 +337,11 @@ namespace Containers {
                     // Continue
                     return true;
                 };
-                return (_forEachWithI_c<0>(dominates_)) ? !equal : false;
+                if (_forEachWithI_c<0>(dominates_)) {
+                    if (equal) return ArrayComparison::Equal;
+                    return ArrayComparison::Dominates;
+                } 
+                return ArrayComparison::DoesNotDominate;
             }
 
             // Lexicographic less than

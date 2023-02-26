@@ -25,3 +25,10 @@ target_link_libraries(BOAStarExample PUBLIC
 target_include_directories(BOAStarExample PUBLIC
 	${TP_LIBRARY_DIR}
 )
+
+add_executable(MODijkstraExample MODijkstraExample.cpp)
+target_link_libraries(MODijkstraExample PUBLIC
+)
+target_include_directories(MODijkstraExample PUBLIC
+	${TP_LIBRARY_DIR}
+)

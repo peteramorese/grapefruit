@@ -30,6 +30,7 @@ namespace Planner {
             struct CostVectorActionEdge {
                 CostVectorActionEdge() = delete;
                 CostVectorActionEdge(OBJ_1_T&& obj_1, OBJ_2_T&& obj_2, graph_t::edge_t::action_t&& action_) : cv(std::move(obj_1), std::move(obj_2)), action(action_) {}
+                bool operator==(const CostVectorActionEdge& other) const {return cv == other.cv && action == other.action;}
                 CostVector cv;
                 action_t action;
 

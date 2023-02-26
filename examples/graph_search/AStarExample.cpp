@@ -17,6 +17,7 @@ struct Edge {
     Edge() = delete;
 
     Edge(uint32_t cost_, char edge_action_) : cost(cost_), edge_action(edge_action_) {}
+    bool operator==(const Edge& other) const {return cost == other.cost && edge_action == other.edge_action;}
     uint32_t cost = 0;
     char edge_action = '\0';
 

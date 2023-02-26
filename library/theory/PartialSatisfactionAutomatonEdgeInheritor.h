@@ -23,6 +23,7 @@ namespace DiscreteModel {
 
             public:
                 CombinedEdge(uint32_t size) : automaton_cost(size) {}
+                //bool operator==(const CombinedEdge& other) const {return action == other.action && model_cost == other.model_cost && automaton_cost == other.automaton_cost;}
                 // Action conversion operators
                 operator action_t&() {return action;}
                 operator const action_t&() const {return action;}

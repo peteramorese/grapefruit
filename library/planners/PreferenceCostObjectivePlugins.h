@@ -15,7 +15,8 @@ namespace Planner {
 
     // Simple cumulative action cost
     template<class SYMBOLIC_GRAPH_T, class COLLAPSED_COST_T> 
-    struct CostObjective {
+    struct CostObjective : public PreferenceCostObjective<COLLAPSED_COST_T> {
+
         CostObjective() = default;
         CostObjective(const CostObjective&) = default;
         CostObjective(CostObjective&&) = default;
@@ -25,17 +26,18 @@ namespace Planner {
 
         COLLAPSED_COST_T cost = COLLAPSED_COST_T{};
 
-        bool operator<(const CostObjective& other) const {return cost < other.cost;}
+        bool operator<(const CostObjective& other) const {return (other > REQ_TOLERANCE) ? cost < other.cost - REQ_TOLERANCE : false;}
+        bool operator==(const CostObjective& other) const {return diff(cost, other.cost) < REQ_TOLERANCE;}
         void operator+=(const CostObjective& other) {cost += other.cost;}
         void operator=(const CostObjective& other) {cost = other.cost;}
 
-        operator COLLAPSED_COST_T() {return cost;}
-        operator const COLLAPSED_COST_T&() const {return cost;}
+        operator COLLAPSED_COST_T() const {return cost;}
     };
 
     // Minimize the sum of the delay such that the tasks are completed 'more' in order
     template <class SYMBOLIC_GRAPH_T, class COLLAPSED_COST_T>
     struct SumDelayPreferenceCostObjective : public PreferenceCostSet<COLLAPSED_COST_T> {
+
         SumDelayPreferenceCostObjective() 
             : PreferenceCostSet<COLLAPSED_COST_T>()  {}
         SumDelayPreferenceCostObjective(const SumDelayPreferenceCostObjective&) = default;

@@ -6,6 +6,14 @@ target_include_directories(GraphExample PUBLIC
 	#${SPOT_INCLUDE_DIRS}
 )
 
+add_executable(DAGExample DAGExample.cpp)
+target_link_libraries(DAGExample PUBLIC
+)
+target_include_directories(DAGExample PUBLIC
+	${TP_LIBRARY_DIR}
+	#${SPOT_INCLUDE_DIRS}
+)
+
 add_executable(AutomatonExample AutomatonExample.cpp)
 target_link_libraries(AutomatonExample PUBLIC
 	yaml-cpp

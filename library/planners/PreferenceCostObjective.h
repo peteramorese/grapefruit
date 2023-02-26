@@ -1,13 +1,21 @@
 #pragma once
 
 #include "tools/Containers.h"
+#include "tools/Misc.h"
+
+#define REQ_TOLERANCE 0.000000000000001
 
 namespace TP {
 namespace Planner {
 
+    template <typename COLLAPSED_COST_T>
+    struct PreferenceCostObjective {
+        typedef COLLAPSED_COST_T collapsed_cost_t;
+    };
+
     // Collection of inerhited costs for each task
-    template <typename INHERITED_COST_T>
-    struct PreferenceCostSet {
+    template <typename COLLAPSED_COST_T>
+    struct PreferenceCostSet : public PreferenceCostObjective<COLLAPSED_COST_T>{
         protected:
             // Need default constructed value to represent 'zero'
             PreferenceCostSet() : m_pcs(0) {}
@@ -16,15 +24,18 @@ namespace Planner {
 
 
             // For general cases, represents the conversion from the member pcs into the quantitative comparison
-            virtual INHERITED_COST_T preferenceFunction() const = 0;
+            virtual COLLAPSED_COST_T preferenceFunction() const = 0;
+
+            operator COLLAPSED_COST_T() const {return preferenceFunction();}
 
         protected:
-            Containers::SizedArray<INHERITED_COST_T> m_pcs;
+            Containers::SizedArray<COLLAPSED_COST_T> m_pcs;
 
         public:
             // Used for comparing paths during graph search
             inline bool empty() const {return (m_pcs.size() == 0) ? true : false;}
-            bool operator<(const PreferenceCostSet& other) const {return preferenceFunction() < other.preferenceFunction();}
+            bool operator<(const PreferenceCostSet& other) const {return (other.preferenceFunction() > REQ_TOLERANCE) ? preferenceFunction() < other.preferenceFunction() - REQ_TOLERANCE : false;}
+            bool operator==(const PreferenceCostSet& other) const {return diff(preferenceFunction(), other.preferenceFunction()) < REQ_TOLERANCE;}
             void operator+=(const PreferenceCostSet& other) {
                 if (!empty() && !other.empty()) {
                     for (uint32_t i=0; i<m_pcs.size(); ++i) m_pcs[i] += other.m_pcs[i];
@@ -34,12 +45,12 @@ namespace Planner {
             }
             void operator=(const PreferenceCostSet& other) {m_pcs = other.m_pcs;}
 
-            //friend PreferenceCostSet operator+<INHERITED_COST_T>(const PreferenceCostSet& lhs, const PreferenceCostSet& rhs);
+            //friend PreferenceCostSet operator+<COLLAPSED_COST_T>(const PreferenceCostSet& lhs, const PreferenceCostSet& rhs);
     };
 
     //// Sized Array non-member operators
-    //template <typename INHERITED_COST_T>
-    //static PreferenceCostSet<INHERITED_COST_T> operator+(const PreferenceCostSet<INHERITED_COST_T>& lhs, const PreferenceCostSet<INHERITED_COST_T>& rhs) {
+    //template <typename COLLAPSED_COST_T>
+    //static PreferenceCostSet<COLLAPSED_COST_T> operator+(const PreferenceCostSet<COLLAPSED_COST_T>& lhs, const PreferenceCostSet<COLLAPSED_COST_T>& rhs) {
     //    if (!lhs.empty() && !rhs.empty()) {
     //        return lhs + rhs;
     //    } else if (lhs.empty()) {
@@ -60,18 +71,18 @@ namespace Planner {
     
     Here is an example of an objective that uses a PCS:
 
-    template <class SYMBOLIC_GRAPH_T, class INHERITED_COST_T>
-    struct ExamplePreferenceCostObjective : public PreferenceCostSet<INHERITED_COST_T> {
+    template <class SYMBOLIC_GRAPH_T, class COLLAPSED_COST_T>
+    struct ExamplePreferenceCostObjective : public PreferenceCostSet<COLLAPSED_COST_T> {
 
         // The constructor converts from node and edge to the difference pcs
         ExamplePreferenceCostObjective(const SYMBOLIC_GRAPH_T& sym_graph, const SYMBOLIC_GRAPH_T::node_t& node, SYMBOLIC_GRAPH_T::edge_t&& edge) 
-            : PreferenceCostSet<INHERITED_COST_T>(sym_graph.rank() - 1) 
+            : PreferenceCostSet<COLLAPSED_COST_T>(sym_graph.rank() - 1) 
         {
             ...
         }
 
         // Convert
-        virtual INHERITED_COST_T preferenceFunction() const override {
+        virtual COLLAPSED_COST_T preferenceFunction() const override {
             ...
         }
     };

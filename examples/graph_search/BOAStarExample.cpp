@@ -14,6 +14,7 @@ using namespace TP::GraphSearch;
 struct Edge {
     // Edge does not need to be default constructable
     Edge() = delete;
+    bool operator==(const Edge& other) const {return cv == other.cv && edge_action == other.edge_action;}
 
     Edge(uint32_t cost_1, uint32_t cost_2, char edge_action_) : cv({cost_1, cost_2}), edge_action(edge_action_) {}
     Containers::FixedArray<2, uint32_t> cv;
@@ -49,7 +50,7 @@ int main() {
     NEW_LINE;
     LOG("Default Bi-Objective search example");
     {
-    MOQuantitativeGraphSearchProblem<Graph<Edge>, uint32_t, Containers::FixedArray<2, uint32_t>, SearchDirection::Forward, MyHeuristic> astar_problem(graph, {0}, {3}, &Edge::edgeToCostVector);
+    MOQuantitativeGraphSearchProblem<Graph<Edge>, Containers::FixedArray<2, uint32_t>, SearchDirection::Forward, MyHeuristic> astar_problem(graph, {0}, {3}, &Edge::edgeToCostVector);
 
     // Manually insert heuristic values (i.e. integer min number of edges to goal):
     MyHeuristic& heuristic = astar_problem.heuristic;
