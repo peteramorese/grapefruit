@@ -32,6 +32,7 @@ int main() {
 
     graph->connect(0, 1, {6, 1, 'a'});
     graph->connect(0, 2, {2, 1, 'b'});
+    graph->connect(0, 4, {8, 4, 'b'});
     graph->connect(1, 3, {1, 9, 'c'});
     graph->connect(1, 6, {3, 8, 'd'});
     graph->connect(1, 4, {3, 2, 'e'});

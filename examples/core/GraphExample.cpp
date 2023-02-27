@@ -16,10 +16,10 @@ int main() {
  
     Graph<Edge> graph(true, true, &Edge::toStr);
     graph.connect(3, 2, {1.0f, "three to two"});
-    graph.connect(3, 3, {2.5f, "three to three"});
+    graph.connect(3, 3, {1.9f, "three to three"});
     graph.connect(3, 1, {3.4f, "three to one"});
     graph.connect(1, 10, {3.4f, "one to ten"});
-    graph.connect(1, 3, {2.5f, "one to three"});
+    graph.connect(1, 3, {1.5f, "one to three"});
     graph.connect(1, 2, {2.5f, "four to two"});
     graph.print();
     graph.printReverse();
@@ -36,6 +36,12 @@ int main() {
     };
     graph.disconnectIf(1, disconnect_if);
     LOG("(size after: " << children.size() << ")");
+
+    //LOG("Diconnecting all parents from 3 that have cost less than 2.0f ");
+    //auto rdisconnect_if = [](Node src, const Edge& edge) -> bool {
+    //    return edge.cost < 2.0f;
+    //};
+    //graph.rdisconnectIf(3, rdisconnect_if);
     graph.print();
     graph.printReverse();
 	return 0;

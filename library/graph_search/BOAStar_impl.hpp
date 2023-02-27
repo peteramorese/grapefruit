@@ -17,6 +17,8 @@ namespace TP {
 
 namespace GraphSearch {
 
+    
+
     template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
     MultiObjectiveSearchResult<typename SEARCH_PROBLEM_T::node_t, EDGE_STORAGE_T, COST_VECTOR_T> BOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::search(const SEARCH_PROBLEM_T& problem) {
 
@@ -44,7 +46,7 @@ namespace GraphSearch {
         std::priority_queue<OpenSetElement, std::vector<OpenSetElement>, decltype(less)> open_set;
 
         // Enum node map (maps 'nodes' AKA EnumeratedNode to 'states' AKA Node in BOA), includes parent map
-        PathEnumeratedNodeMap path_enum_node_map;
+        PathEnumeratedNodeMap<GraphNode, EnumeratedNode, EDGE_STORAGE_T> path_enum_node_map;
 
         // G-score container (g_2 min cost map for second objective)
         auto deduce_val = (COST_VECTOR_T{}).template get<1>();
@@ -138,7 +140,7 @@ namespace GraphSearch {
     };
 
     template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    void BOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<typename SEARCH_PROBLEM_T::node_t, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap& node_map) {
+    void BOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<typename SEARCH_PROBLEM_T::node_t, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, EDGE_STORAGE_T>& node_map) {
         EnumeratedNode curr_enum_node = goal_node;
         path_solution.node_path.emplace_back(node_map.getNode(curr_enum_node));
 

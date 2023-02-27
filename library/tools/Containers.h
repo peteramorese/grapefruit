@@ -35,6 +35,11 @@ namespace Containers {
             std::list<T>::iterator end() {return m_list.end();}
             std::list<T>::const_iterator begin() const {return m_list.cbegin();}
             std::list<T>::const_iterator end() const {return m_list.cend();}
+
+            friend void swap(RandomAccessList& lhs, RandomAccessList& rhs) {
+                std::swap(lhs.m_list, rhs.m_list);
+                std::swap(lhs.m_access_ptrs, rhs.m_access_ptrs);
+            }
         private:
             std::list<T> m_list;
             std::vector<T*> m_access_ptrs;

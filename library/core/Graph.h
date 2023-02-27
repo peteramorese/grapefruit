@@ -104,8 +104,11 @@ class Graph {
 			ASSERT(src < size() && dst < size(), "Disconnection nodes not found");
 			bool found = m_graph[src].forward.disconnect(dst);
 			if (!found) return false;
-			found = m_graph[dst].backward.disconnect(src);
-			ASSERT(found, "Disconnection found in forward, but not backward");
+
+			if (this->m_reversible) {
+				found = m_graph[dst].backward.disconnect(src);
+				ASSERT(found, "Disconnection found in forward, but not backward");
+			}
 			return true;
 		}
 
@@ -113,8 +116,11 @@ class Graph {
 			ASSERT(src < size() && dst < size(), "Disconnection nodes not found");
 			bool found = m_graph[src].forward.disconnect(dst, edge);
 			if (!found) return false;
-			found = m_graph[dst].backward.disconnect(src, edge);
-			ASSERT(found, "Disconnection found in forward, but not backward");
+
+			if (this->m_reversible) {
+				found = m_graph[dst].backward.disconnect(src, edge);
+				ASSERT(found, "Disconnection found in forward, but not backward");
+			}
 			return true;
 		}
 
@@ -122,10 +128,7 @@ class Graph {
 		void disconnectIf(NATIVE_NODE_T src, LAM removeConnection) {
 			auto removeConnectionWrapper = [&, this](NATIVE_NODE_T dst, const EDGE_T& edge) {
 				bool remove = removeConnection(dst, edge);
-				if (remove) LOG("FOUND ONE TO REMOVE");
-				LOG("HELO");
 				if (m_reversible && remove) {
-					LOG("   backwards disconnecting " << src);
 					m_graph[dst].backward.disconnect(src, edge);
 				}
 				return remove;
@@ -133,33 +136,51 @@ class Graph {
 			m_graph[src].forward.disconnectIf(removeConnectionWrapper);
 		}
 
-		virtual void print() const {
-			if (!m_edgeToStr) { // Allow program to continue even if print function is not provided
-				ERROR("No 'edgeToStr' function provided, cannot print");
-				return;
+		template <typename LAM>
+		void rdisconnectIf(NATIVE_NODE_T dst, LAM removeConnection) {
+			ASSERT(this->m_reversible, "Graph must be reversible to use r methods");
+			auto removeConnectionWrapper = [&, this](NATIVE_NODE_T src, const EDGE_T& edge) {
+				bool remove = removeConnection(src, edge);
+				if (remove) {
+					m_graph[src].forward.disconnect(dst, edge);
+				}
+				return remove;
+			};
+			m_graph[dst].backward.disconnectIf(removeConnectionWrapper);
+		}
+
+		void reverse() {
+			ASSERT(m_reversible, "Cannot reverse a graph that is not reversible");
+			for (auto& adj_list : m_graph) {
+				swap(adj_list.forward, adj_list.backward);
 			}
+		}
+
+		virtual void print() const {
 			LOG("Printing graph (size: " << size() << ")");
 			NATIVE_NODE_T node = 0;
 			for (const auto& list : m_graph) {
 				for (uint32_t i=0; i < list.forward.size(); ++i) {
 					if (i == 0) PRINT_NAMED("Node " << node, "is connected to:");
-					PRINT_NAMED("    - child node " << list.forward.nodes[i], "with edge: " << m_edgeToStr(list.forward.edges[i]));
+					if (m_edgeToStr) 
+						PRINT_NAMED("    - child node " << list.forward.nodes[i], "with edge: " << m_edgeToStr(list.forward.edges[i]));
+					else
+						PRINT_NAMED("    - child node " << list.forward.nodes[i], "(cannot print edge)");
 				}
 				++node;
 			}
 		}
 
 		virtual void printReverse() const {
-			if (!m_edgeToStr) {
-				ERROR("No 'edgeToStr' function provided, cannot print");
-				return;
-			}
 			LOG("Printing reversed graph (size: " << size() << ")");
 			NATIVE_NODE_T node = 0;
 			for (const auto& list : m_graph) {
 				for (uint32_t i=0; i < list.backward.size(); ++i) {
 					if (i == 0) PRINT_NAMED("Node " << node, "is connected to:");
-					PRINT_NAMED("    - parent node " << list.backward.nodes[i], "with edge: " << m_edgeToStr(list.backward.edges[i]));
+					if (m_edgeToStr)
+						PRINT_NAMED("    - parent node " << list.backward.nodes[i], "with edge: " << m_edgeToStr(list.backward.edges[i]));
+					else
+						PRINT_NAMED("    - parent node " << list.backward.nodes[i], "(cannot print edge)");
 				}
 				++node;
 			}
@@ -169,8 +190,6 @@ class Graph {
 	
 	protected:
 		struct AdjacencyList {
-			std::vector<EDGE_T> edges;
-			std::vector<NATIVE_NODE_T> nodes;
 			void pushConnect(NATIVE_NODE_T dst_node, const EDGE_T& edge) {
 				edges.push_back(edge);
 				nodes.push_back(dst_node);
@@ -227,6 +246,14 @@ class Graph {
 				return found;
 			}
 			std::size_t size() const {return edges.size();}
+
+			friend void swap(AdjacencyList& lhs, AdjacencyList& rhs) {
+				std::swap(lhs.nodes, rhs.nodes);
+				std::swap(lhs.edges, rhs.edges);
+			}
+
+			std::vector<NATIVE_NODE_T> nodes;
+			std::vector<EDGE_T> edges;
 		};
 		struct BidirectionalConnectionList {
 			AdjacencyList forward;

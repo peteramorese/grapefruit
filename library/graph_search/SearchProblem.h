@@ -144,6 +144,7 @@ namespace GraphSearch {
     struct Connection {
         Connection() = delete;
         Connection(const NODE_T& node_, const EDGE_STORAGE_T& edge_) : node(node_), edge(edge_) {}
+        Connection(const NODE_T& node_, EDGE_STORAGE_T&& edge_) : node(node_), edge(std::move(edge_)) {}
         Connection(const Connection& other) : node(other.node), edge(other.edge) {}
         NODE_T node;
         EDGE_STORAGE_T edge;

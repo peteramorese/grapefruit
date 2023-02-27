@@ -151,6 +151,7 @@ namespace GraphSearch {
     struct SearchGraphEdge {
         SearchGraphEdge(const CV_STORAGE_T& cv_, const EDGE_STORAGE_T& edge_) : cv(cv_), edge(edge_) {}
         SearchGraphEdge(const CV_STORAGE_T& cv_, EDGE_STORAGE_T&& edge_) : cv(cv_), edge(std::move(edge_)) {}
+        SearchGraphEdge(CV_STORAGE_T&& cv_, EDGE_STORAGE_T&& edge_) : cv(std::move(cv_)), edge(std::move(edge_)) {}
         //SearchGraphEdge(const SearchGraphEdge&) = default;
         //SearchGraphEdge(SearchGraphEdge&&) = default;
         
@@ -169,7 +170,11 @@ namespace GraphSearch {
         public:
             struct Item {
                 Item(COST_VECTOR_T&& cv_, bool in_open_) : cv(std::move(cv_)), in_open(in_open_) {}
+                
+                // Const Item pointer should not change cv
                 COST_VECTOR_T cv;
+
+                // Const Item pointer can edit these properties
                 mutable bool in_open;
             };
         public:
@@ -197,8 +202,8 @@ namespace GraphSearch {
                     
                     // Checks if any element in the set dominates v
                     inline Containers::ArrayComparison dominates(const COST_VECTOR_T& v) const {
-                        for (const auto&[cv, in_open] : m_set) {
-                            auto result = cv.dominates(v);
+                        for (const auto& item : m_set) {
+                            auto result = item.cv.dominates(v);
                             if (result == Containers::ArrayComparison::Dominates) {
                                 // The set dominates v
                                 return Containers::ArrayComparison::Dominates;
@@ -223,10 +228,11 @@ namespace GraphSearch {
         public:
             MultiObjectiveSearchResult(bool retain_search_graph = true, bool retain_non_dominated_cost_map = true)
                 : search_graph(std::make_shared<SearchGraph<SearchGraphEdge<const COST_VECTOR_T*, EDGE_STORAGE_T>, NODE_T>>())
-                , non_dominated_cost_map(std::make_shared<NonDominatedCostMap<COST_VECTOR_T>>()) 
+                , non_dominated_cost_map(std::make_shared<NonDominatedCostMap<COST_VECTOR_T>>())
                 , m_retain_search_graph(retain_search_graph)
                 , m_retain_non_dominated_cost_map(retain_non_dominated_cost_map)
-                {}
+            {
+            }
 
             bool success = false;
             std::vector<PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>> solution_set;
