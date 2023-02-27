@@ -26,7 +26,6 @@ namespace Planner {
             // For general cases, represents the conversion from the member pcs into the quantitative comparison
             virtual COLLAPSED_COST_T preferenceFunction() const = 0;
 
-            operator COLLAPSED_COST_T() const {return preferenceFunction();}
 
         protected:
             Containers::SizedArray<COLLAPSED_COST_T> m_pcs;
@@ -45,6 +44,7 @@ namespace Planner {
             }
             void operator=(const PreferenceCostSet& other) {m_pcs = other.m_pcs;}
 
+            operator COLLAPSED_COST_T() const {return preferenceFunction();}
             //friend PreferenceCostSet operator+<COLLAPSED_COST_T>(const PreferenceCostSet& lhs, const PreferenceCostSet& rhs);
     };
 

@@ -66,8 +66,14 @@ namespace Planner {
         }
     };
 
-    // Minimize the cumulative weighted
-    template <class SYMBOLIC_GRAPH_T, class COLLAPSED_COST_T>
+    
+    enum class CostInheritor {
+        Model,
+        Automata
+    };
+
+    // Minimize the cumulative weighted sum of automata costs
+    template <class SYMBOLIC_GRAPH_T, class COLLAPSED_COST_T, CostInheritor COST_INHERITOR_T = CostInheritor::Automata>
     struct WeightedSumPreferenceCostObjective : public PreferenceCostSet<COLLAPSED_COST_T> {
         public:
             WeightedSumPreferenceCostObjective() 
@@ -83,8 +89,11 @@ namespace Planner {
                     Node automaton_node = unwrapped_node.automata_nodes[i];
                     
                     // Assign the edge cost if the automaton is not accepting
-                    //this->m_pcs[i] = (!automata[i]->isAccepting(automaton_node)) ? COLLAPSED_COST_T{} : COLLAPSED_COST_T{};
-                    this->m_pcs[i] = (!automata[i]->isAccepting(automaton_node)) ? edge.getAutomatonCost()[i] : COLLAPSED_COST_T{};
+                    if constexpr (COST_INHERITOR_T == CostInheritor::Automata) {
+                        this->m_pcs[i] = (!automata[i]->isAccepting(automaton_node)) ? edge.getAutomatonCost()[i] : COLLAPSED_COST_T{};
+                    } else {
+                        this->m_pcs[i] = (!automata[i]->isAccepting(automaton_node)) ? static_cast<COLLAPSED_COST_T>(edge) : COLLAPSED_COST_T{};
+                    }
                 }
             }
 

@@ -64,15 +64,15 @@ int main() {
             LOG("Pareto point " << pt++);
             LOG("   Path length: " << Edge::cvToStr(solution.path_cost));
 
-            //std::string path_str = std::to_string(solution.node_path.front());
-            //auto edge_path_it = solution.edge_path.begin();
-            //for (auto it = ++solution.node_path.begin(); it != solution.node_path.end(); ++it) {
-            //    path_str += " --(";
-            //    path_str.push_back(edge_path_it++->edge_action);
-            //    path_str += ")-> " + std::to_string(*it);
-            //}
+            std::string path_str = std::to_string(solution.node_path.front());
+            auto edge_path_it = solution.edge_path.begin();
+            for (auto it = ++solution.node_path.begin(); it != solution.node_path.end(); ++it) {
+                path_str += " --(";
+                path_str.push_back(edge_path_it++->edge_action);
+                path_str += ")-> " + std::to_string(*it);
+            }
 
-            //LOG("   Path: " << path_str); 
+            LOG("   Path: " << path_str); 
 
         }
     }

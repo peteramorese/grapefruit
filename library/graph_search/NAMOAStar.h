@@ -101,13 +101,10 @@ namespace GraphSearch {
             class OpenSet {
                 public:
                     bool insert(GraphNode node, const CostMapItem* g_score, COST_VECTOR_T&& f_score) {
-                        LOG("inserting node: " << node << " ptr: " << g_score);
-                        print();
                         auto check_it = check_set.find(OpenSetCheckElement(node, g_score));
                         if (check_it == check_set.end()) { // If not found, insert
                             // Insert
                             auto[check_it, check_inserted] = check_set.emplace(node, g_score);
-                            LOG("check inserted: " << check_inserted);
                             auto sorted_it = sorted_set.emplace(node, g_score, std::move(f_score));
 
                             // Tie the check element to the sorted element
@@ -119,7 +116,6 @@ namespace GraphSearch {
                     }
 
                     void erase(GraphNode node, const CostMapItem* g_score) {
-                        LOG("erasing node: " << node << " ptr: " << g_score);
                         auto check_it = check_set.find(OpenSetCheckElement(node, g_score));
                         ASSERT(check_it != check_set.end(), "Element not found in open check set");
 
@@ -128,13 +124,10 @@ namespace GraphSearch {
                     }
 
                     std::pair<GraphNode, const CostMapItem*> pop() {
-                        LOG("b4 pop");
                         auto it = sorted_set.begin();
                         GraphNode node = it->node;
                         const CostMapItem* g_score = it->g_score;
-                        LOG("popping node: " << node << " ptr: " << g_score);
                         erase(node, g_score);
-                        LOG("af pop");
                         return {node, g_score};
                     }
 
@@ -153,12 +146,12 @@ namespace GraphSearch {
                     inline bool empty() const {return sorted_set.empty();}
 
                     // TODO remove
-                    void print() const {
-                        LOG("check set: ");
-                        for (auto it = check_set.begin(); it != check_set.end(); ++it) LOG(" node: " << it->node << " g_score: " << it->g_score);
-                        LOG("sorted set: ");
-                        for (auto item : sorted_set) LOG(" node: " << item.node << " g_score: " << item.g_score);
-                    }
+                    //void print() const {
+                    //    LOG("check set: ");
+                    //    for (auto it = check_set.begin(); it != check_set.end(); ++it) LOG(" node: " << it->node << " g_score: " << it->g_score);
+                    //    LOG("sorted set: ");
+                    //    for (auto item : sorted_set) LOG(" node: " << item.node << " g_score: " << item.g_score);
+                    //}
                 private:
                     std::unordered_set<OpenSetCheckElement, OpenSetCheckElementHash> check_set;
                     std::multiset<OpenSetSortedElement> sorted_set;

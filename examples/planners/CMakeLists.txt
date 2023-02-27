@@ -23,3 +23,16 @@ target_link_libraries(BOPreferencePlannerExample PUBLIC
 target_include_directories(BOPreferencePlannerExample PUBLIC
 	${TP_LIBRARY_DIR}
 )
+
+add_executable(MOPreferencePlannerExample MOPreferencePlannerExample.cpp)
+target_link_libraries(MOPreferencePlannerExample PUBLIC
+	Condition
+	StateSpace
+	State
+	TransitionSystem
+	GridWorldAgent
+	
+)
+target_include_directories(MOPreferencePlannerExample PUBLIC
+	${TP_LIBRARY_DIR}
+)
