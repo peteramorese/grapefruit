@@ -12,6 +12,9 @@
 #include "planners/MOPreferencePlanner.h"
 #include "planners/PreferenceCostObjectivePlugins.h"
 
+#include "theory/PartialSatisfactionAutomaton.h"
+#include "theory/PartialSatisfactionAutomatonEdgeInheritor.h"
+
 #include "models/GridWorldAgent.h"
 
 
@@ -25,64 +28,46 @@ int main() {
 	ts_props.n_x = 10;
 	ts_props.n_y = 10;
 	ts_props.init_coordinate_x = 0;
-	ts_props.init_coordinate_y = 0;
+	ts_props.init_coordinate_y = 1;
 
 	std::shared_ptr<DiscreteModel::TransitionSystem> ts = DiscreteModel::GridWorldAgent::generate(ts_props);
 
 	ts->print();
-	//NEW_LINE;
-	//ts->listPropositions();
 
 	/////////////////   DFAs   /////////////////
 
-	std::shared_ptr<FormalMethods::DFA> dfa_1 = std::make_shared<FormalMethods::DFA>();
-	dfa_1->setAcceptingStates({0});
-	dfa_1->setInitStates({2});
-	dfa_1->setAlphabet({"!x_5_y_0", "x_5_y_0 & !x_4_y_9", "x_5_y_0 & x_4_y_9", "!x_4_y_9", "x_4_y_9", "1"});
-	dfa_1->connect(0, 0, "1");
-	dfa_1->connect(1, 0, "x_4_y_9");
-	dfa_1->connect(1, 1, "!x_4_y_9");
-	dfa_1->connect(2, 1, "x_5_y_0 & !x_4_y_9");
-	dfa_1->connect(2, 0, "x_5_y_0 & x_4_y_9");
-	dfa_1->connect(2, 2, "!x_5_y_0");
-
-	NEW_LINE;
+	std::shared_ptr<FormalMethods::PartialSatisfactionDFA> dfa_1 = std::make_shared<FormalMethods::PartialSatisfactionDFA>();
+	dfa_1->deserialize("dfas/dfa_0.yaml", "dfas/sub_map_0.yaml");
 	dfa_1->print();
-	//const auto& automaton_children = automaton->getChildren(unwrapped_nodes[automaton_ind]);
 
-	std::shared_ptr<FormalMethods::DFA> dfa_2 = std::make_shared<FormalMethods::DFA>();
-	dfa_2->setAcceptingStates({0});
-	dfa_2->setInitStates({1});
-	dfa_2->setAlphabet({"!x_3_y_2", "x_3_y_2", "1"});
-	dfa_2->connect(0, 0, "1");
-	dfa_2->connect(1, 0, "x_3_y_2");
-	dfa_2->connect(1, 1, "!x_3_y_2");
-
-	NEW_LINE;
+	std::shared_ptr<FormalMethods::PartialSatisfactionDFA> dfa_2 = std::make_shared<FormalMethods::PartialSatisfactionDFA>();
+	dfa_2->deserialize("dfas/dfa_1.yaml", "dfas/sub_map_1.yaml");
 	dfa_2->print();
 
-	std::vector<std::shared_ptr<FormalMethods::DFA>> dfas = {dfa_1, dfa_2};
+	std::vector<std::shared_ptr<FormalMethods::PartialSatisfactionDFA>> dfas = {dfa_1, dfa_2};
 
 	FormalMethods::Alphabet combined_alphbet = dfa_1->getAlphabet() + dfa_2->getAlphabet();
-	//for (const auto& letter : combined_alphbet) LOG("letter: " << letter);
+
 	ts->addAlphabet(combined_alphbet);
 
 
 	/////////////////   Planner   /////////////////
 
-	using EdgeInheritor = DiscreteModel::ModelEdgeInheritor<DiscreteModel::TransitionSystem, FormalMethods::DFA>;
-	using SymbolicGraph = DiscreteModel::SymbolicProductAutomaton<DiscreteModel::TransitionSystem, FormalMethods::DFA, EdgeInheritor>;
+	using EdgeInheritor = DiscreteModel::PartialSatisfactionAutomataEdgeInheritor<DiscreteModel::TransitionSystem>;
+	using SymbolicGraph = DiscreteModel::SymbolicProductAutomaton<DiscreteModel::TransitionSystem, FormalMethods::PartialSatisfactionDFA, EdgeInheritor>;
 
 	MOPreferencePlanner<
 		EdgeInheritor, 
-		FormalMethods::DFA,
+		FormalMethods::PartialSatisfactionDFA,
 		CostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>, 
-		SumDelayPreferenceCostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>,
-		WeightedSumPreferenceCostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t, CostInheritor::Model>
+		SumDelayPreferenceCostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>, // Action costs
+		WeightedSumPreferenceCostObjective<SymbolicGraph, FormalMethods::SubstitutionCost> // Automata costs
 	> planner(ts, dfas);
 
 	// Set the weighting
-	WeightedSumPreferenceCostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t, CostInheritor::Model>::setWeights({1.0f, 10.0f});
+	std::vector<FormalMethods::SubstitutionCost> weights = {1,2};
+	ASSERT(weights.size() == dfas.size(), "Number of weights must match number of tasks");
+	WeightedSumPreferenceCostObjective<SymbolicGraph, FormalMethods::SubstitutionCost>::setWeights(weights);
 
 	DiscreteModel::State init_state = DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
 
@@ -98,6 +83,7 @@ int main() {
 			LOG("Plan " << i << " Cost: " << plan.cost.template get<0>().cost << " Sum Delay Cost: " << plan.cost.template get<1>().preferenceFunction() << " Weighted Sum Cost: " << plan.cost.template get<2>().preferenceFunction());
 			plan.print();	
 		}
+		DiscreteModel::GridWorldAgent::serializeConfig(ts_props, "test_grid_world_config.yaml");
 	} else {
 		LOG("Planner failed using init state: " << init_state.to_str());
 	}

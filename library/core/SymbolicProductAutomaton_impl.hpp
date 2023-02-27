@@ -210,6 +210,7 @@ namespace DiscreteModel {
             // Construct a temporary permutation
             typename AugmentedNodePermutationArray::AugmentedNodePermutation perm(rank() - 1);
 
+            LOG("state: " << m_model->getGenericNodeContainer()[sp].to_str());
             ProductRank automaton_ind = 1;
             for (const auto& automaton : m_automata) {
                 bool transition_enabled = false;
@@ -218,9 +219,9 @@ namespace DiscreteModel {
 
                 //LOG("working automaton " << automaton_ind);
                 for (uint32_t i=0; i<automaton_children.size(); ++i) {
-                    //LOG("observing edge: " << static_cast<const FormalMethods::Observation&>(automaton_outgoing_edges[i]));
+                    LOG("observing edge: " << static_cast<const FormalMethods::Observation&>(automaton_outgoing_edges[i]));
                     if (m_model->observe(sp, static_cast<const FormalMethods::Observation&>(automaton_outgoing_edges[i]))) {
-                        //LOG(" found!");
+                        LOG(" found! adding option for child: " << automaton_children[i]);
                         perm.addOption(automaton_ind - 1, i);
                         transition_enabled = true;
                     }

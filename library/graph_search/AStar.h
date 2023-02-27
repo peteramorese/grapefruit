@@ -1,12 +1,5 @@
 #pragma once
 
-#include <queue>
-#include <map>
-#include <memory>
-#include <algorithm>
-#include <type_traits>
-
-#include "tools/Logging.h"
 #include "graph_search/SearchProblem.h"
 
 
