@@ -96,7 +96,7 @@ int main() {
 	{
 	Containers::SizedArray<Node> p_unwrapped(product.rank());
 	// Set transition system node:
-	p_unwrapped[0] = 22;
+	p_unwrapped[0] = 5;
 	
 	// Set automaton nodes:
 	p_unwrapped[1] = 1;

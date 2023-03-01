@@ -7,5 +7,23 @@
     "sub_map": [
         "F(x_2_y_8 & F(x_8_y_1) & F(x_7_y_3))",
         "F(x_5_y_0 & F(x_4_y_9))"
+    ],
+    "zig_zag": [
+        "F(x_1_y_9)",
+        "F(x_2_y_0)",
+        "F(x_3_y_9)",
+        "F(x_4_y_0)",
+        "F(x_5_y_9)",
+        "F(x_6_y_0)",
+        "F(x_7_y_9)",
+        "F(x_8_y_0)",
+        "F(x_9_y_9)"
+    ],
+    "delivery_robot": [
+        "F(grocer & F(p2))",
+        "F(tacos & F(p3) & F(p4))",
+        "F(pizza & F(p1))",
+        "F(cheese & F(tacos) & F(grocer) & F(pizza))",
+        "!pizza U cheese"
     ]
 }

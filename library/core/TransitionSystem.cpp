@@ -45,6 +45,7 @@ namespace DiscreteModel {
     // TransitionSystem
 
     bool TransitionSystem::parseAndObserve(const State& state, const std::string& observation) const {
+
         if (observation == "1") return true;
 
         std::vector<std::string> proposition_stack(1);
@@ -117,7 +118,9 @@ namespace DiscreteModel {
 
     void TransitionSystem::addObservationsToNode(Node node, const FormalMethods::Alphabet& alphabet) {
         for (const auto& observation : alphabet) {
+            //LOG("parsing and observing state: " << m_node_container[node].to_str() << " w obs: " << observation);
             if (parseAndObserve(m_node_container[node], observation)) {
+                //LOG("found!!");
                 m_observation_container.addObservationToNode(node, observation);
             }
         }

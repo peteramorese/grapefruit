@@ -11,7 +11,7 @@ namespace TP {
 namespace DiscreteModel {
 
 	std::pair<bool, StateAccessCapture> _ConditionBase::subEvaluate(const State& state, const SubCondition& cond) const {
-		
+		//LOG("evaluating state: " << state.to_str());
 		StateAccessCapture sac = state.getStateAccessCapture();
 
 		bool eval = false;

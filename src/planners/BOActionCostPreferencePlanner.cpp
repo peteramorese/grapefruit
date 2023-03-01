@@ -14,58 +14,59 @@
 
 #include "models/GridWorldAgent.h"
 
+#include "tools/Misc.h"
+#include "tools/ArgParser.h"
 
 using namespace TP;
 using namespace TP::Planner;
 
-int main() {
+int main(int argc, char* argv[]) {
  
+	ArgParser parser(argc, argv);
+
+	bool verbose = parser.hasFlag('v');
+
+	std::string dfa_directory = parser.parseAsString("dfa-directory", "./dfas");
+	std::string dfa_file_template = parser.parseAsString("dfa-file-template", "dfa_#.yaml");
+
+	std::string config_filepath = parser.parseAsString("config-filepath");
+
+	bool write_plans = parser.hasFlag('w');
+	std::string plan_directory = parser.parseAsString("plan-directory", "./grid_world_plans");
+	std::string plan_file_template = parser.parseAsString("plan-file-template", "plan_#.yaml");
+
+
+	uint32_t n_dfas = parser.parseAsUnsignedInt("n-dfas", 1);
 
 	DiscreteModel::GridWorldAgentProperties ts_props;
-	ts_props.n_x = 10;
-	ts_props.n_y = 10;
-	ts_props.init_coordinate_x = 0;
-	ts_props.init_coordinate_y = 1;
+	if (config_filepath.empty()) {
+		ts_props.n_x = 10;
+		ts_props.n_y = 10;
+		ts_props.init_coordinate_x = 0;
+		ts_props.init_coordinate_y = 0;
+	} else {
+		ts_props = DiscreteModel::GridWorldAgent::deserializeConfig(config_filepath);
+	}
 
 	std::shared_ptr<DiscreteModel::TransitionSystem> ts = DiscreteModel::GridWorldAgent::generate(ts_props);
 
-	ts->print();
-	//NEW_LINE;
-	//ts->listPropositions();
+	//ts->print();
 
 	/////////////////   DFAs   /////////////////
 
-	// Formula: F(obj_0_loc_L2 & F obj_1_L1) 
-	std::shared_ptr<FormalMethods::DFA> dfa_1 = std::make_shared<FormalMethods::DFA>();
-	dfa_1->setAcceptingStates({0});
-	dfa_1->setInitStates({2});
-	dfa_1->setAlphabet({"!x_5_y_0", "x_5_y_0 & !x_4_y_9", "x_5_y_0 & x_4_y_9", "!x_4_y_9", "x_4_y_9", "1"});
-	dfa_1->connect(0, 0, "1");
-	dfa_1->connect(1, 0, "x_4_y_9");
-	dfa_1->connect(1, 1, "!x_4_y_9");
-	dfa_1->connect(2, 1, "x_5_y_0 & !x_4_y_9");
-	dfa_1->connect(2, 0, "x_5_y_0 & x_4_y_9");
-	dfa_1->connect(2, 2, "!x_5_y_0");
+	std::vector<std::shared_ptr<FormalMethods::DFA>> dfas(n_dfas);
 
-	NEW_LINE;
-	dfa_1->print();
-	//const auto& automaton_children = automaton->getChildren(unwrapped_nodes[automaton_ind]);
+	FormalMethods::Alphabet combined_alphbet;
+	for (uint32_t i=0; i<n_dfas; ++i) {
+		dfas[i] = std::make_shared<FormalMethods::DFA>();
+		std::string dfa_filepath = dfa_directory + "/" + templateToLabel(dfa_file_template, i);
+		if (verbose) LOG("Reading in dfa file: " << dfa_filepath);
+		dfas[i]->deserialize(dfa_filepath);
+		combined_alphbet = combined_alphbet + dfas[i]->getAlphabet();
+		dfas[i]->print();
+	}
 
-	// Formula: F(obj_1_loc_L1)
-	std::shared_ptr<FormalMethods::DFA> dfa_2 = std::make_shared<FormalMethods::DFA>();
-	dfa_2->setAcceptingStates({0});
-	dfa_2->setInitStates({1});
-	dfa_2->setAlphabet({"!x_3_y_2", "x_3_y_2", "1"});
-	dfa_2->connect(0, 0, "1");
-	dfa_2->connect(1, 0, "x_3_y_2");
-	dfa_2->connect(1, 1, "!x_3_y_2");
 
-	NEW_LINE;
-	dfa_2->print();
-
-	std::vector<std::shared_ptr<FormalMethods::DFA>> dfas = {dfa_1, dfa_2};
-
-	FormalMethods::Alphabet combined_alphbet = dfa_1->getAlphabet() + dfa_2->getAlphabet();
 	//for (const auto& letter : combined_alphbet) LOG("letter: " << letter);
 	ts->addAlphabet(combined_alphbet);
 
@@ -93,7 +94,12 @@ int main() {
 		uint32_t i = 0;
 		for (const auto& plan : plan_set) {
 			LOG("Plan " << i << " Cost: " << plan.cost.template get<0>().cost << " Preference Cost: " << plan.cost.template get<1>().preferenceFunction());
-			plan.print();	
+			if (verbose) plan.print();	
+			if (write_plans) {
+				std::string plan_filepath = plan_directory + "/" + templateToLabel(plan_file_template, i);
+				plan.serialize(plan_filepath);
+			}
+			++i;
 		}
 	} else {
 		LOG("Planner failed using init state: " << init_state.to_str());

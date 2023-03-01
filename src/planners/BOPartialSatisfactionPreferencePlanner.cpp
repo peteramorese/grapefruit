@@ -28,6 +28,9 @@ int main() {
 	ts_props.n_y = 10;
 	ts_props.init_coordinate_x = 0;
 	ts_props.init_coordinate_y = 1;
+	ts_props.environment.addRegion("water", 3, 3, 5, 5, "blue");
+	ts_props.environment.addRegion("carpet", 6, 0, 8, 2, "orange");
+	DiscreteModel::GridWorldAgent::serializeConfig(ts_props, "test_config.yaml");
 
 	std::shared_ptr<DiscreteModel::TransitionSystem> ts = DiscreteModel::GridWorldAgent::generate(ts_props);
 

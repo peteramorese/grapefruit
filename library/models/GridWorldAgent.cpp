@@ -12,6 +12,8 @@ namespace DiscreteModel {
         ASSERT(model_props.init_coordinate_x < model_props.n_x, "Init x coordinate (" << model_props.init_coordinate_x << ") exceeds the x-grid-dimension");
         ASSERT(model_props.init_coordinate_y < model_props.n_y, "Init y coordinate (" << model_props.init_coordinate_y << ") exceeds the y-grid-dimension");
 
+        bool standard_propositions = model_props.environment.empty();
+
 
         /////////////////   State Space   /////////////////
 
@@ -97,17 +99,31 @@ namespace DiscreteModel {
                     }
                 }
 
-                Condition ap;
-                ap.addCondition(ConditionArg::Label, s_x_coord_label, ConditionOperator::Equals, ConditionArg::Variable, x_labels[i]);
-                ap.addCondition(ConditionArg::Label, s_y_coord_label, ConditionOperator::Equals, ConditionArg::Variable, y_labels[j]);
-                ap.setName(templateToLabel(model_props.coord_label_template, i, j));
+                if (standard_propositions) {
+                    Condition ap;
+                    ap.addCondition(ConditionArg::Label, s_x_coord_label, ConditionOperator::Equals, ConditionArg::Variable, x_labels[i]);
+                    ap.addCondition(ConditionArg::Label, s_y_coord_label, ConditionOperator::Equals, ConditionArg::Variable, y_labels[j]);
+                    ap.setName(templateToLabel(model_props.coord_label_template, i, j));
 
-                ts->addProposition(ap);
+                    ts->addProposition(ap);
+                }
             }
         }
 
+        if (!standard_propositions) {
+            for (const auto& region : model_props.environment.regions) {
+                for (uint32_t i = region.lower_left_x; i < region.upper_right_x; ++i) {
+                    for (uint32_t j = region.lower_left_y; j < region.upper_right_y; ++j) {
+                        Condition ap;
+                        ap.addCondition(ConditionArg::Label, s_x_coord_label, ConditionOperator::Equals, ConditionArg::Variable, x_labels[i]);
+                        ap.addCondition(ConditionArg::Label, s_y_coord_label, ConditionOperator::Equals, ConditionArg::Variable, y_labels[j]);
+                        ap.setName(region.label);
 
-
+                        ts->addProposition(ap);
+                    }
+                }
+            }
+        }
 
         return ts;
     }
@@ -149,9 +165,116 @@ namespace DiscreteModel {
         out << YAML::Key << "Grid X" << YAML::Value << model_props.n_x;
         out << YAML::Key << "Grid Y" << YAML::Value << model_props.n_y;
 
+        out << YAML::Key << "Init X Coord" << YAML::Value << model_props.init_coordinate_x;
+        out << YAML::Key << "Init Y Coord" << YAML::Value << model_props.init_coordinate_y;
+
+        out << YAML::Key << "Coord Label Template" << YAML::Value << model_props.coord_label_template;
+
+        if (!model_props.environment.empty()) {
+            out << YAML::Key << "N Regions" << YAML::Value << model_props.environment.regions.size();
+
+            out << YAML::Key << "Regions Labels" << YAML::Value;
+            out << YAML::BeginSeq;
+            for (const auto& region : model_props.environment.regions) {
+                out << region.label;
+            }
+            out << YAML::EndSeq;
+
+            out << YAML::Key << "Lower Left Cells X" << YAML::Value;
+            out << YAML::BeginSeq;
+            for (const auto& region : model_props.environment.regions) {
+                out << region.lower_left_x;
+            }
+            out << YAML::EndSeq;
+
+            out << YAML::Key << "Lower Left Cells Y" << YAML::Value;
+            out << YAML::BeginSeq;
+            for (const auto& region : model_props.environment.regions) {
+                out << region.lower_left_y;
+            }
+            out << YAML::EndSeq;
+
+            out << YAML::Key << "Upper Right Cells X" << YAML::Value;
+            out << YAML::BeginSeq;
+            for (const auto& region : model_props.environment.regions) {
+                out << region.upper_right_x;
+            }
+            out << YAML::EndSeq;
+
+            out << YAML::Key << "Upper Right Cells Y" << YAML::Value;
+            out << YAML::BeginSeq;
+            for (const auto& region : model_props.environment.regions) {
+                out << region.upper_right_y;
+            }
+            out << YAML::EndSeq;
+
+            out << YAML::Key << "Region Colors" << YAML::Value;
+            out << YAML::BeginSeq;
+            for (const auto& region : model_props.environment.regions) {
+                out << region.color;
+            }
+            out << YAML::EndSeq;
+
+        }
+
         out << YAML::EndMap;
         std::ofstream fout(filepath);
         fout << out.c_str();
     }
+
+    GridWorldAgentProperties GridWorldAgent::deserializeConfig(const std::string& filepath) {
+        GridWorldAgentProperties props;
+        YAML::Node data;
+        try {
+            data = YAML::LoadFile(filepath);
+
+            props.n_x = data["Grid X"].as<uint32_t>();
+            props.n_y = data["Grid Y"].as<uint32_t>();
+            props.init_coordinate_x = data["Init X Coord"].as<uint32_t>();
+            props.init_coordinate_y = data["Init Y Coord"].as<uint32_t>();
+            props.coord_label_template = data["Coord Label Template"].as<std::string>();
+
+            if (data["N Regions"]) {
+                uint32_t n_regions = data["N Regions"].as<uint32_t>();
+                LOG("b4");
+                if (!data["Region Labels"]) LOG("not found?");
+                std::vector<std::string> labels = data["Region Labels"].as<std::vector<std::string>>();
+                LOG("af");
+                std::vector<uint32_t> lower_left_cells_x = data["Lower Left Cells X"].as<std::vector<uint32_t>>();
+                std::vector<uint32_t> lower_left_cells_y = data["Lower Left Cells Y"].as<std::vector<uint32_t>>();
+                std::vector<uint32_t> upper_right_cells_x = data["Upper Right Cells X"].as<std::vector<uint32_t>>();
+                std::vector<uint32_t> upper_right_cells_y = data["Upper Right Cells Y"].as<std::vector<uint32_t>>();
+                if (data["Region Colors"]) {
+                    std::vector<std::string> colors = data["Region Colors"].as<std::vector<std::string>>();
+                    ASSERT(labels.size() == n_regions
+                        && lower_left_cells_x.size() == n_regions
+                        && lower_left_cells_y.size() == n_regions
+                        && upper_right_cells_x.size() == n_regions
+                        && upper_right_cells_y.size() == n_regions
+                        && colors.size() == n_regions, "Mismatch in environment region parameters");
+
+                    for (uint32_t i=0; i<labels.size(); ++i) {
+                        props.environment.addRegion(labels[i], lower_left_cells_x[i], lower_left_cells_y[i], upper_right_cells_x[i], upper_right_cells_y[i], colors[i]);
+                    }
+                } else {
+                    ASSERT(labels.size() == n_regions
+                        && lower_left_cells_x.size() == n_regions
+                        && lower_left_cells_y.size() == n_regions
+                        && upper_right_cells_x.size() == n_regions
+                        && upper_right_cells_y.size() == n_regions, "Mismatch in environment region parameters");
+
+                    for (uint32_t i=0; i<labels.size(); ++i) {
+                        props.environment.addRegion(labels[i], lower_left_cells_x[i], lower_left_cells_y[i], upper_right_cells_x[i], upper_right_cells_y[i]);
+                    }
+
+                }
+            }
+
+        } catch (YAML::ParserException e) {
+            ERROR("Failed to load file" << filepath << " ("<< e.what() <<")");
+        }
+        return props;
+    }
+
 }
 }
