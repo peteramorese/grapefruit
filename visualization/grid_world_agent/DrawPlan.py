@@ -8,13 +8,22 @@ import yaml
 import argparse
 
 visualize_config = {
-    "path_line_width": 3.0,
+    "path_line_width": 2.0,
     "path_line_style": '-',
-    "grid_line_width": 1.0,
-    "grid_line_style": "--",
-    "text_font_size": 20.0,
-    "show_text": True,
-    "text_offset": (.1, .1)
+    "path_line_color": "blue",
+    "grid_line_width": 0.8,
+    "grid_line_style": "-",
+    "text_font_size": 15.0,
+    "show_text": False,
+    "show_ticks": False,
+    "show_title": False,
+    "text_offset": (.1, .2),
+    "traj_offset_magnitude": 0.2,
+    "arrow_color": "path_line_color",
+    "arrow_scale": 20.0,
+    "cells_per_arrow": 2,
+    "show_directions": True,
+    "figure_size": (4, 4)
 }
 
 class GridWorldAgentVisualizer:
@@ -48,7 +57,6 @@ class GridWorldAgentVisualizer:
         with open(filepath, "r") as f:
             self.__plan_properties = yaml.safe_load(f)
 
-        print(self.__plan_properties)
         self.__create_figure()
 
     @staticmethod
@@ -64,7 +72,7 @@ class GridWorldAgentVisualizer:
             height = region["upper_right_y"] - region["lower_left_y"] + 1
             rectangle = matplotlib.patches.Rectangle((region["lower_left_x"] - 0.5, region["lower_left_y"] - 0.5), width, height, color=region["color"])
             ax.add_patch(rectangle)
-            if visualize_config["show_text"] and region["label"] not in unique_regions:
+            if visualize_config["show_text"] and (region["label"] not in unique_regions or not show_unique_regions_only):
                 plt.text(region["lower_left_x"] - 0.5 + visualize_config["text_offset"][0], region["lower_left_y"] - 0.5 + visualize_config["text_offset"][1], region["label"], fontsize=visualize_config["text_font_size"])
                 unique_regions.add(region["label"])
 
@@ -72,15 +80,37 @@ class GridWorldAgentVisualizer:
     def __create_figure(self, show_endpoints = True):
         x_seq = list()
         y_seq = list()
-        for s in self.__plan_properties["State Sequence"]:
-            s_coord = self.__state_str_to_coord(s)
-            x_seq.append(s_coord[0])
-            y_seq.append(s_coord[1])
+        u_seq = list()
+        v_seq = list()
+        x_seq.append(self.__state_str_to_coord(self.__plan_properties["State Sequence"][0])[0])
+        y_seq.append(self.__state_str_to_coord(self.__plan_properties["State Sequence"][0])[1])
+        prev_offset = np.array([0.0, 0.0])
+        for i in range(1, len(self.__plan_properties["State Sequence"])):
+            s_prev_coord = self.__state_str_to_coord(self.__plan_properties["State Sequence"][i-1])
+            s_coord = self.__state_str_to_coord(self.__plan_properties["State Sequence"][i])
+            direction = np.array([s_coord[0] - s_prev_coord[0], s_coord[1] - s_prev_coord[1], 0.0])
+            u_seq.append(direction[0])
+            v_seq.append(direction[1])
+            offset_v = np.cross(direction, np.array([0.0, 0.0, 1.0]))
+            offset = np.array([visualize_config["traj_offset_magnitude"] * offset_v[0], visualize_config["traj_offset_magnitude"] * offset_v[1]])
+            x_seq[-1] += offset[0]
+            y_seq[-1] += offset[1]
+            if sum(abs(offset -prev_offset)) > 0.000000001:
+                x_seq[-1] += prev_offset[0]
+                y_seq[-1] += prev_offset[1]
+                x_seq.append(s_coord[0])
+                y_seq.append(s_coord[1])
+            else:
+                x_seq.append(s_coord[0])
+                y_seq.append(s_coord[1])
+            prev_offset = offset
 
         plt.figure()
 
         if "Title" in self.__plan_properties:
-            plt.title(self.__plan_properties["Title"])
+            print("Displaying: ", self.__plan_properties["Title"])
+            if visualize_config["show_title"]:
+                plt.title(self.__plan_properties["Title"])
 
         plt.axis([-0.5, self.__grid_size[0] - 0.5, -0.5, self.__grid_size[1] - 0.5])
         plt.xticks(range(self.__grid_size[0]))
@@ -88,20 +118,34 @@ class GridWorldAgentVisualizer:
         ax = plt.gca()
         ax.set_xticks(np.arange(0.5, self.__grid_size[0] + 0.5, 1), minor=True)
         ax.set_yticks(np.arange(0.5, self.__grid_size[1] + 0.5, 1), minor=True)
+        if not visualize_config["show_ticks"]:
+            ax.axes.xaxis.set_ticklabels([])
+            ax.axes.yaxis.set_ticklabels([])
         plt.grid(which="minor", ls=visualize_config["grid_line_style"], lw=visualize_config["grid_line_width"])
 
         if self.__environment:
             self.__draw_regions(ax)
 
-        plt.plot(x_seq, y_seq, ls=visualize_config["path_line_style"], lw=visualize_config["path_line_width"])
+        plt.plot(x_seq, y_seq, ls=visualize_config["path_line_style"], lw=visualize_config["path_line_width"], color=visualize_config["path_line_color"])
+
+        if visualize_config["show_directions"]:
+            cells_per_arrow = visualize_config["cells_per_arrow"]
+            if visualize_config["arrow_color"] == "path_line_color":
+                plt.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=visualize_config["path_line_color"], scale=visualize_config["arrow_scale"])
+            else:
+                plt.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=visualize_config["arrow_color"], scale=visualize_config["arrow_scale"])
 
         if show_endpoints:
             plt.scatter(x_seq[0], y_seq[0], c="r")
             plt.scatter(x_seq[-1], y_seq[-1], c="g")
-            if visualize_config["show_text"]:
-                plt.text(x_seq[0] + visualize_config["text_offset"][0], y_seq[0] + visualize_config["text_offset"][1], "I", fontsize=visualize_config["text_font_size"])
-                plt.text(x_seq[-1] + visualize_config["text_offset"][0], y_seq[-1] + visualize_config["text_offset"][1], "F", fontsize=visualize_config["text_font_size"])
+            #if visualize_config["show_text"]:
+            plt.text(x_seq[0] + visualize_config["text_offset"][0], y_seq[0] + visualize_config["text_offset"][1], "I", fontsize=visualize_config["text_font_size"])
+            plt.text(x_seq[-1] + visualize_config["text_offset"][0], y_seq[-1] + visualize_config["text_offset"][1], "F", fontsize=visualize_config["text_font_size"])
 
+    def draw(self):
+        plt.draw()
+        plt.gcf().set_size_inches(visualize_config["figure_size"][0], visualize_config["figure_size"][1])
+        
     def display(self):
         plt.show()
 
@@ -114,24 +158,30 @@ class GridWorldAgentVisualizer:
         ax = plt.gca()
         ax.set_xticks(np.arange(0.5, self.__grid_size[0] + 0.5, 1), minor=True)
         ax.set_yticks(np.arange(0.5, self.__grid_size[1] + 0.5, 1), minor=True)
+        if not visualize_config["show_ticks"]:
+            ax.axes.xaxis.set_ticklabels([])
+            ax.axes.yaxis.set_ticklabels([])
         plt.grid(which="minor", ls=visualize_config["grid_line_style"], lw=visualize_config["grid_line_width"])
 
         if self.__environment:
             self.__draw_regions(ax)
 
+        plt.gcf().set_size_inches(visualize_config["figure_size"][0], visualize_config["figure_size"][1])
+
 if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
     parser.add_argument("--read-directory", default="../../build/bin/grid_world_plans", help="Specify a directory to read plan files from")
     parser.add_argument("--config-filepath", default="../../build/bin/configs/grid_world_config.yaml", help="Specify a grid world config file")
-    parser.add_argument("--display-environment-only", default=False, action="store_true", help="Show the environment only")
+    parser.add_argument("--environment-only", default=False, action="store_true", help="Show the environment only")
     args = parser.parse_args()
 
     visualizer = GridWorldAgentVisualizer(args.config_filepath)
 
-    if not args.display_environment_only:
+    if not args.environment_only:
         for file in os.scandir(args.read_directory):
             visualizer.serialize(file)
-            visualizer.display()
+            visualizer.draw()
+        visualizer.display()
     else:
         visualizer.display_environment()
         visualizer.display()

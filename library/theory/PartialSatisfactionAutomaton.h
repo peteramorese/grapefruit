@@ -48,7 +48,7 @@ namespace FormalMethods {
                 try {
                     data = YAML::LoadFile(dfa_filepath);
 
-                    m_atomic_propositions = data["Alphabet"].as<Alphabet>();
+                    m_atomic_propositions = data["Atomic Propositions"].as<Alphabet>();
                     m_init_states = data["Initial States"].as<StateSet>();
                     m_accepting_states = data["Accepting States"].as<StateSet>();
 
@@ -70,6 +70,12 @@ namespace FormalMethods {
 
                 try {
                     data = YAML::LoadFile(sub_map_filepath);
+
+                    LOG("b4");
+                    if (!data["From Observations"]) return true;
+                    if (!data["To Observations"]) LOG("no to observations");
+                    if (!data["From Observations"]) LOG("no from observations");
+                    LOG("af");
 
                     std::vector<std::string> from_observations = data["From Observations"].as<std::vector<std::string>>();
                     std::vector<std::string> to_observations = data["To Observations"].as<std::vector<std::string>>();

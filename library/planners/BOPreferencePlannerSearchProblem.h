@@ -27,6 +27,8 @@ namespace Planner {
             typedef graph_t::edge_t::action_t action_t;
             typedef CostVector cost_t;
 
+            static constexpr uint32_t numObjectives() {return 2;}
+
             struct CostVectorActionEdge {
                 CostVectorActionEdge() = delete;
                 CostVectorActionEdge(OBJ_1_T&& obj_1, OBJ_2_T&& obj_2, graph_t::edge_t::action_t&& action_) : cv(std::move(obj_1), std::move(obj_2)), action(action_) {}

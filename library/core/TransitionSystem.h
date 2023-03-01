@@ -56,6 +56,16 @@ namespace DiscreteModel {
 			}
 			inline void resize(std::size_t size) {m_observations.resize(size);}
 			inline bool nodeInContainer(Node node) const {return node < m_observations.size();}
+			void print() const {
+				LOG("Printing observation container");
+				for (uint32_t i=0; i<m_observations.size(); ++i) {
+					std::string obs_str = std::string();
+					for (auto obs : m_observations[i]) {
+						obs_str += obs + ", ";
+					}
+					PRINT_NAMED("Node " << i << " contains observations", obs_str);
+				}
+			}
 		private:
 			std::vector<std::unordered_set<std::string>> m_observations;
 	};
@@ -97,24 +107,30 @@ namespace DiscreteModel {
 
 			const ObservationContainer& getObservationContainer() const {return m_observation_container;}
 
-			void addProposition(const Condition& prop) {m_propositions[prop.getName()] = prop;}
+			void addProposition(const Condition& prop) {m_propositions[prop.getName()].push_back(prop);}
 
 		private:
 			void deserialize(const std::string& filepath);
 			void addObservationsToNode(Node node, const FormalMethods::Alphabet& alphabet);
 
 		protected:
-			const Condition& getProposition(const std::string& name) const {
+			inline const std::vector<Condition>& getPropositions(const std::string& name) const {
 				ASSERT(m_propositions.contains(name), "Proposition '" << name << "' was not found");
 				return m_propositions.at(name);
 			}
 
+			bool evaluateAllPropositionsAtState(const std::string& prop_label, const State& state) const {
+				for (const auto& prop : getPropositions(prop_label)) {
+					if (prop.evaluate(state)) return true;
+				}
+				return false;
+			}
 		protected:
 			std::shared_ptr<StateSpace> m_ss;
 
 		  	FormalMethods::Alphabet m_alphabet;
 		 	ObservationContainer m_observation_container;
-			std::unordered_map<std::string, Condition> m_propositions;
+			std::unordered_map<std::string, std::vector<Condition>> m_propositions;
 			
 			friend class TransitionSystemGenerator;
 	};

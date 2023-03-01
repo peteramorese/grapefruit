@@ -26,6 +26,8 @@ namespace Planner {
             typedef ProdNode node_t;
             typedef graph_t::edge_t::action_t action_t;
             typedef CostVector cost_t;
+            
+            static constexpr uint32_t numObjectives() {return sizeof...(OBJ_ARGS_T);}
 
             struct CostVectorActionEdge {
                 CostVectorActionEdge() = delete;

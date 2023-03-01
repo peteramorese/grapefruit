@@ -11,7 +11,7 @@ namespace DiscreteModel {
 
         // Copy the propositions into the transition system
         for (const auto& prop : props.propositions) {
-            ts->m_propositions[prop.getName()] = prop;
+            ts->addProposition(prop);
         }
 
         // Hold all of the unique states, mapping to the index inside of the final state container
@@ -69,7 +69,7 @@ namespace DiscreteModel {
                     continue;
                 case ')':
                     ASSERT(bool_stack.size() > 1, "Found ')' with out opening bracket");
-                    if (!collapse) sub_eval = getProposition(proposition_stack.back()).evaluate(state);
+                    if (!collapse) sub_eval = evaluateAllPropositionsAtState(proposition_stack.back(), state);
                     if (negate_next_stack.back()) sub_eval = !sub_eval;
                     proposition_stack.back().clear();
                     switch (prev_operator_stack.back()) {
@@ -88,7 +88,7 @@ namespace DiscreteModel {
             bool at_end = i == observation.size() - 1;
             if (character == '|' || character == '&' || at_end) {
                 if (at_end) proposition_stack.back().push_back(character);
-                if (!collapse) sub_eval = getProposition(proposition_stack.back()).evaluate(state);
+                if (!collapse) sub_eval = evaluateAllPropositionsAtState(proposition_stack.back(), state);
                 collapse = false;
                 if (negate_next_stack.back()) {
                     sub_eval = !sub_eval;

@@ -35,6 +35,7 @@ int main(int argc, char* argv[]) {
 	std::string plan_directory = parser.parseAsString("plan-directory", "./grid_world_plans");
 	std::string plan_file_template = parser.parseAsString("plan-file-template", "plan_#.yaml");
 
+	std::string pareto_front_filepath = parser.parseAsString("pareto-front-filepath");
 
 	uint32_t n_dfas = parser.parseAsUnsignedInt("n-dfas", 1);
 
@@ -50,7 +51,7 @@ int main(int argc, char* argv[]) {
 
 	std::shared_ptr<DiscreteModel::TransitionSystem> ts = DiscreteModel::GridWorldAgent::generate(ts_props);
 
-	//ts->print();
+	if (verbose) ts->print();
 
 	/////////////////   DFAs   /////////////////
 
@@ -69,6 +70,7 @@ int main(int argc, char* argv[]) {
 
 	//for (const auto& letter : combined_alphbet) LOG("letter: " << letter);
 	ts->addAlphabet(combined_alphbet);
+	if (verbose) ts->getObservationContainer().print();
 
 
 	/////////////////   Planner   /////////////////
@@ -76,11 +78,13 @@ int main(int argc, char* argv[]) {
 	using EdgeInheritor = DiscreteModel::ModelEdgeInheritor<DiscreteModel::TransitionSystem, FormalMethods::DFA>;
 	using SymbolicGraph = DiscreteModel::SymbolicProductAutomaton<DiscreteModel::TransitionSystem, FormalMethods::DFA, EdgeInheritor>;
 
+	using Obj1 = CostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>;
+	using Obj2 = SumDelayPreferenceCostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>;
 	BOPreferencePlanner<
 		EdgeInheritor, 
 		FormalMethods::DFA,
-		CostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>, 
-		SumDelayPreferenceCostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>
+		Obj1,
+		Obj2
 	> planner(ts, dfas);
 
 	DiscreteModel::State init_state = ts->getGenericNodeContainer()[0];
@@ -93,13 +97,23 @@ int main(int argc, char* argv[]) {
 		LOG("Planner success!");
 		uint32_t i = 0;
 		for (const auto& plan : plan_set) {
-			LOG("Plan " << i << " Cost: " << plan.cost.template get<0>().cost << " Preference Cost: " << plan.cost.template get<1>().preferenceFunction());
+			std::string title = "Plan " + std::to_string(i) + " Cost: " + std::to_string(plan.cost.template get<0>().cost) + " Preference Cost: " + std::to_string(plan.cost.template get<1>().preferenceFunction());
+			LOG(title);
 			if (verbose) plan.print();	
 			if (write_plans) {
 				std::string plan_filepath = plan_directory + "/" + templateToLabel(plan_file_template, i);
-				plan.serialize(plan_filepath);
+				plan.serialize(plan_filepath, title);
 			}
 			++i;
+		}
+		if (write_plans && !pareto_front_filepath.empty()) {
+			auto objCostToFloatArray = [](const Containers::TypeGenericArray<Obj1, Obj2>& cost) {
+				Containers::FixedArray<2, float> float_arr;
+				float_arr[0] = cost.template get<0>().cost;
+				float_arr[1] = cost.template get<1>().preferenceFunction();
+				return float_arr;
+			};
+			serializeParetoFront(plan_set, {{"Cost", "Sum-Delay Preference Cost"}}, objCostToFloatArray, pareto_front_filepath);
 		}
 	} else {
 		LOG("Planner failed using init state: " << init_state.to_str());

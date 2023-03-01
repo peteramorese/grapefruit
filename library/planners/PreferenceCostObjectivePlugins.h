@@ -64,6 +64,13 @@ namespace Planner {
             
             return sum_delay;
         }
+
+        void printPCS() const {
+            LOG("Printing PCS");
+            for (uint32_t i=0; i<this->m_pcs.size(); ++i) {
+                LOG("Task " << i <<": " << this->m_pcs[i]);
+            }
+        }
     };
 
     

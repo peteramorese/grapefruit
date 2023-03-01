@@ -112,8 +112,8 @@ namespace DiscreteModel {
 
         if (!standard_propositions) {
             for (const auto& region : model_props.environment.regions) {
-                for (uint32_t i = region.lower_left_x; i < region.upper_right_x; ++i) {
-                    for (uint32_t j = region.lower_left_y; j < region.upper_right_y; ++j) {
+                for (uint32_t i = region.lower_left_x; i <= region.upper_right_x; ++i) {
+                    for (uint32_t j = region.lower_left_y; j <= region.upper_right_y; ++j) {
                         Condition ap;
                         ap.addCondition(ConditionArg::Label, s_x_coord_label, ConditionOperator::Equals, ConditionArg::Variable, x_labels[i]);
                         ap.addCondition(ConditionArg::Label, s_y_coord_label, ConditionOperator::Equals, ConditionArg::Variable, y_labels[j]);
