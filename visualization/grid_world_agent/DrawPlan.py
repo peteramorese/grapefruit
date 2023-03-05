@@ -11,16 +11,17 @@ visualize_config = {
     "path_line_width": 2.0,
     "path_line_style": '-',
     "path_line_color": "blue",
-    "grid_line_width": 0.8,
+    "grid_line_width": 0.7,
     "grid_line_style": "-",
     "text_font_size": 15.0,
-    "show_text": False,
+    "show_text": True,
     "show_ticks": False,
     "show_title": False,
-    "text_offset": (.1, .2),
+    "text_offset": (.1, .5),
     "traj_offset_magnitude": 0.2,
     "arrow_color": "path_line_color",
     "arrow_scale": 20.0,
+    "arrow_head_width": 5,
     "cells_per_arrow": 2,
     "show_directions": True,
     "figure_size": (4, 4)
@@ -131,9 +132,9 @@ class GridWorldAgentVisualizer:
         if visualize_config["show_directions"]:
             cells_per_arrow = visualize_config["cells_per_arrow"]
             if visualize_config["arrow_color"] == "path_line_color":
-                plt.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=visualize_config["path_line_color"], scale=visualize_config["arrow_scale"])
+                plt.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=visualize_config["path_line_color"], scale=visualize_config["arrow_scale"], headwidth = visualize_config["arrow_head_width"])
             else:
-                plt.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=visualize_config["arrow_color"], scale=visualize_config["arrow_scale"])
+                plt.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=visualize_config["arrow_color"], scale=visualize_config["arrow_scale"], headwidth = visualize_config["arrow_head_width"])
 
         if show_endpoints:
             plt.scatter(x_seq[0], y_seq[0], c="r")
@@ -167,6 +168,7 @@ class GridWorldAgentVisualizer:
             self.__draw_regions(ax)
 
         plt.gcf().set_size_inches(visualize_config["figure_size"][0], visualize_config["figure_size"][1])
+
 
 if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
