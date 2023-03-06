@@ -19,7 +19,7 @@ target_link_libraries(GameClass
 add_library(MockGamePlayClass tools/mockGamePlay.cpp)
 add_library(BenchmarkClass tools/benchmark.cpp)
 add_library(WriteToFileClass tools/writeToFile.cpp)
-#target_link_libraries(WriteToFileClass stdc++fs)
+target_link_libraries(WriteToFileClass stdc++fs)
 
 # Research:
 add_library(LexSetClass research/lexSet.cpp)

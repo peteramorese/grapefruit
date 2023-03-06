@@ -654,6 +654,7 @@ std::shared_ptr<StateSpace> TransitionSystem<State>::readFromFile(const std::str
 			}
 		}
 	}
+	model_file.close();
 	finishConnecting();
 	UNIQUE_ACTION = true;
 	return SS_read_in;

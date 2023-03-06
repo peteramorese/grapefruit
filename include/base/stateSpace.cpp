@@ -389,7 +389,6 @@ bool StateSpace::starts_with(const std::string& str, const std::string& prefix) 
 
 std::string::iterator StateSpace::str_find(std::string* str, char stop_char) {
 	for (auto c=str->begin(); c!=str->end(); c++) {
-		std::cout<<"*c: "<<*c<<" stop_char: "<<stop_char<<";\n";
 		if (*c == stop_char) {
 			return c;
 		}
@@ -416,7 +415,8 @@ std::shared_ptr<StateSpace> StateSpace::readFromFile(const std::string& filename
 					std::cout<<"Unrecognized state space line"<<std::endl;
 					return nullptr;
 				}
-				line.erase(line.begin(), std::find(line.begin(), line.end(), ' '));
+				//line.erase(line.begin(), std::find(line.begin(), line.end(), ' '));
+				line.erase(line.begin(), StateSpace::str_find(&line, ' '));
 				int n_dims = std::stoi(line);
 				for (int i=0; i<n_dims; ++i) {
 					if (!std::getline(model_file, line)) std::cout<<"Error expected more dimensions";
