@@ -24,8 +24,8 @@ namespace TP {
 
 namespace GraphSearch {
 
-    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T, class OBJECTIVE_NORM_T>
-    NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T, OBJECTIVE_NORM_T>::NAMOASearchResult NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T, OBJECTIVE_NORM_T>::search(const SEARCH_PROBLEM_T& problem) {
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
+    NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::NAMOASearchResult NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::search(const SEARCH_PROBLEM_T& problem) {
 
         // If custom edge storage type is used with explicit search, assert that the outgoingEdges method is explicit (returns a persistent const reference)
         constexpr bool _PTR_EDGE_STORAGE_TYPE = !std::is_same<EDGE_STORAGE_T, edge_t>::value;
@@ -63,7 +63,7 @@ namespace GraphSearch {
             // Retrieves a non dominated node, and removes it from the open set
             auto[curr_node, curr_g_score] = open_set.pop();
 
-            LOG("Curr node: " << curr_node);
+            //LOG("Curr node: " << curr_node);
             
             // Move to closed
             CostMap::CostSet::moveToClosed(curr_g_score);
@@ -71,8 +71,8 @@ namespace GraphSearch {
             
             // If current node satisfies goal condition, extract path and terminate
             if (problem.goal(curr_node)) {
-                //LOG("-> goal");
-                //LOG("-> path cost: "<< curr_g_score->cv.template get<0>() << ", " << curr_g_score->cv.template get<1>());
+                LOG("-> goal");
+                LOG("-> path cost: "<< curr_g_score->cv.template get<0>() << ", " << curr_g_score->cv.template get<1>());
                 // Add solution to the goal set
                 solution_set.emplace_back(curr_node, curr_g_score);
 
@@ -90,14 +90,8 @@ namespace GraphSearch {
             for (uint32_t i = 0; i < neighbors.size(); ++i) {
 
                 GraphNode neighbor = neighbors[i];
-                LOG("  neighbor: " << neighbor);
+                //LOG("  neighbor: " << neighbor);
 
-                // Check if a cycle is produced
-                //if (!parent_graph.testConnection(neighbor, curr_node)) LOG("  connection test failed");
-                LOG("testing connection");
-                if (!parent_graph.testConnection(curr_node, neighbor)) continue;
-                LOG("done!");
-                
                 // Extract pointer if the edge storage type is a const pointer
                 EDGE_STORAGE_T to_neighbor_edge = [&] {
                     if constexpr (_PTR_EDGE_STORAGE_TYPE)
@@ -115,8 +109,6 @@ namespace GraphSearch {
 
                 auto it = G_set.cost_map.find(neighbor);
                 if (it != G_set.cost_map.end() && G_set.cost_map.at(neighbor).dominates(tentative_g_score) == Containers::ArrayComparison::DoesNotDominate) {
-                    LOG("  -> found non dominated path ");
-
                     // Signal when element is pruned
                     auto onErase = [&](const CostMapItem& item) {
                         //LOG("    erase domainated item ptr: " << &item << " in open: " << item.in_open);
@@ -137,7 +129,6 @@ namespace GraphSearch {
                     // Erase all dominated paths in the cost map
                     G_set.cost_map.at(neighbor).eraseDominated(tentative_g_score, onErase);
 
-                    LOG("done erasing!");
 
                 } else if (it != G_set.cost_map.end()) {
                     // If 'neighbor' is not found in the min_cost_map, it's value is interpreted as 'infinity' (new node)
@@ -151,11 +142,9 @@ namespace GraphSearch {
                 tentative_h_score += problem.hScore(neighbor);
 
                 // Filter by the costs of goal nodes
-                LOG("Filtering");
                 for (const auto& sol : solution_set) {
                     if (sol.second->cv.dominates(tentative_h_score) == Containers::ArrayComparison::Dominates) continue;
                 }
-                LOG("done filtering!");
 
                 // Add the g_score to the cost map
                 const CostMapItem* g_score_item = G_set.cost_map[neighbor].addToOpen(std::move(tentative_g_score));
@@ -175,13 +164,22 @@ namespace GraphSearch {
         return result;
     };
 
-    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T, class OBJECTIVE_NORM_T>
-    void NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T, OBJECTIVE_NORM_T>::extractPaths(std::vector<std::pair<GraphNode, const CostMapItem*>>& solution_set, NAMOASearchResult& result, const SEARCH_PROBLEM_T& problem) {
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
+    void NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPaths(std::vector<std::pair<GraphNode, const CostMapItem*>>& solution_set, NAMOASearchResult& result, const SEARCH_PROBLEM_T& problem) {
         LOG("Extracting paths");
         constexpr bool _PTR_EDGE_STORAGE_TYPE = !std::is_same<EDGE_STORAGE_T, edge_t>::value;
 
         // Copy the search graph so that edges can be removed
         SearchGraph<SearchGraphEdge<const COST_VECTOR_T*, EDGE_STORAGE_T>, GraphNode> graph_copy = *result.search_graph;
+
+        auto edgeToStr = [](const SearchGraphEdge<const COST_VECTOR_T*, EDGE_STORAGE_T>& edge) {
+            return std::to_string(edge.cv->template get<0>()) + ", " + std::to_string(edge.cv->template get<1>());
+        };
+        auto costToStr = [](const COST_VECTOR_T& cost) {
+            return std::to_string(cost.template get<0>()) + ", " + std::to_string(cost.template get<1>());
+        };
+        graph_copy.printCustom(edgeToStr);
+
         // Copy and erase elements when the solutions are found
         std::vector<std::pair<GraphNode, const CostMapItem*>> solution_set_copy = solution_set;
         //graph_copy.print();
@@ -200,7 +198,8 @@ namespace GraphSearch {
         while (!stack.empty()) {
             auto[curr_enum_node, curr_cv] = stack.back();
             GraphNode curr_node = tree.getNode(curr_enum_node);
-            visited[curr_node] = true;
+            LOG("curr node: " << curr_node);
+            //visited[curr_node] = true;
 
             stack.pop_back();
 
@@ -224,24 +223,30 @@ namespace GraphSearch {
             const auto& children = graph_copy.getChildren(curr_node);
             const auto& outgoing_edges = graph_copy.getOutgoingEdges(curr_node);
             for (uint32_t i=0; i<children.size(); ++i) {
-                if (visited.contains(children[i])) continue;
+                LOG("   child: " << children[i]);
+                LOG("   edge: " << edgeToStr(outgoing_edges[i]));
+                //if (visited.contains(children[i])) continue;
 
-                COST_VECTOR_T tentative_cost = [&] {
-                    if constexpr (_PTR_EDGE_STORAGE_TYPE)
-                        return problem.gScore(curr_cv, *(outgoing_edges[i].edge));
-                    else
-                        return problem.gScore(curr_cv, outgoing_edges[i].edge);
-                }();
+                COST_VECTOR_T tentative_cost = *outgoing_edges[i].cv;
+                //COST_VECTOR_T tentative_cost = [&] {
+                //    if constexpr (_PTR_EDGE_STORAGE_TYPE)
+                //        return problem.gScore(curr_cv, *(outgoing_edges[i].edge));
+                //    else
+                //        return problem.gScore(curr_cv, outgoing_edges[i].edge);
+                //}();
 
                 bool dominated = false;
+                LOG("       testing " << costToStr(tentative_cost));
                 for (uint32_t j=0; j<solution_set.size(); ++j) {
                     auto path_test_result = solution_set[j].second->cv.dominates(tentative_cost);
                     if (path_test_result == Containers::ArrayComparison::Dominates) {
                         // A goal node dominates the path
+                        LOG("       Dominated by " << costToStr(solution_set[j].second->cv));
                         dominated = true;
                         break;
                     } 
                 }
+                if (dominated) LOG("   dominated!");
                 if (dominated) continue;
 
                 stack.emplace_back(GraphNode{},tentative_cost);
@@ -250,8 +255,8 @@ namespace GraphSearch {
         }
     }
 
-    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T, class OBJECTIVE_NORM_T>
-    void NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T, OBJECTIVE_NORM_T>::extractPath(const GraphNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>>& node_map) {
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
+    void NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const GraphNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>>& node_map) {
         EnumeratedNode curr_enum_node = goal_node;
         path_solution.node_path.emplace_back(node_map.getNode(curr_enum_node));
 

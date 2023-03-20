@@ -1,6 +1,9 @@
 #pragma once
 
+#include <map>
+
 #include "core/Graph.h"
+//#include "Graph.h"
 
 namespace TP {
 
@@ -9,33 +12,14 @@ class DirectedAcyclicGraph : public Graph<EDGE_T, NATIVE_NODE_T> {
     public:
         DirectedAcyclicGraph(Graph<EDGE_T, NATIVE_NODE_T>::EdgeToStrFunction edgeToStr = nullptr) : Graph<EDGE_T, NATIVE_NODE_T>(true, true, edgeToStr) {}
 
-        bool testConnection(NATIVE_NODE_T src, NATIVE_NODE_T dst) const {
-            if (!m_test_node_cache.empty && src == m_test_node_cache.src && dst == m_test_node_cache.dst) {
-                return m_test_node_cache.result;
-            }
-            if (src < this->m_graph.size()) {
-                std::vector<NATIVE_NODE_T> stack = this->getParents(src);
-
-                while (!stack.empty()) {
-                    NATIVE_NODE_T p = stack.back();
-                    if (p == dst) {
-                        m_test_node_cache.set(false, src, dst, false);
-                        return false;
-                    }
-                    stack.pop_back();
-                    
-                    const auto& parents = this->getParents(p);
-                    
-                    stack.insert(stack.begin(), parents.begin(), parents.end());
-                }
-            }
-            m_test_node_cache.set(false, src, dst, true);
-            return true;
+        inline bool testConnection(NATIVE_NODE_T src, NATIVE_NODE_T dst) const {
+            return hasParent(src, dst);
         }
 
-        virtual bool connect(NATIVE_NODE_T src, NATIVE_NODE_T dst, const EDGE_T& edge) override{
+        virtual bool connect(NATIVE_NODE_T src, NATIVE_NODE_T dst, const EDGE_T& edge) override {
             if (!testConnection(src, dst)) return false;
             this->Graph<EDGE_T, NATIVE_NODE_T>::connect(src, dst, edge);
+            m_parents[dst] = m_parents.at(src);
             return true;
         }
 
@@ -63,14 +47,30 @@ class DirectedAcyclicGraph : public Graph<EDGE_T, NATIVE_NODE_T> {
         }
 
     private:
-        struct CacheEntry {
-            bool empty = true;
-            NATIVE_NODE_T src;
-            NATIVE_NODE_T dst;
-            bool result;
-            void set(bool empty_, NATIVE_NODE_T src_, NATIVE_NODE_T dst_, bool result_) {empty = empty_; src = src_; dst = dst_; result = result_;}
-        };
-        mutable CacheEntry m_test_node_cache;
+        bool hasParent(NATIVE_NODE_T src, NATIVE_NODE_T parent) const {
+            auto it = m_parents.find(src);
+            if (it == m_parents.end()) return false;
+
+            const std::vector<bool>& has_parent = it->second;
+
+            if (parent < has_parent.size()) {
+                return has_parent[parent];
+            }
+            return false;
+        }
+
+        void addParent(NATIVE_NODE_T node, NATIVE_NODE_T parent) {
+            std::vector<bool>& pars = m_parents.at(node);
+            if (parent < pars.size()) {
+                pars[parent] = true;
+            } else {
+                pars.resize(parent + 1, false);
+                pars[parent] = true;
+            }
+        }
+
+    private:
+        std::map<NATIVE_NODE_T, std::vector<bool>> m_parents;
 };
 
 // TODO

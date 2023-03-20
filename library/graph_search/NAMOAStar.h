@@ -17,26 +17,7 @@ namespace TP {
 
 namespace GraphSearch {
 
-    using NormType = double;
-
-    template <class COST_VECTOR_T, class COMBINED_COST_T = NormType>
-    struct ObjectiveL1Norm {
-        typedef COMBINED_COST_T combined_cost_t;
-        static COMBINED_COST_T norm(const COST_VECTOR_T& cv) {
-            //Containers::FixedArray<COST_VECTOR_T::size(), COMBINED_COST_T> input;
-            COMBINED_COST_T cumulative_norm = COMBINED_COST_T{};
-            auto extract_combined_cost = [&cumulative_norm]<typename T>(const T& element) {
-                cumulative_norm += static_cast<COMBINED_COST_T>(element);
-                return true;
-            };
-
-            cv.forEach(extract_combined_cost);
-            return cumulative_norm;
-        }
-    };
-
-
-    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T = ZeroHeuristic<Node, COST_VECTOR_T>, typename EDGE_STORAGE_T = typename SEARCH_PROBLEM_T::edge_t, class OBJECTIVE_NORM_T = ObjectiveL1Norm<COST_VECTOR_T>>
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T = ZeroHeuristic<Node, COST_VECTOR_T>, typename EDGE_STORAGE_T = typename SEARCH_PROBLEM_T::edge_t>
     class NAMOAStar {
         public:
             using GraphNode = SEARCH_PROBLEM_T::node_t;
@@ -59,7 +40,6 @@ namespace GraphSearch {
                     : node(node_)
                     , g_score(g_score_)
                     , f_score(std::move(f_score_))
-                    , cached_norm(OBJECTIVE_NORM_T::norm(f_score))
                     {}
 
                 // Used as a tie to the unsorted_set
@@ -68,10 +48,9 @@ namespace GraphSearch {
 
                 // Sorted values
                 COST_VECTOR_T f_score; // f_score (g_score + h)
-                OBJECTIVE_NORM_T::combined_cost_t cached_norm; // Cache the norm calculation
 
                 bool operator<(const OpenSetSortedElement& other) const {
-                    return cached_norm < other.cached_norm;
+                    return f_score.lexicographicLess(other.f_score);
                 }
             };
 
