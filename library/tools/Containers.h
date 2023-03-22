@@ -12,6 +12,24 @@ namespace Containers {
     template <class T>
     class RandomAccessList {
         public:
+            RandomAccessList() = default;
+            RandomAccessList(RandomAccessList&&) = default;
+            RandomAccessList(const RandomAccessList& other) {
+                m_list = other.m_list;
+                m_access_ptrs.reserve(m_list.size());
+                for (auto list_it = m_list.begin(); list_it != m_list.end(); ++list_it) {
+                    m_access_ptrs.push_back(&(*(++list_it)));
+                }
+            }
+
+            void operator=(const RandomAccessList& other) {
+                m_list = other.m_list;
+                m_access_ptrs.reserve(m_list.size());
+                for (auto list_it = m_list.begin(); list_it != m_list.end(); ++list_it) {
+                    m_access_ptrs.push_back(&(*(++list_it)));
+                }
+            }
+
             void push_back(const T& value) {
                 m_list.push_back(value);
                 m_access_ptrs.push_back(&m_list.back());

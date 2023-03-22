@@ -1,0 +1,6 @@
+add_executable(TestMOSearchAlgorithms TestMOSearchAlgorithms.cpp)
+target_link_libraries(TestMOSearchAlgorithms PUBLIC
+)
+target_include_directories(TestMOSearchAlgorithms PUBLIC
+	${TP_LIBRARY_DIR}
+)

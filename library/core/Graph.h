@@ -172,13 +172,13 @@ class Graph {
 		}
 
 		template <typename LAM>
-		void printCustom(LAM printEdge) const {
+		void printCustom(LAM edgeToStr) const {
 			LOG("Printing graph (size: " << size() << ")");
 			NATIVE_NODE_T node = 0;
 			for (const auto& list : m_graph) {
 				for (uint32_t i=0; i < list.forward.size(); ++i) {
 					if (i == 0) PRINT_NAMED("Node " << node, "is connected to:");
-					PRINT_NAMED("    - child node " << list.forward.nodes[i], "with edge: " << printEdge(list.forward.edges[i]));
+					PRINT_NAMED("    - child node " << list.forward.nodes[i], "with edge: " << edgeToStr(list.forward.edges[i]));
 				}
 				++node;
 			}
