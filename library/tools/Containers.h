@@ -305,6 +305,16 @@ namespace Containers {
                 _forEach<0, LAMBDA_T>(onElement);
             }
 
+            template <typename LAMBDA_T>
+            void forEachWithI(LAMBDA_T onElement) const {
+                _forEachWithI_c<0, LAMBDA_T>(onElement);
+            }
+
+            template <typename LAMBDA_T>
+            void forEachWithI(LAMBDA_T onElement) {
+                _forEachWithI<0, LAMBDA_T>(onElement);
+            }
+
             // Element-wise conjunctive comparison. Uses type-generic templated lambda ([]<typename T, uint32_t I>(const T& element))
             template <typename LAMBDA_T>
             bool compare(const TypeGenericArray& other, LAMBDA_T compareElement) const {
