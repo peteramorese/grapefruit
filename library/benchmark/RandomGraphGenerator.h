@@ -5,7 +5,8 @@
 
 #include "core/Graph.h"
 
-template <class EDGE_T>
+namespace TP {
+
 class RandomGraphGenerator {
     public:
         RandomGraphGenerator(uint32_t size, uint32_t max_edges_per_node, uint32_t max_cost = 10)
@@ -16,17 +17,17 @@ class RandomGraphGenerator {
         {}
 
         // Takes in lambda that creates a random edge with a maximum cost
-        template <typename LAM>
+        template <class EDGE_T, typename LAM>
         std::shared_ptr<Graph<EDGE_T>> generate(LAM createRandomEdge, Graph<EDGE_T>::EdgeToStrFunction edgeToStr = nullptr) {
-            std::shared_ptr<Graph<EDGE_T>> graph(std::make_shared<Graph<Edge>>(true, true, edgeToStr));
+            reset();
+            std::shared_ptr<Graph<EDGE_T>> graph(std::make_shared<Graph<EDGE_T>>(true, true, edgeToStr));
             std::queue<Node> q;
             q.push(newNode());
-            //while (graph->size() < m_size) {
             while (m_back_node < m_size) {
                 Node src = q.front();
                 q.pop();
 
-                uint32_t n_edges = RNG::srandi(0, m_max_edges_per_node);
+                uint32_t n_edges = RNG::srandi(1, m_max_edges_per_node);
                 for (uint32_t i = 0; i < n_edges; ++i) {
                     Node dst = newNode();
                     graph->connect(src, dst, createRandomEdge(0, m_max_cost));
@@ -36,12 +37,12 @@ class RandomGraphGenerator {
             return graph;
         }    
 
-        inline Node newNode() {
-            return RNG::srandi(0, ++m_back_node);
+        inline void reset() {
+            m_back_node = 0;
         }
 
-        inline uint32_t randomCost() const {
-            return RNG::srandi(0, m_max_cost);
+        inline Node newNode() {
+            return RNG::srandi(0, ++m_back_node);
         }
 
         inline std::pair<Node, Node> getRandomInitAndGoal() const {
@@ -58,6 +59,8 @@ class RandomGraphGenerator {
         }
 
     private:
-        uint32_t m_size, m_max_edges_per_node, m_max_cost;
+        const uint32_t m_size, m_max_edges_per_node, m_max_cost;
         Node m_back_node;
 };
+
+}

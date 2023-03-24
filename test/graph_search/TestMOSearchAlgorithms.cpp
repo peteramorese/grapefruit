@@ -11,6 +11,7 @@
 #include "graph_search/MultiObjectiveSearchProblem.h"
 #include "graph_search/NAMOAStar.h"
 #include "graph_search/BOAStar.h"
+#include "benchmark/RandomGraphGenerator.h"
 
 #include "tools/ArgParser.h"
 
@@ -29,60 +30,6 @@ struct Edge {
         static Containers::FixedArray<2, uint32_t> edgeToCostVector(const Edge& edge) {return edge.cv;}
         static std::string cvToStr(const Containers::FixedArray<2, uint32_t>& cv) {return "(" + std::to_string(cv[0]) + ", " + std::to_string(cv[1]) + ")";}
         static std::string edgeToStr(const Edge& edge) {return "cost: " + cvToStr(edge.cv);}
-};
-
-class RandomGraphGenerator {
-    public:
-        RandomGraphGenerator(uint32_t size, uint32_t max_edges_per_node, uint32_t max_cost = 10)
-            : m_size(size)
-            , m_max_edges_per_node(max_edges_per_node)
-            , m_max_cost(max_cost)
-            , m_back_node(0)
-        {}
-
-        std::shared_ptr<Graph<Edge>> generate() {
-            std::shared_ptr<Graph<Edge>> graph(std::make_shared<Graph<Edge>>(true, true, &Edge::edgeToStr));
-            std::queue<Node> q;
-            q.push(newNode());
-            //while (graph->size() < m_size) {
-            while (m_back_node < m_size) {
-                Node src = q.front();
-                q.pop();
-
-                uint32_t n_edges = RNG::srandi(0, m_max_edges_per_node);
-                for (uint32_t i = 0; i < n_edges; ++i) {
-                    Node dst = newNode();
-                    graph->connect(src, dst, Edge(randomCost(), randomCost()));
-                    q.push(dst);
-                }
-            }
-            return graph;
-        }    
-
-        inline Node newNode() {
-            return RNG::srandi(0, ++m_back_node);
-        }
-
-        inline uint32_t randomCost() const {
-            return RNG::srandi(0, m_max_cost);
-        }
-
-        inline std::pair<Node, Node> getRandomInitAndGoal() const {
-            Node init = RNG::srandi(0, m_back_node);
-            Node goal = RNG::srandi(0, m_back_node);
-            while (init == goal) {goal = RNG::srandi(0, m_back_node);}
-            return {init, goal};
-        }
-
-        inline Node getRandomGoal() const {
-            Node goal = RNG::srandi(0, m_back_node);
-            while (goal == 0) {goal = RNG::srandi(0, m_back_node);}
-            return goal;
-        }
-
-    private:
-        uint32_t m_size, m_max_edges_per_node, m_max_cost;
-        Node m_back_node;
 };
 
 int main(int argc, char* argv[]) {
@@ -110,63 +57,72 @@ int main(int argc, char* argv[]) {
     if (verbose) LOG("Generating random graph...");
 
     RandomGraphGenerator random_graph_generator(size, max_edges_per_node);
-    std::shared_ptr<Graph<Edge>> graph = random_graph_generator.generate();
 
-    if (verbose) {
-        LOG("Done.");
-        graph->print();
-    }
+    auto createRandomEdge = [](uint32_t min, uint32_t max) {
+        return Edge(RNG::srandi(min, max), RNG::srandi(min, max));
+    };
 
-    //auto[start, goal] = random_graph_generator.getRandomInitAndGoal();
-    Node start = 0;
-    Node goal = random_graph_generator.getRandomGoal();
-    if (verbose) LOG("Starting node: " << start << ", goal node: " << goal);
- 
-    MOQuantitativeGraphSearchProblem<Graph<Edge>, Containers::FixedArray<2, uint32_t>, SearchDirection::Forward> problem(graph, {start}, {goal}, &Edge::edgeToCostVector);
+    for (uint32_t trial=0; trial<trials; ++trial) {
 
-    if (verbose) LOG("Searching BOA*...");
-    auto boa_result = BOAStar<Containers::FixedArray<2, uint32_t>, decltype(problem)>::search(problem);
-    if (verbose) LOG("Searching NAMOA*...");
-    auto namoa_result = NAMOAStar<Containers::FixedArray<2, uint32_t>, decltype(problem)>::search(problem);
-    if (verbose) LOG("Done.");
+        LOG("b4 generate");
+        std::shared_ptr<Graph<Edge>> graph = random_graph_generator.generate<Edge>(createRandomEdge, &Edge::edgeToStr);
+        LOG("af generate");
 
-
-    if (boa_result.success) {
-        TEST_ASSERT_FATAL(namoa_result.success, "BOA* found solutions when NAMOA* did not");
-    } else if (namoa_result.success) {
-        TEST_ASSERT_FATAL(boa_result.success, "NAMOA* found solutions when BOA* did not");
-    } else {
-        if (verbose) LOG("Neither algorithm found any solutions");
-        return 0;
-    }
-
-    bool pf_size_equal = false;
-    if (boa_result.solution_set.size() == namoa_result.solution_set.size()) {
-        pf_size_equal = true;
-    } else {
-        TEST_ASSERT(false, "Did not find the same number of pareto points");
-    }
-    
-    if (pf_size_equal) {
-        auto boa_it = boa_result.solution_set.begin();
-        auto namoa_it = namoa_result.solution_set.begin();
-        uint32_t pt = 0;
-        for (; boa_it != boa_result.solution_set.end();) {
-            const auto& boa_path_cost = boa_it->path_cost;
-            const auto& namoa_path_cost = boa_it->path_cost;
-
-            if (verbose) {
-                LOG("Pareto point " << pt++);
-                LOG("   BOA* Path cost: " << Edge::cvToStr(boa_path_cost));
-                LOG("   NAMOA* Path cost: " << Edge::cvToStr(namoa_path_cost));
-            }
-
-            TEST_ASSERT(boa_path_cost == namoa_path_cost, "Path costs are not equal BOA*: " << Edge::cvToStr(boa_path_cost) << " NAMOA*: " << Edge::cvToStr(namoa_path_cost));
-
-            ++boa_it;
-            ++namoa_it;
+        if (verbose) {
+            LOG("Done.");
+            graph->print();
         }
 
+        //auto[start, goal] = random_graph_generator.getRandomInitAndGoal();
+        Node start = 0;
+        Node goal = random_graph_generator.getRandomGoal();
+        if (verbose) LOG("Starting node: " << start << ", goal node: " << goal);
+    
+        MOQuantitativeGraphSearchProblem<Graph<Edge>, Containers::FixedArray<2, uint32_t>, SearchDirection::Forward> problem(graph, {start}, {goal}, &Edge::edgeToCostVector);
+
+        if (verbose) LOG("Searching BOA*...");
+        auto boa_result = BOAStar<Containers::FixedArray<2, uint32_t>, decltype(problem)>::search(problem);
+        if (verbose) LOG("Searching NAMOA*...");
+        auto namoa_result = NAMOAStar<Containers::FixedArray<2, uint32_t>, decltype(problem)>::search(problem);
+        if (verbose) LOG("Done.");
+
+
+        if (boa_result.success) {
+            TEST_ASSERT_FATAL(namoa_result.success, "BOA* found solutions when NAMOA* did not");
+        } else if (namoa_result.success) {
+            TEST_ASSERT_FATAL(boa_result.success, "NAMOA* found solutions when BOA* did not");
+        } else {
+            if (verbose) LOG("Neither algorithm found any solutions");
+            continue;
+        }
+
+        bool pf_size_equal = false;
+        if (boa_result.solution_set.size() == namoa_result.solution_set.size()) {
+            pf_size_equal = true;
+        } else {
+            TEST_ASSERT(false, "Did not find the same number of pareto points");
+        }
+        
+        if (pf_size_equal) {
+            auto boa_it = boa_result.solution_set.begin();
+            auto namoa_it = namoa_result.solution_set.begin();
+            uint32_t pt = 0;
+            for (; boa_it != boa_result.solution_set.end();) {
+                const auto& boa_path_cost = boa_it->path_cost;
+                const auto& namoa_path_cost = boa_it->path_cost;
+
+                if (verbose) {
+                    LOG("Pareto point " << pt++);
+                    LOG("   BOA* Path cost: " << Edge::cvToStr(boa_path_cost));
+                    LOG("   NAMOA* Path cost: " << Edge::cvToStr(namoa_path_cost));
+                }
+
+                TEST_ASSERT(boa_path_cost == namoa_path_cost, "Path costs are not equal BOA*: " << Edge::cvToStr(boa_path_cost) << " NAMOA*: " << Edge::cvToStr(namoa_path_cost));
+
+                ++boa_it;
+                ++namoa_it;
+            }
+        }
     }
 
 	return 0;
