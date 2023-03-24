@@ -85,6 +85,7 @@ namespace GraphSearch {
                             // Insert
                             auto[check_it, check_inserted] = check_set.emplace(node, g_score);
                             auto sorted_it = sorted_set.emplace(node, g_score, std::move(f_score));
+                            //LOG("INSERTING node: " << node << " g_score: " << g_score << " check_inserted: " << check_inserted);
 
                             // Tie the check element to the sorted element
                             check_it->tie(sorted_it);
@@ -94,12 +95,16 @@ namespace GraphSearch {
                         }
                     }
 
-                    void erase(GraphNode node, const CostMapItem* g_score) {
+                    bool erase(GraphNode node, const CostMapItem* g_score) {
+                        // Erases element if it is found
                         auto check_it = check_set.find(OpenSetCheckElement(node, g_score));
-                        ASSERT(check_it != check_set.end(), "Element not found in open check set");
+                        //LOG("ERASING node: " << node << " g_score: " << g_score);
+                        if (check_it == check_set.end()) return false;
+                        //ASSERT(check_it != check_set.end(), "Element not found in open check set");
 
                         auto erased = sorted_set.erase(check_it->sorted_element_tie);
                         check_set.erase(check_it);
+                        return true;
                     }
 
                     std::pair<GraphNode, const CostMapItem*> pop() {
@@ -114,6 +119,7 @@ namespace GraphSearch {
                         auto check_it = check_set.begin();
                         while (check_it != check_set.end()) {
                             if (test_cv.dominates(check_it->g_score->cv) == Containers::ArrayComparison::Dominates) {
+                                //LOG("DOMINATE ERASE node: " << check_it->node << " g_score: " << check_it->g_score);
                                 auto erased = sorted_set.erase(check_it->sorted_element_tie);
                                 check_it = check_set.erase(check_it);
                             } else {

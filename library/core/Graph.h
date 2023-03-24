@@ -70,7 +70,15 @@ class Graph {
 
 		bool isReversible() const {return m_reversible;}
 
-		std::size_t size() const {return m_graph.size();}
+		std::size_t size() const {
+			// TODO make this constant time
+			//std::size_t sz = 0;
+			//for (std::size_t i=0; i<m_graph.size(); ++i) {
+			//	if (m_graph[i].forward.size() || m_graph[i].forward.size()) ++sz;
+			//}
+			//return sz;
+			return m_graph.size();
+		}
 
 		inline const std::vector<EDGE_T>& getOutgoingEdges(NATIVE_NODE_T node) const {
 			return m_graph[node].forward.edges;

@@ -17,16 +17,16 @@ namespace Containers {
             RandomAccessList(const RandomAccessList& other) {
                 m_list = other.m_list;
                 m_access_ptrs.reserve(m_list.size());
-                for (auto list_it = m_list.begin(); list_it != m_list.end(); ++list_it) {
-                    m_access_ptrs.push_back(&(*(++list_it)));
+                for (auto it = m_list.begin(); it != m_list.end(); ++it) {
+                    m_access_ptrs.push_back(&(*it));
                 }
             }
 
             void operator=(const RandomAccessList& other) {
                 m_list = other.m_list;
                 m_access_ptrs.reserve(m_list.size());
-                for (auto list_it = m_list.begin(); list_it != m_list.end(); ++list_it) {
-                    m_access_ptrs.push_back(&(*(++list_it)));
+                for (auto it = m_list.begin(); it != m_list.end(); ++it) {
+                    m_access_ptrs.push_back(&(*it));
                 }
             }
 

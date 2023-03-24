@@ -37,13 +37,15 @@ class RandomGraphGenerator {
             : m_size(size)
             , m_max_edges_per_node(max_edges_per_node)
             , m_max_cost(max_cost)
+            , m_back_node(0)
         {}
 
         std::shared_ptr<Graph<Edge>> generate() {
             std::shared_ptr<Graph<Edge>> graph(std::make_shared<Graph<Edge>>(true, true, &Edge::edgeToStr));
             std::queue<Node> q;
             q.push(newNode());
-            while (graph->size() < m_size) {
+            //while (graph->size() < m_size) {
+            while (m_back_node < m_size) {
                 Node src = q.front();
                 q.pop();
 
@@ -58,9 +60,7 @@ class RandomGraphGenerator {
         }    
 
         inline Node newNode() {
-            Node new_node = RNG::srandi(0, m_size);
-            m_nodes_in_graph.push_back(new_node);
-            return new_node;
+            return RNG::srandi(0, ++m_back_node);
         }
 
         inline uint32_t randomCost() const {
@@ -68,15 +68,21 @@ class RandomGraphGenerator {
         }
 
         inline std::pair<Node, Node> getRandomInitAndGoal() const {
-            Node init = m_nodes_in_graph[RNG::srandi(0, m_nodes_in_graph.size() - 1)];
-            Node goal = m_nodes_in_graph[RNG::srandi(0, m_nodes_in_graph.size() - 1)];
-            while (init == goal) {goal = m_nodes_in_graph[RNG::srandi(0, m_nodes_in_graph.size() - 1)];}
+            Node init = RNG::srandi(0, m_back_node);
+            Node goal = RNG::srandi(0, m_back_node);
+            while (init == goal) {goal = RNG::srandi(0, m_back_node);}
             return {init, goal};
+        }
+
+        inline Node getRandomGoal() const {
+            Node goal = RNG::srandi(0, m_back_node);
+            while (goal == 0) {goal = RNG::srandi(0, m_back_node);}
+            return goal;
         }
 
     private:
         uint32_t m_size, m_max_edges_per_node, m_max_cost;
-        std::vector<Node> m_nodes_in_graph;
+        Node m_back_node;
 };
 
 int main(int argc, char* argv[]) {
@@ -85,10 +91,16 @@ int main(int argc, char* argv[]) {
 
 	bool verbose = parser.hasFlag('v');
     
-	uint32_t size = parser.parseAsUnsignedInt("size", 100);
-	uint32_t max_edges_per_node = parser.parseAsUnsignedInt("max-edges-per-node", 10);
-	uint32_t trials = parser.parseAsUnsignedInt("trials", 1);
-	uint32_t seed = parser.parseAsUnsignedInt("seed", 0);
+	uint32_t size = parser.parse<uint32_t>("size", 100);
+	uint32_t max_edges_per_node = parser.parse<uint32_t>("max-edges-per-node", 5);
+	uint32_t trials = parser.parse<uint32_t>("trials", 1);
+
+	uint32_t seed;
+    if (parser.hasKey("seed")) {
+        seed = parser.parse<uint32_t>("seed", 0);
+    } else {
+        seed = RNG::randi(0, UINT32_MAX);
+    }
 
     ASSERT(size, "Size must be greater than zero");
     ASSERT(max_edges_per_node, "Max number of edges per node must be greater than zero");
@@ -100,9 +112,15 @@ int main(int argc, char* argv[]) {
     RandomGraphGenerator random_graph_generator(size, max_edges_per_node);
     std::shared_ptr<Graph<Edge>> graph = random_graph_generator.generate();
 
-    if (verbose) graph->print();
+    if (verbose) {
+        LOG("Done.");
+        graph->print();
+    }
 
-    auto[start, goal] = random_graph_generator.getRandomInitAndGoal();
+    //auto[start, goal] = random_graph_generator.getRandomInitAndGoal();
+    Node start = 0;
+    Node goal = random_graph_generator.getRandomGoal();
+    if (verbose) LOG("Starting node: " << start << ", goal node: " << goal);
  
     MOQuantitativeGraphSearchProblem<Graph<Edge>, Containers::FixedArray<2, uint32_t>, SearchDirection::Forward> problem(graph, {start}, {goal}, &Edge::edgeToCostVector);
 
@@ -117,6 +135,9 @@ int main(int argc, char* argv[]) {
         TEST_ASSERT_FATAL(namoa_result.success, "BOA* found solutions when NAMOA* did not");
     } else if (namoa_result.success) {
         TEST_ASSERT_FATAL(boa_result.success, "NAMOA* found solutions when BOA* did not");
+    } else {
+        if (verbose) LOG("Neither algorithm found any solutions");
+        return 0;
     }
 
     bool pf_size_equal = false;

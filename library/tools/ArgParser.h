@@ -25,36 +25,16 @@ namespace TP {
                 return false;
             }
 
-            std::string parseAsString(const std::string& key, const std::string& default_value = std::string()) {
+            template <typename T>
+            T parse(const std::string& key, T default_value = T{});
+
+            bool hasKey(const std::string& key) {
                 std::string key_str = "--" + key;
                 for (uint32_t i=1; i<m_argc; ++i) {
-                    if (m_checked[i]) continue;
-
                     std::string arg = m_argv[i];
-                    if (arg == key_str) {
-                        ASSERT(i < m_argc - 1, "Parse key: '" << key << "' given with no string value");
-                        m_checked[i] = true;
-                        m_checked[i + 1] = true;
-                        return m_argv[i + 1];
-                    }
+                    if (arg == key_str) return true;
                 }
-                return default_value;
-            }
-
-            uint32_t parseAsUnsignedInt(const std::string& key, uint32_t default_value = 0) {
-                std::string key_str = "--" + key;
-                for (uint32_t i=1; i<m_argc; ++i) {
-                    if (m_checked[i]) continue;
-
-                    std::string arg = m_argv[i];
-                    if (arg == key_str) {
-                        ASSERT(i < m_argc - 1, "Parse key: '" << key << "' given with no int value");
-                        m_checked[i] = true;
-                        m_checked[i + 1] = true;
-                        return std::stoi(m_argv[i + 1], std::string::size_type());
-                    }
-                }
-                return default_value;
+                return false;
             }
 
         private:
@@ -62,4 +42,45 @@ namespace TP {
             int m_argc;
             char** m_argv;
     };
+
+    template <>
+    std::string ArgParser::parse<std::string>(const std::string& key, std::string default_value) {
+        std::string key_str = "--" + key;
+        for (uint32_t i=1; i<m_argc; ++i) {
+            if (m_checked[i]) continue;
+
+            std::string arg = m_argv[i];
+            if (arg == key_str) {
+                ASSERT(i < m_argc - 1, "Parse key: '" << key << "' given with no string value");
+                m_checked[i] = true;
+                m_checked[i + 1] = true;
+                return m_argv[i + 1];
+            }
+        }
+        return default_value;
+    }
+
+    template <>
+    int ArgParser::parse<int>(const std::string& key, int default_value) {
+        std::string key_str = "--" + key;
+        for (uint32_t i=1; i<m_argc; ++i) {
+            if (m_checked[i]) continue;
+
+            std::string arg = m_argv[i];
+            if (arg == key_str) {
+                ASSERT(i < m_argc - 1, "Parse key: '" << key << "' given with no int value");
+                m_checked[i] = true;
+                m_checked[i + 1] = true;
+                return std::stoi(m_argv[i + 1], std::string::size_type());
+            }
+        }
+        return default_value;
+    }
+
+    template <>
+    uint32_t ArgParser::parse<uint32_t>(const std::string& key, uint32_t default_value) {
+        return static_cast<uint32_t>(parse<int>(key, default_value));
+    }
+
+
 }
