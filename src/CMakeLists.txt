@@ -68,3 +68,10 @@ target_link_libraries(risk_avoid_grid_robot
 	StratSynthesisClass
 	MockGamePlayClass
 	)
+
+add_executable(ordered_planner_grid_robot ordered_planner_grid_robot.cpp)
+target_link_libraries(ordered_planner_grid_robot 
+	TransitionSystemClass
+	OrderedPlannerClass
+	BenchmarkClass
+	)

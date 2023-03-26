@@ -62,7 +62,7 @@ bool cardinalState(const int i, const int j, const int grid_size, std::vector<st
 int main() {
 
 	bool manual_setup = true;
-	int grid_size = 3;
+	int grid_size = 10;
 	
 	// Limits the number of times the environment can intervene:
 	bool limit_intervention = false;
@@ -72,6 +72,9 @@ int main() {
 	std::unordered_map<std::string, bool> accepted_directions;
 	accepted_directions["push_left"] = true;
 	accepted_directions["push_right"] = true;
+	accepted_directions["push_up"] = true;
+	accepted_directions["push_down"] = true;
+
 	bool verbose = false;
 	bool use_benchmark = false;
 	//std::string bm_filename_path = "./benchmark_data/preference_planner_bm.txt";
