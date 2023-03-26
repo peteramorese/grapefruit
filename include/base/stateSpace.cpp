@@ -2,6 +2,7 @@
 #include<vector>
 #include<iostream>
 #include<unordered_map>
+#include<fstream>
 #include "stateSpace.h"
 #include "state.h"
 
@@ -102,6 +103,8 @@ int StateSpace::getVarOptionsCount_(unsigned int dim) {
 void StateSpace::setStateDimensionLabel(unsigned int dim, const std::string& dimension_label){
 	if (dim < state_space_dim) {
 		index_labels[dimension_label] = dim;
+		if (index_labels_rev.size() == 0 || index_labels_rev.size()-1 < dim) index_labels_rev.resize(dim+1);
+		index_labels_rev[dim] = dimension_label;
 	} else {
 		std::cout<<"Error: Index out of bounds\n";
 	}
@@ -326,6 +329,136 @@ bool StateSpace::exclEquals_(const State* state_ptr_, const std::vector<std::str
 		}
 	}
 	return true;
+}
+
+void StateSpace::writeToFile(const std::string& filename) const {
+	std::ofstream file;
+	file.open(filename);
+	file<<"<SS>NDIMS: "<<state_space_named.size()<<"\n";
+	for (int i=0; i<state_space_named.size(); ++i) {
+		std::cout<<"b4"<<std::endl;
+		file<<"<SS>DIM"<<i<<" "<<index_labels_rev[i]<<": ";
+		std::cout<<"af"<<std::endl;
+		for (int ii=0; ii<state_space_named[i].size(); ++ii) {
+			file<<state_space_named[i][ii];
+			if (ii != state_space_named[i].size() - 1) {
+				file<<", ";
+			} else {
+				file<<";";
+			}
+		}
+		file<<"\n";
+	}
+	file<<"<SS>NDOMAINS: "<<domains.size()<<"\n";
+	for (int i=0; i<domains.size(); ++i) {
+		file<<"<SS>DOM"<<i<<" "<<domains[i].label<<": ";
+		for (int ii=0; ii<domains[i].vars.size(); ++ii) {
+			file<<domains[i].vars[ii];
+			if (ii != domains[i].vars.size() - 1) {
+				file<<", ";
+			} else {
+				file<<";";
+			}
+		}
+		file<<"\n";
+	}
+	file<<"<SS>NGROUPS: "<<groups.size()<<"\n";
+	for (int i=0; i<groups.size(); ++i) {
+		file<<"<SS>GRP"<<i<<" "<<groups[i].label<<": ";
+		for (int ii=0; ii<groups[i].vars.size(); ++ii) {
+			file<<groups[i].vars[ii];
+			if (ii != groups[i].vars.size() - 1) {
+				file<<", ";
+			} else {
+				file<<";";
+			}
+		}
+		file<<"\n";
+	}
+	file.close();
+}
+
+bool StateSpace::starts_with(const std::string& str, const std::string& prefix) {
+	for (int i=0; i<prefix.size(); ++i) {
+		if (str[i] != prefix[i]) {
+			return false;
+		}
+	}
+	return true;
+}
+
+std::string::iterator StateSpace::str_find(std::string* str, char stop_char) {
+	for (auto c=str->begin(); c!=str->end(); c++) {
+		if (*c == stop_char) {
+			return c;
+		}
+	}
+	return str->end();
+}
+
+std::shared_ptr<StateSpace> StateSpace::readFromFile(const std::string& filename) {
+	std::ifstream model_file(filename);
+	std::shared_ptr<StateSpace> SS = std::make_shared<StateSpace>();
+	if (model_file.is_open()) {
+		std::string line;
+		while (std::getline(model_file, line)) {
+			if (starts_with(line,"<SS>")) {
+				line.erase(0,4);
+				int type = -1;
+				if (starts_with(line, "NDIMS: ")) {
+					type = 0;
+				} else if (starts_with(line, "NDOMAINS: ")) {
+					type = 1;
+				} else if (starts_with(line, "NGROUPS: ")) {
+					type = 1;
+				} else {
+					std::cout<<"Unrecognized state space line"<<std::endl;
+					return nullptr;
+				}
+				//line.erase(line.begin(), std::find(line.begin(), line.end(), ' '));
+				line.erase(line.begin(), StateSpace::str_find(&line, ' '));
+				int n_dims = std::stoi(line);
+				for (int i=0; i<n_dims; ++i) {
+					if (!std::getline(model_file, line)) std::cout<<"Error expected more dimensions";
+					std::vector<std::string> vars;
+					//line.erase(line.begin(), std::find(line.begin(), line.end(), ' ') + 1);
+					line.erase(line.begin(), str_find(&line, ' ') + 1);
+					//auto colon_itr = std::find(line.begin(), line.end(), ':');
+					auto colon_itr = str_find(&line, ':');
+					std::string lbl(line.begin(), colon_itr);
+					line.erase(line.begin(), colon_itr + 2);
+					std::cout<<"FOUND LABEL: "<<lbl<<std::endl;
+					std::string buffer;
+					for (int j=0; j<line.size(); ++j) {
+						if (line[j] == ',' || line[j] == ';') {
+							vars.push_back(buffer);
+							std::cout<<"ADDING VAR: "<<buffer<<std::endl;
+							buffer.clear();
+						} else if (line[j] != ' ') {
+							buffer.push_back(line[j]);
+						}
+					}
+					if (type == 0) {
+						std::cout<<"Setting state dimension "<<i<<" vars: "<<std::endl;
+						for (auto var : vars) std::cout<<"	-var: "<<var<<std::endl;
+						SS->setStateDimension(vars, i);
+						std::cout<<"Setting state dimension label "<<i<<" lbl: "<<lbl<<std::endl;
+						SS->setStateDimensionLabel(i, lbl);
+					} else if (type == 1) {
+						std::cout<<"SETTING GROUP: "<<lbl<<std::endl;
+						SS->setLabelGroup(lbl, vars);
+					} else if (type == 2) {
+						std::cout<<"SETTING DOMAIN: "<<lbl<<std::endl;
+						SS->setDomain(lbl, vars);
+					}
+				}
+			} else {
+				break;
+			}
+		}
+	}
+	model_file.close();
+	return SS;
 }
 
 /*

@@ -1,0 +1,61 @@
+Starting benchmark: ordered_planner_grid_robot_ndfas
+Working on trial 1 out of 5...
+  > Found formula:      F(ap_x1_y9)
+  > Found formula:      F(ap_x5_y9)
+  > Found formula:      F(ap_x3_y9)
+  > Found formula:      F(ap_x4_y0)
+  > Found formula:      F(ap_x2_y0)
+  > Number of formulas:  5
+    > Writing to: dfa_3
+    > Writing to: dfa_1
+    > Writing to: dfa_2
+    > Writing to: dfa_4
+    > Writing to: dfa_0
+Working on trial 2 out of 5...
+  > Found formula:      F(ap_x1_y9)
+  > Found formula:      F(ap_x5_y9)
+  > Found formula:      F(ap_x3_y9)
+  > Found formula:      F(ap_x4_y0)
+  > Found formula:      F(ap_x2_y0)
+  > Number of formulas:  5
+    > Writing to: dfa_0
+    > Writing to: dfa_3
+    > Writing to: dfa_1
+    > Writing to: dfa_2
+    > Writing to: dfa_4
+Working on trial 3 out of 5...
+  > Found formula:      F(ap_x1_y9)
+  > Found formula:      F(ap_x5_y9)
+  > Found formula:      F(ap_x3_y9)
+  > Found formula:      F(ap_x4_y0)
+  > Found formula:      F(ap_x2_y0)
+  > Number of formulas:  5
+    > Writing to: dfa_4
+    > Writing to: dfa_2
+    > Writing to: dfa_1
+    > Writing to: dfa_0
+    > Writing to: dfa_3
+Working on trial 4 out of 5...
+  > Found formula:      F(ap_x1_y9)
+  > Found formula:      F(ap_x5_y9)
+  > Found formula:      F(ap_x3_y9)
+  > Found formula:      F(ap_x4_y0)
+  > Found formula:      F(ap_x2_y0)
+  > Number of formulas:  5
+    > Writing to: dfa_1
+    > Writing to: dfa_4
+    > Writing to: dfa_3
+    > Writing to: dfa_0
+    > Writing to: dfa_2
+Working on trial 5 out of 5...
+  > Found formula:      F(ap_x1_y9)
+  > Found formula:      F(ap_x5_y9)
+  > Found formula:      F(ap_x3_y9)
+  > Found formula:      F(ap_x4_y0)
+  > Found formula:      F(ap_x2_y0)
+  > Number of formulas:  5
+    > Writing to: dfa_0
+    > Writing to: dfa_2
+    > Writing to: dfa_3
+    > Writing to: dfa_4
+    > Writing to: dfa_1

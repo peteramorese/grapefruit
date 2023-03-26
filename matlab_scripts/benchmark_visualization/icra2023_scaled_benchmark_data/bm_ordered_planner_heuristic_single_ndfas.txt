@@ -1,0 +1,4200 @@
+[T] heuristic (ms): 37.000000
+[T] search (ms): 5.000000
+[T] sq_iterations (): 110.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 62.000000
+[T] search (ms): 16.000000
+[T] sq_iterations (): 364.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 57.000000
+[T] search (ms): 116.000000
+[T] sq_iterations (): 1898.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 76.000000
+[T] search (ms): 353.000000
+[T] sq_iterations (): 3844.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 125.000000
+[T] search (ms): 4052.000000
+[T] sq_iterations (): 36076.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 114.000000
+[T] search (ms): 13991.000000
+[T] sq_iterations (): 107376.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 129.000000
+[T] search (ms): 78891.000000
+[T] sq_iterations (): 552951.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 12.000000
+[T] sq_iterations (): 390.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 40.000000
+[T] search (ms): 38.000000
+[T] sq_iterations (): 908.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 288.000000
+[T] sq_iterations (): 5093.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 64.000000
+[T] search (ms): 372.000000
+[T] sq_iterations (): 5170.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 82.000000
+[T] search (ms): 2233.000000
+[T] sq_iterations (): 24584.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 102.000000
+[T] search (ms): 2814.000000
+[T] sq_iterations (): 24820.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 128.000000
+[T] search (ms): 10883.000000
+[T] sq_iterations (): 78429.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 304.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 22.000000
+[T] sq_iterations (): 516.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 47.000000
+[T] search (ms): 152.000000
+[T] sq_iterations (): 2827.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 66.000000
+[T] search (ms): 1094.000000
+[T] sq_iterations (): 15461.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 83.000000
+[T] search (ms): 1553.000000
+[T] sq_iterations (): 17702.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 108.000000
+[T] search (ms): 4206.000000
+[T] sq_iterations (): 39163.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 121.000000
+[T] search (ms): 9431.000000
+[T] sq_iterations (): 69037.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 18.000000
+[T] search (ms): 12.000000
+[T] sq_iterations (): 430.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 49.000000
+[T] sq_iterations (): 1264.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 46.000000
+[T] search (ms): 62.000000
+[T] sq_iterations (): 1245.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 63.000000
+[T] search (ms): 350.000000
+[T] sq_iterations (): 5413.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 81.000000
+[T] search (ms): 1181.000000
+[T] sq_iterations (): 14108.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 100.000000
+[T] search (ms): 5770.000000
+[T] sq_iterations (): 54728.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 133.000000
+[T] search (ms): 33992.000000
+[T] sq_iterations (): 263128.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 27.000000
+[T] search (ms): 6.000000
+[T] sq_iterations (): 211.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 12.000000
+[T] sq_iterations (): 284.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 56.000000
+[T] search (ms): 78.000000
+[T] sq_iterations (): 1370.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 81.000000
+[T] search (ms): 236.000000
+[T] sq_iterations (): 2996.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 125.000000
+[T] search (ms): 476.000000
+[T] sq_iterations (): 4575.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 104.000000
+[T] search (ms): 1399.000000
+[T] sq_iterations (): 12313.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 120.000000
+[T] search (ms): 7799.000000
+[T] sq_iterations (): 60286.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 299.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 28.000000
+[T] sq_iterations (): 651.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 56.000000
+[T] search (ms): 54.000000
+[T] sq_iterations (): 892.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 72.000000
+[T] search (ms): 175.000000
+[T] sq_iterations (): 2365.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 105.000000
+[T] search (ms): 1616.000000
+[T] sq_iterations (): 17901.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 120.000000
+[T] search (ms): 4870.000000
+[T] sq_iterations (): 45139.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 117.000000
+[T] search (ms): 19674.000000
+[T] sq_iterations (): 154879.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 27.000000
+[T] search (ms): 6.000000
+[T] sq_iterations (): 196.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 53.000000
+[T] search (ms): 37.000000
+[T] sq_iterations (): 851.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 83.000000
+[T] search (ms): 155.000000
+[T] sq_iterations (): 2004.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 77.000000
+[T] search (ms): 254.000000
+[T] sq_iterations (): 3400.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 119.000000
+[T] search (ms): 621.000000
+[T] sq_iterations (): 6898.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 109.000000
+[T] search (ms): 1499.000000
+[T] sq_iterations (): 13061.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 149.000000
+[T] search (ms): 2875.000000
+[T] sq_iterations (): 21380.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 7.000000
+[T] sq_iterations (): 211.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 40.000000
+[T] search (ms): 54.000000
+[T] sq_iterations (): 1231.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 56.000000
+[T] search (ms): 239.000000
+[T] sq_iterations (): 4074.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 75.000000
+[T] search (ms): 421.000000
+[T] sq_iterations (): 5355.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 103.000000
+[T] search (ms): 2451.000000
+[T] sq_iterations (): 23613.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 113.000000
+[T] search (ms): 6804.000000
+[T] sq_iterations (): 52849.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 123.000000
+[T] search (ms): 74705.000000
+[T] sq_iterations (): 503602.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 7.000000
+[T] sq_iterations (): 140.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 41.000000
+[T] search (ms): 32.000000
+[T] sq_iterations (): 729.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 83.000000
+[T] search (ms): 80.000000
+[T] sq_iterations (): 1329.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 113.000000
+[T] search (ms): 299.000000
+[T] sq_iterations (): 3519.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 101.000000
+[T] search (ms): 736.000000
+[T] sq_iterations (): 7506.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 111.000000
+[T] search (ms): 7078.000000
+[T] sq_iterations (): 59915.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 130.000000
+[T] search (ms): 16741.000000
+[T] sq_iterations (): 115872.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 19.000000
+[T] search (ms): 2.000000
+[T] sq_iterations (): 81.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 31.000000
+[T] search (ms): 11.000000
+[T] sq_iterations (): 301.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 47.000000
+[T] search (ms): 27.000000
+[T] sq_iterations (): 527.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 65.000000
+[T] search (ms): 158.000000
+[T] sq_iterations (): 2308.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 83.000000
+[T] search (ms): 565.000000
+[T] sq_iterations (): 6490.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 101.000000
+[T] search (ms): 2175.000000
+[T] sq_iterations (): 19627.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 122.000000
+[T] search (ms): 35803.000000
+[T] sq_iterations (): 278364.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 11.000000
+[T] sq_iterations (): 371.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 40.000000
+[T] search (ms): 35.000000
+[T] sq_iterations (): 818.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 61.000000
+[T] search (ms): 187.000000
+[T] sq_iterations (): 3409.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 81.000000
+[T] search (ms): 908.000000
+[T] sq_iterations (): 12435.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 96.000000
+[T] search (ms): 4996.000000
+[T] sq_iterations (): 52486.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 114.000000
+[T] search (ms): 15452.000000
+[T] sq_iterations (): 126187.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 129.000000
+[T] search (ms): 30878.000000
+[T] sq_iterations (): 218624.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 18.000000
+[T] search (ms): 3.000000
+[T] sq_iterations (): 130.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 40.000000
+[T] sq_iterations (): 1006.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 47.000000
+[T] search (ms): 227.000000
+[T] sq_iterations (): 4304.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 62.000000
+[T] search (ms): 548.000000
+[T] sq_iterations (): 7918.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 80.000000
+[T] search (ms): 2305.000000
+[T] sq_iterations (): 26057.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 99.000000
+[T] search (ms): 6561.000000
+[T] sq_iterations (): 60544.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 121.000000
+[T] search (ms): 16335.000000
+[T] sq_iterations (): 129959.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 18.000000
+[T] search (ms): 2.000000
+[T] sq_iterations (): 81.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 7.000000
+[T] sq_iterations (): 186.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 46.000000
+[T] search (ms): 51.000000
+[T] sq_iterations (): 1040.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 64.000000
+[T] search (ms): 469.000000
+[T] sq_iterations (): 7132.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 81.000000
+[T] search (ms): 1721.000000
+[T] sq_iterations (): 20098.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 100.000000
+[T] search (ms): 8041.000000
+[T] sq_iterations (): 74194.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 120.000000
+[T] search (ms): 41703.000000
+[T] sq_iterations (): 321424.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 4.000000
+[T] sq_iterations (): 144.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 47.000000
+[T] sq_iterations (): 1119.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 53.000000
+[T] search (ms): 104.000000
+[T] sq_iterations (): 1933.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 462.000000
+[T] sq_iterations (): 6569.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 89.000000
+[T] search (ms): 2964.000000
+[T] sq_iterations (): 32203.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 99.000000
+[T] search (ms): 7876.000000
+[T] sq_iterations (): 70230.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 122.000000
+[T] search (ms): 55612.000000
+[T] sq_iterations (): 409281.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 12.000000
+[T] sq_iterations (): 419.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 20.000000
+[T] sq_iterations (): 476.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 47.000000
+[T] sq_iterations (): 823.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 552.000000
+[T] sq_iterations (): 7692.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 91.000000
+[T] search (ms): 4563.000000
+[T] sq_iterations (): 49867.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 111.000000
+[T] search (ms): 17214.000000
+[T] sq_iterations (): 148954.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 129.000000
+[T] search (ms): 62351.000000
+[T] sq_iterations (): 467118.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 1.000000
+[T] sq_iterations (): 50.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 35.000000
+[T] sq_iterations (): 824.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 107.000000
+[T] sq_iterations (): 1854.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 76.000000
+[T] search (ms): 182.000000
+[T] sq_iterations (): 2474.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 87.000000
+[T] search (ms): 786.000000
+[T] sq_iterations (): 8517.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 104.000000
+[T] search (ms): 3689.000000
+[T] sq_iterations (): 32814.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 123.000000
+[T] search (ms): 18758.000000
+[T] sq_iterations (): 134260.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 23.000000
+[T] search (ms): 2.000000
+[T] sq_iterations (): 83.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 20.000000
+[T] sq_iterations (): 498.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 52.000000
+[T] search (ms): 69.000000
+[T] sq_iterations (): 1402.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 69.000000
+[T] search (ms): 216.000000
+[T] sq_iterations (): 3331.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 76.000000
+[T] search (ms): 765.000000
+[T] sq_iterations (): 9717.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 97.000000
+[T] search (ms): 2320.000000
+[T] sq_iterations (): 22949.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 118.000000
+[T] search (ms): 51840.000000
+[T] sq_iterations (): 421838.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 5.000000
+[T] sq_iterations (): 183.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 29.000000
+[T] sq_iterations (): 736.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 46.000000
+[T] search (ms): 49.000000
+[T] sq_iterations (): 958.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 62.000000
+[T] search (ms): 156.000000
+[T] sq_iterations (): 2414.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 79.000000
+[T] search (ms): 863.000000
+[T] sq_iterations (): 10540.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 96.000000
+[T] search (ms): 1474.000000
+[T] sq_iterations (): 14410.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 116.000000
+[T] search (ms): 14229.000000
+[T] sq_iterations (): 115493.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 26.000000
+[T] search (ms): 11.000000
+[T] sq_iterations (): 372.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 22.000000
+[T] sq_iterations (): 516.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 122.000000
+[T] sq_iterations (): 2066.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 498.000000
+[T] sq_iterations (): 6807.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 90.000000
+[T] search (ms): 1556.000000
+[T] sq_iterations (): 16275.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 108.000000
+[T] search (ms): 3854.000000
+[T] sq_iterations (): 32141.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 128.000000
+[T] search (ms): 30083.000000
+[T] sq_iterations (): 225135.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 26.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 311.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 25.000000
+[T] sq_iterations (): 614.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 78.000000
+[T] sq_iterations (): 1449.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 713.000000
+[T] sq_iterations (): 9907.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 91.000000
+[T] search (ms): 977.000000
+[T] sq_iterations (): 10131.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 108.000000
+[T] search (ms): 13608.000000
+[T] sq_iterations (): 115944.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 131.000000
+[T] search (ms): 51730.000000
+[T] sq_iterations (): 355542.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 11.000000
+[T] sq_iterations (): 371.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 37.000000
+[T] search (ms): 15.000000
+[T] sq_iterations (): 385.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 53.000000
+[T] search (ms): 90.000000
+[T] sq_iterations (): 1659.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 70.000000
+[T] search (ms): 743.000000
+[T] sq_iterations (): 10882.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 86.000000
+[T] search (ms): 1690.000000
+[T] sq_iterations (): 19106.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 98.000000
+[T] search (ms): 9274.000000
+[T] sq_iterations (): 88200.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 118.000000
+[T] search (ms): 15255.000000
+[T] sq_iterations (): 122220.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 10.000000
+[T] sq_iterations (): 333.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 42.000000
+[T] sq_iterations (): 998.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 85.000000
+[T] sq_iterations (): 1483.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 73.000000
+[T] search (ms): 402.000000
+[T] sq_iterations (): 5320.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 88.000000
+[T] search (ms): 1834.000000
+[T] sq_iterations (): 19051.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 109.000000
+[T] search (ms): 11468.000000
+[T] sq_iterations (): 94391.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 132.000000
+[T] search (ms): 49799.000000
+[T] sq_iterations (): 327507.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 26.000000
+[T] search (ms): 5.000000
+[T] sq_iterations (): 159.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 18.000000
+[T] sq_iterations (): 422.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 72.000000
+[T] sq_iterations (): 1235.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 72.000000
+[T] search (ms): 174.000000
+[T] sq_iterations (): 2224.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 91.000000
+[T] search (ms): 444.000000
+[T] sq_iterations (): 4617.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 109.000000
+[T] search (ms): 1743.000000
+[T] sq_iterations (): 15061.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 130.000000
+[T] search (ms): 29267.000000
+[T] sq_iterations (): 214345.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 26.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 299.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 30.000000
+[T] sq_iterations (): 733.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 104.000000
+[T] sq_iterations (): 1801.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 767.000000
+[T] sq_iterations (): 10684.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 87.000000
+[T] search (ms): 2804.000000
+[T] sq_iterations (): 30848.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 106.000000
+[T] search (ms): 10533.000000
+[T] sq_iterations (): 96186.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 127.000000
+[T] search (ms): 23897.000000
+[T] sq_iterations (): 175710.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 303.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 28.000000
+[T] sq_iterations (): 651.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 53.000000
+[T] sq_iterations (): 892.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 70.000000
+[T] search (ms): 413.000000
+[T] sq_iterations (): 5425.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 87.000000
+[T] search (ms): 1194.000000
+[T] sq_iterations (): 12989.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 105.000000
+[T] search (ms): 6599.000000
+[T] sq_iterations (): 58068.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 125.000000
+[T] search (ms): 39495.000000
+[T] sq_iterations (): 274375.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 18.000000
+[T] search (ms): 4.000000
+[T] sq_iterations (): 139.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 8.000000
+[T] sq_iterations (): 225.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 46.000000
+[T] search (ms): 65.000000
+[T] sq_iterations (): 1252.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 61.000000
+[T] search (ms): 136.000000
+[T] sq_iterations (): 2106.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 77.000000
+[T] search (ms): 386.000000
+[T] sq_iterations (): 4814.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 96.000000
+[T] search (ms): 861.000000
+[T] sq_iterations (): 8700.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 114.000000
+[T] search (ms): 5644.000000
+[T] sq_iterations (): 47618.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 10.000000
+[T] sq_iterations (): 324.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 25.000000
+[T] sq_iterations (): 601.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 46.000000
+[T] search (ms): 49.000000
+[T] sq_iterations (): 1006.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 62.000000
+[T] search (ms): 131.000000
+[T] sq_iterations (): 1986.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 76.000000
+[T] search (ms): 412.000000
+[T] sq_iterations (): 5365.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 97.000000
+[T] search (ms): 799.000000
+[T] sq_iterations (): 8096.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 118.000000
+[T] search (ms): 20879.000000
+[T] sq_iterations (): 169011.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 20.000000
+[T] search (ms): 12.000000
+[T] sq_iterations (): 430.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 35.000000
+[T] sq_iterations (): 906.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 46.000000
+[T] search (ms): 39.000000
+[T] sq_iterations (): 786.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 62.000000
+[T] search (ms): 295.000000
+[T] sq_iterations (): 4439.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 80.000000
+[T] search (ms): 835.000000
+[T] sq_iterations (): 10111.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 99.000000
+[T] search (ms): 3522.000000
+[T] sq_iterations (): 33297.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 116.000000
+[T] search (ms): 14083.000000
+[T] sq_iterations (): 109771.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 10.000000
+[T] sq_iterations (): 336.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 56.000000
+[T] sq_iterations (): 1364.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 212.000000
+[T] sq_iterations (): 3672.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 1156.000000
+[T] sq_iterations (): 16535.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 88.000000
+[T] search (ms): 10850.000000
+[T] sq_iterations (): 126183.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 110.000000
+[T] search (ms): 32067.000000
+[T] sq_iterations (): 287393.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 130.000000
+[T] search (ms): 66205.000000
+[T] sq_iterations (): 480855.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 4.000000
+[T] sq_iterations (): 140.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 31.000000
+[T] search (ms): 7.000000
+[T] sq_iterations (): 186.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 45.000000
+[T] search (ms): 48.000000
+[T] sq_iterations (): 974.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 62.000000
+[T] search (ms): 93.000000
+[T] sq_iterations (): 1438.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 80.000000
+[T] search (ms): 625.000000
+[T] sq_iterations (): 7505.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 98.000000
+[T] search (ms): 1958.000000
+[T] sq_iterations (): 19527.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 117.000000
+[T] search (ms): 34304.000000
+[T] sq_iterations (): 283904.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 18.000000
+[T] search (ms): 11.000000
+[T] sq_iterations (): 391.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 43.000000
+[T] sq_iterations (): 1137.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 47.000000
+[T] search (ms): 133.000000
+[T] sq_iterations (): 2583.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 65.000000
+[T] search (ms): 1682.000000
+[T] sq_iterations (): 24751.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 80.000000
+[T] search (ms): 7212.000000
+[T] sq_iterations (): 88741.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 96.000000
+[T] search (ms): 12633.000000
+[T] sq_iterations (): 127566.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 116.000000
+[T] search (ms): 30309.000000
+[T] sq_iterations (): 254629.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 7.000000
+[T] sq_iterations (): 245.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 39.000000
+[T] sq_iterations (): 908.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 69.000000
+[T] sq_iterations (): 1173.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 64.000000
+[T] search (ms): 434.000000
+[T] sq_iterations (): 5814.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 82.000000
+[T] search (ms): 2203.000000
+[T] sq_iterations (): 23744.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 98.000000
+[T] search (ms): 2826.000000
+[T] sq_iterations (): 25599.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 117.000000
+[T] search (ms): 6741.000000
+[T] sq_iterations (): 49116.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 1.000000
+[T] sq_iterations (): 52.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 31.000000
+[T] sq_iterations (): 781.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 53.000000
+[T] search (ms): 136.000000
+[T] sq_iterations (): 2475.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 392.000000
+[T] sq_iterations (): 5288.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 89.000000
+[T] search (ms): 1302.000000
+[T] sq_iterations (): 14043.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 109.000000
+[T] search (ms): 2682.000000
+[T] sq_iterations (): 22491.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 133.000000
+[T] search (ms): 15708.000000
+[T] sq_iterations (): 103142.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 10.000000
+[T] sq_iterations (): 207.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 40.000000
+[T] search (ms): 31.000000
+[T] sq_iterations (): 718.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 73.000000
+[T] search (ms): 35.000000
+[T] sq_iterations (): 593.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 101.000000
+[T] search (ms): 897.000000
+[T] sq_iterations (): 11524.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 108.000000
+[T] search (ms): 2174.000000
+[T] sq_iterations (): 23321.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 132.000000
+[T] search (ms): 3553.000000
+[T] sq_iterations (): 29265.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 121.000000
+[T] search (ms): 7814.000000
+[T] sq_iterations (): 57359.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 17.000000
+[T] sq_iterations (): 353.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 61.000000
+[T] search (ms): 46.000000
+[T] sq_iterations (): 1051.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 86.000000
+[T] search (ms): 183.000000
+[T] sq_iterations (): 3089.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 92.000000
+[T] search (ms): 1004.000000
+[T] sq_iterations (): 13093.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 94.000000
+[T] search (ms): 4251.000000
+[T] sq_iterations (): 43652.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 115.000000
+[T] search (ms): 9433.000000
+[T] sq_iterations (): 76698.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 138.000000
+[T] search (ms): 28334.000000
+[T] sq_iterations (): 186039.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 19.000000
+[T] search (ms): 8.000000
+[T] sq_iterations (): 293.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 33.000000
+[T] search (ms): 10.000000
+[T] sq_iterations (): 265.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 48.000000
+[T] search (ms): 42.000000
+[T] sq_iterations (): 817.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 96.000000
+[T] search (ms): 441.000000
+[T] sq_iterations (): 6479.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 103.000000
+[T] search (ms): 1065.000000
+[T] sq_iterations (): 13080.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 99.000000
+[T] search (ms): 1639.000000
+[T] sq_iterations (): 16301.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 120.000000
+[T] search (ms): 6165.000000
+[T] sq_iterations (): 48973.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 23.000000
+[T] sq_iterations (): 451.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 58.000000
+[T] search (ms): 41.000000
+[T] sq_iterations (): 938.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 56.000000
+[T] search (ms): 104.000000
+[T] sq_iterations (): 1779.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 108.000000
+[T] search (ms): 255.000000
+[T] sq_iterations (): 3297.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 117.000000
+[T] search (ms): 641.000000
+[T] sq_iterations (): 7346.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 99.000000
+[T] search (ms): 2215.000000
+[T] sq_iterations (): 20662.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 180.000000
+[T] search (ms): 18223.000000
+[T] sq_iterations (): 141201.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 3.000000
+[T] sq_iterations (): 110.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 60.000000
+[T] search (ms): 55.000000
+[T] sq_iterations (): 873.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 88.000000
+[T] search (ms): 145.000000
+[T] sq_iterations (): 2333.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 90.000000
+[T] search (ms): 1110.000000
+[T] sq_iterations (): 14149.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 92.000000
+[T] search (ms): 3112.000000
+[T] sq_iterations (): 31607.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 154.000000
+[T] search (ms): 8034.000000
+[T] sq_iterations (): 64568.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 138.000000
+[T] search (ms): 24672.000000
+[T] sq_iterations (): 165154.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 6.000000
+[T] sq_iterations (): 211.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 11.000000
+[T] sq_iterations (): 258.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 72.000000
+[T] sq_iterations (): 1280.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 72.000000
+[T] search (ms): 120.000000
+[T] sq_iterations (): 1585.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 100.000000
+[T] search (ms): 800.000000
+[T] sq_iterations (): 8395.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 112.000000
+[T] search (ms): 3324.000000
+[T] sq_iterations (): 27638.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 129.000000
+[T] search (ms): 24410.000000
+[T] sq_iterations (): 166459.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 10.000000
+[T] sq_iterations (): 333.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 48.000000
+[T] sq_iterations (): 949.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 130.000000
+[T] sq_iterations (): 2332.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 82.000000
+[T] search (ms): 421.000000
+[T] sq_iterations (): 5496.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 92.000000
+[T] search (ms): 4320.000000
+[T] sq_iterations (): 43709.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 101.000000
+[T] search (ms): 24299.000000
+[T] sq_iterations (): 209564.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 119.000000
+[T] search (ms): 40159.000000
+[T] sq_iterations (): 286375.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 304.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 27.000000
+[T] sq_iterations (): 651.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 48.000000
+[T] search (ms): 181.000000
+[T] sq_iterations (): 3282.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 64.000000
+[T] search (ms): 359.000000
+[T] sq_iterations (): 5253.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 83.000000
+[T] search (ms): 683.000000
+[T] sq_iterations (): 7541.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 101.000000
+[T] search (ms): 3187.000000
+[T] sq_iterations (): 27947.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 123.000000
+[T] search (ms): 11199.000000
+[T] sq_iterations (): 80236.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 18.000000
+[T] search (ms): 5.000000
+[T] sq_iterations (): 180.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 36.000000
+[T] sq_iterations (): 906.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 48.000000
+[T] search (ms): 196.000000
+[T] sq_iterations (): 3691.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 63.000000
+[T] search (ms): 1190.000000
+[T] sq_iterations (): 17613.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 81.000000
+[T] search (ms): 1300.000000
+[T] sq_iterations (): 15898.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 100.000000
+[T] search (ms): 11249.000000
+[T] sq_iterations (): 108703.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 117.000000
+[T] search (ms): 32126.000000
+[T] sq_iterations (): 271252.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 18.000000
+[T] search (ms): 5.000000
+[T] sq_iterations (): 180.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 20.000000
+[T] sq_iterations (): 540.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 47.000000
+[T] search (ms): 103.000000
+[T] sq_iterations (): 2002.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 62.000000
+[T] search (ms): 104.000000
+[T] sq_iterations (): 1661.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 79.000000
+[T] search (ms): 1038.000000
+[T] sq_iterations (): 13105.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 97.000000
+[T] search (ms): 3306.000000
+[T] sq_iterations (): 33794.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 119.000000
+[T] search (ms): 27639.000000
+[T] sq_iterations (): 226790.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 2.000000
+[T] sq_iterations (): 83.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 37.000000
+[T] search (ms): 13.000000
+[T] sq_iterations (): 326.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 44.000000
+[T] sq_iterations (): 838.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 217.000000
+[T] sq_iterations (): 3070.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 87.000000
+[T] search (ms): 389.000000
+[T] sq_iterations (): 4217.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 106.000000
+[T] search (ms): 813.000000
+[T] sq_iterations (): 6825.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 128.000000
+[T] search (ms): 7399.000000
+[T] sq_iterations (): 51320.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 8.000000
+[T] sq_iterations (): 285.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 18.000000
+[T] sq_iterations (): 422.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 66.000000
+[T] sq_iterations (): 1146.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 70.000000
+[T] search (ms): 374.000000
+[T] sq_iterations (): 4942.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 89.000000
+[T] search (ms): 935.000000
+[T] sq_iterations (): 9400.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 106.000000
+[T] search (ms): 2945.000000
+[T] sq_iterations (): 24977.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 129.000000
+[T] search (ms): 34540.000000
+[T] sq_iterations (): 257156.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 305.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 62.000000
+[T] search (ms): 73.000000
+[T] sq_iterations (): 1165.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 56.000000
+[T] search (ms): 242.000000
+[T] sq_iterations (): 4126.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 89.000000
+[T] search (ms): 256.000000
+[T] sq_iterations (): 3393.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 124.000000
+[T] search (ms): 1455.000000
+[T] sq_iterations (): 15940.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 102.000000
+[T] search (ms): 3134.000000
+[T] sq_iterations (): 28922.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 121.000000
+[T] search (ms): 21842.000000
+[T] sq_iterations (): 162450.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 289.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 13.000000
+[T] sq_iterations (): 326.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 72.000000
+[T] search (ms): 78.000000
+[T] sq_iterations (): 958.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 96.000000
+[T] search (ms): 107.000000
+[T] sq_iterations (): 1510.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 81.000000
+[T] search (ms): 1102.000000
+[T] sq_iterations (): 13298.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 104.000000
+[T] search (ms): 13848.000000
+[T] sq_iterations (): 135334.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 120.000000
+[T] search (ms): 31318.000000
+[T] sq_iterations (): 248383.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 15.000000
+[T] sq_iterations (): 313.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 58.000000
+[T] search (ms): 48.000000
+[T] sq_iterations (): 1110.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 84.000000
+[T] search (ms): 126.000000
+[T] sq_iterations (): 2097.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 78.000000
+[T] search (ms): 693.000000
+[T] sq_iterations (): 9837.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 124.000000
+[T] search (ms): 4605.000000
+[T] sq_iterations (): 54208.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 100.000000
+[T] search (ms): 19290.000000
+[T] sq_iterations (): 179307.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 118.000000
+[T] search (ms): 93820.000000
+[T] sq_iterations (): 734736.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 11.000000
+[T] sq_iterations (): 371.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 40.000000
+[T] search (ms): 35.000000
+[T] sq_iterations (): 818.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 70.000000
+[T] sq_iterations (): 1267.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 77.000000
+[T] search (ms): 391.000000
+[T] sq_iterations (): 5471.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 89.000000
+[T] search (ms): 839.000000
+[T] sq_iterations (): 9429.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 109.000000
+[T] search (ms): 4567.000000
+[T] sq_iterations (): 41506.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 135.000000
+[T] search (ms): 32140.000000
+[T] sq_iterations (): 239641.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 19.000000
+[T] search (ms): 2.000000
+[T] sq_iterations (): 81.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 5.000000
+[T] sq_iterations (): 131.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 48.000000
+[T] search (ms): 7.000000
+[T] sq_iterations (): 144.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 64.000000
+[T] search (ms): 89.000000
+[T] sq_iterations (): 1317.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 81.000000
+[T] search (ms): 94.000000
+[T] sq_iterations (): 1084.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 101.000000
+[T] search (ms): 2614.000000
+[T] sq_iterations (): 24835.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 120.000000
+[T] search (ms): 23222.000000
+[T] sq_iterations (): 185999.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 16.000000
+[T] sq_iterations (): 508.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 45.000000
+[T] sq_iterations (): 1021.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 107.000000
+[T] sq_iterations (): 1954.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 70.000000
+[T] search (ms): 1047.000000
+[T] sq_iterations (): 14692.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 88.000000
+[T] search (ms): 2937.000000
+[T] sq_iterations (): 33397.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 106.000000
+[T] search (ms): 8819.000000
+[T] sq_iterations (): 81395.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 126.000000
+[T] search (ms): 22268.000000
+[T] sq_iterations (): 171174.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 3.000000
+[T] sq_iterations (): 110.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 7.000000
+[T] sq_iterations (): 171.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 48.000000
+[T] search (ms): 24.000000
+[T] sq_iterations (): 423.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 64.000000
+[T] search (ms): 430.000000
+[T] sq_iterations (): 5942.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 82.000000
+[T] search (ms): 5161.000000
+[T] sq_iterations (): 57919.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 107.000000
+[T] search (ms): 6485.000000
+[T] sq_iterations (): 57914.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 117.000000
+[T] search (ms): 29469.000000
+[T] sq_iterations (): 223841.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 10.000000
+[T] sq_iterations (): 333.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 45.000000
+[T] sq_iterations (): 1067.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 56.000000
+[T] search (ms): 94.000000
+[T] sq_iterations (): 1580.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 64.000000
+[T] search (ms): 220.000000
+[T] sq_iterations (): 3040.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 82.000000
+[T] search (ms): 1041.000000
+[T] sq_iterations (): 11585.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 102.000000
+[T] search (ms): 6154.000000
+[T] sq_iterations (): 52984.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 120.000000
+[T] search (ms): 19348.000000
+[T] sq_iterations (): 138455.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 18.000000
+[T] search (ms): 5.000000
+[T] sq_iterations (): 180.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 33.000000
+[T] search (ms): 29.000000
+[T] sq_iterations (): 752.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 48.000000
+[T] search (ms): 142.000000
+[T] sq_iterations (): 2706.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 64.000000
+[T] search (ms): 830.000000
+[T] sq_iterations (): 12266.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 83.000000
+[T] search (ms): 2624.000000
+[T] sq_iterations (): 29345.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 105.000000
+[T] search (ms): 6249.000000
+[T] sq_iterations (): 57249.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 121.000000
+[T] search (ms): 77656.000000
+[T] sq_iterations (): 592708.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 5.000000
+[T] sq_iterations (): 183.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 29.000000
+[T] sq_iterations (): 736.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 47.000000
+[T] search (ms): 157.000000
+[T] sq_iterations (): 3000.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 261.000000
+[T] sq_iterations (): 3803.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 80.000000
+[T] search (ms): 724.000000
+[T] sq_iterations (): 8307.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 97.000000
+[T] search (ms): 1487.000000
+[T] sq_iterations (): 14410.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 116.000000
+[T] search (ms): 14255.000000
+[T] sq_iterations (): 115493.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 4.000000
+[T] sq_iterations (): 162.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 40.000000
+[T] search (ms): 41.000000
+[T] sq_iterations (): 934.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 102.000000
+[T] sq_iterations (): 1722.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 73.000000
+[T] search (ms): 276.000000
+[T] sq_iterations (): 3442.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 99.000000
+[T] search (ms): 519.000000
+[T] sq_iterations (): 5105.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 107.000000
+[T] search (ms): 4306.000000
+[T] sq_iterations (): 39881.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 127.000000
+[T] search (ms): 13862.000000
+[T] sq_iterations (): 103036.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 20.000000
+[T] search (ms): 2.000000
+[T] sq_iterations (): 81.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 7.000000
+[T] sq_iterations (): 186.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 47.000000
+[T] search (ms): 39.000000
+[T] sq_iterations (): 772.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 74.000000
+[T] search (ms): 116.000000
+[T] sq_iterations (): 1583.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 79.000000
+[T] search (ms): 643.000000
+[T] sq_iterations (): 7598.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 99.000000
+[T] search (ms): 1792.000000
+[T] sq_iterations (): 16505.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 118.000000
+[T] search (ms): 3031.000000
+[T] sq_iterations (): 22359.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 6.000000
+[T] sq_iterations (): 211.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 20.000000
+[T] sq_iterations (): 474.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 48.000000
+[T] search (ms): 58.000000
+[T] sq_iterations (): 928.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 63.000000
+[T] search (ms): 114.000000
+[T] sq_iterations (): 1643.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 82.000000
+[T] search (ms): 1562.000000
+[T] sq_iterations (): 17482.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 99.000000
+[T] search (ms): 2886.000000
+[T] sq_iterations (): 27618.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 116.000000
+[T] search (ms): 21096.000000
+[T] sq_iterations (): 168225.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 15.000000
+[T] sq_iterations (): 508.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 60.000000
+[T] sq_iterations (): 1398.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 171.000000
+[T] sq_iterations (): 2948.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 73.000000
+[T] search (ms): 248.000000
+[T] sq_iterations (): 2958.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 80.000000
+[T] search (ms): 617.000000
+[T] sq_iterations (): 6452.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 110.000000
+[T] search (ms): 2902.000000
+[T] sq_iterations (): 25569.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 119.000000
+[T] search (ms): 18240.000000
+[T] sq_iterations (): 131383.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 7.000000
+[T] sq_iterations (): 253.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 20.000000
+[T] sq_iterations (): 463.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 56.000000
+[T] search (ms): 90.000000
+[T] sq_iterations (): 1521.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 219.000000
+[T] sq_iterations (): 2916.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 79.000000
+[T] search (ms): 457.000000
+[T] sq_iterations (): 5276.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 98.000000
+[T] search (ms): 1779.000000
+[T] sq_iterations (): 16062.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 117.000000
+[T] search (ms): 6610.000000
+[T] sq_iterations (): 49658.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 18.000000
+[T] search (ms): 3.000000
+[T] sq_iterations (): 113.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 42.000000
+[T] sq_iterations (): 1058.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 47.000000
+[T] search (ms): 155.000000
+[T] sq_iterations (): 2942.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 65.000000
+[T] search (ms): 362.000000
+[T] sq_iterations (): 5272.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 80.000000
+[T] search (ms): 6268.000000
+[T] sq_iterations (): 73091.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 100.000000
+[T] search (ms): 6156.000000
+[T] sq_iterations (): 58219.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 118.000000
+[T] search (ms): 23003.000000
+[T] sq_iterations (): 173020.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 18.000000
+[T] search (ms): 5.000000
+[T] sq_iterations (): 180.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 34.000000
+[T] sq_iterations (): 906.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 48.000000
+[T] search (ms): 244.000000
+[T] sq_iterations (): 4664.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 63.000000
+[T] search (ms): 1012.000000
+[T] sq_iterations (): 15754.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 80.000000
+[T] search (ms): 7552.000000
+[T] sq_iterations (): 90881.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 99.000000
+[T] search (ms): 18585.000000
+[T] sq_iterations (): 179408.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 120.000000
+[T] search (ms): 141503.000000
+[T] sq_iterations (): 1117285.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 6.000000
+[T] sq_iterations (): 225.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 7.000000
+[T] sq_iterations (): 185.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 47.000000
+[T] search (ms): 25.000000
+[T] sq_iterations (): 456.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 63.000000
+[T] search (ms): 198.000000
+[T] sq_iterations (): 2992.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 80.000000
+[T] search (ms): 1434.000000
+[T] sq_iterations (): 17280.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 100.000000
+[T] search (ms): 9020.000000
+[T] sq_iterations (): 85047.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 121.000000
+[T] search (ms): 58764.000000
+[T] sq_iterations (): 439231.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 300.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 30.000000
+[T] sq_iterations (): 752.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 48.000000
+[T] search (ms): 101.000000
+[T] sq_iterations (): 1875.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 63.000000
+[T] search (ms): 328.000000
+[T] sq_iterations (): 4714.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 81.000000
+[T] search (ms): 959.000000
+[T] sq_iterations (): 10615.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 98.000000
+[T] search (ms): 24141.000000
+[T] sq_iterations (): 233846.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 119.000000
+[T] search (ms): 112162.000000
+[T] sq_iterations (): 906082.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 4.000000
+[T] sq_iterations (): 159.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 23.000000
+[T] sq_iterations (): 557.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 174.000000
+[T] sq_iterations (): 3000.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 791.000000
+[T] sq_iterations (): 10793.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 90.000000
+[T] search (ms): 3040.000000
+[T] sq_iterations (): 31846.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 111.000000
+[T] search (ms): 7125.000000
+[T] sq_iterations (): 58140.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 127.000000
+[T] search (ms): 26520.000000
+[T] sq_iterations (): 185698.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 1.000000
+[T] sq_iterations (): 50.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 44.000000
+[T] search (ms): 11.000000
+[T] sq_iterations (): 283.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 53.000000
+[T] search (ms): 133.000000
+[T] sq_iterations (): 2441.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 70.000000
+[T] search (ms): 740.000000
+[T] sq_iterations (): 10266.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 88.000000
+[T] search (ms): 3360.000000
+[T] sq_iterations (): 35430.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 106.000000
+[T] search (ms): 8516.000000
+[T] sq_iterations (): 71692.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 125.000000
+[T] search (ms): 35121.000000
+[T] sq_iterations (): 255027.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 26.000000
+[T] search (ms): 6.000000
+[T] sq_iterations (): 196.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 34.000000
+[T] sq_iterations (): 813.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 215.000000
+[T] sq_iterations (): 3866.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 559.000000
+[T] sq_iterations (): 7549.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 89.000000
+[T] search (ms): 1779.000000
+[T] sq_iterations (): 19259.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 116.000000
+[T] search (ms): 6040.000000
+[T] sq_iterations (): 52950.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 122.000000
+[T] search (ms): 32989.000000
+[T] sq_iterations (): 255082.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 11.000000
+[T] sq_iterations (): 390.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 18.000000
+[T] sq_iterations (): 438.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 45.000000
+[T] search (ms): 43.000000
+[T] sq_iterations (): 841.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 60.000000
+[T] search (ms): 38.000000
+[T] sq_iterations (): 620.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 77.000000
+[T] search (ms): 210.000000
+[T] sq_iterations (): 2611.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 94.000000
+[T] search (ms): 1765.000000
+[T] sq_iterations (): 17817.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 113.000000
+[T] search (ms): 16549.000000
+[T] sq_iterations (): 142445.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 14.000000
+[T] sq_iterations (): 475.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 44.000000
+[T] sq_iterations (): 1074.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 95.000000
+[T] sq_iterations (): 1729.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 70.000000
+[T] search (ms): 669.000000
+[T] sq_iterations (): 9692.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 87.000000
+[T] search (ms): 2185.000000
+[T] sq_iterations (): 25058.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 106.000000
+[T] search (ms): 5888.000000
+[T] sq_iterations (): 51993.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 125.000000
+[T] search (ms): 69267.000000
+[T] sq_iterations (): 508866.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 4.000000
+[T] sq_iterations (): 136.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 210.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 113.000000
+[T] sq_iterations (): 2012.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 70.000000
+[T] search (ms): 765.000000
+[T] sq_iterations (): 10699.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 89.000000
+[T] search (ms): 2384.000000
+[T] sq_iterations (): 26150.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 96.000000
+[T] search (ms): 4449.000000
+[T] sq_iterations (): 44354.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 115.000000
+[T] search (ms): 24469.000000
+[T] sq_iterations (): 193601.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 4.000000
+[T] sq_iterations (): 140.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 19.000000
+[T] sq_iterations (): 438.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 107.000000
+[T] sq_iterations (): 1810.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 387.000000
+[T] sq_iterations (): 5163.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 89.000000
+[T] search (ms): 1237.000000
+[T] sq_iterations (): 13028.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 108.000000
+[T] search (ms): 19490.000000
+[T] sq_iterations (): 168670.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 127.000000
+[T] search (ms): 45976.000000
+[T] sq_iterations (): 333248.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 23.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 324.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 37.000000
+[T] search (ms): 48.000000
+[T] sq_iterations (): 1194.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 45.000000
+[T] search (ms): 41.000000
+[T] sq_iterations (): 831.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 59.000000
+[T] search (ms): 118.000000
+[T] sq_iterations (): 1908.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 76.000000
+[T] search (ms): 762.000000
+[T] sq_iterations (): 9924.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 103.000000
+[T] search (ms): 3819.000000
+[T] sq_iterations (): 41630.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 114.000000
+[T] search (ms): 24846.000000
+[T] sq_iterations (): 210494.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 26.000000
+[T] search (ms): 3.000000
+[T] sq_iterations (): 110.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 14.000000
+[T] sq_iterations (): 341.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 71.000000
+[T] sq_iterations (): 1235.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 72.000000
+[T] search (ms): 177.000000
+[T] sq_iterations (): 2342.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 89.000000
+[T] search (ms): 458.000000
+[T] sq_iterations (): 4862.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 114.000000
+[T] search (ms): 1419.000000
+[T] sq_iterations (): 12238.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 126.000000
+[T] search (ms): 11083.000000
+[T] sq_iterations (): 82183.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 5.000000
+[T] sq_iterations (): 183.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 37.000000
+[T] search (ms): 12.000000
+[T] sq_iterations (): 326.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 51.000000
+[T] search (ms): 63.000000
+[T] sq_iterations (): 1266.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 66.000000
+[T] search (ms): 340.000000
+[T] sq_iterations (): 5307.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 84.000000
+[T] search (ms): 1229.000000
+[T] sq_iterations (): 15293.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 103.000000
+[T] search (ms): 9598.000000
+[T] sq_iterations (): 93065.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 124.000000
+[T] search (ms): 39539.000000
+[T] sq_iterations (): 304537.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 23.000000
+[T] search (ms): 10.000000
+[T] sq_iterations (): 353.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 30.000000
+[T] sq_iterations (): 732.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 103.000000
+[T] sq_iterations (): 1778.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 72.000000
+[T] search (ms): 583.000000
+[T] sq_iterations (): 7797.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 89.000000
+[T] search (ms): 1170.000000
+[T] sq_iterations (): 12467.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 115.000000
+[T] search (ms): 2175.000000
+[T] sq_iterations (): 19533.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 126.000000
+[T] search (ms): 23651.000000
+[T] sq_iterations (): 177417.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 31.000000
+[T] search (ms): 11.000000
+[T] sq_iterations (): 390.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 31.000000
+[T] search (ms): 19.000000
+[T] sq_iterations (): 467.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 52.000000
+[T] search (ms): 46.000000
+[T] sq_iterations (): 856.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 62.000000
+[T] search (ms): 409.000000
+[T] sq_iterations (): 5847.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 88.000000
+[T] search (ms): 1531.000000
+[T] sq_iterations (): 17005.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 98.000000
+[T] search (ms): 6496.000000
+[T] sq_iterations (): 58424.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 115.000000
+[T] search (ms): 112668.000000
+[T] sq_iterations (): 883181.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 11.000000
+[T] sq_iterations (): 372.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 35.000000
+[T] sq_iterations (): 825.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 60.000000
+[T] search (ms): 117.000000
+[T] sq_iterations (): 2046.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 69.000000
+[T] search (ms): 913.000000
+[T] sq_iterations (): 13875.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 85.000000
+[T] search (ms): 1898.000000
+[T] sq_iterations (): 23741.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 101.000000
+[T] search (ms): 6476.000000
+[T] sq_iterations (): 65205.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 122.000000
+[T] search (ms): 15606.000000
+[T] sq_iterations (): 126404.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 4.000000
+[T] sq_iterations (): 150.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 37.000000
+[T] sq_iterations (): 951.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 46.000000
+[T] search (ms): 27.000000
+[T] sq_iterations (): 527.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 63.000000
+[T] search (ms): 221.000000
+[T] sq_iterations (): 3339.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 81.000000
+[T] search (ms): 942.000000
+[T] sq_iterations (): 11125.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 99.000000
+[T] search (ms): 2964.000000
+[T] sq_iterations (): 28507.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 117.000000
+[T] search (ms): 24740.000000
+[T] sq_iterations (): 195403.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 18.000000
+[T] search (ms): 3.000000
+[T] sq_iterations (): 139.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 29.000000
+[T] sq_iterations (): 773.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 46.000000
+[T] search (ms): 102.000000
+[T] sq_iterations (): 1921.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 61.000000
+[T] search (ms): 172.000000
+[T] sq_iterations (): 2699.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 78.000000
+[T] search (ms): 332.000000
+[T] sq_iterations (): 4199.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 99.000000
+[T] search (ms): 5233.000000
+[T] sq_iterations (): 52654.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 114.000000
+[T] search (ms): 42014.000000
+[T] sq_iterations (): 346908.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 14.000000
+[T] sq_iterations (): 475.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 41.000000
+[T] sq_iterations (): 986.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 174.000000
+[T] sq_iterations (): 3189.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 62.000000
+[T] search (ms): 480.000000
+[T] sq_iterations (): 6735.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 80.000000
+[T] search (ms): 1243.000000
+[T] sq_iterations (): 14303.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 97.000000
+[T] search (ms): 10166.000000
+[T] sq_iterations (): 95383.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 117.000000
+[T] search (ms): 76040.000000
+[T] sq_iterations (): 625285.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 4.000000
+[T] sq_iterations (): 150.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 21.000000
+[T] sq_iterations (): 491.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 60.000000
+[T] search (ms): 122.000000
+[T] sq_iterations (): 2154.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 67.000000
+[T] search (ms): 200.000000
+[T] sq_iterations (): 2943.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 86.000000
+[T] search (ms): 817.000000
+[T] sq_iterations (): 9493.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 108.000000
+[T] search (ms): 4160.000000
+[T] sq_iterations (): 37715.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 126.000000
+[T] search (ms): 21550.000000
+[T] sq_iterations (): 162537.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 23.000000
+[T] search (ms): 7.000000
+[T] sq_iterations (): 245.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 37.000000
+[T] search (ms): 30.000000
+[T] sq_iterations (): 718.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 53.000000
+[T] search (ms): 83.000000
+[T] sq_iterations (): 1465.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 71.000000
+[T] search (ms): 1907.000000
+[T] sq_iterations (): 26592.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 88.000000
+[T] search (ms): 3436.000000
+[T] sq_iterations (): 36871.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 99.000000
+[T] search (ms): 23236.000000
+[T] sq_iterations (): 214105.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 114.000000
+[T] search (ms): 69327.000000
+[T] sq_iterations (): 530267.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 5.000000
+[T] sq_iterations (): 175.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 210.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 75.000000
+[T] sq_iterations (): 1329.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 70.000000
+[T] search (ms): 375.000000
+[T] sq_iterations (): 5104.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 93.000000
+[T] search (ms): 716.000000
+[T] sq_iterations (): 7680.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 106.000000
+[T] search (ms): 1367.000000
+[T] sq_iterations (): 11002.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 130.000000
+[T] search (ms): 15418.000000
+[T] sq_iterations (): 104603.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 17.000000
+[T] sq_iterations (): 557.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 37.000000
+[T] sq_iterations (): 909.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 46.000000
+[T] search (ms): 87.000000
+[T] sq_iterations (): 1636.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 63.000000
+[T] search (ms): 167.000000
+[T] sq_iterations (): 2434.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 81.000000
+[T] search (ms): 3072.000000
+[T] sq_iterations (): 36487.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 98.000000
+[T] search (ms): 14291.000000
+[T] sq_iterations (): 134696.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 118.000000
+[T] search (ms): 104547.000000
+[T] sq_iterations (): 823283.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 12.000000
+[T] sq_iterations (): 414.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 25.000000
+[T] sq_iterations (): 616.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 53.000000
+[T] search (ms): 44.000000
+[T] sq_iterations (): 832.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 69.000000
+[T] search (ms): 203.000000
+[T] sq_iterations (): 2976.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 89.000000
+[T] search (ms): 1233.000000
+[T] sq_iterations (): 13836.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 108.000000
+[T] search (ms): 14555.000000
+[T] sq_iterations (): 129462.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 124.000000
+[T] search (ms): 136161.000000
+[T] sq_iterations (): 1007318.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 20.000000
+[T] search (ms): 5.000000
+[T] sq_iterations (): 180.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 17.000000
+[T] sq_iterations (): 445.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 46.000000
+[T] search (ms): 49.000000
+[T] sq_iterations (): 962.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 63.000000
+[T] search (ms): 282.000000
+[T] sq_iterations (): 3990.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 80.000000
+[T] search (ms): 1082.000000
+[T] sq_iterations (): 12351.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 98.000000
+[T] search (ms): 1336.000000
+[T] sq_iterations (): 12650.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 115.000000
+[T] search (ms): 3801.000000
+[T] sq_iterations (): 29093.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 23.000000
+[T] search (ms): 2.000000
+[T] sq_iterations (): 83.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 37.000000
+[T] search (ms): 10.000000
+[T] sq_iterations (): 267.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 53.000000
+[T] search (ms): 48.000000
+[T] sq_iterations (): 907.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 61.000000
+[T] search (ms): 85.000000
+[T] sq_iterations (): 1347.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 78.000000
+[T] search (ms): 333.000000
+[T] sq_iterations (): 4152.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 94.000000
+[T] search (ms): 1479.000000
+[T] sq_iterations (): 15004.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 110.000000
+[T] search (ms): 15840.000000
+[T] sq_iterations (): 143094.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 2.000000
+[T] sq_iterations (): 72.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 37.000000
+[T] search (ms): 24.000000
+[T] sq_iterations (): 614.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 52.000000
+[T] search (ms): 50.000000
+[T] sq_iterations (): 923.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 69.000000
+[T] search (ms): 210.000000
+[T] sq_iterations (): 2943.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 84.000000
+[T] search (ms): 859.000000
+[T] sq_iterations (): 9904.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 106.000000
+[T] search (ms): 3213.000000
+[T] sq_iterations (): 29250.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 123.000000
+[T] search (ms): 6286.000000
+[T] sq_iterations (): 49553.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 313.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 27.000000
+[T] sq_iterations (): 650.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 90.000000
+[T] sq_iterations (): 1580.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 72.000000
+[T] search (ms): 386.000000
+[T] sq_iterations (): 5164.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 90.000000
+[T] search (ms): 4717.000000
+[T] sq_iterations (): 49757.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 113.000000
+[T] search (ms): 24386.000000
+[T] sq_iterations (): 220978.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 127.000000
+[T] search (ms): 54817.000000
+[T] sq_iterations (): 407215.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 8.000000
+[T] sq_iterations (): 285.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 17.000000
+[T] sq_iterations (): 433.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 48.000000
+[T] search (ms): 238.000000
+[T] sq_iterations (): 4315.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 64.000000
+[T] search (ms): 922.000000
+[T] sq_iterations (): 13030.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 81.000000
+[T] search (ms): 2653.000000
+[T] sq_iterations (): 30593.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 101.000000
+[T] search (ms): 7000.000000
+[T] sq_iterations (): 62290.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 120.000000
+[T] search (ms): 7920.000000
+[T] sq_iterations (): 60908.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 9.000000
+[T] sq_iterations (): 324.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 39.000000
+[T] sq_iterations (): 934.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 146.000000
+[T] sq_iterations (): 2562.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 70.000000
+[T] search (ms): 402.000000
+[T] sq_iterations (): 5288.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 80.000000
+[T] search (ms): 798.000000
+[T] sq_iterations (): 9247.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 97.000000
+[T] search (ms): 830.000000
+[T] sq_iterations (): 7924.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 123.000000
+[T] search (ms): 16679.000000
+[T] sq_iterations (): 143750.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 18.000000
+[T] search (ms): 8.000000
+[T] sq_iterations (): 295.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 18.000000
+[T] sq_iterations (): 462.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 48.000000
+[T] search (ms): 142.000000
+[T] sq_iterations (): 2760.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 63.000000
+[T] search (ms): 463.000000
+[T] sq_iterations (): 6989.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 80.000000
+[T] search (ms): 3553.000000
+[T] sq_iterations (): 42458.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 99.000000
+[T] search (ms): 34830.000000
+[T] sq_iterations (): 322263.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 119.000000
+[T] search (ms): 195778.000000
+[T] sq_iterations (): 1523962.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 19.000000
+[T] search (ms): 11.000000
+[T] sq_iterations (): 391.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 32.000000
+[T] search (ms): 28.000000
+[T] sq_iterations (): 736.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 47.000000
+[T] search (ms): 133.000000
+[T] sq_iterations (): 2578.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 64.000000
+[T] search (ms): 602.000000
+[T] sq_iterations (): 8965.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 82.000000
+[T] search (ms): 3818.000000
+[T] sq_iterations (): 44028.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 100.000000
+[T] search (ms): 13113.000000
+[T] sq_iterations (): 121654.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 119.000000
+[T] search (ms): 25674.000000
+[T] sq_iterations (): 205178.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 18.000000
+[T] search (ms): 4.000000
+[T] sq_iterations (): 139.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 33.000000
+[T] search (ms): 8.000000
+[T] sq_iterations (): 220.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 47.000000
+[T] search (ms): 39.000000
+[T] sq_iterations (): 779.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 64.000000
+[T] search (ms): 94.000000
+[T] sq_iterations (): 1358.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 79.000000
+[T] search (ms): 430.000000
+[T] sq_iterations (): 5395.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 97.000000
+[T] search (ms): 2666.000000
+[T] sq_iterations (): 26084.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 118.000000
+[T] search (ms): 30692.000000
+[T] sq_iterations (): 241307.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 8.000000
+[T] sq_iterations (): 285.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 38.000000
+[T] search (ms): 16.000000
+[T] sq_iterations (): 377.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 53.000000
+[T] search (ms): 133.000000
+[T] sq_iterations (): 2529.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 69.000000
+[T] search (ms): 719.000000
+[T] sq_iterations (): 10228.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 79.000000
+[T] search (ms): 2240.000000
+[T] sq_iterations (): 26152.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 96.000000
+[T] search (ms): 2155.000000
+[T] sq_iterations (): 20277.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 115.000000
+[T] search (ms): 43194.000000
+[T] sq_iterations (): 344783.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 7.000000
+[T] sq_iterations (): 245.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 24.000000
+[T] sq_iterations (): 578.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 99.000000
+[T] sq_iterations (): 1727.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 75.000000
+[T] search (ms): 421.000000
+[T] sq_iterations (): 5356.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 89.000000
+[T] search (ms): 1620.000000
+[T] sq_iterations (): 17894.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 100.000000
+[T] search (ms): 3413.000000
+[T] sq_iterations (): 31109.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 117.000000
+[T] search (ms): 12385.000000
+[T] sq_iterations (): 92867.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 11.000000
+[T] sq_iterations (): 371.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 40.000000
+[T] search (ms): 63.000000
+[T] sq_iterations (): 1474.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 55.000000
+[T] search (ms): 131.000000
+[T] sq_iterations (): 2340.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 72.000000
+[T] search (ms): 1133.000000
+[T] sq_iterations (): 15473.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 88.000000
+[T] search (ms): 4726.000000
+[T] sq_iterations (): 51139.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 104.000000
+[T] search (ms): 11884.000000
+[T] sq_iterations (): 112793.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 124.000000
+[T] search (ms): 60380.000000
+[T] sq_iterations (): 460617.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 24.000000
+[T] search (ms): 13.000000
+[T] sq_iterations (): 452.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 56.000000
+[T] sq_iterations (): 1302.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 102.000000
+[T] sq_iterations (): 1775.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 70.000000
+[T] search (ms): 1011.000000
+[T] sq_iterations (): 14195.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 87.000000
+[T] search (ms): 4027.000000
+[T] sq_iterations (): 44348.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 108.000000
+[T] search (ms): 19179.000000
+[T] sq_iterations (): 170076.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 126.000000
+[T] search (ms): 38018.000000
+[T] sq_iterations (): 287471.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 25.000000
+[T] search (ms): 3.000000
+[T] sq_iterations (): 110.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 39.000000
+[T] search (ms): 27.000000
+[T] sq_iterations (): 630.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 54.000000
+[T] search (ms): 66.000000
+[T] sq_iterations (): 1139.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 70.000000
+[T] search (ms): 423.000000
+[T] sq_iterations (): 5865.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 88.000000
+[T] search (ms): 2170.000000
+[T] sq_iterations (): 24198.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 109.000000
+[T] search (ms): 15281.000000
+[T] sq_iterations (): 139330.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 129.000000
+[T] search (ms): 61007.000000
+[T] sq_iterations (): 457947.000000
+num_dfas: 8
+model_size: 100
+>--
+[T] heuristic (ms): 30.000000
+[T] search (ms): 8.000000
+[T] sq_iterations (): 287.000000
+num_dfas: 2
+model_size: 100
+>--
+[T] heuristic (ms): 31.000000
+[T] search (ms): 50.000000
+[T] sq_iterations (): 1281.000000
+num_dfas: 3
+model_size: 100
+>--
+[T] heuristic (ms): 46.000000
+[T] search (ms): 187.000000
+[T] sq_iterations (): 3765.000000
+num_dfas: 4
+model_size: 100
+>--
+[T] heuristic (ms): 63.000000
+[T] search (ms): 1249.000000
+[T] sq_iterations (): 18823.000000
+num_dfas: 5
+model_size: 100
+>--
+[T] heuristic (ms): 81.000000
+[T] search (ms): 2146.000000
+[T] sq_iterations (): 24769.000000
+num_dfas: 6
+model_size: 100
+>--
+[T] heuristic (ms): 97.000000
+[T] search (ms): 4085.000000
+[T] sq_iterations (): 38265.000000
+num_dfas: 7
+model_size: 100
+>--
+[T] heuristic (ms): 122.000000
+[T] search (ms): 65473.000000
+[T] sq_iterations (): 518378.000000
+num_dfas: 8
+model_size: 100
+>--

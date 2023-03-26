@@ -122,6 +122,8 @@ end
 
 
 bar(box_lbls, boxdata')
+disp(boxdata')
+
 % boxplot(boxdata, group)
 hold on
 grid on

@@ -100,6 +100,7 @@ class OrderedPlanner {
     public:
         OrderedPlanner(TransitionSystem<State>& ts_, bool verbose_ = false, const std::string* bm_filepath_ = nullptr);
         bool search(const std::vector<DFA_EVAL*>& dfas, const std::function<float(const std::vector<float>&)>& setToMu, bool use_heuristic, bool single_query = false, float mu_sq = -1.0f);
+        bool NAMOA(const std::vector<DFA_EVAL*>& dfas, const std::function<float(const std::vector<float>&)>& setToMu, bool use_heuristic, bool single_query = false, float mu_sq = -1.0f);
         std::vector<int> BFS(const std::vector<DFA_EVAL*>& dfas);
         void searchBackwards(const std::vector<DFA_EVAL*>& dfas, const std::vector<int>& root_acc_nodes, CostToGoal& cost_to_goal);
         const Result* getResult() const;

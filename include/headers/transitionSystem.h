@@ -12,8 +12,9 @@ template <class T>
 class TransitionSystem : public Graph<WL> {
 	protected:
 		bool is_blocking, mapped;
-		const bool UNIQUE_ACTION;
-		const bool manual;
+		bool UNIQUE_ACTION; // non const for read in
+		bool manual; // non const for read in
+		std::shared_ptr<StateSpace> SS_read_in;
 		T* init_state;
 		std::vector<T> all_states;
 		std::vector<bool> state_added;
@@ -46,6 +47,8 @@ class TransitionSystem : public Graph<WL> {
 		//T compose(const T* mult_TS) const;
 		void clear();
 		void print();
+		void writeToFile(const std::string& filename);
+		std::shared_ptr<StateSpace> readFromFile(const std::string& filename);
 		//~TransitionSystem();
 };
 

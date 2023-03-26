@@ -142,6 +142,10 @@ int main() {
 	ts.setInitState(&init_state_c);
 	ts.generate();
 	ts.print();
+	ts.writeToFile("./test_ts_file");
+	TransitionSystem<State> ts2;
+	std::shared_ptr<StateSpace> SS_read_in = ts2.readFromFile("./test_ts_file");
+	ts2.print();
 
 	
 	//PRODSYS_c.addProposition(&p_p);

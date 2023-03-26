@@ -1,4 +1,4 @@
-function preferenceGridRobotDemo(grid_size, animate, display_prio, use_subplot, max_subplot_length, loi_font_size)
+function preferenceGridRobotDemo(grid_size, animate, display_prio, use_subplot, max_subplot_length, loi_font_size, show_xyticks)
 %%%%%%%%%%%%%%%
 % grid_size = 10;
 % animate = false;
@@ -11,6 +11,7 @@ plan_f = getLines("plan_files/plan.txt");
 N_plans = 0;
 type = "none";
 mu_arr = [];
+cost_arr = [];
 plan_values = {};
 if contains(plan_f{1}, "Type:" ) && contains(plan_f{1}, "single_plan")
     N_plans = 1;
@@ -22,7 +23,8 @@ elseif contains(plan_f{1}, "Type:" ) && contains(plan_f{1}, "flexibility_plan_li
     for i=2:length(plan_f)
         if (contains(plan_f{i}, "Flexibility"))
             N_plans = N_plans + 1;
-            mu_arr(N_plans) = str2double(extractAfter(plan_f{i}, "Flexibility: "));
+            mu_arr(N_plans) = str2double(extractBetween(plan_f{i}, "Flexibility: ",","));
+            cost_arr(N_plans) = str2double(extractAfter(plan_f{i}, ", Cost: "));
             j = 0;
             plan_values{N_plans} = strings;
         elseif (contains(plan_f{i}, "LOI"))
@@ -76,8 +78,11 @@ for plan_ind = 1:N_plans
 
     states = zeros(length(plan), 2);
     directions = zeros(length(plan), 4); % x, y, u, v
-    arrow_length = .5;
-    arrow_grid_offset = .05;
+    arrow_length = .6;
+    arrow_grid_offset = .18;
+    line_width = 12;
+    font_size = 24;
+    dot_size = 360;
     text_offset_x = .1;
     text_offset_y = .3;
     states(1,:) = [0, 0]; % Init state
@@ -128,20 +133,44 @@ for plan_ind = 1:N_plans
     % y_vec = 0:grid_size-1;
 
     scatter(states(1,1), states(1,2), 160, 'r', "filled",'d')
-    text(states(1,1), states(1,2), "Init State")
+%     text(states(1,1), states(1,2), "Init State")
 
     axis([0 grid_size 0 grid_size])
     grid on
+    if ~show_xyticks
+        set(gca,'xticklabel',[])
+        set(gca,'yticklabel',[])
+    end
     xticks(0:grid_size)
     yticks(0:grid_size)
+  
     if type == "single_plan"
-        title("Grid Robot Trajectory")
+        if ~use_subplot
+            title("Grid Robot Trajectory",'FontSize',font_size)
+        else
+            title("Grid Robot Trajectory")
+        end
+        
     elseif type == "flexibility_plan_list"
-        s = sprintf("$\\mu$ = %.1f, cost = TODO", mu_arr(plan_ind));
-        title(s,'Interpreter','latex')
+        %s = sprintf("$\\mu$ = %.1f, cost = %.1f", mu_arr(plan_ind), cost_arr(plan_ind));
+        %title(s,'Interpreter','latex')
+        s = sprintf("\\mu = %.1f, cost = %.1f", mu_arr(plan_ind), cost_arr(plan_ind));
+        if ~use_subplot
+            %title(s,'FontSize',font_size)
+        else
+            title(s)
+        end
+        
     end
-    xlabel("X")
-    ylabel("Y")
+    if ~use_subplot
+        xlabel("X",'FontSize',font_size)
+        ylabel("Y",'FontSize',font_size)
+    else
+        xlabel("X")
+        ylabel("Y")
+    end
+
+
 
     text_array = {[0, 0] , ""};
     if ~isempty(LOI)
@@ -167,7 +196,7 @@ for plan_ind = 1:N_plans
     % scatter(LOI(:,1), LOI(:,2), 80, "filled", "color", 'r')
     % scatter(states(:,1), states(:,2),40,'filled', "Color",'k')
     if (~animate)
-        plot(states(:,1), states(:,2),"LineWidth", 8, "Color",'c')
+        plot(states(:,1), states(:,2),"LineWidth", line_width, "Color",'c')
         H = quiver(directions(:,1),directions(:,2),directions(:,3),directions(:,4), 0, 'r');
     else
         hold on
@@ -178,13 +207,20 @@ for plan_ind = 1:N_plans
         end
         for i=2:length(text_array{1,1}(:,1))
         text(text_array{1,1}(i,1), text_array{1,1}(i,2), text_array{1,2}(i), "FontSize",12);
-        scatter(text_array{1,1}(i,1) - text_offset_x, text_array{1,1}(i,2) - text_offset_y, 80, "filled", "color",'r')
+        scatter(text_array{1,1}(i,1) - text_offset_x, text_array{1,1}(i,2) - text_offset_y, dot_size, "filled", "color",'r')
     end
     end
     for i=2:length(text_array{1,1}(:,1))
         if display_prio
             text(text_array{1,1}(i,1), text_array{1,1}(i,2), text_array{1,2}(i), "FontSize",12);
         end
-        scatter(text_array{1,1}(i,1) - text_offset_x, text_array{1,1}(i,2) - text_offset_y, 80, "filled", "color",'r')
+        scatter(text_array{1,1}(i,1) - text_offset_x, text_array{1,1}(i,2) - text_offset_y, dot_size, "filled", "color",'r')
+    end
+    if plan_ind == 1
+        if ~use_subplot
+            text(states(1,1), states(1,2), "Init State", 'FontSize',font_size)
+        else
+            text(states(1,1), states(1,2), "Init State")
+        end
     end
 end

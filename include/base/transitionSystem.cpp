@@ -3,6 +3,7 @@
 #include<array>
 #include<iostream>
 #include "transitionSystem.h"
+#include "writeToFile.h"
 
 // Transition system uses WL structure: 
 // W: edge weight (action cost)
@@ -498,6 +499,167 @@ void TransitionSystem<T>::print() {
 		std::cout<<"Warning: Transition has not been generated, or has failed to generate. Cannot print\n";
 	}
 }
+
+template <class T>
+void TransitionSystem<T>::writeToFile(const std::string& filename) {
+	init_state->getSS()->writeToFile(filename);
+	std::ofstream model_file;
+	model_file.open(filename,std::ios_base::app);
+	//graph_TS->print();
+	
+	std::vector<std::string> init_state_arr;
+	init_state->getState(init_state_arr);
+	model_file<<"<init_state: ";
+	for (int i=0; i<init_state_arr.size(); ++i) {
+		model_file<<init_state_arr[i];
+		if (i != init_state_arr.size()-1) {
+			model_file<<", ";
+		} else {
+			model_file<<"; \n";
+		}
+	}
+	if (state_map.size() > 1) {
+		for (int i=0; i<state_map.size(); ++i) {
+			std::vector<WL*> con_data; 
+			std::vector<int> con_nodes; 
+			//std::vector<std::string> list_actions; 
+			//graph_TS->returnListLabels(i, list_actions);
+			this->getConnectedData(i, con_data);
+			this->getConnectedNodes(i, con_nodes);
+			model_file<<"<"<<i<<": ";
+			T* curr_state = state_map[i];
+			std::vector<std::string> state_i; 
+			curr_state->getState(state_i);
+			for (int ii=0; ii<state_i.size(); ++ii) {
+				model_file<<state_i[ii];
+				if (ii != state_i.size()-1) {
+					model_file<<", ";
+				} else {
+					model_file<<"; \n";
+				}
+			}
+			for (int ii=0; ii<con_data.size(); ++ii) {
+				T* con_state = state_map[con_nodes[ii]];
+				model_file<<"   >"<<con_nodes[ii]<<": ";
+				con_state->getState(state_i);
+				for (int iii=0; iii<state_i.size(); ++iii) {
+					model_file<<state_i[iii];
+					if (iii != state_i.size()-1) {
+						model_file<<", ";
+					} else {
+						model_file<<"; ";
+					}
+				}
+				model_file<<" {action: "<<con_data[ii]->label<<", cost: "<<con_data[ii]->weight<<"}"<<"\n";
+			}
+		}
+	} else {
+		model_file<<"Warning: Transition has not been generated, or has failed to generate. Cannot write to file\n";
+	}
+	model_file.close();
+}
+
+
+template <>
+std::shared_ptr<StateSpace> TransitionSystem<State>::readFromFile(const std::string& filename) {
+	clear();
+	manual = true;
+	UNIQUE_ACTION = false;
+	SS_read_in = StateSpace::readFromFile(filename);
+
+	std::ifstream model_file(filename);
+	if (model_file.is_open()) {
+		std::string line;
+		State src_state(SS_read_in.get());
+		State dst_state(SS_read_in.get());
+		bool check_init = true;
+		while (std::getline(model_file, line)) {
+			if (StateSpace::starts_with(line, "<SS>")) {
+				continue;
+			} else if (check_init && StateSpace::starts_with(line, "<init_state:")) {
+				//line.erase(line.begin(), std::find(line.begin(), line.end(), ' ') + 1);
+				line.erase(line.begin(), StateSpace::str_find(&line, ' ') + 1);
+				check_init = false;
+				State init_state(SS_read_in.get());
+				std::vector<std::string> vars;
+				std::string buffer;
+				for (int j=0; j<line.size(); ++j) {
+					if (line[j] == ';') {
+						vars.push_back(buffer);
+						src_state.setState(vars);
+						break;
+					} else if (line[j] == ',') {
+						vars.push_back(buffer);
+						buffer.clear();
+					} else if (line[j] != ' ') {
+						buffer.push_back(line[j]);
+					}
+				}
+
+				init_state.setState(vars);
+				setInitState(&init_state);
+			}
+			if (StateSpace::starts_with(line, "<")) {
+				//line.erase(line.begin(), std::find(line.begin(), line.end(), ' ') + 1);
+				line.erase(line.begin(), StateSpace::str_find(&line, ' ') + 1);
+				std::vector<std::string> vars;
+				std::string buffer;
+				for (int j=0; j<line.size(); ++j) {
+					if (line[j] == ';') {
+						vars.push_back(buffer);
+						src_state.setState(vars);
+						break;
+					} else if (line[j] == ',') {
+						vars.push_back(buffer);
+						buffer.clear();
+					} else if (line[j] != ' ') {
+						buffer.push_back(line[j]);
+					}
+				}
+			} else if (StateSpace::starts_with(line, "   >")) {
+				//line.erase(line.begin(), std::find(line.begin()+3, line.end(), ' ') + 1);
+				line.erase(0,3);
+				line.erase(line.begin(), StateSpace::str_find(&line, ' ') + 1);
+				std::vector<std::string> vars;
+				std::string buffer, action;
+				buffer.clear();
+				action.clear();
+				float cost;
+				for (int j=0; j<line.size(); ++j) {
+					if (line[j] == ';') {
+						vars.push_back(buffer);
+						dst_state.setState(vars);
+						//line.erase(line.begin(), std::find(line.begin(), line.end(), ':') + 2);
+						line.erase(line.begin(), StateSpace::str_find(&line, ':') + 2);
+						action = line.substr(0, line.find(','));
+						//line.erase(line.begin(), std::find(line.begin(), line.end(), ':')+2);
+						line.erase(line.begin(), StateSpace::str_find(&line, ':')+2);
+						line.pop_back();
+						cost = std::stof(line);
+						break;
+					} else if (line[j] == ',') {
+						vars.push_back(buffer);
+						buffer.clear();
+					} else if (line[j] != ' ') {
+						buffer.push_back(line[j]);
+					}
+				}
+				//std::cout<<"Found src state: "<<std::endl;
+				//src_state.print();
+				//std::cout<<"Found dst state: "<<std::endl;
+				//dst_state.print();
+				//std::cout<<"Action: "<<action<<" Cost: "<<cost<<std::endl;
+				connect(&src_state, &dst_state, cost, action);
+
+			}
+		}
+	}
+	model_file.close();
+	finishConnecting();
+	UNIQUE_ACTION = true;
+	return SS_read_in;
+}
+
 
 template class TransitionSystem<State>;
 template class TransitionSystem<BlockingState>;

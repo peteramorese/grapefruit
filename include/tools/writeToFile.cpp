@@ -62,7 +62,7 @@ void MatlabDemoFiles::GridRobot::writeFlexibilityPlanList(const OrderedPlanner::
         appendLOI(loi, plan_file);
     }
     for (const auto& pt : *pf) {
-        plan_file<<"Flexibility: "<<pt.mu<<'\n';
+        plan_file<<"Flexibility: "<<pt.mu<<", Cost: "<<pt.path_length<<'\n';
         writeSinglePlan(pt.plan.action_sequence, plan_file);
     }
 }
@@ -76,7 +76,7 @@ void MatlabDemoFiles::GridRobot::writeFlexibilityPlanList(const std::vector<std:
         appendLOI(loi, plan_file);
     }
     for (const auto& pt : plan_and_flexibility_list) {
-        plan_file<<"Flexibility: "<<pt.second<<'\n';
+        plan_file<<"Flexibility: "<<pt.second<<',\n';
         writeSinglePlan(pt.first, plan_file);
     }
 }
