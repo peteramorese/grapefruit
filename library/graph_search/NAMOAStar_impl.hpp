@@ -116,9 +116,9 @@ namespace GraphSearch {
 
                 COST_VECTOR_T tentative_g_score = [&] {
                     if constexpr (_PTR_EDGE_STORAGE_TYPE)
-                        return problem.gScore(curr_g_score->cv, *to_neighbor_edge);
+                        return problem.gScore(curr_node, curr_g_score->cv, *to_neighbor_edge);
                     else
-                        return problem.gScore(curr_g_score->cv, to_neighbor_edge);
+                        return problem.gScore(curr_node, curr_g_score->cv, to_neighbor_edge);
                 }();
 
                 //LOG("- neighbor: " << neighbor << " tentative cost: " << costToStr(tentative_g_score));

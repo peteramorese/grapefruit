@@ -117,9 +117,9 @@ namespace GraphSearch {
 
                 COST_VECTOR_T tentative_g_score = [&] {
                     if constexpr (_PTR_EDGE_STORAGE_TYPE)
-                        return problem.gScore(inserted_g_score, *to_neighbor_edge);
+                        return problem.gScore(curr_node, inserted_g_score, *to_neighbor_edge);
                     else
-                        return problem.gScore(inserted_g_score, to_neighbor_edge);
+                        return problem.gScore(curr_node, inserted_g_score, to_neighbor_edge);
                 }();
 
                 COST_VECTOR_T tentative_h_score = tentative_g_score;

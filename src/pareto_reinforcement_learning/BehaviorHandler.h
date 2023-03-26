@@ -6,6 +6,15 @@
 
 namespace PRL {
 
+    // Behavior Criterion
+    /*
+    struct BehaviorCriterion {
+        void setToDefaultPrior();
+        float getExpectation();
+        float getVariance();
+    };
+    */
+
     template <class...T_ARGS>
     struct Behavior {
         public:

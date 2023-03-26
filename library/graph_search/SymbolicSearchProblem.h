@@ -35,7 +35,7 @@ namespace GraphSearch {
             virtual bool goal(const Node& node) const {return m_goal_node_set.contains(node);}
 
             // Quantative methods
-            inline COST_T gScore(const COST_T& parent_g_score, const SYMBOLIC_GRAPH_T::edge_t& edge) const {return parent_g_score + static_cast<COST_T>(edge);}
+            inline COST_T gScore(const Node& node, const COST_T& parent_g_score, const SYMBOLIC_GRAPH_T::edge_t& edge) const {return parent_g_score + static_cast<COST_T>(edge);}
             COST_T hScore(const SYMBOLIC_GRAPH_T::node_t& node) const {return heuristic.operator()(node);}
 
             // Member variables
