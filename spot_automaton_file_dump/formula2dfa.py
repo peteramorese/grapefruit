@@ -3,14 +3,22 @@ from posixpath import dirname
 import spot, os, glob, random, json
 import argparse
 
-def remove_dfa_files(dirname_prefix):
+def remove_dfa_files(dirname_prefix, file_prefix, verbose=False):
     # Remove all dfa files in directory:
     for file in os.scandir(dirname_prefix):
-        os.remove(file.path)
+        if (str(file).startswith(file_prefix)):
+            os.remove(file.path)
+            if verbose:
+                print("Removing: ", str(file))
         #print(file.path)
 
 def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose=False, f_complete=False):
-    remove_dfa_files(dirname_prefix)
+    print("DIRNAME PREFIX: ", dirname_prefix)
+    if custom_filename == None:
+        remove_dfa_files(dirname_prefix, "dfa", verbose)
+    else:
+        remove_dfa_files(dirname_prefix, custom_filename, verbose)
+
     inds = [i for i in range(0, len(F_arr))]
     if random_ordering:
         random.shuffle(inds)
@@ -54,10 +62,15 @@ def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose
         for a_s in accepting_list:
             lines_list.append("- " + a_s)
         lines_list.append("")
-        with open(filename, "w+") as file:
-            for line in lines_list:
-                file.write(line)
-                file.write("\n")
+        print("  FILENAME: ", filename)
+        try:
+            with open(filename, "w") as file:
+                for line in lines_list:
+                    file.write(line)
+                    file.write("\n")
+        except Exception as e:
+            print("Open filename failed with error:", e)
+
 
 def print_automaton(A):
     bdict = A.get_dict()	
@@ -127,6 +140,7 @@ def read_write_json(read_json_name, formula_list_name, write_file_dir_name_prefi
 
 if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
+
     parser.add_argument("-f", "--filepath", default="formulas.json", help="Specify forumla file")
     parser.add_argument("-l", "--formula-list", default="default", help="Specify formula list inside json formula file")
     parser.add_argument("--formulas", default=None, action="extend", nargs="+", type=str, help="Manually specify multiple formula strings")
@@ -136,11 +150,20 @@ if __name__ == "__main__":
     parser.add_argument("-x", "--use-txt", action='store_true', default=False, help="Use '.txt' interpretation instead of '.json'")
     parser.add_argument("-r", "--random-ordering", action='store_true', default=False, help="Randomly the order of the input formulas")
     args = parser.parse_args()
+    if args.formulas:
+        print(args.formulas)
+
+
+    print("Reading file: ", args.filepath)
+    if args.filepath is not None:
+        print("DFA file target: ", args.dfa_filename)
+    READ_FILE_NAME = args.filepath
 
     if not args.dfa_path.endswith("/"):
         WRITE_FILE_DIR_NAME_PREFIX = args.dfa_path + "/"
     else:
         WRITE_FILE_DIR_NAME_PREFIX = args.dfa_path
+
     WRITE_FILE_NAME = args.dfa_filename
     if args.formulas:
         print("Argument formulas: ", args.formulas)
@@ -157,3 +180,4 @@ if __name__ == "__main__":
             read_write_json(READ_FILE_NAME, args.formula_list, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete)
         else: 
             read_write_txt(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete)
+

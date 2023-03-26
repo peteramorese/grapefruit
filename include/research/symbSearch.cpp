@@ -1191,38 +1191,16 @@ void SymbSearch::writePlanToFile(std::string filename, const std::vector<std::st
 	plan_file.close();
 }
 
-//void SymbSearch::clearNodes() {
-//	for (int i=0; i<node_list.size(); ++i) {
-//		delete node_list[i];
-//	}
-//	node_list.clear();
-//}
-//
-//void SymbSearch::clearSetsLS() {
-//	for (int i=0; i<set_list_ls.size(); ++i) {
-//		delete set_list_ls[i];
-//	}
-//	set_list_ls.clear();
-//}
-//
-//void SymbSearch::clearNodesAndSets() {
-//	for (int i=0; i<node_list.size(); ++i) {
-//		delete node_list[i];
-//	}
-//	node_list.clear();
-//	for (int i=0; i<set_list.size(); ++i) {
-//		delete set_list[i];
-//	}
-//	set_list.clear();
-//}
-//
-//SymbSearch::~SymbSearch() {
-//	for (int i=0; i<node_list.size(); ++i) {
-//		delete node_list[i];
-//	}
-//	for (int i=0; i<set_list.size(); ++i) {
-//		delete set_list[i];
-//	}
-//}
+const std::vector<const State*> SymbSearch::getStateSequence() {
+	std::vector<const State*> ret_state_seq(TS_state_sequence.size());
+	for (int i=0; i<TS_state_sequence.size(); ++i) {
+		ret_state_seq[i] = TS->getState(TS_state_sequence[i]);
+	}
+	return ret_state_seq;
+}
 
+
+const std::vector<std::string>& SymbSearch::getActionSequence() {
+	return TS_action_sequence;
+}
 
