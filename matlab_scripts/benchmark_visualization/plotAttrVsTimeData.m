@@ -14,7 +14,9 @@ leg_entries = [];
 n_sessions = zeros(size(filepaths));
 for j = 1:length(filepaths)
     clear seg_data
-    data = importdata(filepaths(j),':');
+    %data = importdata(filepaths(j),':');
+    data = manualParse(filepaths(j));
+    %data_f = getLines(filepaths(j));
     seg_data.time_lbls = string([]);
     seg_data.units = string([]);
     seg_data.attr_lbls = string([]);
@@ -81,6 +83,9 @@ for j = 1:length(filepaths)
     for i=1:length(box_time_data_lbls)
         box_time_data_inds = [box_time_data_inds find(deblank(seg_data.time_lbls)==deblank(box_time_data_lbls(i)), 1)];
     end
+    if isempty(box_time_data_inds)
+        error("Did not find any benchmarks matching input box time data labels")
+    end
 
     x_attr_ind = find(seg_data.attr_lbls==x_attr_lbl, 1);
     un_attrs = getUniqueAttrs(seg_data.attr_data{x_attr_ind});
@@ -143,6 +148,25 @@ function un_attrs = getUniqueAttrs(attr_data)
     for i=1:length(attr_data)
         if ~ismember(attr_data(i), un_attrs)
             un_attrs = [un_attrs attr_data(i)];
+        end
+    end
+end
+
+function data = manualParse(filepath)
+    %data = importdata(filepaths(j),':');
+    data_f = getLines(filepath);
+    data.textdata = {};
+    data.data = [];
+    ind = 1;
+    for i=1:length(data_f)
+        if contains(data_f{i}, ">--")
+            data.textdata{1,ind} = ">--";
+            data.data(1,ind) = NaN;
+            ind = ind + 1;
+        elseif ~contains(data_f{i}, "[Tup]")
+            data.textdata{1,ind} = extractBefore(data_f{i}, ":");
+            data.data(1,ind) = str2double(extractAfter(data_f{i},":"));
+            ind = ind + 1;
         end
     end
 end

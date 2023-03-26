@@ -230,6 +230,7 @@ bool Game<T>::generate() {
 			q_i++;
 		}
 		this->generated = true;
+		return true;
 	} else {
 		std::cout<<"Error: Must set init state and conditions before calling generate()\n";
 		return false;

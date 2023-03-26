@@ -12,16 +12,20 @@ class Benchmark {
 		tp_t time_start_init;
 		std::unordered_map<std::string, tp_t> time_points_start;
 		std::vector<std::string> attributes;
-		const std::string filename;
+		const std::string* filename;
 	public:
 		static const std::string time_attr_marker;
-	 	Benchmark(const std::string& filename_);
+		static const std::string tuple_attr_marker;
+	 	Benchmark(const std::string* filename_);
 		void addAttribute(const std::string& attr, const std::string& attr_val);
+		void addAttribute(const std::string& attr, const std::string& attr_val1, const std::string& attr_val2);
 		void addCustomTimeAttr(const std::string& attr, double custom_time, const std::string& units);
 		void pushStartPoint(const std::string& name);
-		double measureMilli(const std::string& name);
+		double measureMilli(const std::string& name, bool add_attr = true);
+		double measureMilli(const std::string& name, const std::string& attr_val2);
 		double measureMilli();
-		double measureMicro(const std::string& name);
+		double measureMicro(const std::string& name, bool add_attr = true);
+		double measureMicro(const std::string& name, const std::string& attr_val2);
 		double measureMicro();
 		void pushAttributesToFile();
 		void finishSessionInFile();

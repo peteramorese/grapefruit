@@ -7,6 +7,7 @@ function plotNumDFAsVsSearchTime(filepaths, figure_title, legend_entries)
 for j = 1:length(filepaths)
     clear seg_data
     data = importdata(filepaths(j),':');
+    %data_f = getlines(filepaths(j))
     seg_data.time_lbls = string([]);
     seg_data.units = string([]);
     seg_data.attr_lbls = string([]);

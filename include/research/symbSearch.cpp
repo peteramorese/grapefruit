@@ -17,24 +17,24 @@ SymbSearch::PlanResult::PlanResult(int num_dfas, float mu) : pathcost(num_dfas, 
 SymbSearch::StrategyResult::StrategyResult(int graph_size) : reachability(graph_size, false), action_map(graph_size), success(false) {}
 
 SymbSearch::SymbSearch() : 
-	benchmark("none"), 
+	benchmark(nullptr), 
 	use_benchmark(false),
 	verbose(false), 
 	dfas_set(false), 
 	TS_set(false), 
 	mu_set(false) {}
 
-SymbSearch::SymbSearch(const std::string& bench_mark_session_, bool verbose_) : 
+SymbSearch::SymbSearch(const std::string* bench_mark_session_, bool verbose_) : 
 	benchmark(bench_mark_session_), 
 	verbose(verbose_), 
 	dfas_set(false), 
 	TS_set(false), 
 	mu_set(false) {
 
-	if (bench_mark_session_.empty() || bench_mark_session_ == "none") {
-		use_benchmark = false;
-	} else {
+	if (bench_mark_session_) {
 		use_benchmark = true;
+	} else {
+		use_benchmark = false;
 	}
 }
 
