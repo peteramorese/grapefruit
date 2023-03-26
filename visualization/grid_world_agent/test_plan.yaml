@@ -1,0 +1,65 @@
+Action Sequence:
+  - right
+  - right
+  - right
+  - right
+  - right
+  - up
+  - up
+  - up
+  - up
+  - up
+  - up
+  - left
+  - up
+  - up
+  - up
+  - left
+  - left
+  - down
+  - right
+  - down
+  - right
+  - right
+  - right
+  - down
+  - down
+  - down
+  - right
+  - down
+  - right
+  - down
+  - down
+State Sequence:
+  - x0, y0
+  - x1, y0
+  - x2, y0
+  - x3, y0
+  - x4, y0
+  - x5, y0
+  - x5, y1
+  - x5, y2
+  - x5, y3
+  - x5, y4
+  - x5, y5
+  - x5, y6
+  - x4, y6
+  - x4, y7
+  - x4, y8
+  - x4, y9
+  - x3, y9
+  - x2, y9
+  - x2, y8
+  - x3, y8
+  - x3, y7
+  - x4, y7
+  - x5, y7
+  - x6, y7
+  - x6, y6
+  - x6, y5
+  - x6, y4
+  - x7, y4
+  - x7, y3
+  - x8, y3
+  - x8, y2
+  - x8, y1

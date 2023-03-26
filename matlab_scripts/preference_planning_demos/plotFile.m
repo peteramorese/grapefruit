@@ -10,10 +10,11 @@ for i=1:length(plot_f)
     disp(plot_f{i})
     if contains(plot_f{i}, "Title: ")
         s_title = extractAfter(plot_f{i}, "Title: ");
-        title(s_title)
+        %title(s_title)
     elseif contains(plot_f{i}, "xLabel: ")
         s_xlabel = extractAfter(plot_f{i}, "xLabel: ");
-        xlabel(s_xlabel)
+        %xlabel(s_xlabel)
+        xlabel("Preference Cost")
     elseif contains(plot_f{i}, "yLabel: ")
         s_ylabel = extractAfter(plot_f{i}, "yLabel: ");
         ylabel(s_ylabel)

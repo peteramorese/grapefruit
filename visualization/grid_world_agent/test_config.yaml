@@ -1,0 +1,24 @@
+Grid X: 10
+Grid Y: 10
+Init X Coord: 0
+Init Y Coord: 1
+Coord Label Template: x_#_y_#
+N Regions: 2
+Regions Labels:
+  - water
+  - carpet
+Lower Left Cells X:
+  - 3
+  - 6
+Lower Left Cells Y:
+  - 3
+  - 0
+Upper Right Cells X:
+  - 5
+  - 8
+Upper Right Cells Y:
+  - 5
+  - 2
+Region Colors:
+  - cyan
+  - orange

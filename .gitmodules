@@ -1,0 +1,6 @@
+[submodule "dependencies/spot"]
+	path = dependencies/spot
+	url = https://gitlab.lre.epita.fr/spot/spot.git
+[submodule "dependencies/yaml-cpp"]
+	path = dependencies/yaml-cpp
+	url = git@github.com:peteramorese/yaml-cpp.git
