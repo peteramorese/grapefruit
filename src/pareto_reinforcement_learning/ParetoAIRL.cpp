@@ -54,40 +54,40 @@ int main(int argc, char** argv) {
 
 	/////////////////   Planner   /////////////////
 
-	using EdgeInheritor = DiscreteModel::PartialSatisfactionAutomataEdgeInheritor<DiscreteModel::TransitionSystem>;
-	using SymbolicGraph = DiscreteModel::SymbolicProductAutomaton<DiscreteModel::TransitionSystem, FormalMethods::PartialSatisfactionDFA, EdgeInheritor>;
+	//using EdgeInheritor = TP::DiscreteModel::PartialSatisfactionAutomataEdgeInheritor<DiscreteModel::TransitionSystem>;
+	//using SymbolicGraph = TP::DiscreteModel::SymbolicProductAutomaton<DiscreteModel::TransitionSystem, FormalMethods::PartialSatisfactionDFA, EdgeInheritor>;
 
-	MOPreferencePlanner<
-		EdgeInheritor, 
-		FormalMethods::PartialSatisfactionDFA,
-		CostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>, 
-		SumDelayPreferenceCostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>, // Action costs
-		WeightedSumPreferenceCostObjective<SymbolicGraph, FormalMethods::SubstitutionCost> // Automata costs
-	> planner(ts, dfas);
+	//MOPreferencePlanner<
+	//	EdgeInheritor, 
+	//	FormalMethods::PartialSatisfactionDFA,
+	//	CostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>, 
+	//	SumDelayPreferenceCostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>, // Action costs
+	//	WeightedSumPreferenceCostObjective<SymbolicGraph, FormalMethods::SubstitutionCost> // Automata costs
+	//> planner(ts, dfas);
 
-	// Set the weighting
-	std::vector<FormalMethods::SubstitutionCost> weights = {1,2};
-	ASSERT(weights.size() == dfas.size(), "Number of weights must match number of tasks");
-	WeightedSumPreferenceCostObjective<SymbolicGraph, FormalMethods::SubstitutionCost>::setWeights(weights);
+	//// Set the weighting
+	//std::vector<FormalMethods::SubstitutionCost> weights = {1,2};
+	//ASSERT(weights.size() == dfas.size(), "Number of weights must match number of tasks");
+	//WeightedSumPreferenceCostObjective<SymbolicGraph, FormalMethods::SubstitutionCost>::setWeights(weights);
 
-	DiscreteModel::State init_state = DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
+	//DiscreteModel::State init_state = DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
 
-	LOG("Planning...");
-	auto plan_set = planner.plan(init_state);
-	LOG("Finished.");
+	//LOG("Planning...");
+	//auto plan_set = planner.plan(init_state);
+	//LOG("Finished.");
 
-	if (plan_set.size()) {
-		LOG("Planner success!");
-		uint32_t i = 0;
-		for (const auto& plan : plan_set) {
+	//if (plan_set.size()) {
+	//	LOG("Planner success!");
+	//	uint32_t i = 0;
+	//	for (const auto& plan : plan_set) {
 
-			LOG("Plan " << i << " Cost: " << plan.cost.template get<0>().cost << " Sum Delay Cost: " << plan.cost.template get<1>().preferenceFunction() << " Weighted Sum Cost: " << plan.cost.template get<2>().preferenceFunction());
-			plan.print();	
-		}
-		DiscreteModel::GridWorldAgent::serializeConfig(ts_props, "test_grid_world_config.yaml");
-	} else {
-		LOG("Planner failed using init state: " << init_state.to_str());
-	}
+	//		LOG("Plan " << i << " Cost: " << plan.cost.template get<0>().cost << " Sum Delay Cost: " << plan.cost.template get<1>().preferenceFunction() << " Weighted Sum Cost: " << plan.cost.template get<2>().preferenceFunction());
+	//		plan.print();	
+	//	}
+	//	DiscreteModel::GridWorldAgent::serializeConfig(ts_props, "test_grid_world_config.yaml");
+	//} else {
+	//	LOG("Planner failed using init state: " << init_state.to_str());
+	//}
 
 
 	return 0;
