@@ -26,18 +26,18 @@ int main(int argc, char* argv[]) {
 
 	bool verbose = parser.hasFlag('v');
 
-	std::string dfa_directory = parser.parseAsString("dfa-directory", "./dfas");
-	std::string dfa_file_template = parser.parseAsString("dfa-file-template", "dfa_#.yaml");
+	std::string dfa_directory = parser.parse<std::string>("dfa-directory", "./dfas");
+	std::string dfa_file_template = parser.parse<std::string>("dfa-file-template", "dfa_#.yaml");
 
-	std::string config_filepath = parser.parseAsString("config-filepath");
+	std::string config_filepath = parser.parse<std::string>("config-filepath");
 
 	bool write_plans = parser.hasFlag('w');
-	std::string plan_directory = parser.parseAsString("plan-directory", "./grid_world_plans");
-	std::string plan_file_template = parser.parseAsString("plan-file-template", "plan_#.yaml");
+	std::string plan_directory = parser.parse<std::string>("plan-directory", "./grid_world_plans");
+	std::string plan_file_template = parser.parse<std::string>("plan-file-template", "plan_#.yaml");
 
-	std::string pareto_front_filepath = parser.parseAsString("pareto-front-filepath");
+	std::string pareto_front_filepath = parser.parse<std::string>("pareto-front-filepath");
 
-	uint32_t n_dfas = parser.parseAsUnsignedInt("n-dfas", 1);
+	uint32_t n_dfas = parser.parse<uint32_t>("n-dfas", 1);
 
 	DiscreteModel::GridWorldAgentProperties ts_props;
 	if (config_filepath.empty()) {

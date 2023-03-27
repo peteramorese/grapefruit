@@ -1,1 +1,1 @@
-#add_subdirectory(planners)
+add_subdirectory(planners)

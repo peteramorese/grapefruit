@@ -54,22 +54,6 @@ def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose
                 file_dict["Connections"][s].append(s_con.dst)
                 file_dict["Labels"][s].append(str(spot.bdd_format_formula(bdict, s_con.cond)))
                 if "{}".format(s_con.acc) != "{}":
-<<<<<<< HEAD
-                    accepting_list.append("{}".format(s))
-        lines_list.append("Accepting States:")	
-        for a_s in accepting_list:
-            lines_list.append("- " + a_s)
-        lines_list.append("")
-        print("  FILENAME: ", filename)
-        try:
-            with open(filename, "w") as file:
-                for line in lines_list:
-                    file.write(line)
-                    file.write("\n")
-        except Exception as e:
-            print("Open filename failed with error:", e)
-
-=======
                     file_dict["Accepting States"].append(s)
 
         if create_sub_map:
@@ -89,7 +73,6 @@ def create_file(F_arr, dirname_prefix, custom_filename, random_ordering, verbose
 
         with open(filename, "w+") as file:
             yaml.dump(file_dict, file)
->>>>>>> 63bf00bd5844b7dded19aafc6a217faf7afee16d
 
 def print_automaton(A):
     bdict = A.get_dict()	
@@ -159,10 +142,6 @@ def read_write_json(read_json_name, formula_list_name, write_file_dir_name_prefi
 
 if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
-<<<<<<< HEAD
-
-=======
->>>>>>> 63bf00bd5844b7dded19aafc6a217faf7afee16d
     parser.add_argument("-f", "--filepath", default="formulas.json", help="Specify forumla file")
     parser.add_argument("-l", "--formula-list", default="default", help="Specify formula list inside json formula file")
     parser.add_argument("--formulas", default=None, action="extend", nargs="+", type=str, help="Manually specify multiple formula strings")
@@ -171,31 +150,15 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--complete", action='store_true', default=False, help="DFA is complete (instead of minimal)")
     parser.add_argument("-x", "--use-txt", action='store_true', default=False, help="Use '.txt' interpretation instead of '.json'")
     parser.add_argument("-r", "--random-ordering", action='store_true', default=False, help="Randomly the order of the input formulas")
-<<<<<<< HEAD
-=======
     parser.add_argument("--sub-map", action='store_true', default=False, help="Create a submap template")
->>>>>>> 63bf00bd5844b7dded19aafc6a217faf7afee16d
     args = parser.parse_args()
     if args.formulas:
         print(args.formulas)
 
-<<<<<<< HEAD
-
-    print("Reading file: ", args.filepath)
-    if args.filepath is not None:
-        print("DFA file target: ", args.dfa_filename)
-    READ_FILE_NAME = args.filepath
-
-=======
->>>>>>> 63bf00bd5844b7dded19aafc6a217faf7afee16d
     if not args.dfa_path.endswith("/"):
         WRITE_FILE_DIR_NAME_PREFIX = args.dfa_path + "/"
     else:
         WRITE_FILE_DIR_NAME_PREFIX = args.dfa_path
-<<<<<<< HEAD
-
-=======
->>>>>>> 63bf00bd5844b7dded19aafc6a217faf7afee16d
     WRITE_FILE_NAME = args.dfa_filename
     if args.formulas:
         print("Argument formulas: ", args.formulas)
@@ -213,7 +176,3 @@ if __name__ == "__main__":
             read_write_json(READ_FILE_NAME, args.formula_list, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete, create_sub_map=args.sub_map)
         else: 
             read_write_txt(READ_FILE_NAME, WRITE_FILE_DIR_NAME_PREFIX, WRITE_FILE_NAME, random_ordering=args.random_ordering, verbose=True, f_complete=args.complete)
-<<<<<<< HEAD
-
-=======
->>>>>>> 63bf00bd5844b7dded19aafc6a217faf7afee16d

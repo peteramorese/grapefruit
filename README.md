@@ -1,5 +1,7 @@
 # Task Planning Library
 
+###### By Peter Amorese
+
 An abstract, efficient C++ library for autonomous high-level discrete task planning.
 
 ### Why?
@@ -10,16 +12,16 @@ This task planning library gives you the tools and algorithms to utilize or desi
 
 ### What is included?
 
-#### Generic Shortest Path Problem Graph Search
+###### Generic Shortest Path Problem Graph Search
  - **Dijkstra's Algorithm** (Single-objective shortest path)
  - **A\*** (Single-objective heuristic-guided shortest path)
  - **Bi-Objective A\*** (a.k.a. BOA*, Two-objective optimal trade-off Pareto Front)
  - **New Approach to Multi-Objective A\*** (a.k.a. NAMOA*, N-objective optimal trade-off Pareto Front)
 
-#### Custom Model Generator
+###### Custom Model Generator
 The custom model generator and logic parser allow the user to create discrete *Transition System* models of an autonomous system. This library also includes simple model generators for a robotic manipulator capable of grasping and moving objects, and a grid-world mobile robot with rectangular regions of interest.
 
-#### Task Planners
+###### Task Planners
 The **Deterministic Task Planner** will autonomously plan a sequence of actions that when executed from the initial state, satisfies a set of LTL tasks. The **Bi-Objective Preference Planner** and **Multi-Objective Preference Planner** will plan a sequence of actions that will satisfies a set of LTL tasks, while optimizing over multiple preference objectives.
 
 
