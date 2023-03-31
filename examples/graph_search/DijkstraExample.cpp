@@ -29,7 +29,7 @@ struct Edge {
 
 int main() {
 
-    std::shared_ptr<Graph<Edge>> graph(std::make_shared<Graph<Edge>>(true, true, &Edge::edgeToStr));
+    std::shared_ptr<Graph<Edge>> graph(std::make_shared<Graph<Edge>>());
 
     graph->connect(0, 3, {1, 'b'});
     graph->connect(1, 0, {2, 'a'});
@@ -45,7 +45,7 @@ int main() {
     graph->connect(7, 6, {3, 'g'});
     graph->connect(8, 7, {1, 'f'});
 
-    graph->print();
+    graph->print(&Edge::edgeToStr);
  
 
     NEW_LINE;

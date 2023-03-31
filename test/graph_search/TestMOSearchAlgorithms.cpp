@@ -65,12 +65,12 @@ int main(int argc, char* argv[]) {
     for (uint32_t trial=0; trial<trials; ++trial) {
 
         LOG("b4 generate");
-        std::shared_ptr<Graph<Edge>> graph = random_graph_generator.generate<Edge>(createRandomEdge, &Edge::edgeToStr);
+        std::shared_ptr<Graph<Edge>> graph = random_graph_generator.generate<Edge>(createRandomEdge);
         LOG("af generate");
 
         if (verbose) {
             LOG("Done.");
-            graph->print();
+            graph->print(&Edge::edgeToStr);
         }
 
         //auto[start, goal] = random_graph_generator.getRandomInitAndGoal();

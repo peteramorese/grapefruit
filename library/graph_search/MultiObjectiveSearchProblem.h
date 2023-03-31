@@ -227,7 +227,7 @@ namespace GraphSearch {
     struct MultiObjectiveSearchResult {
         public:
             MultiObjectiveSearchResult(bool retain_search_graph = true, bool retain_non_dominated_cost_map = true)
-                : search_graph(std::make_shared<SearchGraph<SearchGraphEdge<const COST_VECTOR_T*, EDGE_STORAGE_T>, NODE_T>>(true, true))
+                : search_graph(std::make_shared<SearchGraph<SearchGraphEdge<const COST_VECTOR_T*, EDGE_STORAGE_T>, NODE_T>>())
                 , non_dominated_cost_map(std::make_shared<NonDominatedCostMap<COST_VECTOR_T>>())
                 , m_retain_search_graph(retain_search_graph)
                 , m_retain_non_dominated_cost_map(retain_non_dominated_cost_map)

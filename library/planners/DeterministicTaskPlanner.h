@@ -16,9 +16,8 @@ namespace Planner {
 
     
     using DiscreteModel::TransitionSystem;
-    using FormalMethods::DFA;
 
-    using SymbolicProductGraph = DiscreteModel::SymbolicProductAutomaton<TransitionSystem, DFA, DiscreteModel::ModelEdgeInheritor<TransitionSystem, DFA>>;
+    using SymbolicProductGraph = DiscreteModel::SymbolicProductAutomaton<TransitionSystem, FormalMethods::DFA, DiscreteModel::ModelEdgeInheritor<TransitionSystem, FormalMethods::DFA>>;
 
     class DeterministicTaskPlannerSearchProblem : public GraphSearch::QuantitativeSymbolicSearchProblem<SymbolicProductGraph, DiscreteModel::TransitionSystemLabel::cost_t, GraphSearch::SearchDirection::Forward> {
         public:
@@ -35,7 +34,7 @@ namespace Planner {
 
     class DeterministicTaskPlanner {
         public:
-            DeterministicTaskPlanner(const std::shared_ptr<TransitionSystem>& ts, const std::vector<std::shared_ptr<DFA>>& automata);
+            DeterministicTaskPlanner(const std::shared_ptr<TransitionSystem>& ts, const std::vector<std::shared_ptr<FormalMethods::DFA>>& automata);
 
             Plan<DeterministicTaskPlannerSearchProblem> plan(const DiscreteModel::State& init_state) const;
         private:

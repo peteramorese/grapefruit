@@ -18,9 +18,9 @@ class RandomGraphGenerator {
 
         // Takes in lambda that creates a random edge with a maximum cost
         template <class EDGE_T, typename LAM>
-        std::shared_ptr<Graph<EDGE_T>> generate(LAM createRandomEdge, Graph<EDGE_T>::EdgeToStrFunction edgeToStr = nullptr) {
+        std::shared_ptr<Graph<EDGE_T>> generate(LAM createRandomEdge) {
             reset();
-            std::shared_ptr<Graph<EDGE_T>> graph(std::make_shared<Graph<EDGE_T>>(true, true, edgeToStr));
+            std::shared_ptr<Graph<EDGE_T>> graph(std::make_shared<Graph<EDGE_T>>());
             std::queue<Node> q;
             q.push(newNode());
             while (m_back_node < m_size) {

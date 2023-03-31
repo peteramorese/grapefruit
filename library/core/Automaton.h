@@ -53,9 +53,9 @@ namespace FormalMethods {
 
 
     template <typename NATIVE_NODE_T = Node, bool REVERSIBLE = true>
-    class DFA : public Automaton<Observation, NATIVE_NODE_T, REVERSIBLE> {
+    class GenericDFA : public Automaton<Observation, NATIVE_NODE_T, REVERSIBLE> {
         public:
-            DFA() {}
+            GenericDFA() {}
 
             virtual bool connect(NATIVE_NODE_T src, NATIVE_NODE_T dst, const Observation& edge) override {
                 if (src < this->size()) {
@@ -117,8 +117,11 @@ namespace FormalMethods {
                 }
             }
 
-            ~DFA() {}
+            ~GenericDFA() {}
     };
+
+    using DFA = GenericDFA<>;
+    
 } // namespace FormalMethods
 } // namespace TP
 

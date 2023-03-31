@@ -30,7 +30,7 @@ namespace Planner {
         return true;
     }
 
-    DeterministicTaskPlanner::DeterministicTaskPlanner(const std::shared_ptr<TransitionSystem>& ts, const std::vector<std::shared_ptr<DFA>>& automata) 
+    DeterministicTaskPlanner::DeterministicTaskPlanner(const std::shared_ptr<TransitionSystem>& ts, const std::vector<std::shared_ptr<FormalMethods::DFA>>& automata) 
         : m_sym_graph(std::make_shared<SymbolicProductGraph>(ts, automata))
     {}
 

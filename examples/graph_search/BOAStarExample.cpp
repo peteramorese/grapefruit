@@ -34,7 +34,7 @@ class MyHeuristic {
 
 int main() {
 
-    std::shared_ptr<Graph<Edge>> graph(std::make_shared<Graph<Edge>>(true, true, &Edge::edgeToStr));
+    std::shared_ptr<Graph<Edge>> graph(std::make_shared<Graph<Edge>>());
 
     graph->connect(0, 1, {0, 5, 'a'});
     graph->connect(0, 2, {4, 1, 'b'});
@@ -44,7 +44,7 @@ int main() {
     graph->connect(2, 4, {5, 1, 'e'});
     graph->connect(4, 3, {3, 2, 'g'});
 
-    graph->print();
+    graph->print(&Edge::edgeToStr);
  
 
     NEW_LINE;

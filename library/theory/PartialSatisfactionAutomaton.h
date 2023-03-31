@@ -27,9 +27,9 @@ namespace FormalMethods {
     using LetterSubstitutionMap = std::map<std::string, std::pair<std::string, SubstitutionCost>>;
 
     template <typename NATIVE_NODE_T = Node, bool REVERSIBLE = true>
-    class PartialSatisfactionDFA : public Automaton<PartialSatisfactionEdge, NATIVE_NODE_T, REVERSIBLE> {
+    class GenericPartialSatisfactionDFA : public Automaton<PartialSatisfactionEdge, NATIVE_NODE_T, REVERSIBLE> {
         public:
-            PartialSatisfactionDFA() {}
+            GenericPartialSatisfactionDFA() {}
 
             virtual bool connect(Node src, Node dst, const PartialSatisfactionEdge& edge) override {
                 if (src < this->size()) {
@@ -128,7 +128,8 @@ namespace FormalMethods {
                     node++;
                 }
             }
-
     };
+
+    using PartialSatisfactionDFA = GenericPartialSatisfactionDFA<>;
 }
 }
