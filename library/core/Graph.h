@@ -50,34 +50,28 @@ namespace AugmentedNodeIndex {
 
 
 
-template<class EDGE_T, typename NATIVE_NODE_T = Node>
+template<class EDGE_T, typename NATIVE_NODE_T = Node, bool REVERSIBLE = true, bool DIRECTED = true>
 class Graph {
 	public:
 	 	typedef EDGE_T edge_t; // used for dependent types
 	 	typedef NATIVE_NODE_T node_t; // used for dependent types
-		
-		typedef std::string(*EdgeToStrFunction)(const EDGE_T&);
+
 	public:
-		Graph(bool directed = true, bool reversible = false, EdgeToStrFunction edgeToStr = nullptr)
-			: m_directed(directed)
-			, m_reversible(reversible)
-			, m_edgeToStr(edgeToStr)
-		{}
-		
+		Graph() {}
 		virtual ~Graph() {}
 
-		bool isDirected() const {return m_directed;}
+		constexpr bool isDirected() {return DIRECTED;}
+		constexpr bool isReversible() {return REVERSIBLE;}
 
-		bool isReversible() const {return m_reversible;}
+		inline std::size_t size() const {return m_graph.size();}
 
-		std::size_t size() const {
-			// TODO make this constant time
-			//std::size_t sz = 0;
-			//for (std::size_t i=0; i<m_graph.size(); ++i) {
-			//	if (m_graph[i].forward.size() || m_graph[i].forward.size()) ++sz;
-			//}
-			//return sz;
-			return m_graph.size();
+		std::vector<NATIVE_NODE_T> nodes() const {
+			std::vector<NATIVE_NODE_T> nodes;
+			nodes.reserve(m_graph.size());
+			for (Node n=0; n<m_graph.size(); ++n) {
+				if (!m_graph[n].forward.empty() || !m_graph[n].backward.empty()) nodes.push_back(n);
+			}
+			return nodes;
 		}
 
 		inline const std::vector<EDGE_T>& getOutgoingEdges(NATIVE_NODE_T node) const {
@@ -89,10 +83,12 @@ class Graph {
 		}
 		
 		inline const std::vector<EDGE_T>& getIncomingEdges(NATIVE_NODE_T node) const {
+			static_assert(REVERSIBLE, "Graph must be reversible");
 			return m_graph[node].backward.edges;
 		}
 
 		inline const std::vector<NATIVE_NODE_T>& getParents(NATIVE_NODE_T node) const {
+			static_assert(REVERSIBLE, "Graph must be reversible");
 			return m_graph[node].backward.nodes;
 		}
 		
@@ -146,7 +142,7 @@ class Graph {
 
 		template <typename LAM>
 		void rdisconnectIf(NATIVE_NODE_T dst, LAM removeConnection) {
-			ASSERT(this->m_reversible, "Graph must be reversible to use r methods");
+			static_assert(REVERSIBLE, "Graph must be reversible to use r methods");
 			auto removeConnectionWrapper = [&, this](NATIVE_NODE_T src, const EDGE_T& edge) {
 				bool remove = removeConnection(src, edge);
 				if (remove) {
@@ -158,30 +154,15 @@ class Graph {
 		}
 
 		void reverse() {
-			ASSERT(m_reversible, "Cannot reverse a graph that is not reversible");
+			static_assert(REVERSIBLE, "Cannot reverse a graph that is not reversible");
 			for (auto& adj_list : m_graph) {
 				swap(adj_list.forward, adj_list.backward);
 			}
 		}
 
-		virtual void print() const {
-			LOG("Printing graph (size: " << size() << ")");
-			NATIVE_NODE_T node = 0;
-			for (const auto& list : m_graph) {
-				for (uint32_t i=0; i < list.forward.size(); ++i) {
-					if (i == 0) PRINT_NAMED("Node " << node, "is connected to:");
-					if (m_edgeToStr) 
-						PRINT_NAMED("    - child node " << list.forward.nodes[i], "with edge: " << m_edgeToStr(list.forward.edges[i]));
-					else
-						PRINT_NAMED("    - child node " << list.forward.nodes[i], "(cannot print edge)");
-				}
-				++node;
-			}
-		}
-
 		template <typename LAM>
-		void printCustom(LAM edgeToStr) const {
-			LOG("Printing graph (size: " << size() << ")");
+		void print(LAM edgeToStr) const {
+			LOG("Printing graph (" << nodes().size() << " nodes)");
 			NATIVE_NODE_T node = 0;
 			for (const auto& list : m_graph) {
 				for (uint32_t i=0; i < list.forward.size(); ++i) {
@@ -192,16 +173,15 @@ class Graph {
 			}
 		}
 
-		virtual void printReverse() const {
-			LOG("Printing reversed graph (size: " << size() << ")");
+		template <typename LAM>
+		void rprint(LAM edgeToStr) const {
+			static_assert(REVERSIBLE, "Graph must be reversible to print reverse");
+			LOG("Printing reversed graph (" << nodes().size() << " nodes)");
 			NATIVE_NODE_T node = 0;
 			for (const auto& list : m_graph) {
 				for (uint32_t i=0; i < list.backward.size(); ++i) {
 					if (i == 0) PRINT_NAMED("Node " << node, "is connected to:");
-					if (m_edgeToStr)
-						PRINT_NAMED("    - parent node " << list.backward.nodes[i], "with edge: " << m_edgeToStr(list.backward.edges[i]));
-					else
-						PRINT_NAMED("    - parent node " << list.backward.nodes[i], "(cannot print edge)");
+					PRINT_NAMED("    - parent node " << list.backward.nodes[i], "with edge: " << edgeToStr(list.backward.edges[i]));
 				}
 				++node;
 			}
@@ -211,62 +191,49 @@ class Graph {
 	
 	protected:
 		struct AdjacencyList {
-			void pushConnect(NATIVE_NODE_T dst_node, const EDGE_T& edge) {
+			std::size_t pushConnect(NATIVE_NODE_T dst_node, const EDGE_T& edge) {
 				edges.push_back(edge);
 				nodes.push_back(dst_node);
+				return nodes.size();
 			}
 			template <typename ... Args>
-			constexpr void emplaceConnect(NATIVE_NODE_T dst_node, Args&& ... args) {
+			constexpr std::size_t emplaceConnect(NATIVE_NODE_T dst_node, Args&& ... args) {
 				edges.emplace_back(std::forward<Args>(args)...);
 				nodes.push_back(dst_node);
+				return nodes.size();
 			}
-			bool disconnect(NATIVE_NODE_T dst_node) {
-				bool found = false;
-				auto e_it = edges.begin();
-				for (auto n_it = nodes.begin(); n_it != nodes.end();) {
-					if (*n_it == dst_node) {
-						nodes.erase(n_it);
-						edges.erase(e_it);
-						found = true;
-					} else {
-						n_it++;
-						e_it++;
-					}
-				}
-				return found;
+			std::size_t disconnect(NATIVE_NODE_T dst_node) {
+				auto removeConnection = [dst_node] (NATIVE_NODE_T n, const EDGE_T& e) -> bool {
+					return n == dst_node;
+				};
+				return disconnectIf(removeConnection);
 			}
-			bool disconnect(NATIVE_NODE_T dst_node, const EDGE_T& edge) {
-				bool found = false;
-				auto e_it = edges.begin();
-				for (auto n_it = nodes.begin(); n_it != nodes.end();) {
-					if (*n_it == dst_node && *e_it == edge) {
-						nodes.erase(n_it);
-						edges.erase(e_it);
-						found = true;
-					} else {
-						n_it++;
-						e_it++;
-					}
-				}
-				return found;
+			std::size_t disconnect(NATIVE_NODE_T dst_node, const EDGE_T& edge) {
+				auto removeConnection = [dst_node, &edge] (NATIVE_NODE_T n, const EDGE_T& e) -> bool {
+					return n == dst_node && e == edge;
+				};
+				return disconnectIf(removeConnection);
 			}
 			template <typename LAM>
-			bool disconnectIf(LAM removeConnection) {
-				bool found = false;
+			std::size_t disconnectIf(LAM removeConnection) {
+				std::size_t n_removed;
 				auto e_it = edges.begin();
 				for (auto n_it = nodes.begin(); n_it != nodes.end();) {
 					if (removeConnection(*n_it, *e_it)) {
 						nodes.erase(n_it);
 						edges.erase(e_it);
-						found = true;
+						++n_removed;
 					} else {
-						n_it++;
-						e_it++;
+						++n_it;
+						++e_it;
 					}
 				}
-				return found;
+				return n_removed;
 			}
-			std::size_t size() const {return edges.size();}
+
+			inline std::size_t size() const {return edges.size();}
+
+			inline bool empty() const {return edges.empty();}
 
 			friend void swap(AdjacencyList& lhs, AdjacencyList& rhs) {
 				std::swap(lhs.nodes, rhs.nodes);
@@ -276,6 +243,7 @@ class Graph {
 			std::vector<NATIVE_NODE_T> nodes;
 			std::vector<EDGE_T> edges;
 		};
+		
 		struct BidirectionalConnectionList {
 			AdjacencyList forward;
 			AdjacencyList backward;
@@ -283,8 +251,7 @@ class Graph {
 
 	protected:
 		Containers::RandomAccessList<BidirectionalConnectionList> m_graph;
-		EdgeToStrFunction m_edgeToStr;
-
+		std::size_t m_size;
 		bool m_directed, m_reversible;
 };
 
@@ -315,42 +282,36 @@ class BijectiveGenericNodeContainer {
 };
 
 
-template<class NODE_T, class EDGE_T, typename NATIVE_NODE_T = Node>
-class NodeGenericGraph : public Graph<EDGE_T, NATIVE_NODE_T> {
+template<class NODE_T, class EDGE_T, typename NATIVE_NODE_T = Node, bool REVERSIBLE = true, bool DIRECTED = true>
+class NodeGenericGraph : public Graph<EDGE_T, NATIVE_NODE_T, REVERSIBLE, DIRECTED> {
 	public:
 	 	typedef NODE_T node_t;
-		typedef std::string(*NodeToStrFunction)(const NODE_T&);
+		//typedef std::string(*NodeToStrFunction)(const NODE_T&);
 	public:
-		NodeGenericGraph(bool directed = true, bool reversible = false, Graph<EDGE_T>::EdgeToStrFunction edgeToStr = nullptr, NodeToStrFunction nodeToStr = nullptr)
-			: Graph<EDGE_T>(directed, reversible, edgeToStr)
-		{}
+		NodeGenericGraph() {}
 		
 		virtual ~NodeGenericGraph() {}
 
 		inline std::vector<NODE_T> getChildrenGenericNodes(NATIVE_NODE_T node) {
-			std::vector<NODE_T> nodes(this->m_graph[node].forward.nodes.size());
-			for (uint32_t i=0; i < nodes.size(); ++i) nodes[i] = m_node_container[this->m_graph[node].forward.nodes[i]];
+			const std::vector<NATIVE_NODE_T>& children = this->getChildren(node);
+			std::vector<NODE_T> nodes(children.size());
+			for (uint32_t i=0; i < children.size(); ++i) nodes[i] = m_node_container[children[i]];
 			return nodes;
 		}
 
 		inline const std::vector<NATIVE_NODE_T>& getParentsGenericNodes(NATIVE_NODE_T node) {
-			std::vector<NODE_T> nodes(this->m_graph[node].backward.nodes.size());
-			for (uint32_t i=0; i < nodes.size(); ++i) nodes[i] = m_node_container[this->m_graph[node].backward.nodes[i]];
+			const std::vector<NATIVE_NODE_T>& parents = this->getParents(node);
+			std::vector<NODE_T> nodes(parents.size());
+			for (uint32_t i=0; i < parents.size(); ++i) nodes[i] = m_node_container[parents[i]];
 			return nodes;
 		}
 
 		inline std::vector<NODE_T> getChildrenGenericNodes(const NODE_T& node) {
-			NATIVE_NODE_T node_native = m_node_container[node];
-			std::vector<NODE_T> nodes(this->m_graph[node_native].forward.nodes.size());
-			for (uint32_t i=0; i < nodes.size(); ++i) nodes[i] = m_node_container[this->m_graph[node_native].forward.nodes[i]];
-			return nodes;
+			return getChildrenGenericNodes(m_node_container[node]);
 		}
 
 		inline const std::vector<NATIVE_NODE_T>& getParentsGenericNodes(const NODE_T& node) {
-			NATIVE_NODE_T node_native = m_node_container[node];
-			std::vector<NODE_T> nodes(this->m_graph[node_native].backward.nodes.size());
-			for (uint32_t i=0; i < nodes.size(); ++i) nodes[i] = m_node_container[this->m_graph[node_native].backward.nodes[i]];
-			return nodes;
+			return getParentsGenericNodes(m_node_container[node]);
 		}
 
 		bool connect(const NODE_T& src_node, const NODE_T& dst_node, const EDGE_T& edge) {
@@ -359,23 +320,28 @@ class NodeGenericGraph : public Graph<EDGE_T, NATIVE_NODE_T> {
 
 		inline const BijectiveGenericNodeContainer<NODE_T, NATIVE_NODE_T>& getGenericNodeContainer() const {return m_node_container;}
 
-		virtual void print() const override {
-			if (!this->m_edgeToStr) { // Allow program to continue even if print function is not provided
-				ERROR("No 'edgeToStr' function provided, cannot print");
-				return;
-			}
+		template <typename NODE_LAM, typename EDGE_LAM>
+		void print(EDGE_LAM edgeToStr) const {
 			LOG("Printing graph (size: " << this->size() << ")");
 			NATIVE_NODE_T node = 0;
 			for (const auto& list : this->m_graph) {
 				for (uint32_t i=0; i < list.forward.size(); ++i) {
-					if (i == 0) {
-						if (m_nodeToStr) {
-							PRINT_NAMED("Node " << node << " (" << m_nodeToStr(m_node_container[node]) << ")", "is connected to:");
-						} else {
-							PRINT_NAMED("Node " << node, "is connected to:");
-						}
-					}
-					PRINT_NAMED("    - child node " << list.forward.nodes[i], "with edge: " << this->m_edgeToStr(list.forward.edges[i]));
+					if (i == 0) PRINT_NAMED("Node " << node << " (" << static_cast<std::string>(m_node_container[node]) << ")", "is connected to:");
+					PRINT_NAMED("    - child node " << list.forward.nodes[i] << " (" << static_cast<std::string>(m_node_container[list.forward.nodes[i]]) << ")", "with edge: " << edgeToStr(list.forward.edges[i]));
+				}
+				++node;
+			}
+		}
+
+		template <typename LAM>
+		void rprint(LAM edgeToStr) const {
+			static_assert(REVERSIBLE, "Graph must be reversible to print reverse");
+			LOG("Printing reversed graph (size: " << this->size() << ")");
+			NATIVE_NODE_T node = 0;
+			for (const auto& list : this->m_graph) {
+				for (uint32_t i=0; i < list.backward.size(); ++i) {
+					if (i == 0) PRINT_NAMED("Node " << node << " (" << static_cast<std::string>(m_node_container[node]) << ")", "is connected to:");
+					PRINT_NAMED("    - parent node " << list.backward.nodes[i] << " (" << static_cast<std::string>(m_node_container[list.backward.nodes[i]]) << ")", "with edge: " << edgeToStr(list.backward.edges[i]));
 				}
 				++node;
 			}
@@ -385,6 +351,5 @@ class NodeGenericGraph : public Graph<EDGE_T, NATIVE_NODE_T> {
 	
 	protected:
 		BijectiveGenericNodeContainer<NODE_T, NATIVE_NODE_T> m_node_container;
-		NodeToStrFunction m_nodeToStr;
 };
 }

@@ -1,4 +1,5 @@
 #include<iostream>
+#include<sstream>
 
 #include "core/Graph.h"
 
@@ -14,35 +15,35 @@ struct Edge {
 
 int main() {
  
-    Graph<Edge> graph(true, true, &Edge::toStr);
+    Graph<Edge> graph;
     graph.connect(3, 2, {1.0f, "three to two"});
     graph.connect(3, 3, {1.9f, "three to three"});
     graph.connect(3, 1, {3.4f, "three to one"});
     graph.connect(1, 10, {3.4f, "one to ten"});
     graph.connect(1, 3, {1.5f, "one to three"});
-    graph.connect(1, 2, {2.5f, "four to two"});
-    graph.print();
-    graph.printReverse();
+    graph.connect(1, 2, {2.5f, "one to two"});
+    graph.connect(5, 2, {2.5f, "five to two"});
+    graph.print(&Edge::toStr);
+    graph.rprint(&Edge::toStr);
 
-    LOG("Diconnection 3->2");
-    graph.disconnect(3, 2, {1.0f, "three to two"});
-    graph.print();
-    graph.printReverse();
+    std::string nodes_str = "";
+    for (auto n : graph.nodes()) nodes_str += std::to_string(n) + " ";
+    LOG("Nodes: " << nodes_str);
 
-    const auto& children = graph.getChildren(1); // demonstrate pointer stability
-    LOG("Diconnecting all edges from 1 that have cost less than 3.0f (size before: " << children.size() << ")");
-    auto disconnect_if = [](Node dst, const Edge& edge) -> bool {
-        return edge.cost < 3.0f;
-    };
-    graph.disconnectIf(1, disconnect_if);
-    LOG("(size after: " << children.size() << ")");
+    //LOG("Diconnection 3->2");
+    //graph.disconnect(3, 2, {1.0f, "three to two"});
+    //graph.print();
+    //graph.printReverse();
 
-    //LOG("Diconnecting all parents from 3 that have cost less than 2.0f ");
-    //auto rdisconnect_if = [](Node src, const Edge& edge) -> bool {
-    //    return edge.cost < 2.0f;
+    //const auto& children = graph.getChildren(1); // demonstrate pointer stability
+    //LOG("Diconnecting all edges from 1 that have cost less than 3.0f (size before: " << children.size() << ")");
+    //auto disconnect_if = [](Node dst, const Edge& edge) -> bool {
+    //    return edge.cost < 3.0f;
     //};
-    //graph.rdisconnectIf(3, rdisconnect_if);
-    graph.print();
-    graph.printReverse();
+    //graph.disconnectIf(1, disconnect_if);
+    //LOG("(size after: " << children.size() << ")");
+
+    //graph.print();
+    //graph.printReverse();
 	return 0;
 }

@@ -53,7 +53,7 @@ int main() {
 	/////////////////   DFAs   /////////////////
 
 	// Formula: F(obj_0_loc_L2 & F obj_1_L1) 
-	std::shared_ptr<FormalMethods::DFA> dfa_1 = std::make_shared<FormalMethods::DFA>();
+	std::shared_ptr<FormalMethods::DFA<>> dfa_1 = std::make_shared<FormalMethods::DFA<>>();
 	dfa_1->setAcceptingStates({0});
 	dfa_1->setInitStates({2});
 	dfa_1->setAlphabet({"!obj_0_loc_L2", "obj_0_loc_L2 & !obj_1_loc_L1", "obj_0_loc_L2 & obj_1_loc_L1", "!obj_1_loc_L1", "obj_1_loc_L1", "1"});
@@ -69,7 +69,7 @@ int main() {
 	//const auto& automaton_children = automaton->getChildren(unwrapped_nodes[automaton_ind]);
 
 	// Formula: F(obj_1_loc_L1)
-	std::shared_ptr<FormalMethods::DFA> dfa_2 = std::make_shared<FormalMethods::DFA>();
+	std::shared_ptr<FormalMethods::DFA<>> dfa_2 = std::make_shared<FormalMethods::DFA<>>();
 	dfa_2->setAcceptingStates({0});
 	dfa_2->setInitStates({1});
 	dfa_2->setAlphabet({"!obj_1_loc_L1", "obj_1_loc_L1", "1"});
@@ -80,7 +80,7 @@ int main() {
 	NEW_LINE;
 	dfa_2->print();
 
-	std::vector<std::shared_ptr<FormalMethods::DFA>> dfas = {dfa_1, dfa_2};
+	std::vector<std::shared_ptr<FormalMethods::DFA<>>> dfas = {dfa_1, dfa_2};
 
 	FormalMethods::Alphabet combined_alphbet = dfa_1->getAlphabet() + dfa_1->getAlphabet();
 	ts->addAlphabet(combined_alphbet);
@@ -90,7 +90,7 @@ int main() {
 
 	{
 	// Edge inheritor defaults to inheriting the model edge
-	SymbolicProductAutomaton<TransitionSystem, FormalMethods::DFA> product(ts, dfas);
+	SymbolicProductAutomaton<TransitionSystem, FormalMethods::DFA<>> product(ts, dfas);
 
 	// Get the children symbolically
 	{
@@ -145,7 +145,7 @@ int main() {
 	/////////////////   Symbolic Product with Custom Edge Inheritor   /////////////////
 
 	{
-	SymbolicProductAutomaton<TransitionSystem, FormalMethods::DFA, MyEdgeInheritor> product(ts, dfas);
+	SymbolicProductAutomaton<TransitionSystem, FormalMethods::DFA<>, MyEdgeInheritor> product(ts, dfas);
 
 	// Get the children symbolically
 	{

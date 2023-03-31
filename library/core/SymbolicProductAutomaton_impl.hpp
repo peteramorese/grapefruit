@@ -51,6 +51,35 @@ namespace DiscreteModel {
     }
 
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR>
+    std::vector<WideNode> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getInitNodes(Node init_model_node) const {
+        AugmentedNodePermutation perm(rank() - 1);
+        for (ProductRank i=0; i<m_automata.size(); ++i) {
+            for (Node n : m_automata[i]->getInitStates()) {
+                perm.addOption(i, n);
+            }
+        }
+        std::vector<WideNode> init_nodes;
+        init_nodes.reserve(Algorithms::Combinatorics::permutationsSizeFromOptions(perm.automaton_set_ind_options));
+        auto onPermutation = [&] (const Containers::SizedArray<uint32_t>& option_indices) {
+            Containers::SizedArray<Node> unwrapped_p(rank());
+            unwrapped_p[0] = init_model_node;
+
+            for (ProductRank i=1; i<rank(); ++i) {
+                unwrapped_p[i] = perm.getSetIndex(i - 1, option_indices[i - 1]);
+            }
+            init_nodes.push_back(AugmentedNodeIndex::wrap(unwrapped_p, this->m_graph_sizes));
+        };
+
+        return init_nodes;
+    }
+
+    template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR>
+    std::set<WideNode> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getAcceptingStates() const {
+        //Containers::SizedArray<std::vector<Node>> options(rank());
+        //options.
+    }
+
+    template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR>
     std::vector<typename EDGE_INHERITOR::type> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getOutgoingEdges(WideNode node) {
         const AugmentedNodePermutationArray& perm_array = post(node);
 
@@ -63,7 +92,7 @@ namespace DiscreteModel {
 
         for (const auto& perm : perm_array.array) {
             auto onPermutation = [&, this] (const Containers::SizedArray<uint32_t>& option_indices) {
-                const auto& model_edge = m_model->getOutgoingEdges(unwrapped_nodes[0])[perm.dst_ts_ind_option];
+                const auto& model_edge = m_model->getOutgoingEdges(unwrapped_nodes[0])[perm.ts_ind_option];
 
                 Containers::SizedArray<typename AUTOMATON_T::edge_t> automaton_edges(rank() - 1);
                 for (ProductRank i=1; i<rank(); ++i) {
@@ -95,7 +124,7 @@ namespace DiscreteModel {
         for (const auto& perm : perm_array.array) {
             auto onPermutation = [&, this] (const Containers::SizedArray<uint32_t>& option_indices) {
                 Containers::SizedArray<Node> unwrapped_pp(rank());
-                unwrapped_pp[0] = m_model->getChildren(unwrapped_nodes[0])[perm.dst_ts_ind_option];
+                unwrapped_pp[0] = m_model->getChildren(unwrapped_nodes[0])[perm.ts_ind_option];
 
                 for (ProductRank i=1; i<rank(); ++i) {
                     const auto& children = m_automata[i - 1]->getChildren(unwrapped_nodes[i]);
@@ -208,7 +237,7 @@ namespace DiscreteModel {
             bool enabled = true;
 
             // Construct a temporary permutation
-            typename AugmentedNodePermutationArray::AugmentedNodePermutation perm(rank() - 1);
+            AugmentedNodePermutation perm(rank() - 1);
 
             //LOG("state: " << m_model->getGenericNodeContainer()[sp].to_str());
             ProductRank automaton_ind = 1;
@@ -236,7 +265,7 @@ namespace DiscreteModel {
             }
 
             if (enabled) {
-                perm.dst_ts_ind_option = sp_ind;
+                perm.ts_ind_option = sp_ind;
                 perm_array.insert(std::move(perm));
             } 
             ++sp_ind;
@@ -264,7 +293,7 @@ namespace DiscreteModel {
         bool enabled = true;
         
         // Construct a temporary permutation
-        typename AugmentedNodePermutationArray::AugmentedNodePermutation perm(rank() - 1);
+        AugmentedNodePermutation perm(rank() - 1);
 
         ProductRank automaton_ind = 1;
         for (const auto& automaton : m_automata) {

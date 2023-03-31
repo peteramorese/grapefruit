@@ -15,27 +15,22 @@ namespace FormalMethods {
 
     using Alphabet = std::unordered_set<std::string>;
 
-    using StateSet = std::set<Node>;
-
-    template<class T>
-    class Automaton : public Graph<T> {
+    template <class EDGE_T, typename NATIVE_NODE_T = Node, bool REVERSIBLE = true>
+    class Automaton : public Graph<EDGE_T, NATIVE_NODE_T, REVERSIBLE> {
         public:
-            Automaton(bool reversible = true, Graph<T>::EdgeToStrFunction edgeToStr = nullptr) 
-                : Graph<T>(true, reversible, edgeToStr) 
-            {}
+            Automaton() {}
 
-
-            void setAcceptingStates(const std::vector<uint32_t>& accepting_states) {
+            void setAcceptingStates(const std::vector<NATIVE_NODE_T>& accepting_states) {
                 for (auto ind : accepting_states) 
                     m_accepting_states.insert(ind);
             }
 
-            inline bool addAcceptingState(Node accepting_state) {return m_accepting_states.insert(accepting_state).second;}
-            inline bool isAccepting(Node ind) const {return m_accepting_states.contains(ind);}
-            inline const std::set<Node>& getAcceptingStates() const {return m_accepting_states;}
+            inline bool addAcceptingState(NATIVE_NODE_T accepting_state) {return m_accepting_states.insert(accepting_state).second;}
+            inline bool isAccepting(NATIVE_NODE_T ind) const {return m_accepting_states.contains(ind);}
+            inline const std::set<NATIVE_NODE_T>& getAcceptingStates() const {return m_accepting_states;}
 
-            inline void setInitStates(const std::vector<Node>& init_states) {for (auto ind : init_states) m_init_states.insert(ind);}
-            inline const std::set<Node>& getInitStates() const {return m_init_states;}
+            inline void setInitStates(const std::vector<NATIVE_NODE_T>& init_states) {m_init_states = init_states;}
+            inline const std::vector<NATIVE_NODE_T>& getInitStates() const {return m_init_states;}
 
             inline void setAlphabet(const Alphabet& alphabet) {m_alphabet = alphabet;}
             inline const Alphabet& getAlphabet() const {return m_alphabet;}
@@ -51,20 +46,20 @@ namespace FormalMethods {
 
         protected:
             Alphabet m_alphabet;
-            StateSet m_accepting_states;
-            StateSet m_init_states;
+            std::set<NATIVE_NODE_T> m_accepting_states;
+            std::vector<Node> m_init_states;
             Alphabet m_atomic_propositions;
     };
 
 
-    class DFA : public Automaton<Observation> {
+    template <typename NATIVE_NODE_T = Node, bool REVERSIBLE = true>
+    class DFA : public Automaton<Observation, NATIVE_NODE_T, REVERSIBLE> {
         public:
-            DFA(bool reversible = true) 
-                : Automaton<Observation>(reversible) {}
+            DFA() {}
 
-            virtual bool connect(Node src, Node dst, const Observation& edge) override {
-                if (src < size()) {
-                    const std::vector<Observation>& outgoing_edges = getOutgoingEdges(src);
+            virtual bool connect(NATIVE_NODE_T src, NATIVE_NODE_T dst, const Observation& edge) override {
+                if (src < this->size()) {
+                    const std::vector<Observation>& outgoing_edges = this->getOutgoingEdges(src);
                     for (const auto& label : outgoing_edges) {
                         // Do not connect if there is already
                         if (label == edge) return false;
@@ -79,17 +74,17 @@ namespace FormalMethods {
                 try {
                     data = YAML::LoadFile(filepath);
 
-                    m_atomic_propositions = data["Atomic Propositions"].as<Alphabet>();
-                    m_init_states = data["Initial States"].as<StateSet>();
-                    m_accepting_states = data["Accepting States"].as<StateSet>();
+                    this->m_atomic_propositions = data["Atomic Propositions"].as<Alphabet>();
+                    this->m_init_states = data["Initial States"].as<std::vector<NATIVE_NODE_T>>();
+                    this->m_accepting_states = data["Accepting States"].as<std::set<NATIVE_NODE_T>>();
 
-                    std::map<uint32_t, std::vector<uint32_t>> connections = data["Connections"].as<std::map<uint32_t, std::vector<uint32_t>>>();
-                    std::map<uint32_t, std::vector<Observation>> observations = data["Labels"].as<std::map<uint32_t, std::vector<Observation>>>();
+                    std::map<NATIVE_NODE_T, std::vector<NATIVE_NODE_T>> connections = data["Connections"].as<std::map<NATIVE_NODE_T, std::vector<NATIVE_NODE_T>>>();
+                    std::map<NATIVE_NODE_T, std::vector<Observation>> observations = data["Labels"].as<std::map<NATIVE_NODE_T, std::vector<Observation>>>();
                     for (auto[src, destinations] : connections) {
                         for (uint32_t i = 0; i <destinations.size(); ++i) {
                             const Observation& observation = observations[src][i];
-                            Node dst = destinations[i];
-                            m_alphabet.insert(observation);
+                            NATIVE_NODE_T dst = destinations[i];
+                            this->m_alphabet.insert(observation);
                             connect(src, dst, observation);
                         }
                     }
@@ -99,21 +94,21 @@ namespace FormalMethods {
                 return true;
             }
 
-            virtual void print() const override {
+            void print() const {
                 LOG("Printing automaton");
                 
                 // Print init states:
                 std::string init_states_str = std::string();
-                for (auto state : m_init_states) init_states_str += (std::to_string(state) + ", ");
+                for (auto state : this->m_init_states) init_states_str += (std::to_string(state) + ", ");
                 PRINT_NAMED("Initial states:", init_states_str);
 
                 // Print init states:
                 std::string accepting_states_str = std::string();
-                for (auto state : m_accepting_states) accepting_states_str += (std::to_string(state) + ", ");
+                for (auto state : this->m_accepting_states) accepting_states_str += (std::to_string(state) + ", ");
                 PRINT_NAMED("Accepting states:", accepting_states_str);
 
-                Node node = 0;
-                for (const auto& list : m_graph) {
+                NATIVE_NODE_T node = 0;
+                for (const auto& list : this->m_graph) {
                     for (uint32_t i=0; i < list.forward.size(); ++i) {
                         if (i == 0) PRINT_NAMED("State " << node, "is connected to:");
                         PRINT_NAMED("    - child state " << list.forward.nodes[i], "with edge: " << list.forward.edges[i]);
@@ -121,6 +116,7 @@ namespace FormalMethods {
                     node++;
                 }
             }
+
             ~DFA() {}
     };
 } // namespace FormalMethods
@@ -147,13 +143,13 @@ namespace YAML {
     };
 
     template <>
-    struct convert<TP::FormalMethods::StateSet> {
-        static Node encode(const TP::FormalMethods::StateSet& state_set) {
+    struct convert<std::set<TP::Node>> {
+        static Node encode(const std::set<TP::Node>& state_set) {
             Node node;
             for (auto state : state_set) node.push_back(state);
             return node;
         }
-        static bool decode(const Node& node, TP::FormalMethods::StateSet& state_set) {
+        static bool decode(const Node& node, std::set<TP::Node>& state_set) {
             if (!node.IsSequence()) return false;
 
             std::vector<uint32_t> state_set_vector = node.as<std::vector<uint32_t>>();
@@ -164,8 +160,7 @@ namespace YAML {
 } // namespace YAML
 
 // Alphabet merging operator
-static TP::FormalMethods::Alphabet operator+(const TP::FormalMethods::Alphabet& alph_1, const TP::FormalMethods::Alphabet& alph_2) {
-    TP::FormalMethods::Alphabet merged = alph_1;
-    merged.merge(TP::FormalMethods::Alphabet(alph_2));
-    return merged;
+static TP::FormalMethods::Alphabet operator+(TP::FormalMethods::Alphabet alph_1, TP::FormalMethods::Alphabet alph_2) {
+    alph_1.merge(alph_2);
+    return alph_1;
 }

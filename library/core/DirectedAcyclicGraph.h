@@ -8,9 +8,9 @@
 namespace TP {
 
 template<class EDGE_T, typename NATIVE_NODE_T = Node>
-class DirectedAcyclicGraph : public Graph<EDGE_T, NATIVE_NODE_T> {
+class DirectedAcyclicGraph : public Graph<EDGE_T, NATIVE_NODE_T, true> {
     public:
-        DirectedAcyclicGraph(Graph<EDGE_T, NATIVE_NODE_T>::EdgeToStrFunction edgeToStr = nullptr) : Graph<EDGE_T, NATIVE_NODE_T>(true, true, edgeToStr) {}
+        DirectedAcyclicGraph() {}
 
         inline bool testConnection(NATIVE_NODE_T src, NATIVE_NODE_T dst) const {
             return hasParent(src, dst);

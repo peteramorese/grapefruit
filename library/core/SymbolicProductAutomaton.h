@@ -110,6 +110,10 @@ namespace DiscreteModel {
             const AUTOMATON_T& getAutomaton(ProductRank i) const {return *(m_automata[i]);}
             const std::vector<std::shared_ptr<AUTOMATON_T>>& extractAutomata() const {return m_automata;}
 
+            // Init and accepting states
+            std::vector<WideNode> getInitNodes(Node init_model_node) const;
+            std::set<WideNode> getAcceptingStates() const;
+
             // Convert between augmented nodes
             WideNode getWrappedNode(Node ts_node, const Containers::SizedArray<Node>& automata_nodes) const;
             UnwrappedNode getUnwrappedNode(WideNode wrapped_node) const ;
@@ -124,27 +128,27 @@ namespace DiscreteModel {
                 if constexpr (TYPE == CacheElementType::Backward) {return CacheElementType::Backward;}
             }
 
+            struct AugmentedNodePermutation {
+                AugmentedNodePermutation(ProductRank automata_rank) : automaton_set_ind_options(automata_rank) {}
+                uint32_t ts_ind_option;
+                Containers::SizedArray<std::vector<Node>> automaton_set_ind_options;
+
+                void addOption(ProductRank graph_ind, uint32_t dst_set_ind) {
+                    automaton_set_ind_options[graph_ind].push_back(dst_set_ind);
+                }
+
+                Containers::SizedArray<uint32_t> getAutomatonOptionsArray() const {
+                    Containers::SizedArray<uint32_t> ret_arr(automaton_set_ind_options.size());
+                    for (ProductRank i=0; i<automaton_set_ind_options.size(); ++i) ret_arr[i] = automaton_set_ind_options[i].size();
+                    return ret_arr;
+                }
+
+                // Automaton
+                uint32_t getSetIndex(ProductRank automaton_ind, uint32_t option_index) const {return automaton_set_ind_options[automaton_ind][option_index];}
+
+            };
+
             struct AugmentedNodePermutationArray {
-                public:
-                    struct AugmentedNodePermutation {
-                        AugmentedNodePermutation(ProductRank automata_rank) : dst_automaton_set_ind_options(automata_rank) {}
-                        uint32_t dst_ts_ind_option;
-                        Containers::SizedArray<std::vector<Node>> dst_automaton_set_ind_options;
-
-                        void addOption(ProductRank graph_ind, uint32_t dst_set_ind) {
-                            dst_automaton_set_ind_options[graph_ind].push_back(dst_set_ind);
-                        }
-
-                        Containers::SizedArray<uint32_t> getAutomatonOptionsArray() const {
-                            Containers::SizedArray<uint32_t> ret_arr(dst_automaton_set_ind_options.size());
-                            for (ProductRank i=0; i<dst_automaton_set_ind_options.size(); ++i) ret_arr[i] = dst_automaton_set_ind_options[i].size();
-                            return ret_arr;
-                        }
-
-                        // Automaton
-                        uint32_t getSetIndex(ProductRank automaton_ind, uint32_t option_index) const {return dst_automaton_set_ind_options[automaton_ind][option_index];}
-
-                    };
                 public:
                     Containers::SizedArray<Node> src_unwrapped_nodes;
                     std::vector<AugmentedNodePermutation> array;
@@ -154,14 +158,14 @@ namespace DiscreteModel {
                         {}
 
                     void insert(AugmentedNodePermutation&& perm) {
-                        ASSERT(perm.dst_automaton_set_ind_options.size() == src_unwrapped_nodes.size() - 1, "Cannot insert state permutation with incorrect size (" << perm.dst_automaton_set_ind_options.size() << ")");
+                        ASSERT(perm.automaton_set_ind_options.size() == src_unwrapped_nodes.size() - 1, "Cannot insert state permutation with incorrect size (" << perm.automaton_set_ind_options.size() << ")");
                         array.push_back(perm);
                     }
 
                     std::size_t getPermutationSize() const {
                         std::size_t size = 0;
                         for (const auto& perm : array) {
-                            size += Algorithms::Combinatorics::permutationsSizeFromOptions(perm.dst_automaton_set_ind_options);
+                            size += Algorithms::Combinatorics::permutationsSizeFromOptions(perm.automaton_set_ind_options);
                         }
                         return size; 
                     }

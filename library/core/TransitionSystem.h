@@ -73,9 +73,8 @@ namespace DiscreteModel {
 	class TransitionSystem : public NodeGenericGraph<State, TransitionSystemLabel> {
 		public:
 		 	TransitionSystem() = delete;
-			TransitionSystem(const std::shared_ptr<StateSpace>& ss, bool reversible = true) 
-				: NodeGenericGraph<State, TransitionSystemLabel>(true, reversible) 
-				, m_ss(ss)
+			TransitionSystem(const std::shared_ptr<StateSpace>& ss) 
+				: m_ss(ss)
 				{};
 			TransitionSystem(const std::string& filepath) 
 				: NodeGenericGraph<State, TransitionSystemLabel>()
@@ -98,7 +97,7 @@ namespace DiscreteModel {
 
 			inline std::weak_ptr<StateSpace> getStateSpace() const {return std::weak_ptr(m_ss);}
 
-			virtual void print() const override;
+			void print() const;
 
 			void listPropositions() const {
 				LOG("Listing proposition names");
