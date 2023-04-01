@@ -36,3 +36,15 @@ target_link_libraries(MOPreferencePlannerExample PUBLIC
 target_include_directories(MOPreferencePlannerExample PUBLIC
 	${TP_LIBRARY_DIR}
 )
+
+add_executable(MCTGExample MCTGExample.cpp)
+target_link_libraries(MCTGExample PUBLIC
+	Condition
+	StateSpace
+	State
+	TransitionSystem
+	GridWorldAgent
+)
+target_include_directories(MCTGExample PUBLIC
+	${TP_LIBRARY_DIR}
+)

@@ -24,7 +24,6 @@ class DirectedAcyclicGraph : public Graph<EDGE_T, NATIVE_NODE_T, true> {
         }
 
         void removeDeadLeaves(NATIVE_NODE_T dead_leaf) {
-            ASSERT(this->m_reversible, "Cannot remove dead leaves on irreversible graphs");
 
             std::vector<NATIVE_NODE_T> dead_leaf_stack = {dead_leaf};
             while (!dead_leaf_stack.empty()) {

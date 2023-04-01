@@ -138,5 +138,17 @@ namespace DiscreteModel {
         }
     }
 
+    void TransitionSystem::rprint() const {
+        LOG("Printing transition system in reverse");
+        uint32_t node_ind = 0;
+        for (const auto& list : m_graph) {
+            PRINT_NAMED("State " << node_ind, m_node_container[node_ind].to_str() << " is connected to:");
+            ++node_ind;
+            for (uint32_t i=0; i < list.forward.size(); ++i) {
+                PRINT_NAMED("    - parent State " << list.backward.nodes[i], m_node_container[list.backward.nodes[i]].to_str() << " with edge (action: " << list.forward.edges[i].action << ", cost: " << list.backward.edges[i].cost << ")");
+            }
+        }
+    }
+
 } // namespace DiscreteModel
 } // namespace TP

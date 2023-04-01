@@ -126,6 +126,7 @@ int main() {
     // Generate
     std::shared_ptr<TransitionSystem> ts = TransitionSystemGenerator::generate(props);
     ts->print();
+    ts->rprint();
 	ts->listPropositions();
 
 

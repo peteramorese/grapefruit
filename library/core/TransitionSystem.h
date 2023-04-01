@@ -70,7 +70,7 @@ namespace DiscreteModel {
 			std::vector<std::unordered_set<std::string>> m_observations;
 	};
 
-	class TransitionSystem : public NodeGenericGraph<State, TransitionSystemLabel> {
+	class TransitionSystem : public NodeGenericGraph<State, TransitionSystemLabel, Node, true, true> {
 		public:
 		 	TransitionSystem() = delete;
 			TransitionSystem(const std::shared_ptr<StateSpace>& ss) 
@@ -98,6 +98,7 @@ namespace DiscreteModel {
 			inline std::weak_ptr<StateSpace> getStateSpace() const {return std::weak_ptr(m_ss);}
 
 			void print() const;
+			void rprint() const;
 
 			void listPropositions() const {
 				LOG("Listing proposition names");

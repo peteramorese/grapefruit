@@ -70,13 +70,37 @@ namespace DiscreteModel {
             init_nodes.push_back(AugmentedNodeIndex::wrap(unwrapped_p, this->m_graph_sizes));
         };
 
+        Algorithms::Combinatorics::permutations(perm.getAutomatonOptionsArray(), onPermutation);
+
         return init_nodes;
     }
 
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR>
-    std::set<WideNode> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getAcceptingStates() const {
-        //Containers::SizedArray<std::vector<Node>> options(rank());
-        //options.
+    std::set<WideNode> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getAcceptingNodes() const {
+        Containers::SizedArray<std::vector<Node>> options(rank());
+        options[0] = m_model->nodes();
+        for (ProductRank i=0; i<rank()-1; ++i) {
+            const auto& accepting_states = m_automata[i]->getAcceptingStates();
+            options[i + 1].reserve(accepting_states.size());
+            for (auto s : accepting_states) { options[i + 1].push_back(s); }
+        }
+        
+        std::set<WideNode> accepting_states;
+        auto onPermutation = [&] (const Containers::SizedArray<uint32_t>& option_indices) {
+            Containers::SizedArray<Node> unwrapped_p(rank());
+            unwrapped_p[0] = options[0][option_indices[0]];
+
+            for (ProductRank i=1; i<rank(); ++i) {
+                unwrapped_p[i] = options[i][option_indices[i]];
+            }
+            accepting_states.insert(AugmentedNodeIndex::wrap(unwrapped_p, this->m_graph_sizes));
+        };
+
+        Containers::SizedArray<uint32_t> n_options_arr(rank());
+        for (uint32_t i=0; i< rank(); ++i) n_options_arr[i] = options[i].size();
+        Algorithms::Combinatorics::permutations(n_options_arr, onPermutation);
+
+        return accepting_states;
     }
 
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR>
@@ -145,7 +169,7 @@ namespace DiscreteModel {
     std::vector<typename EDGE_INHERITOR::type> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getIncomingEdges(WideNode node) {
         const AugmentedNodePermutationArray& perm_array = pre(node);
 
-        std::vector<WideNode> product_incoming_edges;
+        std::vector<typename EDGE_INHERITOR::type> product_incoming_edges;
         if (perm_array.empty()) return product_incoming_edges;
 
         ASSERT(perm_array.array.size() == 1, "Cache element for pre contains does not contain one AugmentedNodePermutation");

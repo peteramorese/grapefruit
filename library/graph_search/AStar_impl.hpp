@@ -76,6 +76,7 @@ namespace GraphSearch {
             typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighborEdges)(SEARCH_PROBLEM_T, NODE_T)>::type to_neighbor_edges = problem.neighborEdges(curr_node);
             ASSERT(neighbors.size() == to_neighbor_edges.size(), "Number of neighbors does not match the number of outgoing edges");
 
+
             for (uint32_t i = 0; i < neighbors.size(); ++i) {
                 const NODE_T& neighbor = neighbors[i];
                 

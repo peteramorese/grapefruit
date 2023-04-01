@@ -112,7 +112,7 @@ namespace DiscreteModel {
 
             // Init and accepting states
             std::vector<WideNode> getInitNodes(Node init_model_node) const;
-            std::set<WideNode> getAcceptingStates() const;
+            std::set<WideNode> getAcceptingNodes() const; 
 
             // Convert between augmented nodes
             WideNode getWrappedNode(Node ts_node, const Containers::SizedArray<Node>& automata_nodes) const;

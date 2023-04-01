@@ -100,7 +100,7 @@ class Graph {
 			m_graph[src];
 			m_graph[src].forward.pushConnect(dst, edge);
 
-			if (m_reversible) m_graph[dst].backward.pushConnect(src, edge);
+			if constexpr (REVERSIBLE) m_graph[dst].backward.pushConnect(src, edge);
 			return true;
 		}
 
@@ -109,7 +109,7 @@ class Graph {
 			bool found = m_graph[src].forward.disconnect(dst);
 			if (!found) return false;
 
-			if (this->m_reversible) {
+			if constexpr (REVERSIBLE) {
 				found = m_graph[dst].backward.disconnect(src);
 				ASSERT(found, "Disconnection found in forward, but not backward");
 			}
@@ -121,8 +121,8 @@ class Graph {
 			bool found = m_graph[src].forward.disconnect(dst, edge);
 			if (!found) return false;
 
-			if (this->m_reversible) {
-				found = m_graph[dst].backward.disconnect(src, edge);
+			if constexpr (REVERSIBLE) {
+				found = m_graph[dst].backward.disconnect(src);
 				ASSERT(found, "Disconnection found in forward, but not backward");
 			}
 			return true;
@@ -132,8 +132,10 @@ class Graph {
 		void disconnectIf(NATIVE_NODE_T src, LAM removeConnection) {
 			auto removeConnectionWrapper = [&, this](NATIVE_NODE_T dst, const EDGE_T& edge) {
 				bool remove = removeConnection(dst, edge);
-				if (m_reversible && remove) {
-					m_graph[dst].backward.disconnect(src, edge);
+				if constexpr (REVERSIBLE) {
+					if (remove) {
+						m_graph[dst].backward.disconnect(src, edge);
+					}
 				}
 				return remove;
 			};
@@ -252,7 +254,6 @@ class Graph {
 	protected:
 		Containers::RandomAccessList<BidirectionalConnectionList> m_graph;
 		std::size_t m_size;
-		bool m_directed, m_reversible;
 };
 
 
