@@ -37,8 +37,8 @@ namespace DiscreteModel {
     }
 
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR>
-    SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::UnwrappedNode SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getUnwrappedNode(WideNode wrapped_node) const {
-        UnwrappedNode unwrapped_node_converted(*this);
+    UnwrappedNode SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getUnwrappedNode(WideNode wrapped_node) const {
+        UnwrappedNode unwrapped_node_converted(rank());
         auto unwrapped_node = AugmentedNodeIndex::unwrap(wrapped_node, m_graph_sizes);
         for (uint32_t i=0; i<unwrapped_node.size(); ++i) {
             if (i != 0) {

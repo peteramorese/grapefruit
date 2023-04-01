@@ -70,6 +70,13 @@ namespace DiscreteModel {
 
     };
 
+    struct UnwrappedNode {
+        UnwrappedNode() = delete;
+        UnwrappedNode(ProductRank rank) : automata_nodes(rank - 1) {}
+        Node ts_node;
+        Containers::SizedArray<Node> automata_nodes;
+    };
+
 
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR = ModelEdgeInheritor<MODEL_T, AUTOMATON_T>>
     class SymbolicProductAutomaton {
@@ -79,13 +86,6 @@ namespace DiscreteModel {
             typedef EDGE_INHERITOR edge_inheritor_t;
             typedef EDGE_INHERITOR::type edge_t;
             typedef WideNode node_t;
-
-            struct UnwrappedNode {
-                UnwrappedNode() = delete;
-                UnwrappedNode(const SymbolicProductAutomaton& outter) : automata_nodes(outter.rank() - 1) {}
-                Node ts_node;
-                Containers::SizedArray<std::size_t> automata_nodes;
-            };
 
         public:
             SymbolicProductAutomaton() = delete;

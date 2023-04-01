@@ -88,3 +88,16 @@ target_include_directories(SymbolicProductAutomatonExample PUBLIC
 	${TP_LIBRARY_DIR}
 	${YAML_INCLUDE_DIRS}
 )
+
+add_executable(ProductProjectionExample ProductProjectionExample.cpp)
+target_link_libraries(ProductProjectionExample PUBLIC
+	State
+	StateSpace
+	Condition
+	TransitionSystem
+	Manipulator
+)
+target_include_directories(ProductProjectionExample PUBLIC
+	${TP_LIBRARY_DIR}
+	${YAML_INCLUDE_DIRS}
+)
