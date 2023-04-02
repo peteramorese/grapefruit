@@ -6,6 +6,30 @@
 
 #include "tools/Logging.h"
 
+// Forward declarations for non member functions
+namespace TP {
+namespace Containers {
+    template <class T>
+    class SizedArray;
+
+    template <class... T_ARGS>
+    class TypeGenericArray;
+
+    template <std::size_t M, class T>
+    class FixedArray;
+}
+}
+
+template <typename T>
+static TP::Containers::SizedArray<T> operator+(const TP::Containers::SizedArray<T>& lhs, const TP::Containers::SizedArray<T>& rhs);
+
+template <class... T_ARGS>
+static TP::Containers::TypeGenericArray<T_ARGS...> operator+(const TP::Containers::TypeGenericArray<T_ARGS...>& lhs, const TP::Containers::TypeGenericArray<T_ARGS...>& rhs);
+
+template <std::size_t M, class T>
+static TP::Containers::FixedArray<M, T> operator+(const TP::Containers::FixedArray<M, T>& lhs, const TP::Containers::FixedArray<M, T>& rhs);
+
+
 namespace TP {
 namespace Containers {
 
@@ -134,23 +158,7 @@ namespace Containers {
             friend SizedArray operator+<T>(const SizedArray& lhs, const SizedArray& rhs);
     };
 
-    //TODO: move these out of ns
-    // Sized Array non-member operators
-    template <typename T>
-    static SizedArray<T> operator+(const SizedArray<T>& lhs, const SizedArray<T>& rhs) {
-        ASSERT(lhs.size() == rhs.size(), "Operand sizes do not match");
-        SizedArray<T> ret_sa(lhs.size());
-        for (std::size_t i=0; i < lhs.size(); ++i) ret_sa[i] = lhs[i] + rhs[i];
-        return ret_sa;
-    }
 
-
-    // Forward declaration of Fixed Array non member functions
-    template <std::size_t M, class T>
-    class FixedArray;
-
-    template <std::size_t M, class T>
-    static FixedArray<M, T> operator+(const FixedArray<M, T>& lhs, const FixedArray<M, T>& rhs);
 
     enum class ArrayComparison {
         Dominates,
@@ -258,21 +266,7 @@ namespace Containers {
             friend FixedArray operator+<M, T>(const FixedArray& lhs, const FixedArray& rhs);
     };
 
-    // Fixed Array non-member operators
-    template<std::size_t M, class T>
-    static FixedArray<M, T> operator+(const FixedArray<M, T>& lhs, const FixedArray<M, T>& rhs) {
-        FixedArray<M, T> ret_fa;
-        for (std::size_t i=0; i < M; ++i) ret_fa.values[i] = lhs.values[i] + rhs.values[i];
-        return ret_fa;
-    }
 
-
-    // Forward declaration of Type Generic Array non member functions
-    template <class... T_ARGS>
-    class TypeGenericArray;
-
-    template <class... T_ARGS>
-    static TypeGenericArray<T_ARGS...> operator+(const TypeGenericArray<T_ARGS...>& lhs, const TypeGenericArray<T_ARGS...>& rhs);
 
     // Method signature is made to match FixedArray (except compare)
     template <class... T_ARGS>
@@ -283,6 +277,7 @@ namespace Containers {
         public:
             TypeGenericArray() = default; // value initializes each element
             TypeGenericArray(T_ARGS&&... elements) : m_elements(std::forward<T_ARGS>(elements)...) {}
+            TypeGenericArray(const T_ARGS&... elements) : m_elements(elements...) {}
             TypeGenericArray(const TypeGenericArray&) = default;
             TypeGenericArray(TypeGenericArray&&) = default;
 
@@ -332,28 +327,28 @@ namespace Containers {
 
             bool operator<(const TypeGenericArray& other) const {
                 auto less_than = [&other]<typename T, uint32_t I>(const T& element) {
-                    return other.template get<I>() < element;
+                    return element < other.template get<I>();
                 };
                 return _forEachWithI_c<0>(less_than);
             }
 
             bool operator>(const TypeGenericArray& other) const {
                 auto greater_than = [&other]<typename T, uint32_t I>(const T& element) {
-                    return other.template get<I>() > element;
+                    return element > other.template get<I>();
                 };
                 return _forEachWithI_c<0>(greater_than);
             }
 
             bool operator<=(const TypeGenericArray& other) const {
                 auto leq = [&other]<typename T, uint32_t I>(const T& element) {
-                    return other.template get<I>() <= element;
+                    return element <= other.template get<I>();
                 };
                 return _forEachWithI_c<0>(leq);
             }
 
             bool operator>=(const TypeGenericArray& other) const {
                 auto geq = [&other]<typename T, uint32_t I>(const T& element) {
-                    return other.template get<I>() >= element;
+                    return element >= other.template get<I>();
                 };
                 return _forEachWithI_c<0>(geq);
             }
@@ -488,18 +483,37 @@ namespace Containers {
             
     };
 
-    // Type Generic Array non-member operators
-    template <class... T_ARGS>
-    static TypeGenericArray<T_ARGS...> operator+(const TypeGenericArray<T_ARGS...>& lhs, const TypeGenericArray<T_ARGS...>& rhs) {
-        TypeGenericArray<T_ARGS...> ret_tga;
-        auto add = [&ret_tga, &rhs]<typename T, uint32_t I>(const T& element) {
-            // ret_tga = lhs + rhs
-            return ret_tga.template get<I>() = element + rhs.template get<I>() ;
-        };
-        lhs.forEach(add);
-        return ret_tga;
-    }
-
 
 } // namespace Containers
 } // namespace TP
+
+
+//TODO: move these out of ns
+// Sized Array non-member operators
+template <typename T>
+static TP::Containers::SizedArray<T> operator+(const TP::Containers::SizedArray<T>& lhs, const TP::Containers::SizedArray<T>& rhs) {
+    ASSERT(lhs.size() == rhs.size(), "Operand sizes do not match");
+    TP::Containers::SizedArray<T> ret_sa(lhs.size());
+    for (std::size_t i=0; i < lhs.size(); ++i) ret_sa[i] = lhs[i] + rhs[i];
+    return ret_sa;
+}
+
+// Fixed Array non-member operators
+template<std::size_t M, class T>
+static TP::Containers::FixedArray<M, T> operator+(const TP::Containers::FixedArray<M, T>& lhs, const TP::Containers::FixedArray<M, T>& rhs) {
+    TP::Containers::FixedArray<M, T> ret_fa;
+    for (std::size_t i=0; i < M; ++i) ret_fa.values[i] = lhs.values[i] + rhs.values[i];
+    return ret_fa;
+}
+
+// Type Generic Array non-member operators
+template <class... T_ARGS>
+static TP::Containers::TypeGenericArray<T_ARGS...> operator+(const TP::Containers::TypeGenericArray<T_ARGS...>& lhs, const TP::Containers::TypeGenericArray<T_ARGS...>& rhs) {
+    TP::Containers::TypeGenericArray<T_ARGS...> ret_tga;
+    auto add = [&ret_tga, &rhs]<typename T, uint32_t I>(const T& element) {
+        // ret_tga = lhs + rhs
+        return ret_tga.template get<I>() = element + rhs.template get<I>() ;
+    };
+    lhs.forEachWithI(add);
+    return ret_tga;
+}

@@ -75,7 +75,6 @@ int main(int argc, char* argv[]) {
 
 
 	ts->addAlphabet(combined_alphbet);
-	if (verbose) ts->getObservationContainer().print();
 
 
 	/////////////////   Planner   /////////////////

@@ -21,14 +21,14 @@ using namespace TP::GraphSearch;
 struct Edge {
 
     public:
-        Edge(uint32_t cost_1, uint32_t cost_2) : cv({cost_1, cost_2}) {}
+        Edge(uint32_t cost_1, uint32_t cost_2) : cv(cost_1, cost_2) {}
         bool operator==(const Edge& other) const {return cv == other.cv;}
 
     public:
 
-        Containers::FixedArray<2, uint32_t> cv;
-        static Containers::FixedArray<2, uint32_t> edgeToCostVector(const Edge& edge) {return edge.cv;}
-        static std::string cvToStr(const Containers::FixedArray<2, uint32_t>& cv) {return "(" + std::to_string(cv[0]) + ", " + std::to_string(cv[1]) + ")";}
+        Containers::TypeGenericArray<uint32_t, uint32_t> cv;
+        static Containers::TypeGenericArray<uint32_t, uint32_t> edgeToCostVector(const Edge& edge) {return edge.cv;}
+        static std::string cvToStr(const Containers::TypeGenericArray<uint32_t, uint32_t>& cv) {return "(" + std::to_string(cv.template get<0>()) + ", " + std::to_string(cv.template get<1>()) + ")";}
         static std::string edgeToStr(const Edge& edge) {return "cost: " + cvToStr(edge.cv);}
 };
 
@@ -37,6 +37,10 @@ int main(int argc, char* argv[]) {
 	ArgParser parser(argc, argv);
 
 	bool verbose = parser.hasFlag('v', "Run in verbose mode");
+
+    bool boa_only = parser.hasKey("boa-only", "Analyze BOA* only");
+    bool namoa_only = parser.hasKey("namoa-only", "Analyze NAMOA* only");
+    ASSERT(!boa_only || !namoa_only, "Cannot specify boa only and namoa only");
     
 	uint32_t size = parser.parse<uint32_t>("size", 100, "Random graph size");
 	uint32_t max_edges_per_node = parser.parse<uint32_t>("max-edges-per-node", 5, "Max number of edges to extend from");
@@ -66,9 +70,7 @@ int main(int argc, char* argv[]) {
 
     for (uint32_t trial=0; trial<trials; ++trial) {
 
-        LOG("b4 generate");
         std::shared_ptr<Graph<Edge>> graph = random_graph_generator.generate<Edge>(createRandomEdge);
-        LOG("af generate");
 
         if (verbose) {
             LOG("Done.");
@@ -80,13 +82,34 @@ int main(int argc, char* argv[]) {
         Node goal = random_graph_generator.getRandomGoal();
         if (verbose) LOG("Starting node: " << start << ", goal node: " << goal);
     
-        MOQuantitativeGraphSearchProblem<Graph<Edge>, Containers::FixedArray<2, uint32_t>, SearchDirection::Forward> problem(graph, {start}, {goal}, &Edge::edgeToCostVector);
+        MOQuantitativeGraphSearchProblem<Graph<Edge>, Containers::TypeGenericArray<uint32_t, uint32_t>, SearchDirection::Forward> problem(graph, {start}, {goal}, &Edge::edgeToCostVector);
 
         if (verbose) LOG("Searching BOA*...");
-        auto boa_result = BOAStar<Containers::FixedArray<2, uint32_t>, decltype(problem)>::search(problem);
-        if (verbose) LOG("Searching NAMOA*...");
-        auto namoa_result = NAMOAStar<Containers::FixedArray<2, uint32_t>, decltype(problem)>::search(problem);
+        auto boa_result = BOAStar<Containers::TypeGenericArray<uint32_t, uint32_t>, decltype(problem)>::search(problem);
         if (verbose) LOG("Done.");
+        if (boa_only) {
+            if (verbose) {
+                uint32_t pt = 0;
+                for (const auto& sol : boa_result.solution_set) {
+                    LOG("Pareto point " << pt++);
+                    LOG("   BOA* Path cost: " << Edge::cvToStr(sol.path_cost));
+                }
+            }
+            continue;
+        }
+        if (verbose) LOG("Searching NAMOA*...");
+        auto namoa_result = NAMOAStar<Containers::TypeGenericArray<uint32_t, uint32_t>, decltype(problem)>::search(problem);
+        if (verbose) LOG("Done.");
+        if (namoa_only) {
+            if (verbose) {
+                uint32_t pt = 0;
+                for (const auto& sol : namoa_result.solution_set) {
+                    LOG("Pareto point " << pt++);
+                    LOG("   NAMOA* Path cost: " << Edge::cvToStr(sol.path_cost));
+                }
+            }
+            continue;
+        }
 
 
         if (boa_result.success) {

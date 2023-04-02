@@ -79,7 +79,6 @@ namespace Planner {
             // Quantative methods
             inline CostVector gScore(const ProdNode& node, CostVector parent_g_score, const edge_t& edge) const {
                 // Element-wise add each of the objectives (edge_t is alias for CostVector)
-                //LOG("b4 g score: " << parent_g_score.template get<1>().preferenceFunction() << " edge action: " << edge.action);
                 parent_g_score += edge.cv;
 
                 return parent_g_score;

@@ -73,7 +73,6 @@ int main(int argc, char* argv[]) {
 
 
 	ts->addAlphabet(combined_alphbet);
-	if (verbose) ts->getObservationContainer().print();
 
 	/////////////////   Planner   /////////////////
 
@@ -91,7 +90,7 @@ int main(int argc, char* argv[]) {
 	// Set the weighting
 	std::vector<FormalMethods::SubstitutionCost> weights(dfas.size(), 1);
 	weights[0] = 2;
-	weights[1] = 3;
+	weights[1] = 4;
 
 	ASSERT(weights.size() == dfas.size(), "Number of weights must match number of tasks");
 	WeightedSumPreferenceCostObjective<SymbolicGraph, FormalMethods::SubstitutionCost>::setWeights(weights);
@@ -107,7 +106,10 @@ int main(int argc, char* argv[]) {
 		uint32_t i = 0;
 		for (const auto& plan : plan_set) {
 
-			std::string title = "Plan " + std::to_string(i) + " Cost: " + std::to_string(plan.cost.template get<0>().cost) + " Preference Cost: " + std::to_string(plan.cost.template get<1>().preferenceFunction());
+			std::string title = "Plan " + std::to_string(i) + 
+				" Cost: " + std::to_string(plan.cost.template get<0>().cost) + 
+				" Sum Delay Cost: " + std::to_string(plan.cost.template get<1>().preferenceFunction()) +
+				" Weighted Sum PS Cost: " + std::to_string(plan.cost.template get<2>().preferenceFunction());
 			LOG(title);
 			if (verbose) plan.print();	
 			if (write_plans) {

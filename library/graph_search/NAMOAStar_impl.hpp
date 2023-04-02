@@ -85,6 +85,7 @@ namespace GraphSearch {
             if (problem.goal(curr_node)) {
                 //LOG("-> goal");
                 //LOG("-> path cost: "<< curr_g_score->cv.template get<0>() << ", " << curr_g_score->cv.template get<1>());
+
                 // Add solution to the goal set
                 solution_set.emplace_back(curr_node, curr_g_score);
 

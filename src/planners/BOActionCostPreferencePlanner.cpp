@@ -73,7 +73,6 @@ int main(int argc, char* argv[]) {
 
 	//for (const auto& letter : combined_alphbet) LOG("letter: " << letter);
 	ts->addAlphabet(combined_alphbet);
-	if (verbose) ts->getObservationContainer().print();
 
 
 	/////////////////   Planner   /////////////////
