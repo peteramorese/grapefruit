@@ -13,7 +13,6 @@ namespace TP {
 
             bool hasFlag(char flag, const std::string& description = std::string()) {
                 std::string flag_str = getFlag(flag);
-                LOG("flag str: " << flag_str);
                 m_descriptions.emplace_back(flag_str, std::string(), description);
                 for (uint32_t i=1; i<m_argc; ++i) {
                     if (m_checked[i]) continue;
@@ -44,7 +43,7 @@ namespace TP {
                 bool has_help = hasKey("help");
                 if (has_help) {
                     for (auto&[key, def, desc] : m_descriptions) {
-                        std::string description = desc;
+                        std::string description = desc + " ";
                         if (!def.empty()) description += " [Default value: " + def + "]";
                         PRINT_NAMED(key, description);
                     }

@@ -36,18 +36,20 @@ int main(int argc, char* argv[]) {
 
 	ArgParser parser(argc, argv);
 
-	bool verbose = parser.hasFlag('v');
+	bool verbose = parser.hasFlag('v', "Run in verbose mode");
     
-	uint32_t size = parser.parse<uint32_t>("size", 100);
-	uint32_t max_edges_per_node = parser.parse<uint32_t>("max-edges-per-node", 5);
-	uint32_t trials = parser.parse<uint32_t>("trials", 1);
+	uint32_t size = parser.parse<uint32_t>("size", 100, "Random graph size");
+	uint32_t max_edges_per_node = parser.parse<uint32_t>("max-edges-per-node", 5, "Max number of edges to extend from");
+	uint32_t trials = parser.parse<uint32_t>("trials", 1, "Number of randomized trials to run");
 
 	uint32_t seed;
     if (parser.hasKey("seed")) {
-        seed = parser.parse<uint32_t>("seed", 0);
+        seed = parser.parse<uint32_t>("seed", 0, "Specify a certain seed for generating graph");
     } else {
         seed = RNG::randi(0, UINT32_MAX);
     }
+
+	if (parser.enableHelp()) return 0;
 
     ASSERT(size, "Size must be greater than zero");
     ASSERT(max_edges_per_node, "Max number of edges per node must be greater than zero");

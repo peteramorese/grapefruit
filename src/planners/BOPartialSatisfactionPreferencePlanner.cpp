@@ -27,21 +27,23 @@ int main(int argc, char* argv[]) {
 
 	ArgParser parser(argc, argv);
 
-	bool verbose = parser.hasFlag('v');
+	bool verbose = parser.hasFlag('v', "Run in verbose mode");
 
-	std::string dfa_directory = parser.parse<std::string>("dfa-directory", "./dfas");
-	std::string dfa_file_template = parser.parse<std::string>("dfa-file-template", "dfa_#.yaml");
-	std::string sub_map_file_template = parser.parse<std::string>("sub-map-file-template", "sub_map_#.yaml");
+	std::string dfa_directory = parser.parse<std::string>("dfa-directory", "./dfas", "Directory that contains dfa files");
+	std::string dfa_file_template = parser.parse<std::string>("dfa-file-template", "dfa_#.yaml", "Naming convention for dfa file");
+	std::string sub_map_file_template = parser.parse<std::string>("sub-map-file-template", "sub_map_#.yaml", "Naming convention for sub map file");
 
-	std::string config_filepath = parser.parse<std::string>("config-filepath");
+	std::string config_filepath = parser.parse<std::string>("config-filepath", "", "Filepath to grid world config");
 
-	bool write_plans = parser.hasFlag('w');
-	std::string plan_directory = parser.parse<std::string>("plan-directory", "./grid_world_plans");
-	std::string plan_file_template = parser.parse<std::string>("plan-file-template", "plan_#.yaml");
+	bool write_plans = parser.hasFlag('w', "Write plans to plan files");
+	std::string plan_directory = parser.parse<std::string>("plan-directory", "./grid_world_plans", "Directory to output plan files");
+	std::string plan_file_template = parser.parse<std::string>("plan-file-template", "plan_#.yaml", "Naming convention for output plan files");
 
-	std::string pareto_front_filepath = parser.parse<std::string>("pareto-front-filepath");
+	uint32_t n_dfas = parser.parse<uint32_t>("n-dfas", 1, "Number of dfa files to read in");
+	
+	std::string pareto_front_filepath = parser.parse<std::string>("pareto-front-filepath", "", "File to write pareto front to");
 
-	uint32_t n_dfas = parser.parse<uint32_t>("n-dfas", 1);
+	if (parser.enableHelp()) return 0;
 
 	DiscreteModel::GridWorldAgentProperties ts_props;
 	if (config_filepath.empty()) {
@@ -116,7 +118,7 @@ int main(int argc, char* argv[]) {
 			}
 			++i;
 		}
-		if (write_plans && !pareto_front_filepath.empty()) {
+		if (!pareto_front_filepath.empty()) {
 			auto objCostToFloatArray = [](const Containers::TypeGenericArray<Obj1, Obj2>& cost) {
 				Containers::FixedArray<2, float> float_arr;
 				float_arr[0] = cost.template get<0>().cost;

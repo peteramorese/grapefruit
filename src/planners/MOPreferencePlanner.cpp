@@ -30,17 +30,15 @@ int main(int argc, char* argv[]) {
 
 	std::string dfa_directory = parser.parse<std::string>("dfa-directory", "./dfas", "Directory that contains dfa files");
 	std::string dfa_file_template = parser.parse<std::string>("dfa-file-template", "dfa_#.yaml", "Naming convention for dfa file");
-	std::string sub_map_file_template = parser.parse<std::string>("sub-map-file-template", "sub_map_#.yaml");
+	std::string sub_map_file_template = parser.parse<std::string>("sub-map-file-template", "sub_map_#.yaml", "Naming convention for sub map file");
 
-	std::string config_filepath = parser.parse<std::string>("config-filepath");
+	std::string config_filepath = parser.parse<std::string>("config-filepath", "", "Filepath to grid world config");
 
-	bool write_plans = parser.hasFlag('w');
-	std::string plan_directory = parser.parse<std::string>("plan-directory", "./grid_world_plans");
-	std::string plan_file_template = parser.parse<std::string>("plan-file-template", "plan_#.yaml");
+	bool write_plans = parser.hasFlag('w', "Write plans to plan files");
+	std::string plan_directory = parser.parse<std::string>("plan-directory", "./grid_world_plans", "Directory to output plan files");
+	std::string plan_file_template = parser.parse<std::string>("plan-file-template", "plan_#.yaml", "Naming convention for output plan files");
 
-	std::string pareto_front_filepath = parser.parse<std::string>("pareto-front-filepath");
-
-	uint32_t n_dfas = parser.parse<uint32_t>("n-dfas", 1);
+	uint32_t n_dfas = parser.parse<uint32_t>("n-dfas", 1, "Number of dfa files to read in");
 	
 	if (parser.enableHelp()) return 0;
 
@@ -109,14 +107,18 @@ int main(int argc, char* argv[]) {
 		uint32_t i = 0;
 		for (const auto& plan : plan_set) {
 
-			LOG("Plan " << i << " Cost: " << plan.cost.template get<0>().cost << " Sum Delay Cost: " << plan.cost.template get<1>().preferenceFunction() << " Weighted Sum Cost: " << plan.cost.template get<2>().preferenceFunction());
-			plan.print();	
+			std::string title = "Plan " + std::to_string(i) + " Cost: " + std::to_string(plan.cost.template get<0>().cost) + " Preference Cost: " + std::to_string(plan.cost.template get<1>().preferenceFunction());
+			LOG(title);
+			if (verbose) plan.print();	
+			if (write_plans) {
+				std::string plan_filepath = plan_directory + "/" + templateToLabel(plan_file_template, i);
+				plan.serialize(plan_filepath, title);
+			}
+			++i;
 		}
-		DiscreteModel::GridWorldAgent::serializeConfig(ts_props, "test_grid_world_config.yaml");
 	} else {
 		LOG("Planner failed using init state: " << init_state.to_str());
 	}
-
 
 	return 0;
 }
