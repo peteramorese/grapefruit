@@ -26,10 +26,10 @@ int main(int argc, char* argv[]) {
  
 	ArgParser parser(argc, argv);
 
-	bool verbose = parser.hasFlag('v');
+	bool verbose = parser.hasFlag('v', "Run in verbose mode");
 
-	std::string dfa_directory = parser.parse<std::string>("dfa-directory", "./dfas");
-	std::string dfa_file_template = parser.parse<std::string>("dfa-file-template", "dfa_#.yaml");
+	std::string dfa_directory = parser.parse<std::string>("dfa-directory", "./dfas", "Directory that contains dfa files");
+	std::string dfa_file_template = parser.parse<std::string>("dfa-file-template", "dfa_#.yaml", "Naming convention for dfa file");
 	std::string sub_map_file_template = parser.parse<std::string>("sub-map-file-template", "sub_map_#.yaml");
 
 	std::string config_filepath = parser.parse<std::string>("config-filepath");
@@ -41,6 +41,8 @@ int main(int argc, char* argv[]) {
 	std::string pareto_front_filepath = parser.parse<std::string>("pareto-front-filepath");
 
 	uint32_t n_dfas = parser.parse<uint32_t>("n-dfas", 1);
+	
+	if (parser.enableHelp()) return 0;
 
 	DiscreteModel::GridWorldAgentProperties ts_props;
 	if (config_filepath.empty()) {
