@@ -89,8 +89,9 @@ int main(int argc, char* argv[]) {
 
 	// Set the weighting
 	std::vector<FormalMethods::SubstitutionCost> weights(dfas.size(), 1);
-	weights[0] = 2;
-	weights[1] = 4;
+	weights[0] = 5;
+	weights[1] = 2;
+	weights[2] = 1;
 
 	ASSERT(weights.size() == dfas.size(), "Number of weights must match number of tasks");
 	WeightedSumPreferenceCostObjective<SymbolicGraph, FormalMethods::SubstitutionCost>::setWeights(weights);

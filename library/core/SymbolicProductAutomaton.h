@@ -81,8 +81,8 @@ namespace DiscreteModel {
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR = ModelEdgeInheritor<MODEL_T, AUTOMATON_T>>
     class SymbolicProductAutomaton {
         public:
-
             typedef MODEL_T model_t;
+            typedef AUTOMATON_T automaton_t;
             typedef EDGE_INHERITOR edge_inheritor_t;
             typedef EDGE_INHERITOR::type edge_t;
             typedef WideNode node_t;
