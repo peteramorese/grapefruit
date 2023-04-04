@@ -29,7 +29,10 @@ class MaxMCTGHeuristic {
         }
 
         inline CostType heuristic(ProdNode node) {
-
+            CostType max_mctg = CostType{};
+            for (const auto& min_cost_map : m_decentralized_mctg) {
+                
+            }
         }
 
     private:

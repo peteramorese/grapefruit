@@ -55,14 +55,14 @@ namespace PRL {
                     return std::hash<TP::WideNode>{}(node_action_pair.node) ^ std::hash<TP::DiscreteModel::Action>{}(node_action_pair.action);
                 }
             };
-            using CostVector = TP::Containers::FixedArray<TP::Containers::TypeGenericArray<T_ARGS...>::size(), float>;
+            //using CostVector = TP::Containers::FixedArray<TP::Containers::TypeGenericArray<T_ARGS...>::size(), float>;
+            using CostVector = Behavior<T_ARGS...>::Costvector;
         public:
-            BehaviorHandler(const std::shared_ptr<TP::DiscreteModel::TransitionSystem>& ts);
+            BehaviorHandler() = default;
             
             CostVector getCostVector(TP::WideNode node, const TP::DiscreteModel::Action& action) const {return m_behaviors.at(NodeActionPair{node, action}).getCostVector();}
 
         private:
-            std::shared_ptr<TP::DiscreteModel::TransitionSystem> m_ts;
             std::unordered_map<NodeActionPair, Behavior<T_ARGS...>, NodeActionPairHash> m_behaviors;
     };
 }
