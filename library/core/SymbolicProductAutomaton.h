@@ -110,9 +110,12 @@ namespace DiscreteModel {
             const AUTOMATON_T& getAutomaton(ProductRank i) const {return *(m_automata[i]);}
             const std::vector<std::shared_ptr<AUTOMATON_T>>& extractAutomata() const {return m_automata;}
 
-            // Init and accepting states
+            // Init and accepting nodes
             std::vector<WideNode> getInitNodes(Node init_model_node) const;
             std::set<WideNode> getAcceptingNodes() const; 
+
+            // Query acceptance of a node
+            inline bool acc(WideNode node, ProductRank automaton_i) const {return m_automata[automaton_i]->getAcceptingStates().contains(getUnwrappedNode(node).automata_nodes[automaton_i]);}
 
             // Convert between augmented nodes
             WideNode getWrappedNode(Node ts_node, const Containers::SizedArray<Node>& automata_nodes) const;

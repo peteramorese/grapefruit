@@ -2,6 +2,8 @@
 
 #include "tools/Logging.h"
 
+#include <Eigen/Dense>
+
 using namespace TP;
 
 template <typename T>

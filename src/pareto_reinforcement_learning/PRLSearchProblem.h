@@ -16,7 +16,7 @@ struct PRLSearchProblem {
             TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>>;
 
         typedef SymbolicProductGraph graph_t;
-        typedef StepHistoryNode<SymbolicProductGraph::node_t> node_t;
+        typedef TaskHistoryNode<SymbolicProductGraph::node_t> node_t;
         typedef BEHAVIOR_HANDLER_T::CostVector cost_t;
         typedef SymbolicProductGraph::edge_t edge_t;
 
@@ -27,8 +27,12 @@ struct PRLSearchProblem {
             std::vector<SymbolicProductGraph::node_t> children = m_graph->getChildren(node.base_node);
             std::vector<node_t> history_nodes(children.size);
             for (uint32_t i=0; i<children.size(); ++i) {
+                uint8_t n_tasks_completed = 0;
+                for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
+                    if (!m_product->acc(node.base_node, automaton_i) && m_product->acc(children[i], automaton_i)) ++n_tasks_completed;
+                }
                 history_nodes[i].base_node = children[i];
-                history_nodes[i].step = node.step + 1;
+                history_nodes[i].n_completed_tasks = node.n_completed_tasks + n_tasks_completed;
             }
             return history_nodes;
         }
@@ -38,11 +42,11 @@ struct PRLSearchProblem {
         }
 
         // Termination goal node (terminate at the step horizon)
-        inline bool goal(const node_t& node) const {return node.step == m_step_horizon;}
+        inline bool goal(const node_t& node) const {return node.n_completed_tasks >= m_completed_tasks_horizon;}
 
         // Quantative methods
-        inline cost_t gScore(const node_t& node, const cost_t& parent_g_score, const edge_t& edge) const {
-            return parent_g_score + m_behavior_handler(node.base_node, edge.action).getCostVector();
+        inline cost_t gScore(const node_t& src_node, const node_t& dst_node, const cost_t& parent_g_score, const edge_t& edge) const {
+            return parent_g_score + m_behavior_handler.getCostVector(src_node, dst_node, edge.action);
         }
         inline cost_t hScore(const node_t& node) const {return cost_t{};}
 
@@ -51,15 +55,15 @@ struct PRLSearchProblem {
         //HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
     public:
-        PRLSearchProblem(const std::shared_ptr<SymbolicProductGraph>& product, uint32_t step_horizon, const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler)
+        PRLSearchProblem(const std::shared_ptr<SymbolicProductGraph>& product, uint8_t completed_tasks_horizon, const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler)
             : m_product(product)
             , m_behavior_handler(behavior_handler)
-            , m_step_horizon(step_horizon)
+            , m_completed_tasks_horizon(completed_tasks_horizon)
             {}
 
     private:
         std::shared_ptr<SymbolicProductGraph> m_product;
         std::shared_ptr<BEHAVIOR_HANDLER_T> m_behavior_handler;
-        const uint32_t m_step_horizon;
+        const uint8_t m_completed_tasks_horizon;
 };
 }

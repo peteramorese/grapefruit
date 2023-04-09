@@ -90,9 +90,9 @@ namespace GraphSearch {
 
                 COST_T tentative_g_score = [&] {
                     if constexpr (_PTR_EDGE_STORAGE_TYPE)
-                        return problem.gScore(curr_node, curr_node_g_score, *to_neighbor_edge);
+                        return problem.gScore(curr_node, neighbor, curr_node_g_score, *to_neighbor_edge);
                     else
-                        return problem.gScore(curr_node, curr_node_g_score, to_neighbor_edge);
+                        return problem.gScore(curr_node, neighbor, curr_node_g_score, to_neighbor_edge);
                 }();
 
                 // If 'neighbor' is not found in the min_cost_map, it's value is interpreted as 'infinity'

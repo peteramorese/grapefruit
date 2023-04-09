@@ -120,7 +120,7 @@ namespace GraphSearch {
             inline bool goal(const Node& node) const {return m_goal_node_set.contains(node);}
 
             // Quantative methods
-            inline COST_VECTOR_T gScore(const Node& node, const COST_VECTOR_T& parent_g_score, const edge_t& edge) const {return parent_g_score + m_edgeToCostVector(edge);}
+            inline COST_VECTOR_T gScore(const Node& src_node, const Node& dst_node, const COST_VECTOR_T& parent_g_score, const edge_t& edge) const {return parent_g_score + m_edgeToCostVector(edge);}
             COST_VECTOR_T hScore(const Node& node) const {return heuristic.operator()(node);}
 
             // Member variables

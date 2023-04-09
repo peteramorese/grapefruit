@@ -13,6 +13,21 @@ namespace TP {
             return rhs - lhs;
     }
 
+    template <typename T>
+    inline T max(const T& lhs, const T& rhs) {
+        if (lhs >= rhs)
+            return lhs;
+        else 
+            return rhs;
+    }
+
+    template <typename T>
+    inline T min(const T& lhs, const T& rhs) {
+        if (lhs <= rhs)
+            return lhs;
+        else 
+            return rhs;
+    }
 
     std::string templateToLabel(std::string label_template, uint32_t num, char delimeter = '#') {
         uint32_t i = 0;

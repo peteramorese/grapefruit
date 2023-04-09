@@ -2,6 +2,28 @@
 
 #include "TaskPlanner.h"
 
+#include "BehaviorHandler.h"
+#include "PRL.h"
+
+using namespace PRL;
+
+struct TaskReward {
+    void setToDefaultPrior() {dist.mean = 1.0f; dist.variance = 2.0f;}
+    inline float getExpectation() const {return dist.mean;}
+    inline float getVariance() const {return dist.variance;}
+
+	TP::Distributions::Gaussian dist;
+};
+
+struct ActionCost {
+    void setToDefaultPrior() {dist.mean = 1.0f; dist.variance = 2.0f;}
+    inline float getExpectation() const {return dist.mean;}
+    inline float getVariance() const {return dist.variance;}
+
+	TP::Distributions::Gaussian dist;
+};
+
+
 int main(int argc, char* argv[]) {
  
 	TP::ArgParser parser(argc, argv);
@@ -10,7 +32,6 @@ int main(int argc, char* argv[]) {
 
 	std::string dfa_directory = parser.parse<std::string>("dfa-directory", "./dfas", "Directory that contains dfa files");
 	std::string dfa_file_template = parser.parse<std::string>("dfa-file-template", "dfa_#.yaml", "Naming convention for dfa file");
-	std::string sub_map_file_template = parser.parse<std::string>("sub-map-file-template", "sub_map_#.yaml", "Naming convention for sub map file");
 
 	std::string config_filepath = parser.parse<std::string>("config-filepath", "", "Filepath to grid world config");
 
@@ -50,57 +71,24 @@ int main(int argc, char* argv[]) {
 		if (verbose) dfas[i]->print();
 	}
 
-
 	ts->addAlphabet(combined_alphbet);
 
 	/////////////////   Planner   /////////////////
 
 	using EdgeInheritor = TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>;
 	using SymbolicGraph = TP::DiscreteModel::SymbolicProductAutomaton<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA, EdgeInheritor>;
+	using BehaviorHandlerType = BehaviorHandler<SymbolicGraph, TaskReward, ActionCost>;
+	using PreferenceDistributionType = TP::Distributions::FixedMultivariateGuassian<BehaviorHandlerType::numBehaviors()>;
 
-	MOPreferencePlanner<
-		EdgeInheritor, 
-		FormalMethods::PartialSatisfactionDFA,
-		CostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>, 
-		SumDelayPreferenceCostObjective<SymbolicGraph, DiscreteModel::TransitionSystemLabel::cost_t>, // Action costs
-		WeightedSumPreferenceCostObjective<SymbolicGraph, FormalMethods::SubstitutionCost> // Automata costs
-	> planner(ts, dfas);
+	ParetoReinforcementLearner<BehaviorHandlerType> prl(ts, dfas);
 
-	// Set the weighting
-	std::vector<FormalMethods::SubstitutionCost> weights(dfas.size(), 1);
-	weights[0] = 5;
-	weights[1] = 2;
-	weights[2] = 1;
-
-	ASSERT(weights.size() == dfas.size(), "Number of weights must match number of tasks");
-	WeightedSumPreferenceCostObjective<SymbolicGraph, FormalMethods::SubstitutionCost>::setWeights(weights);
-
-	DiscreteModel::State init_state = DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
-
-	LOG("Planning...");
-	auto plan_set = planner.plan(init_state);
-	LOG("Finished.");
-
-	if (plan_set.size()) {
-		LOG("Planner success!");
-		uint32_t i = 0;
-		for (const auto& plan : plan_set) {
-
-			std::string title = "Plan " + std::to_string(i) + 
-				" Cost: " + std::to_string(plan.cost.template get<0>().cost) + 
-				" Sum Delay Cost: " + std::to_string(plan.cost.template get<1>().preferenceFunction()) +
-				" Weighted Sum PS Cost: " + std::to_string(plan.cost.template get<2>().preferenceFunction());
-			LOG(title);
-			if (verbose) plan.print();	
-			if (write_plans) {
-				std::string plan_filepath = plan_directory + "/" + templateToLabel(plan_file_template, i);
-				plan.serialize(plan_filepath, title);
-			}
-			++i;
-		}
-	} else {
-		LOG("Planner failed using init state: " << init_state.to_str());
-	}
+	PreferenceDistributionType p_ev;
+	p_ev.mean(0) = 3.0f; // mean reward
+	p_ev.mean(1) = 10.0f; // mean cost
+	p_ev.covariance(0, 0) = 0.5f; // reward variance
+	p_ev.covariance(1, 1) = 0.5f; // cost variance
+	
+	prl.run(p_ev);
 
 	return 0;
 }

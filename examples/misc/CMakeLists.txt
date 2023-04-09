@@ -10,4 +10,5 @@ target_link_libraries(Misc PUBLIC
 )
 target_include_directories(Misc PUBLIC
 	${TP_LIBRARY_DIR}
+	${TP_DEPENDENCY_INCLUDE_DIRS}
 )

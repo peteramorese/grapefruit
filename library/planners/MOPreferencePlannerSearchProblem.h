@@ -77,7 +77,7 @@ namespace Planner {
             }
 
             // Quantative methods
-            inline CostVector gScore(const ProdNode& node, CostVector parent_g_score, const edge_t& edge) const {
+            inline CostVector gScore(const ProdNode& src_node, const ProdNode& dst_node, CostVector parent_g_score, const edge_t& edge) const {
                 // Element-wise add each of the objectives (edge_t is alias for CostVector)
                 parent_g_score += edge.cv;
 

@@ -29,7 +29,7 @@ target_link_libraries(YAMLExample PUBLIC
 )
 target_include_directories(YAMLExample PUBLIC
 	${TP_LIBRARY_DIR}
-	${YAML_INCLUDE_DIRS}
+	${TP_DEPENDENCY_INCLUDE_DIRS}
 )
 
 add_executable(StateExample StateExample.cpp)
@@ -40,7 +40,7 @@ target_link_libraries(StateExample PUBLIC
 )
 target_include_directories(StateExample PUBLIC
 	${TP_LIBRARY_DIR}
-	${YAML_INCLUDE_DIRS}
+	${TP_DEPENDENCY_INCLUDE_DIRS}
 )
 
 add_executable(StateSpaceExample StateSpaceExample.cpp)
@@ -50,7 +50,7 @@ target_link_libraries(StateSpaceExample PUBLIC
 )
 target_include_directories(StateSpaceExample PUBLIC
 	${TP_LIBRARY_DIR}
-	${YAML_INCLUDE_DIRS}
+	${TP_DEPENDENCY_INCLUDE_DIRS}
 )
 
 add_executable(ConditionExample ConditionExample.cpp)
@@ -61,7 +61,7 @@ target_link_libraries(ConditionExample PUBLIC
 )
 target_include_directories(ConditionExample PUBLIC
 	${TP_LIBRARY_DIR}
-	${YAML_INCLUDE_DIRS}
+	${TP_DEPENDENCY_INCLUDE_DIRS}
 )
 
 add_executable(TransitionSystemExample TransitionSystemExample.cpp)
@@ -73,7 +73,7 @@ target_link_libraries(TransitionSystemExample PUBLIC
 )
 target_include_directories(TransitionSystemExample PUBLIC
 	${TP_LIBRARY_DIR}
-	${YAML_INCLUDE_DIRS}
+	${TP_DEPENDENCY_INCLUDE_DIRS}
 )
 
 add_executable(SymbolicProductAutomatonExample SymbolicProductAutomatonExample.cpp)
@@ -86,7 +86,7 @@ target_link_libraries(SymbolicProductAutomatonExample PUBLIC
 )
 target_include_directories(SymbolicProductAutomatonExample PUBLIC
 	${TP_LIBRARY_DIR}
-	${YAML_INCLUDE_DIRS}
+	${TP_DEPENDENCY_INCLUDE_DIRS}
 )
 
 add_executable(ProductProjectionExample ProductProjectionExample.cpp)
@@ -99,5 +99,5 @@ target_link_libraries(ProductProjectionExample PUBLIC
 )
 target_include_directories(ProductProjectionExample PUBLIC
 	${TP_LIBRARY_DIR}
-	${YAML_INCLUDE_DIRS}
+	${TP_DEPENDENCY_INCLUDE_DIRS}
 )
