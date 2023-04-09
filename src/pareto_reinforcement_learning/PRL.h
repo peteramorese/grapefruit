@@ -13,8 +13,16 @@ class ParetoReinforcementLearner {
             TP::FormalMethods::DFA, 
             TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>>;
 
-        using Plan = PathSolution<typename PRLSearchProblem::node_t, typename PRLSearchProblem::edge_t, typename PRLSearchProblem::cost_t>;
-        using ParetoFrontResult = TP::GraphSearch::MultiObjectiveSearchResult<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>;
+        using Plan = TP::GraphSearch::PathSolution<
+            typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::node_t, 
+            typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::edge_t, 
+            typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t>;
+
+        using ParetoFrontResult = TP::GraphSearch::MultiObjectiveSearchResult<
+            typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::node_t, 
+            typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::edge_t, 
+            typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t>;
+
         using Distribution = TP::Distributions::FixedMultivariateGuassian<BEHAVIOR_HANDLER_T::numBehaviors()>;
 
     public:
@@ -24,7 +32,7 @@ class ParetoReinforcementLearner {
 
         ParetoFrontResult computePlan(uint32_t step_horizon) {
             PRLSearchProblem problem(m_product, step_horizon, m_behavior_handler);
-            ParetoFrontResult result = NAMOAStar<PRLSearchProblem::CostVector, decltype(problem)>::search(problem);
+            ParetoFrontResult result = TP::GraphSearch::NAMOAStar<typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t, decltype(problem)>::search(problem);
             for (auto& sol : result.solution_set) {
                 // Inverse transform the solutions using the negative of the price function
                 sol.path_cost.template get<0>() -= m_behavior_handler->priceFunctionTransform(step_horizon);
@@ -35,7 +43,7 @@ class ParetoReinforcementLearner {
         }
 
         std::list<Plan>::const_iterator select(const ParetoFrontResult& search_result, const Distribution& p_ev) {
-            std::list<Plan>::const_iterator min_it = search_result.solution_set.begin();
+            typename std::list<Plan>::const_iterator min_it = search_result.solution_set.begin();
             float min_efe = 0.0f;
             for (auto it = search_result.solution_set.begin(); it != search_result.solution_set.end(); ++it) {
                 Distribution reconstructed_plan_dist = reconstructDistribution(it->path_cost);
@@ -64,9 +72,9 @@ class ParetoReinforcementLearner {
             execute(*plan);
         }
 
-        static Distribution reconstructDistribution(const PRLSearchProblem::CostVector& cv) {
+        static Distribution reconstructDistribution(const PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t& cv) {
             Distribution distribution;
-            for (uint32_t i=0; i < PRLSearchProblem::CostVector::size(); ++i) {
+            for (uint32_t i=0; i < BEHAVIOR_HANDLER_T::cvDim(); ++i) {
                 if (i % 2 == 0) {
                     distribution.mean(i / 2u) = cv[i];
                 } else {

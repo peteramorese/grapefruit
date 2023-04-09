@@ -211,7 +211,7 @@ namespace GraphSearch {
         // Convert to search tree
         PathEnumeratedNodeMap<GraphNode, EnumeratedNode, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>> tree;
 
-        std::vector<std::pair<GraphNode, COST_VECTOR_T>> stack;
+        std::vector<std::pair<EnumeratedNode, COST_VECTOR_T>> stack;
         std::map<GraphNode, bool> visited;
         //stack.reserve(problem.inital_node_set.size());
         for (const auto& init_node : problem.initial_node_set) {
@@ -277,14 +277,16 @@ namespace GraphSearch {
                 if (dominated) continue;
 
                 //LOG("   adding...");
-                stack.emplace_back(GraphNode{},tentative_cost);
-                stack.back().first = tree.newNode(children[i], curr_enum_node, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>(std::move(tentative_cost), outgoing_edges[i].edge));
+
+                stack.emplace_back(
+                    tree.newNode(children[i], curr_enum_node, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>(std::move(tentative_cost), outgoing_edges[i].edge)),
+                    tentative_cost);
             }
         }
     }
 
     template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    void NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const GraphNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>>& node_map) {
+    void NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>>& node_map) {
         EnumeratedNode curr_enum_node = goal_node;
         path_solution.node_path.emplace_back(node_map.getNode(curr_enum_node));
 

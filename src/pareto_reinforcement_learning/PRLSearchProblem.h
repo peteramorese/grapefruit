@@ -24,21 +24,21 @@ struct PRLSearchProblem {
         
         // Extension methods (increment the history node)
         inline const std::vector<node_t> neighbors(const node_t& node) const {
-            std::vector<SymbolicProductGraph::node_t> children = m_graph->getChildren(node.base_node);
-            std::vector<node_t> history_nodes(children.size);
+            std::vector<SymbolicProductGraph::node_t> children = m_product->getChildren(node.base_node);
+            std::vector<node_t> history_nodes;
+            history_nodes.reserve(children.size());
             for (uint32_t i=0; i<children.size(); ++i) {
                 uint8_t n_tasks_completed = 0;
                 for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
                     if (!m_product->acc(node.base_node, automaton_i) && m_product->acc(children[i], automaton_i)) ++n_tasks_completed;
                 }
-                history_nodes[i].base_node = children[i];
-                history_nodes[i].n_completed_tasks = node.n_completed_tasks + n_tasks_completed;
+                history_nodes.emplace_back(children[i], node.n_completed_tasks + n_tasks_completed);
             }
             return history_nodes;
         }
 
         inline const std::vector<edge_t> neighborEdges(const node_t& node) const {
-            return m_graph->getOutgoingEdges(node.base);
+            return m_product->getOutgoingEdges(node.base_node);
         }
 
         // Termination goal node (terminate at the step horizon)
@@ -46,7 +46,7 @@ struct PRLSearchProblem {
 
         // Quantative methods
         inline cost_t gScore(const node_t& src_node, const node_t& dst_node, const cost_t& parent_g_score, const edge_t& edge) const {
-            return parent_g_score + m_behavior_handler.getCostVector(src_node, dst_node, edge.action);
+            return parent_g_score + m_behavior_handler->getCostVector(src_node, dst_node, edge.action);
         }
         inline cost_t hScore(const node_t& node) const {return cost_t{};}
 

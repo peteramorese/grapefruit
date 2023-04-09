@@ -23,7 +23,7 @@ namespace GraphSearch {
             using GraphNode = SEARCH_PROBLEM_T::node_t;
             typedef SEARCH_PROBLEM_T::edge_t edge_t;
             typedef SEARCH_PROBLEM_T::cost_t cost_t;
-            using EnumeratedNode = SEARCH_PROBLEM_T::node_t;
+            using EnumeratedNode = WideNode;
 
         private:
             struct OpenSetElement;
@@ -59,8 +59,17 @@ namespace GraphSearch {
                 OpenSetCheckElement(GraphNode node_, const CostMapItem* g_score_) 
                     : node(node_), g_score(g_score_) {}
 
-                bool operator==(const OpenSetCheckElement& other) const {
-                    return node == other.node && g_score == other.g_score;
+                //bool operator==(const OpenSetCheckElement& other) const {
+                //    return node == other.node && g_score == other.g_score;
+                //}
+
+                bool operator<(const OpenSetCheckElement& other) const {
+                    if (node < other.node) {
+                        return true;
+                    } else if (other.node == node) {
+                        return g_score < other.g_score;
+                    }
+                    return false;
                 }
 
                 void tie(std::set<OpenSetSortedElement>::iterator tie) const {sorted_element_tie = tie;}
@@ -71,11 +80,11 @@ namespace GraphSearch {
             };
             
 
-            struct OpenSetCheckElementHash {
-                std::size_t operator()(const OpenSetCheckElement& e) const {
-                    return std::hash<GraphNode>{}(e.node) ^ std::hash<const CostMapItem*>{}(e.g_score);
-                }
-            };
+            //struct OpenSetCheckElementHash {
+            //    std::size_t operator()(const OpenSetCheckElement& e) const {
+            //        return std::hash<GraphNode>{}(e.node) ^ std::hash<const CostMapItem*>{}(e.g_score);
+            //    }
+            //};
 
             class OpenSet {
                 public:
@@ -138,7 +147,8 @@ namespace GraphSearch {
                     //    for (auto item : sorted_set) LOG(" node: " << item.node << " g_score: " << item.g_score);
                     //}
                 private:
-                    std::unordered_set<OpenSetCheckElement, OpenSetCheckElementHash> check_set;
+                    //std::unordered_set<OpenSetCheckElement, OpenSetCheckElementHash> check_set;
+                    std::set<OpenSetCheckElement> check_set;
                     std::multiset<OpenSetSortedElement> sorted_set;
             };
         public:
@@ -150,7 +160,7 @@ namespace GraphSearch {
 
         private:
             static void extractPaths(std::vector<std::pair<GraphNode, const CostMapItem*>>& goal_set, NAMOASearchResult& result, const SEARCH_PROBLEM_T& problem);
-            static void extractPath(const GraphNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>>& node_map);
+            static void extractPath(const EnumeratedNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>>& node_map);
     };
 
 }

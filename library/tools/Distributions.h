@@ -3,7 +3,7 @@
 #include <cmath>
 #include <math.h>
 
-#include <Eigen/Core>
+#include <Eigen/Dense>
 
 #define _USE_MATH_DEFINES
 
