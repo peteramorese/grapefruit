@@ -101,17 +101,19 @@ namespace PRL {
             void assignReward(const TaskHistoryNode<TP::WideNode>& src_node, const TaskHistoryNode<TP::WideNode>& dst_node, CostVector& cv) const {
                 ASSERT(src_node.n_completed_tasks <= dst_node.n_completed_tasks, "Dst node has fewer completed tasks!");
                 if (src_node.n_completed_tasks < dst_node.n_completed_tasks) {
+                    LOG("found task completion transition diff: " << ((uint32_t)dst_node.n_completed_tasks - (uint32_t)src_node.n_completed_tasks));
                     float& reward_mean = cv.template get<0>(); // mean reward
                     float& reward_variance = cv.template get<1>(); // mean reward
                     for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
                         if (!m_product->acc(src_node.base_node, automaton_i) && m_product->acc(dst_node.base_node, automaton_i)) {
                             // Transform by price function
-                            reward_mean -= m_reward_criteria[automaton_i].getExpectation() 
+                            reward_mean += -m_reward_criteria[automaton_i].getExpectation() 
                                 + priceFunctionTransform(src_node.n_completed_tasks) - priceFunctionTransform(dst_node.n_completed_tasks);
 
                             reward_variance += m_reward_criteria[automaton_i].getVariance();
                         }
                     }
+                    LOG("new reward mean: " << reward_mean << " var: " << reward_variance);
                 }
             }
 
@@ -124,7 +126,9 @@ namespace PRL {
             }
                 
             inline const std::shared_ptr<SYMBOLIC_GRAPH_T>& getProduct() const {return m_product;}
-                
+            inline void setCompletedTasksHorizon(uint8_t horizon) const {m_completed_tasks_horizon = horizon;}
+            inline uint8_t getCompletedTasksHorizon() const {return m_completed_tasks_horizon;}
+
         private:
             std::unordered_map<NodeActionPair, CostBehavior<COST_CRITERIA_T...>, NodeActionPairHash> m_cost_behaviors;
             std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;

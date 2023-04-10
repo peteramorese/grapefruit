@@ -85,6 +85,9 @@ int main(int argc, char* argv[]) {
 	TP::Containers::SizedArray<TaskReward> rewards(dfas.size());
 	for (auto& reward : rewards) {reward.setToDefaultPrior();}
 
+	rewards[0].dist.mean = 3.0f;
+	rewards[1].dist.mean = 1.0f;
+
  	std::shared_ptr<SymbolicGraph> product = std::make_shared<SymbolicGraph>(ts, dfas);
 	std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, rewards, 1);
 

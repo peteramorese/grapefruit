@@ -31,7 +31,6 @@ struct PRLSearchProblem {
                 uint8_t n_tasks_completed = 0;
                 for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
                     if (!m_product->acc(node.base_node, automaton_i) && m_product->acc(children[i], automaton_i)) {
-                        LOG("Completed a task!");
                         ++n_tasks_completed;
                     }
                 }
@@ -46,7 +45,6 @@ struct PRLSearchProblem {
 
         // Termination goal node (terminate at the step horizon)
         inline bool goal(const node_t& node) const {
-            LOG("Found goal!");
             return node.n_completed_tasks >= m_completed_tasks_horizon;
         }
 

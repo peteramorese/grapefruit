@@ -39,7 +39,7 @@ class ParetoReinforcementLearner {
             for (auto& sol : result.solution_set) {
                 // Inverse transform the solutions using the negative of the price function
                 LOG("prev mean reward: " << sol.path_cost.template get<0>());
-                sol.path_cost.template get<0>() -= m_behavior_handler->priceFunctionTransform(completed_tasks_horizon);
+                sol.path_cost.template get<0>() += m_behavior_handler->priceFunctionTransform(completed_tasks_horizon);
                 // Convert back to reward function
                 sol.path_cost.template get<0>() *= -1.0f;
                 LOG("post mean reward: " << sol.path_cost.template get<0>());
@@ -75,6 +75,7 @@ class ParetoReinforcementLearner {
                     min_efe = efe;
                 }
             }
+            LOG("solutions size: " << search_result.solution_set.size());
             LOG("Chosen solution: " << costToStr(min_it->path_cost));
             return min_it;
         }
@@ -86,7 +87,7 @@ class ParetoReinforcementLearner {
         void run(const Distribution& p_ev) {
             ASSERT(m_initialized, "Must initialize before running");
             // while (true)
-            ParetoFrontResult pf = computePlan(10);
+            ParetoFrontResult pf = computePlan(m_behavior_handler->getCompletedTasksHorizon());
             if (!pf.success) {
                 LOG("Planner did not succeed!");
                 return;

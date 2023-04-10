@@ -83,8 +83,8 @@ namespace GraphSearch {
             
             // If current node satisfies goal condition, extract path and terminate
             if (problem.goal(curr_node)) {
-                //LOG("-> goal");
-                //LOG("-> path cost: "<< curr_g_score->cv.template get<0>() << ", " << curr_g_score->cv.template get<1>());
+                LOG("-> goal");
+                LOG("-> path cost: "<< curr_g_score->cv.template get<0>() << ", " << curr_g_score->cv.template get<1>());
 
                 // Add solution to the goal set
                 solution_set.emplace_back(curr_node, curr_g_score);
@@ -159,9 +159,15 @@ namespace GraphSearch {
                 tentative_h_score += problem.hScore(neighbor);
 
                 // Filter by the costs of goal nodes
+                bool domininated_by_solution_set = false;
                 for (const auto& sol : solution_set) {
-                    if (sol.second->cv.dominates(tentative_h_score) == Containers::ArrayComparison::Dominates) continue;
+                    Containers::ArrayComparison result = sol.second->cv.dominates(tentative_h_score);
+                    if (result == Containers::ArrayComparison::Dominates || result == Containers::ArrayComparison::Equal) {
+                        domininated_by_solution_set = true;
+                        break;
+                    }
                 }
+                if (domininated_by_solution_set) continue;
 
                 // Add the g_score to the cost map
                 const CostMapItem* g_score_item = G_set.cost_map[neighbor].addToOpen(std::move(tentative_g_score));
