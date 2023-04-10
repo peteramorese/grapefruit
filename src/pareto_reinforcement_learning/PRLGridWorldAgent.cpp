@@ -71,6 +71,8 @@ int main(int argc, char* argv[]) {
 		if (verbose) dfas[i]->print();
 	}
 
+	if (verbose) ts->listPropositions();
+
 	ts->addAlphabet(combined_alphbet);
 
 	/////////////////   Planner   /////////////////
@@ -80,14 +82,28 @@ int main(int argc, char* argv[]) {
 	using BehaviorHandlerType = BehaviorHandler<SymbolicGraph, TaskReward, ActionCost>;
 	using PreferenceDistributionType = TP::Distributions::FixedMultivariateGuassian<BehaviorHandlerType::numBehaviors()>;
 
-	ParetoReinforcementLearner<BehaviorHandlerType> prl(ts, dfas);
+	TP::Containers::SizedArray<TaskReward> rewards(dfas.size());
+	for (auto& reward : rewards) {reward.setToDefaultPrior();}
 
+ 	std::shared_ptr<SymbolicGraph> product = std::make_shared<SymbolicGraph>(ts, dfas);
+	std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, rewards, 1);
+
+	ParetoReinforcementLearner<BehaviorHandlerType> prl(behavior_handler);
+
+
+
+	// Initialize the agent's state
+	TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
+	prl.initialize(init_state);
+
+	// Input the preference behavior distribution
 	PreferenceDistributionType p_ev;
 	p_ev.mean(0) = 3.0f; // mean reward
 	p_ev.mean(1) = 10.0f; // mean cost
 	p_ev.covariance(0, 0) = 0.5f; // reward variance
 	p_ev.covariance(1, 1) = 0.5f; // cost variance
 	
+	// Run the PRL
 	prl.run(p_ev);
 
 	return 0;

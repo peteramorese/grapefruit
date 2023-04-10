@@ -20,7 +20,7 @@ namespace PRL {
     template <class...T_ARGS>
     struct CostBehavior {
         public:
-            using CostVector = TP::Containers::FixedArray<TP::Containers::TypeGenericArray<T_ARGS...>::size(), float>;
+            using CostVector = TP::Containers::FixedArray<2 * TP::Containers::TypeGenericArray<T_ARGS...>::size(), float>;
         public:
             CostBehavior() {
                 auto setAllToDefaultPrior = []<typename T>(T& behavior) -> bool {behavior.setToDefaultPrior(); return false;};
@@ -53,17 +53,19 @@ namespace PRL {
                 TP::WideNode node;
                 TP::DiscreteModel::Action action;
 
-                bool operator==(const NodeActionPair& other) const {return node == other.node && action == other.action;}
+                bool operator==(const NodeActionPair& other) const {
+                    return node == other.node && action == other.action;
+                }
             };
             struct NodeActionPairHash {
                 std::size_t operator()(const NodeActionPair& node_action_pair) const {
-                    return std::hash<TP::WideNode>{}(node_action_pair.node) ^ std::hash<TP::DiscreteModel::Action>{}(node_action_pair.action);
+                    return std::hash<TP::WideNode>{}(node_action_pair.node) ^ (std::hash<TP::DiscreteModel::Action>{}(node_action_pair.action) << 1);
                 }
             };
             //using CostVector = TP::Containers::FixedArray<TP::Containers::TypeGenericArray<T_ARGS...>::size(), float>;
             using CostVector = TP::Containers::FixedArray<CostBehavior<COST_CRITERIA_T...>::CostVector::size() + 2, float>;
         public:
-            BehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, TP::Containers::SizedArray<REWARD_CRITERION_T>& reward_criteria, uint8_t completed_tasks_horizon) 
+            BehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, const TP::Containers::SizedArray<REWARD_CRITERION_T>& reward_criteria, uint8_t completed_tasks_horizon) 
                 : m_product(product)
                 , m_reward_criteria(reward_criteria)
                 , m_max_mean_reward(0.0f)
@@ -101,7 +103,7 @@ namespace PRL {
                 if (src_node.n_completed_tasks < dst_node.n_completed_tasks) {
                     float& reward_mean = cv.template get<0>(); // mean reward
                     float& reward_variance = cv.template get<1>(); // mean reward
-                    for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank(); ++automaton_i) {
+                    for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
                         if (!m_product->acc(src_node.base_node, automaton_i) && m_product->acc(dst_node.base_node, automaton_i)) {
                             // Transform by price function
                             reward_mean -= m_reward_criteria[automaton_i].getExpectation() 
@@ -121,6 +123,7 @@ namespace PRL {
                 return m_reward_criteria[automaton_i];
             }
                 
+            inline const std::shared_ptr<SYMBOLIC_GRAPH_T>& getProduct() const {return m_product;}
                 
         private:
             std::unordered_map<NodeActionPair, CostBehavior<COST_CRITERIA_T...>, NodeActionPairHash> m_cost_behaviors;

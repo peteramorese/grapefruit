@@ -30,7 +30,10 @@ struct PRLSearchProblem {
             for (uint32_t i=0; i<children.size(); ++i) {
                 uint8_t n_tasks_completed = 0;
                 for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
-                    if (!m_product->acc(node.base_node, automaton_i) && m_product->acc(children[i], automaton_i)) ++n_tasks_completed;
+                    if (!m_product->acc(node.base_node, automaton_i) && m_product->acc(children[i], automaton_i)) {
+                        LOG("Completed a task!");
+                        ++n_tasks_completed;
+                    }
                 }
                 history_nodes.emplace_back(children[i], node.n_completed_tasks + n_tasks_completed);
             }
@@ -42,7 +45,10 @@ struct PRLSearchProblem {
         }
 
         // Termination goal node (terminate at the step horizon)
-        inline bool goal(const node_t& node) const {return node.n_completed_tasks >= m_completed_tasks_horizon;}
+        inline bool goal(const node_t& node) const {
+            LOG("Found goal!");
+            return node.n_completed_tasks >= m_completed_tasks_horizon;
+        }
 
         // Quantative methods
         inline cost_t gScore(const node_t& src_node, const node_t& dst_node, const cost_t& parent_g_score, const edge_t& edge) const {
@@ -55,11 +61,14 @@ struct PRLSearchProblem {
         //HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
     public:
-        PRLSearchProblem(const std::shared_ptr<SymbolicProductGraph>& product, uint8_t completed_tasks_horizon, const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler)
+        PRLSearchProblem(const std::shared_ptr<SymbolicProductGraph>& product, SymbolicProductGraph::node_t init_node, uint8_t completed_tasks_horizon, const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler)
             : m_product(product)
             , m_behavior_handler(behavior_handler)
             , m_completed_tasks_horizon(completed_tasks_horizon)
-            {}
+        {
+            // Initialize to no completed tasks
+            initial_node_set = {TaskHistoryNode<SymbolicProductGraph::node_t>(init_node, 0)};
+        }
 
     private:
         std::shared_ptr<SymbolicProductGraph> m_product;

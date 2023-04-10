@@ -32,5 +32,9 @@
         "F(tacos & F(p3) & F(p4))",
         "F(pizza & F(p1))",
         "!cheese U (pizza) & !cheese U (tacos)"
+    ],
+    "prl_test": [
+        "GF(grocer & F(p3))",
+        "GF(tacos & F(p1))"
     ]
 }

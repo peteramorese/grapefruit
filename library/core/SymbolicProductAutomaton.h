@@ -115,7 +115,9 @@ namespace DiscreteModel {
             std::set<WideNode> getAcceptingNodes() const; 
 
             // Query acceptance of a node
-            inline bool acc(WideNode node, ProductRank automaton_i) const {return m_automata[automaton_i]->getAcceptingStates().contains(getUnwrappedNode(node).automata_nodes[automaton_i]);}
+            inline bool acc(WideNode node, ProductRank automaton_i) const {
+                return m_automata[automaton_i]->getAcceptingStates().contains(getUnwrappedNode(node).automata_nodes[automaton_i]);
+            }
 
             // Convert between augmented nodes
             WideNode getWrappedNode(Node ts_node, const Containers::SizedArray<Node>& automata_nodes) const;
