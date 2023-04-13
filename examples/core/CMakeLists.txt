@@ -17,6 +17,7 @@ target_include_directories(DAGExample PUBLIC
 add_executable(AutomatonExample AutomatonExample.cpp)
 target_link_libraries(AutomatonExample PUBLIC
 	yaml-cpp
+	spot
 )
 target_include_directories(AutomatonExample PUBLIC
 	${TP_LIBRARY_DIR}
