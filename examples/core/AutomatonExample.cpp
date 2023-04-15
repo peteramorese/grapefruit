@@ -16,8 +16,12 @@ int main() {
     //psdfa_1.deserialize("test_dfas/dfa_1.yaml", "test_dfas/sub_map_1.yaml");
     //psdfa_1.print();
 
-    DFA dfa;
-    dfa.generateFromFormula("GF(a & Fb)");
-    dfa.print();
+    DFA dfa_1;
+    dfa_1.generateFromFormula("GF(a & Fb)");
+    dfa_1.print();
+
+    DFA dfa_2;
+    dfa_2.generateFromFormula("F(a & GFb)");
+    dfa_2.print();
 	return 0;
 }

@@ -7,8 +7,12 @@
 #include <yaml-cpp/yaml.h>
 
 #include <spot/tl/parse.hh>
+#include <spot/tl/print.hh>
 #include <spot/twaalgos/translate.hh>
 #include <spot/twaalgos/hoa.hh>
+#include <spot/twaalgos/neverclaim.hh>
+#include <spot/twa/formula2bdd.hh>
+#include <spot/twa/bddprint.hh>
 
 #include "core/Graph.h"
 
@@ -69,7 +73,6 @@ namespace FormalMethods {
                         if (label == edge) return false;
                     }
                 }
-                LOG("Connecting src: " << src << " dst: " << dst);
                 Graph<Observation>::connect(src, dst, edge);
                 return true;
             }
@@ -89,47 +92,15 @@ namespace FormalMethods {
                 translator.set_pref(pref);
 
                 spot::twa_graph_ptr aut = translator.run(pf.f);
-
-                spot::print_hoa(std::cout, aut) << std::endl;
-
                 this->setInitStates({aut->get_init_state_number()});
-                PRINT_NAMED("Init state", aut->get_init_state_number());
 
-                std::vector<NATIVE_NODE_T> stack = this->getInitStates();
-
-                std::map<NATIVE_NODE_T, bool> seen;
-                while (!stack.empty()) {
-                    NATIVE_NODE_T curr_state = stack.back();
-                    LOG("Current state: " << curr_state);
-                    stack.pop_back();
-                    seen[curr_state] = true;
-
-                    auto children = aut->succ(aut->state_from_number(curr_state));
-                    for (auto child : children) {
-                        LOG("child...");
-                        NATIVE_NODE_T child_state = aut->state_number(child->dst());
-                        LOG("Connected state: " << child_state);
-                        std::string label = spotConditionToLabel(child->cond());
-                        LOG("Label: " << label);
-                        Graph<Observation>::connect(curr_state, child_state, label);
-                        if (seen[child_state]) {
-                            continue;
-                        } else {
-                            seen[child_state] = true;
-                        }
-                        if (aut->state_is_accepting(child->dst())) this->m_accepting_states.insert(child_state);
-                        stack.push_back(child_state);
+                for (uint32_t s = 0; s < aut->num_states(); ++s) {
+                    if (aut->state_is_accepting(s)) this->m_accepting_states.insert(s);
+                    for (auto& t : aut->out(s)) {
+                        std::string label = spot::bdd_format_formula(aut->get_dict(), t.cond);
+                        Graph<Observation>::connect(t.src, t.dst, label);
                     }
                 }
-
-            }
-
-            std::string spotConditionToLabel(const bdd& bdd) {
-                //std::ostream out;
-                //out << bdd;
-                std::stringstream ss;
-                ss << bdd;
-                return ss.str();
             }
 
             bool deserialize(const std::string& filepath) {
