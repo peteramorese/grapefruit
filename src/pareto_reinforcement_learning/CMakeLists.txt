@@ -1,9 +1,8 @@
 add_executable(PRLGridWorldAgent PRLGridWorldAgent.cpp)
 target_link_libraries(PRLGridWorldAgent PUBLIC
 	Eigen3::Eigen
-	yaml-cpp
-	TransitionSystem
-	GridWorldAgent
+	Core
+	Models
 )
 target_include_directories(PRLGridWorldAgent PUBLIC
 	${TP_LIBRARY_DIR}

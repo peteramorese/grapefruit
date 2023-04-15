@@ -1,28 +1,25 @@
 add_executable(GraphExample GraphExample.cpp)
 target_link_libraries(GraphExample PUBLIC
+	Core
 )
 target_include_directories(GraphExample PUBLIC
 	${TP_LIBRARY_DIR}
-	#${SPOT_INCLUDE_DIRS}
 )
 
 add_executable(DAGExample DAGExample.cpp)
 target_link_libraries(DAGExample PUBLIC
+	Core
 )
 target_include_directories(DAGExample PUBLIC
 	${TP_LIBRARY_DIR}
-	#${SPOT_INCLUDE_DIRS}
 )
 
 add_executable(AutomatonExample AutomatonExample.cpp)
 target_link_libraries(AutomatonExample PUBLIC
-	spot
-	yaml-cpp
-	bddx
+	Core
 )
 target_include_directories(AutomatonExample PUBLIC
 	${TP_LIBRARY_DIR}
-	#${SPOT_INCLUDE_DIRS}
 )
 
 add_executable(YAMLExample YAMLExample.cpp)
@@ -36,9 +33,7 @@ target_include_directories(YAMLExample PUBLIC
 
 add_executable(StateExample StateExample.cpp)
 target_link_libraries(StateExample PUBLIC
-	State
-	StateSpace
-	yaml-cpp
+	Core
 )
 target_include_directories(StateExample PUBLIC
 	${TP_LIBRARY_DIR}
@@ -47,8 +42,7 @@ target_include_directories(StateExample PUBLIC
 
 add_executable(StateSpaceExample StateSpaceExample.cpp)
 target_link_libraries(StateSpaceExample PUBLIC
-	StateSpace
-	yaml-cpp
+	Core
 )
 target_include_directories(StateSpaceExample PUBLIC
 	${TP_LIBRARY_DIR}
@@ -57,9 +51,7 @@ target_include_directories(StateSpaceExample PUBLIC
 
 add_executable(ConditionExample ConditionExample.cpp)
 target_link_libraries(ConditionExample PUBLIC
-	State
-	StateSpace
-	Condition
+	Core
 )
 target_include_directories(ConditionExample PUBLIC
 	${TP_LIBRARY_DIR}
@@ -68,10 +60,7 @@ target_include_directories(ConditionExample PUBLIC
 
 add_executable(TransitionSystemExample TransitionSystemExample.cpp)
 target_link_libraries(TransitionSystemExample PUBLIC
-	State
-	StateSpace
-	Condition
-	TransitionSystem
+	Core
 )
 target_include_directories(TransitionSystemExample PUBLIC
 	${TP_LIBRARY_DIR}
@@ -80,11 +69,8 @@ target_include_directories(TransitionSystemExample PUBLIC
 
 add_executable(SymbolicProductAutomatonExample SymbolicProductAutomatonExample.cpp)
 target_link_libraries(SymbolicProductAutomatonExample PUBLIC
-	State
-	StateSpace
-	Condition
-	TransitionSystem
-	Manipulator
+	Core
+	Models
 )
 target_include_directories(SymbolicProductAutomatonExample PUBLIC
 	${TP_LIBRARY_DIR}
@@ -93,11 +79,8 @@ target_include_directories(SymbolicProductAutomatonExample PUBLIC
 
 add_executable(ProductProjectionExample ProductProjectionExample.cpp)
 target_link_libraries(ProductProjectionExample PUBLIC
-	State
-	StateSpace
-	Condition
-	TransitionSystem
-	Manipulator
+	Core
+	Models
 )
 target_include_directories(ProductProjectionExample PUBLIC
 	${TP_LIBRARY_DIR}

@@ -10,7 +10,6 @@
 #include <yaml-cpp/yaml.h>
 
 #include "tools/Logging.h"
-#include "core/Automaton.h"
 
 std::string toString(const std::string& str) {return str;};
 

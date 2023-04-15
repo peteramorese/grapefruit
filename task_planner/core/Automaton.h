@@ -9,8 +9,6 @@
 #include <spot/tl/parse.hh>
 #include <spot/tl/print.hh>
 #include <spot/twaalgos/translate.hh>
-#include <spot/twaalgos/hoa.hh>
-#include <spot/twaalgos/neverclaim.hh>
 #include <spot/twa/formula2bdd.hh>
 #include <spot/twa/bddprint.hh>
 
@@ -101,6 +99,7 @@ namespace FormalMethods {
                         Graph<Observation>::connect(t.src, t.dst, label);
                     }
                 }
+                return true;
             }
 
             bool deserialize(const std::string& filepath) {
@@ -155,6 +154,10 @@ namespace FormalMethods {
     };
 
     using DFA = GenericDFA<>;
+    using DFAptr = std::shared_ptr<DFA>;
+
+    std::vector<DFAptr> createDFAsFromFile(const std::string& filepath);
+
     
 } // namespace FormalMethods
 } // namespace TP

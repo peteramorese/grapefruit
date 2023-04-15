@@ -12,11 +12,6 @@ set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-#set(CMAKE_INSTALL_LOCAL_ONLY true)
-
-#add_subdirectory(dependencies/yaml-cpp)
-#add_subdirectory(dependencies/eigen-3.4.0)
-
 ExternalProject_Add(yaml
     PREFIX yaml
     SOURCE_DIR ${CMAKE_SOURCE_DIR}/dependencies/yaml-cpp
@@ -26,23 +21,14 @@ ExternalProject_Add(yaml
         -DCMAKE_INSTALL_PREFIX=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/yaml
 )
 
-#ExternalProject_Add(eigen
-#    PREFIX eigen
-#    SOURCE_DIR ${CMAKE_SOURCE_DIR}/dependencies/eigen-3.4.0
-#    BINARY_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-#    CMAKE_ARGS
-#        -DCMAKE_INSTALL_PREFIX=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/eigen
-#)
-
-
 set(TP_DEPENDENCY_INCLUDE_DIRS 
     ${CMAKE_SOURCE_DIR}/dependencies/yaml-cpp
     ${EIGEN3_INCLUDE_DIRS}
 )
-set(TP_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/library)
+set(TP_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/task_planner)
 
-add_subdirectory(library)
+add_subdirectory(task_planner)
 
 add_subdirectory(examples)
-#add_subdirectory(src)
-#add_subdirectory(test)
+add_subdirectory(src)
+add_subdirectory(test)
