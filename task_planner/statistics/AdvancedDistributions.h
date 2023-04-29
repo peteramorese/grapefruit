@@ -18,6 +18,11 @@ struct Gamma {
         float beta = 1.0f;
 
     public:
+        Gamma() = default;
+        Gamma(uint32_t alpha_, float beta_)
+            : alpha(alpha_)
+            , beta(beta_)
+        {}
 
         float pdf(float x) const {
             ASSERT(x >= 0.0f, "Input 'x' must be geq 0");
@@ -28,11 +33,18 @@ struct Gamma {
 
 struct LocationScaleT {
     public:
+        uint32_t nu = 0;
         float mu = 0.0f;
         float sigma_2 = 0.0f;
-        uint32_t nu = 0;
 
     public:
+        LocationScaleT() = default;
+        LocationScaleT(uint32_t nu_, float mu_, float sigma_2_) 
+            : nu(nu_)
+            , mu(mu_)
+            , sigma_2(sigma_2_)
+        {}
+
         inline float normalizationConstant() const {
             float nu_f = static_cast<float>(nu);
             return tgamma(0.5f * (nu_f + 1.0f)) / (tgamma(0.5f * nu_f) * std::sqrt(nu_f * M_PI * sigma_2));

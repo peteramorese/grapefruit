@@ -7,6 +7,7 @@
 
 #include "tools/Logging.h"
 #include "statistics/StatTools.h"
+#include "statistics/AdvancedDistributions.h"
 
 #define _USE_MATH_DEFINES
 
@@ -40,7 +41,15 @@ struct NormalGamma {
                 * std::exp(-0.5f * precision * (kappa_0 * std::pow(mean - mu_0, 2) + 2.0f * beta_0));
         }
 
-        NormalGamma posterior(const SampleSet& sample_set) {
+        LocationScaleT meanMarginal() const {
+            return LocationScaleT(2.0f * alpha_0, mu_0, beta_0 / (alpha_0 * kappa_0));
+        }
+
+        Gamma precisionMarginal() const {
+            return Gamma(alpha_0, beta_0);
+        }
+
+        NormalGamma posterior(const SampleSet& sample_set) const {
             float n = static_cast<float>(sample_set.size());
             float x_bar = sample_set.avg();
 

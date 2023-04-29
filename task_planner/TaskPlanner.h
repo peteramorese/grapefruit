@@ -6,7 +6,6 @@
 #include "tools/Algorithms.h"
 #include "tools/Debug.h"
 #include "tools/Misc.h"
-#include "tools/Random.h"
 #include "tools/Test.h"
 
 // Core
@@ -45,7 +44,9 @@
 #include "theory/PartialSatisfactionAutomaton.h"
 
 // Statistics
+#include "statistics/Random.h"
 #include "statistics/StatTools.h"
 #include "statistics/Normal.h"
 #include "statistics/NormalGamma.h"
 #include "statistics/AdvancedDistributions.h"
+#include "statistics/GaussianUpdater.h"

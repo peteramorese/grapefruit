@@ -6,7 +6,7 @@
 
 #include "tools/Logging.h"
 #include "tools/Test.h"
-#include "tools/Random.h"
+#include "statistics/Random.h"
 #include "core/Graph.h"
 #include "graph_search/MultiObjectiveSearchProblem.h"
 #include "graph_search/NAMOAStar.h"

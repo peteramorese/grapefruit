@@ -20,6 +20,12 @@ struct Normal {
         float sigma_2 = 0.0f;
 
     public:
+        Normal() = default;
+        Normal(float mu_, float sigma_2_) 
+            : mu(mu_)
+            , sigma_2(sigma_2_)
+        {}
+
         inline float std() const {return std::sqrt(sigma_2);}
 
         float pdf(const float& x) const {
@@ -62,7 +68,7 @@ struct FixedMultivariateNormal {
 
 // Expectation and variance overloads
 inline static float E(const Distributions::Normal& p) {return p.mu;}
-inline static float var(const Distributions::Normal& p) {return p.mu;}
+inline static float var(const Distributions::Normal& p) {return p.sigma_2;}
 inline static const Eigen::VectorXf& E(const Distributions::MultivariateNormal& p) {return p.mu;}
 inline static const Eigen::MatrixXf& cov(const Distributions::MultivariateNormal& p) {return p.covariance;}
 

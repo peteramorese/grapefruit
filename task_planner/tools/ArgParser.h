@@ -39,6 +39,8 @@ namespace TP {
                 return false;
             }
 
+            // Include this to enable the help function, and terminate the main()
+            // For terminating, use: if (parser.enableHelp()) return 0;
             bool enableHelp() {
                 bool has_help = hasKey("help");
                 if (has_help) {
