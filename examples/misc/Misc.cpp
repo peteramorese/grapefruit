@@ -1,5 +1,7 @@
 #include "tools/Containers.h"
 
+#include "statistics/Normal.h"
+
 #include "tools/Logging.h"
 
 #include <Eigen/Dense>
@@ -10,6 +12,9 @@
 int main()
 {
   std::cout << "Hello world!\nThis is Spot " << spot::version() << ".\n";
+  TP::Stats::Distributions::Normal p;
+  p.mu = 5.0f;
+  LOG("expected val: " << TP::Stats::E(p));
   return 0;
 }
 

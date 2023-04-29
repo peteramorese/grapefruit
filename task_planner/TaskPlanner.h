@@ -2,7 +2,6 @@
 
 // Tools
 #include "tools/Containers.h"
-#include "tools/Distributions.h"
 #include "tools/ArgParser.h"
 #include "tools/Algorithms.h"
 #include "tools/Debug.h"
@@ -44,3 +43,9 @@
 // Theory
 #include "theory/PartialSatisfactionAutomatonEdgeInheritor.h"
 #include "theory/PartialSatisfactionAutomaton.h"
+
+// Statistics
+#include "statistics/StatTools.h"
+#include "statistics/Normal.h"
+#include "statistics/NormalGamma.h"
+#include "statistics/AdvancedDistributions.h"
