@@ -23,7 +23,7 @@ class ParetoReinforcementLearner {
             typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::edge_t, 
             typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t>;
 
-        using Distribution = TP::Distributions::FixedMultivariateGuassian<BEHAVIOR_HANDLER_T::numBehaviors()>;
+        using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<BEHAVIOR_HANDLER_T::numBehaviors()>;
 
     public:
         ParetoReinforcementLearner(const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler)
@@ -32,7 +32,7 @@ class ParetoReinforcementLearner {
         {}
 
         ParetoFrontResult computePlan(uint8_t completed_tasks_horizon) {
-            PRLSearchProblem problem(m_product, m_current_product_node, completed_tasks_horizon, m_behavior_handler);
+            PRLSearchProblem<BEHAVIOR_HANDLER_T> problem(m_product, m_current_product_node, completed_tasks_horizon, m_behavior_handler);
             LOG("Planning...");
             ParetoFrontResult result = TP::GraphSearch::NAMOAStar<typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t, decltype(problem)>::search(problem);
             LOG("Done!");
@@ -47,7 +47,7 @@ class ParetoReinforcementLearner {
             return result;
         }
 
-        std::list<Plan>::const_iterator select(const ParetoFrontResult& search_result, const Distribution& p_ev) {
+        std::list<Plan>::const_iterator select(const ParetoFrontResult& search_result, const TrajectoryDistribution& p_ev) {
             typename std::list<Plan>::const_iterator min_it = search_result.solution_set.begin();
             float min_efe = 0.0f;
 
@@ -84,7 +84,7 @@ class ParetoReinforcementLearner {
             // TODO
         }
 
-        void run(const Distribution& p_ev) {
+        void run(const TrajectoryDistribution& p_ev) {
             ASSERT(m_initialized, "Must initialize before running");
             // while (true)
             ParetoFrontResult pf = computePlan(m_behavior_handler->getCompletedTasksHorizon());
@@ -94,10 +94,11 @@ class ParetoReinforcementLearner {
             }
             auto plan = select(pf, p_ev);
             execute(*plan);
+            m_behavior_handler->update(plan->node_path.end()->n_completed_tasks);
         }
 
-        static Distribution reconstructDistribution(const PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t& cv) {
-            Distribution distribution;
+        static TrajectoryDistribution reconstructDistribution(const PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t& cv) {
+            TrajectoryDistribution distribution;
             for (uint32_t i=0; i < BEHAVIOR_HANDLER_T::cvDim(); ++i) {
                 if (i % 2 == 0) {
                     distribution.mean(i / 2u) = cv[i];

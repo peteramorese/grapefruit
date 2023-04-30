@@ -12,7 +12,7 @@ namespace PRL {
 template <std::size_t N>
 class GuassianEFE {
     public:
-        using Distribution = TP::Distributions::FixedMultivariateGuassian<N>;
+        using Distribution = TP::Stats::Distributions::FixedMultivariateNormal<N>;
 
     public:
         static float calculate(const Distribution& input_dist, const Distribution& p_ev_dist) {

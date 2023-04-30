@@ -43,6 +43,9 @@
 #include "theory/PartialSatisfactionAutomatonEdgeInheritor.h"
 #include "theory/PartialSatisfactionAutomaton.h"
 
+// Learning
+#include "learning/UCB.h"
+
 // Statistics
 #include "statistics/Random.h"
 #include "statistics/StatTools.h"

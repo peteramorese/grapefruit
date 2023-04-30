@@ -511,7 +511,6 @@ template <class... T_ARGS>
 static TP::Containers::TypeGenericArray<T_ARGS...> operator+(const TP::Containers::TypeGenericArray<T_ARGS...>& lhs, const TP::Containers::TypeGenericArray<T_ARGS...>& rhs) {
     TP::Containers::TypeGenericArray<T_ARGS...> ret_tga;
     auto add = [&ret_tga, &rhs]<typename T, uint32_t I>(const T& element) {
-        // ret_tga = lhs + rhs
         return ret_tga.template get<I>() = element + rhs.template get<I>() ;
     };
     lhs.forEachWithI(add);
