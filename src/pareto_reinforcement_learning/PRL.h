@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "EFE.h"
 #include "PRLSearchProblem.h"
 
@@ -24,6 +26,8 @@ class ParetoReinforcementLearner {
             typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t>;
 
         using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<BEHAVIOR_HANDLER_T::numBehaviors()>;
+
+        typedef BEHAVIOR_HANDLER_T::CostVector(*SamplerFunctionType)(TP::WideNode src_node, TP::WideNode dst_node, const TP::DiscreteModel::Action& action);
 
     public:
         ParetoReinforcementLearner(const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler)
@@ -52,11 +56,11 @@ class ParetoReinforcementLearner {
             float min_efe = 0.0f;
 
             auto costToStr = [](const typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t& cv) {
-                std::string s = "(reward mean: " + std::to_string(cv.template get<0>()) + " variance: " + std::to_string(cv.template get<1>()) + ")";
+                std::string s = "(reward ucb: " + std::to_string(cv.template get<0>()) + " cost ucb: " + std::to_string(cv.template get<1>()) + ")";
                 
-                for (uint32_t i=2; i<PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t::size(); i += 2) {
-                    s += ", (cost " + std::to_string(i/2) + " mean: " + std::to_string(cv[i]) + " variance: " + std::to_string(cv[i + 1]) + ") ";
-                }
+                //for (uint32_t i=2; i<PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t::size(); i += 2) {
+                //    s += ", (cost " + std::to_string(i/2) + " mean: " + std::to_string(cv[i]) + " variance: " + std::to_string(cv[i + 1]) + ") ";
+                //}
                 return s;
             };
 
@@ -65,8 +69,10 @@ class ParetoReinforcementLearner {
                 LOG("Considering solution: " << costToStr(it->path_cost));
 
                 TrajectoryDistribution traj_dist = getTrajectoryDistribution(*it);
+                LOG("-> trajectory distribution: mean: " << traj_dist.mu(0) << ", " << traj_dist.mu(1));
 
                 float efe = GuassianEFE<BEHAVIOR_HANDLER_T::numBehaviors()>::calculate(traj_dist, p_ev);
+                LOG("-> efe: " << efe);
                 if (it != search_result.solution_set.begin()) {
                     if (efe < min_efe) {
                         min_efe = efe;
@@ -81,11 +87,11 @@ class ParetoReinforcementLearner {
             return min_it;
         }
 
-        void execute(const Plan& plan) {
+        void execute(const Plan& plan, SamplerFunctionType sampler) {
             // TODO
         }
 
-        void run(const TrajectoryDistribution& p_ev) {
+        void run(const TrajectoryDistribution& p_ev, SamplerFunctionType sampler) {
             ASSERT(m_initialized, "Must initialize before running");
             // while (true)
             ParetoFrontResult pf = computePlan(m_behavior_handler->getCompletedTasksHorizon());
@@ -105,7 +111,7 @@ class ParetoReinforcementLearner {
             for (auto edge_it = plan.edge_path.begin(); edge_it != plan.edge_path.end(); ++edge_it) {
                 const auto& src_node = *node_it;
                 const auto& dst_node = *(++node_it);
-                TP::Containers::FixedArray<M - 1, TP::Stats::Distributions::Normal> cost_distributions = m_behavior_handler->getCostBehaviorArray(static_cast<TP::WideNode>(src_node), edge_it->action).getEstimateDistributions();
+                TP::Containers::FixedArray<M - 1, TP::Stats::Distributions::Normal> cost_distributions = m_behavior_handler->getNAPElement(static_cast<TP::WideNode>(src_node), edge_it->action).getEstimateDistributions();
                 for (uint32_t m = 0; m < M; ++m) {
                     if (m != 0) {
                         individual_distributions[m].convolveWith(cost_distributions[m - 1]);
@@ -113,18 +119,23 @@ class ParetoReinforcementLearner {
                         for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
                             if (!m_product->acc(src_node.base_node, automaton_i) && m_product->acc(dst_node.base_node, automaton_i)) {
                                 // Accumulate reward for each task satisfied
-                                individual_distributions[m].convolveWith(m_behavior_handler->getRewardBehavior(automaton_i).updater.getEstimateNormal());
+                                individual_distributions[m].convolveWith(m_behavior_handler->getTaskElement(automaton_i).updater.getEstimateNormal());
                             }
                         }
                     }
-
+                    //LOG("Individual distribution " << m << " mean: " << individual_distributions[m].mu << " sigma2: " << individual_distributions[m].sigma_2);
                 }
             }
             TrajectoryDistribution distribution;
             for (uint32_t m = 0; m < M; ++m) {
                 distribution.mu(m) = individual_distributions[m].mu;
-                distribution.covariance(m, m) = individual_distributions[m].sigma_2;
+                for (uint32_t n = 0; n < M; ++n) {
+                    distribution.covariance(m, n) = (m != n) ? 0.0f : individual_distributions[m].sigma_2;
+                }
             }
+
+            Eigen::IOFormat OctaveFmt(Eigen::StreamPrecision, 0, ", ", ";\n", "", "", "[", "]");
+            LOG("TrajectoryDistribution covariance: \n" << distribution.covariance.format(OctaveFmt));
             return distribution;
         }
 

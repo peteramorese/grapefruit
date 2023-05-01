@@ -52,6 +52,7 @@ struct MultivariateNormal {
 
         float pdf(const Eigen::VectorXf& x) const {
             // TODO
+            return 0.0f;
         }
 
 };
@@ -59,12 +60,15 @@ struct MultivariateNormal {
 template <std::size_t N>
 struct FixedMultivariateNormal {
     public:
-        Eigen::Matrix<float, N, 1> mu = Eigen::Matrix<float, N, 1>{};
-        Eigen::Matrix<float, N, N> covariance = Eigen::Matrix<float, N, N>{};
+        Eigen::Matrix<float, N, 1> mu = Eigen::Matrix<float, N, 1>::Zero();
+        Eigen::Matrix<float, N, N> covariance = Eigen::Matrix<float, N, N>::Zero();
 
     public:
+        FixedMultivariateNormal() = default;
+
         float pdf(const Eigen::Matrix<float, N, 1>& x) const {
             // TODO
+            return 0.0f;
         }
 };
 

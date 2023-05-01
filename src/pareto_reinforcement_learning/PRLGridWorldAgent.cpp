@@ -88,11 +88,11 @@ int main(int argc, char* argv[]) {
 
 	// Input the preference behavior distribution
 	PreferenceDistributionType p_ev;
-	p_ev.mu(0) = 3.0f; // mean reward
-	p_ev.mu(1) = 10.0f; // mean cost
-	p_ev.covariance(0, 0) = 0.5f; // reward variance
-	p_ev.covariance(1, 1) = 0.5f; // cost variance
-	
+	p_ev.mu(0) = 2.0f; // mean reward
+	p_ev.mu(1) = 48.0f; // mean cost
+	p_ev.covariance(0, 0) = 1.5f; // reward variance
+	p_ev.covariance(1, 1) = 1.5f; // cost variance
+
 	// Run the PRL
 	prl.run(p_ev);
 

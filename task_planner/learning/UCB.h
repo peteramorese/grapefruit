@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include "tools/Misc.h"
+
 namespace TP {
 namespace ML {
 
@@ -14,9 +16,11 @@ class UCB {
         {}
 
         inline void pull() { ++m_n; }
-        inline float get(float exploitation_estimate, uint32_t k) const { return exploitation_estimate + explorationBonus(k); }
+        inline float getReward(float exploitation_estimate, uint32_t k) const { return exploitation_estimate + explorationBonus(k); }
+        inline float getCost(float exploitation_estimate, uint32_t k) const { return exploitation_estimate - explorationBonus(k); }
+        inline float getRectifiedCost(float exploitation_estimate, uint32_t k) const { return max(exploitation_estimate - explorationBonus(k), 0.0f); }
         inline float explorationBonus(uint32_t k) const {
-            return m_confidence * std::sqrt(std::log(k) / m_n);
+            return m_confidence * std::sqrt(std::log(k + 1) / static_cast<float>(m_n + 1));
         }
     private:
         float m_confidence;

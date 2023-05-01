@@ -83,7 +83,7 @@ namespace FormalMethods {
                 translator.set_type(spot::postprocessor::Buchi); // (state-based) Buchi
 
                 spot::postprocessor::output_pref pref = spot::postprocessor::SBAcc; // State-based acceptance
-                pref |= spot::postprocessor::Deterministic; // Deterministic
+                pref |= spot::postprocessor::Small; // Deterministic
                 if (complete)
                     pref |= spot::postprocessor::Complete;
 

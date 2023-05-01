@@ -30,6 +30,14 @@ class GuassianEFE {
             t_det_input_sigma_cache.det = lhs.covariance.determinant();
             t_det_input_sigma_cache.cached = true;
 
+            //LOG("input det: " << t_det_input_sigma_cache.det);
+            //LOG("rhs det: " << rhs.covariance.determinant());
+            //LOG("inv trace: " << inv_rhs_cov_by_lhs_cov.trace());
+            //LOG("First term: " << std::log(rhs.covariance.determinant() / t_det_input_sigma_cache.det));
+            //LOG("Fourth term: " << mean_diff.transpose() * inv_rhs_covariance * mean_diff);
+            //Eigen::IOFormat OctaveFmt(Eigen::StreamPrecision, 0, ", ", ";\n", "", "", "[", "]");
+            //LOG("rhs_covariance: \n" << rhs.covariance.format(OctaveFmt));
+            //LOG("inv_rhs_covariance: \n" << inv_rhs_covariance.format(OctaveFmt));
             return 0.5f * (
                 std::log(rhs.covariance.determinant() / t_det_input_sigma_cache.det) 
                 - static_cast<float>(N)
@@ -39,6 +47,7 @@ class GuassianEFE {
         }
 
         static float entropy(const Eigen::Matrix<float, N, N>& covariance, bool use_cache = true) {
+            LOG("cov det: " << covariance.determinant());
             return 0.5f * (
                 std::log((use_cache && t_det_input_sigma_cache.cached) ? t_det_input_sigma_cache.det : covariance.determinant())
                 + static_cast<float>(N) * (1.0f + std::log(M_2_PI))
