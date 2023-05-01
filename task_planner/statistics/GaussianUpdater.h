@@ -9,6 +9,10 @@ namespace Stats {
 
 class GaussianUpdater {
     public:
+        GaussianUpdater()
+            : m_ng(1.0f, 1.0f, 3, 2.0f)
+        {}
+
         GaussianUpdater(float mu_0, float kappa_0, uint32_t alpha_0, float beta_0)
             : m_ng(mu_0, kappa_0, static_cast<float>(alpha_0), beta_0)
             , m_sample_set()

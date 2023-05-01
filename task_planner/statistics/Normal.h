@@ -34,6 +34,11 @@ struct Normal {
             return 1.0f / (stdev * std::sqrt(M_2_PI)) *std::exp(-0.5f * adj * adj);
         }
 
+        void convolveWith(const Normal& other) {
+            mu += other.mu;
+            sigma_2 += other.sigma_2;
+        }
+
 };
 
 
@@ -69,8 +74,12 @@ struct FixedMultivariateNormal {
 // Expectation and variance overloads
 inline static float E(const Distributions::Normal& p) {return p.mu;}
 inline static float var(const Distributions::Normal& p) {return p.sigma_2;}
+inline static Distributions::Normal convolve(const Distributions::Normal& lhs, const Distributions::Normal& rhs) {return Distributions::Normal(lhs.mu + rhs.mu, lhs.sigma_2 + rhs.sigma_2);}
 inline static const Eigen::VectorXf& E(const Distributions::MultivariateNormal& p) {return p.mu;}
 inline static const Eigen::MatrixXf& cov(const Distributions::MultivariateNormal& p) {return p.covariance;}
+//inline static Distributions::MultivariateNormal convolve(const Distributions::MultivariateNormal& lhs, const Distributions::MultivariateNormal& rhs) {
+//    return Distributions::Normal(lhs.mu + rhs.mu, lhs.covariance + rhs.covariance);
+//}
 
 } // namespace Stats
 } // namespace TP

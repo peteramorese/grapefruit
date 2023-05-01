@@ -97,6 +97,7 @@ namespace FormalMethods {
                     for (auto& t : aut->out(s)) {
                         std::string label = spot::bdd_format_formula(aut->get_dict(), t.cond);
                         Graph<Observation>::connect(t.src, t.dst, label);
+                        this->m_alphabet.insert(std::move(label));
                     }
                 }
                 return true;

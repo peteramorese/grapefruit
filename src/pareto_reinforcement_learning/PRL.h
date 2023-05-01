@@ -63,9 +63,10 @@ class ParetoReinforcementLearner {
             for (auto it = search_result.solution_set.begin(); it != search_result.solution_set.end(); ++it) {
                 
                 LOG("Considering solution: " << costToStr(it->path_cost));
-                Distribution reconstructed_plan_dist = reconstructDistribution(it->path_cost);
 
-                float efe = GuassianEFE<BEHAVIOR_HANDLER_T::numBehaviors()>::calculate(reconstructed_plan_dist, p_ev);
+                TrajectoryDistribution traj_dist = getTrajectoryDistribution(*it);
+
+                float efe = GuassianEFE<BEHAVIOR_HANDLER_T::numBehaviors()>::calculate(traj_dist, p_ev);
                 if (it != search_result.solution_set.begin()) {
                     if (efe < min_efe) {
                         min_efe = efe;
@@ -97,15 +98,32 @@ class ParetoReinforcementLearner {
             m_behavior_handler->update(plan->node_path.end()->n_completed_tasks);
         }
 
-        static TrajectoryDistribution reconstructDistribution(const PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t& cv) {
-            TrajectoryDistribution distribution;
-            for (uint32_t i=0; i < BEHAVIOR_HANDLER_T::cvDim(); ++i) {
-                if (i % 2 == 0) {
-                    distribution.mean(i / 2u) = cv[i];
-                } else {
-                    uint32_t index = (i - 1u) / 2u;
-                    distribution.covariance(index, index) = cv[i];
+        TrajectoryDistribution getTrajectoryDistribution(const Plan& plan) {
+            constexpr uint32_t M = BEHAVIOR_HANDLER_T::numBehaviors();
+            TP::Containers::FixedArray<M, TP::Stats::Distributions::Normal> individual_distributions;
+            auto node_it = plan.node_path.begin();
+            for (auto edge_it = plan.edge_path.begin(); edge_it != plan.edge_path.end(); ++edge_it) {
+                const auto& src_node = *node_it;
+                const auto& dst_node = *(++node_it);
+                TP::Containers::FixedArray<M - 1, TP::Stats::Distributions::Normal> cost_distributions = m_behavior_handler->getCostBehaviorArray(static_cast<TP::WideNode>(src_node), edge_it->action).getEstimateDistributions();
+                for (uint32_t m = 0; m < M; ++m) {
+                    if (m != 0) {
+                        individual_distributions[m].convolveWith(cost_distributions[m - 1]);
+                    } else {
+                        for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
+                            if (!m_product->acc(src_node.base_node, automaton_i) && m_product->acc(dst_node.base_node, automaton_i)) {
+                                // Accumulate reward for each task satisfied
+                                individual_distributions[m].convolveWith(m_behavior_handler->getRewardBehavior(automaton_i).updater.getEstimateNormal());
+                            }
+                        }
+                    }
+
                 }
+            }
+            TrajectoryDistribution distribution;
+            for (uint32_t m = 0; m < M; ++m) {
+                distribution.mu(m) = individual_distributions[m].mu;
+                distribution.covariance(m, m) = individual_distributions[m].sigma_2;
             }
             return distribution;
         }

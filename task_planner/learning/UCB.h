@@ -8,7 +8,7 @@ namespace ML {
 class UCB {
     public:
         UCB() = delete;
-        UCB(float confidence, float init_estimate) 
+        UCB(float confidence) 
             : m_confidence(confidence)
             , m_n(0u)
         {}

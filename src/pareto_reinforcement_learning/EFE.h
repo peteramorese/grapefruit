@@ -24,7 +24,7 @@ class GuassianEFE {
             float det_rhs_covariance = rhs.covariance.determinant();
             Eigen::Matrix<float, N, N> inv_rhs_covariance = rhs.covariance.inverse();
             Eigen::Matrix<float, N, N> inv_rhs_cov_by_lhs_cov = inv_rhs_covariance * lhs.covariance;
-            Eigen::Matrix<float, N, 1> mean_diff = rhs.mean - lhs.mean;
+            Eigen::Matrix<float, N, 1> mean_diff = rhs.mu - lhs.mu;
             
             // Compute determinant and cache it for entropy calculation
             t_det_input_sigma_cache.det = lhs.covariance.determinant();

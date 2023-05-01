@@ -22,14 +22,16 @@ namespace PRL {
         public:
             using CostVector = TP::Containers::FixedArray<M, float>;
         public:
-            CostBehaviorArray() = default;
+            CostBehaviorArray(float confidence)
+                : m_ucb(confidence)
+            {}
 
             static constexpr uint32_t size() {return M;}
 
             CostVector getUCBVector(uint32_t state_visits) const {
                 CostVector cv;
                 for (uint32_t i = 0; i < M; ++i) {
-                    cv[i] = m_ucb.get(TP::Stats::E(m_updaters.getEstimateNormal()), state_visits);
+                    cv[i] = m_ucb.get(TP::Stats::E(m_updaters[i].getEstimateNormal()), state_visits);
                 }
                 return cv;
             }
@@ -51,7 +53,9 @@ namespace PRL {
     };
 
     struct RewardBehavior {
-        RewardBehavior() = default;
+        RewardBehavior(float confidence) 
+            : ucb(confidence)
+        {}
 
         float getUCB(uint32_t n_tasks_completed) const {
             return ucb.get(TP::Stats::E(updater.getEstimateNormal()), n_tasks_completed);
@@ -86,11 +90,12 @@ namespace PRL {
 
             using CostVector = TP::Containers::FixedArray<COST_CRITERIA_M + 1, float>;
         public:
-            BehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, uint8_t completed_tasks_horizon) 
+            BehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, uint8_t completed_tasks_horizon, float ucb_confidence) 
                 : m_product(product)
-                , m_reward_criteria(product.rank() - 1)
+                , m_reward_criteria(product->rank() - 1, RewardBehavior(ucb_confidence))
                 , m_max_mean_reward(0.0f)
                 , m_completed_tasks_horizon(completed_tasks_horizon)
+                , m_ucb_confidence(ucb_confidence)
             {
                 update(0);
             }
@@ -110,7 +115,7 @@ namespace PRL {
             }
 
             CostVector getCostVector(const TaskHistoryNode<TP::WideNode>& src_node, const TaskHistoryNode<TP::WideNode>& dst_node, const TP::DiscreteModel::Action& action) {
-                typename CostBehaviorArray<COST_CRITERIA_M>::CostVector costs_only_cv = m_cost_behaviors[NodeActionPair(src_node.base_node, action)].getUCBVector();
+                typename CostBehaviorArray<COST_CRITERIA_M>::CostVector costs_only_cv = getCostBehaviorArray(src_node.base_node, action).getUCBVector(m_state_visits[(TP::WideNode)src_node]);
                 CostVector cv;
                 cv[0] = 0.0f;
                 for (uint32_t i=1; i<cv.size(); ++i) {
@@ -146,7 +151,13 @@ namespace PRL {
             }
 
             inline const CostBehaviorArray<COST_CRITERIA_M>& getCostBehaviorArray(TP::WideNode node, const TP::DiscreteModel::Action& action) {
-                return m_cost_behaviors[NodeActionPair(node, action)];
+                auto it = m_cost_behaviors.find(NodeActionPair(node, action));
+                if (it != m_cost_behaviors.end()) {
+                    return it->second;
+                } else {
+                    auto result = m_cost_behaviors.emplace(std::piecewise_construct, std::forward_as_tuple(node, action), std::forward_as_tuple(m_ucb_confidence));
+                    return result.first->second;
+                }
             }
 
             inline const RewardBehavior& getRewardBehavior(TP::DiscreteModel::ProductRank automaton_i) const {
@@ -159,15 +170,16 @@ namespace PRL {
 
             inline void visit(TP::WideNode node, const TP::DiscreteModel::Action& action) {
                 ++m_state_visits[node];
-                m_cost_behaviors[NodeActionPair(node, action)].pull();
+                getCostBehaviorArray(node, action).pull();
             }
 
         private:
             std::unordered_map<NodeActionPair, CostBehaviorArray<COST_CRITERIA_M>, NodeActionPairHash> m_cost_behaviors;
             std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;
-            TP::Containers::SizedArray<RewardBehavior> m_reward_criteria;
+            std::vector<RewardBehavior> m_reward_criteria;
             float m_max_mean_reward = 0.0f;
             uint8_t m_completed_tasks_horizon = 1;
+            float m_ucb_confidence = 1.0f;
             
             // UCB parameters
             std::unordered_map<TP::WideNode, uint32_t> m_state_visits;
