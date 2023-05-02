@@ -72,11 +72,19 @@ int main(int argc, char* argv[]) {
 	using EdgeInheritor = TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>;
 	using SymbolicGraph = TP::DiscreteModel::SymbolicProductAutomaton<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA, EdgeInheritor>;
 	using BehaviorHandlerType = BehaviorHandler<SymbolicGraph, 1>;
+	using SamplerType = TrueBehavior<SymbolicGraph, 1>;
 	using PreferenceDistributionType = TP::Stats::Distributions::FixedMultivariateNormal<BehaviorHandlerType::numBehaviors()>;
 
+	TP::Stats::Distributions::Normal default_reward;
+	default_reward.mu = 10.0f;
+	default_reward.sigma_2 = 1.0f;
+	typename SamplerType::CostDistributionArray default_cost_array;
+	default_cost_array[0].mu = 3.0f;
+	default_cost_array[0].sigma_2 = 0.5f;
 
  	std::shared_ptr<SymbolicGraph> product = std::make_shared<SymbolicGraph>(ts, dfas);
 	std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, 1.0f);
+	std::shared_ptr<SamplerType> sampler = std::make_shared<SamplerType>(product, dfas.size(), );
 
 	ParetoReinforcementLearner<BehaviorHandlerType> prl(behavior_handler);
 

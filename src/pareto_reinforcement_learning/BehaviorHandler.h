@@ -44,7 +44,12 @@ namespace PRL {
                 return distributions;
             }
 
-            void pull() { m_ucb.pull(); }
+            void pull(const CostVector& sample) { 
+                m_ucb.pull(); 
+                for (uint32_t i = 0; i < M; ++i) {
+                    m_updaters[i].update(sample[i]);
+                }
+            }
 
         private:
             TP::Containers::FixedArray<M, TP::Stats::GaussianUpdater> m_updaters;
@@ -63,6 +68,11 @@ namespace PRL {
 
         float getEstimateMean() const {
             return TP::Stats::E(updater.getEstimateNormal());
+        }
+
+        void pull(float sample) {
+            ucb.pull();
+            updater.update(sample);
         }
 
         TP::Stats::GaussianUpdater updater;
@@ -136,6 +146,7 @@ namespace PRL {
             }
 
             static constexpr std::size_t numBehaviors() noexcept {return COST_CRITERIA_M + 1;}
+            static constexpr std::size_t numCostCriteria() noexcept {return COST_CRITERIA_M;}
             
             void update(uint32_t n_completed_tasks) {
                 // Increase the number of tasks completed to update the UCB index
@@ -189,9 +200,14 @@ namespace PRL {
             inline void setCompletedTasksHorizon(uint8_t horizon) const {m_completed_tasks_horizon = horizon;}
             inline uint8_t getCompletedTasksHorizon() const {return m_completed_tasks_horizon;}
 
-            inline void visit(TP::WideNode node, const TP::DiscreteModel::Action& action) {
+            void visit(TP::WideNode node, const TP::DiscreteModel::Action& action, const CostBehaviorArray<COST_CRITERIA_M>::CostVector& sample) {
                 ++m_state_visits[node];
-                this->getNAPElement(node, action).pull();
+                this->getNAPElement(node, action).pull(sample);
+            }
+            
+            void collect(TP::DiscreteModel::ProductRank task_i, float sample) {
+                ++m_n_completed_tasks;
+                this->getTaskElement(task_i).pull(sample);
             }
 
         private:

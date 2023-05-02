@@ -58,3 +58,12 @@ Region Colors:
   - mediumseagreen #House 4
   - skyblue #Grocer
   - firebrick #Pizza
+Region Costs:
+  - 1.0
+  - 1.0
+  - 30.0
+  - 6.0
+  - 1.0
+  - 1.0
+  - 7.0
+  - 20.0

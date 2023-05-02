@@ -4,6 +4,7 @@
 
 #include "EFE.h"
 #include "PRLSearchProblem.h"
+#include "TrueBehavior.h"
 
 namespace PRL {
 
@@ -88,7 +89,21 @@ class ParetoReinforcementLearner {
         }
 
         void execute(const Plan& plan, SamplerFunctionType sampler) {
-            // TODO
+            auto node_it = plan.node_path.begin();
+            for (auto edge_it = plan.edge_path.begin(); edge_it != plan.edge_path.end(); ++edge_it) {
+                const auto& src_node = *node_it;
+                const auto& dst_node = *(++node_it);
+                BehaviorSample<BEHAVIOR_HANDLER_T::numCostCriteria()> sample = sampler(src_node.base_node, dst_node.base_node, edge_it->action);
+                m_behavior_handler->visit(src_node.base_node, edge_it->action, sample.cost_sample);
+                if (sample.hasRewards()) {
+                    TP::DiscreteModel::ProductRank task_i;
+                    for (auto[contains, r] : sample.getRewards()) {
+                        if (contains) 
+                            m_behavior_handler->collect(task_i, r);
+                        ++task_i;
+                    }
+                }
+            }
         }
 
         void run(const TrajectoryDistribution& p_ev, SamplerFunctionType sampler) {

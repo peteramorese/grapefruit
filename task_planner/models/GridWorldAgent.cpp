@@ -53,7 +53,8 @@ namespace DiscreteModel {
                         case 0: // left 
                             if (i > 0) {
                                 dst_state[s_x_coord_label] = x_labels[i - 1];
-                                ts->connect(src_state, dst_state, TransitionSystemLabel(1.0f, "left"));
+                                float cost = (model_props.cost_map) ? model_props.cost_map->operator()(i, j, i-1, j) : 1.0f;
+                                ts->connect(src_state, dst_state, TransitionSystemLabel(cost, "left"));
                             } else {
                                 if (!stay_put) {
                                     ts->connect(src_state, src_state, TransitionSystemLabel(0.0f, "stay"));
@@ -64,7 +65,8 @@ namespace DiscreteModel {
                         case 1: // right
                             if (i < (model_props.n_x - 1)) {
                                 dst_state[s_x_coord_label] = x_labels[i + 1];
-                                ts->connect(src_state, dst_state, TransitionSystemLabel(1.0f, "right"));
+                                float cost = (model_props.cost_map) ? model_props.cost_map->operator()(i, j, i+1, j) : 1.0f;
+                                ts->connect(src_state, dst_state, TransitionSystemLabel(cost, "right"));
                             } else {
                                 if (!stay_put) {
                                     ts->connect(src_state, src_state, TransitionSystemLabel(0.0f, "stay"));
@@ -76,7 +78,8 @@ namespace DiscreteModel {
                         case 2: // down
                             if (j > 0) {
                                 dst_state[s_y_coord_label] = y_labels[j - 1];
-                                ts->connect(src_state, dst_state, TransitionSystemLabel(1.0f, "down"));
+                                float cost = (model_props.cost_map) ? model_props.cost_map->operator()(i, j, i, j-1) : 1.0f;
+                                ts->connect(src_state, dst_state, TransitionSystemLabel(cost, "down"));
                             } else {
                                 if (!stay_put) {
                                     ts->connect(src_state, dst_state, TransitionSystemLabel(0.0f, "stay"));
@@ -88,7 +91,8 @@ namespace DiscreteModel {
                         case 3: // up
                             if (j < (model_props.n_y - 1)) {
                                 dst_state[s_y_coord_label] = y_labels[j + 1];
-                                ts->connect(src_state, dst_state, TransitionSystemLabel(1.0f, "up"));
+                                float cost = (model_props.cost_map) ? model_props.cost_map->operator()(i, j, i, j+1) : 1.0f;
+                                ts->connect(src_state, dst_state, TransitionSystemLabel(cost, "up"));
                             } else {
                                 if (!stay_put) {
                                     ts->connect(src_state, dst_state, TransitionSystemLabel(0.0f, "stay"));
@@ -253,8 +257,16 @@ namespace DiscreteModel {
                         && upper_right_cells_y.size() == n_regions
                         && colors.size() == n_regions, "Mismatch in environment region parameters");
 
+                    std::vector<float> costs;
+                    if (data["Region Costs"]) {
+                        costs = data["Region Costs"].as<std::vector<float>>();
+                    }
+
                     for (uint32_t i=0; i<labels.size(); ++i) {
-                        props.environment.addRegion(labels[i], lower_left_cells_x[i], lower_left_cells_y[i], upper_right_cells_x[i], upper_right_cells_y[i], colors[i]);
+                        if (!costs.empty())
+                            props.environment.addRegion(labels[i], lower_left_cells_x[i], lower_left_cells_y[i], upper_right_cells_x[i], upper_right_cells_y[i], colors[i]);
+                        else 
+                            props.environment.addRegion(labels[i], lower_left_cells_x[i], lower_left_cells_y[i], upper_right_cells_x[i], upper_right_cells_y[i], colors[i], costs[i]);
                     }
                 } else {
                     ASSERT(labels.size() == n_regions
