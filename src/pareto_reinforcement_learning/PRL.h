@@ -58,6 +58,7 @@ class ParetoReinforcementLearner {
         {}
 
         ParetoFrontResult computePlan(uint8_t completed_tasks_horizon) {
+            LOG("PRL current product node: " << m_current_product_node);
             PRLSearchProblem<BEHAVIOR_HANDLER_T> problem(m_product, m_current_product_node, completed_tasks_horizon, m_behavior_handler);
             LOG("Planning...");
             ParetoFrontResult result = TP::GraphSearch::NAMOAStar<typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t, decltype(problem)>::search(problem);
@@ -147,8 +148,8 @@ class ParetoReinforcementLearner {
                 auto plan = select(pf, p_ev);
                 if (execute(*plan, sampler))
                     return m_quantifier;
-                m_behavior_handler->update(plan->node_path.end()->n_completed_tasks);
-                m_current_product_node = *plan->node_path.end();
+                m_behavior_handler->update((--plan->node_path.end())->n_completed_tasks);
+                m_current_product_node = *(--plan->node_path.end());
             }
         }
 
