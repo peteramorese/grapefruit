@@ -83,8 +83,8 @@ namespace GraphSearch {
             
             // If current node satisfies goal condition, extract path and terminate
             if (problem.goal(curr_node)) {
-                LOG("-> goal");
-                LOG("-> path cost: "<< curr_g_score->cv.template get<0>() << ", " << curr_g_score->cv.template get<1>());
+                //LOG("-> goal");
+                //LOG("-> path cost: "<< curr_g_score->cv.template get<0>() << ", " << curr_g_score->cv.template get<1>());
 
                 // Add solution to the goal set
                 solution_set.emplace_back(curr_node, curr_g_score);
@@ -97,9 +97,11 @@ namespace GraphSearch {
                 continue;
             }
             
+            LOG("B4 curr_node: " << curr_node);
             // If neighbors() and outgoingEdges() return a persistent const reference, do not copy, otherwise do copy
             typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighbors)(SEARCH_PROBLEM_T, GraphNode)>::type neighbors = problem.neighbors(curr_node);
             typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighborEdges)(SEARCH_PROBLEM_T, GraphNode)>::type to_neighbor_edges = problem.neighborEdges(curr_node);
+            LOG("AF");
             ASSERT(neighbors.size() == to_neighbor_edges.size(), "Number of neighbors does not match the number of outgoing edges");
 
             for (uint32_t i = 0; i < neighbors.size(); ++i) {

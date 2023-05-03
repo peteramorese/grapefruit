@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
 	std::string plan_file_template = parser.parse<std::string>("plan-file-template", "plan_#.yaml", "Naming convention for output plan files");
 
 	uint32_t n_dfas = parser.parse<uint32_t>("n-dfas", 1, "Number of dfa files to read in");
+	uint32_t max_steps = parser.parse<uint32_t>("max-steps", 50, "Max number of steps");
 	
 	if (parser.enableHelp()) return 0;
 
@@ -100,7 +101,7 @@ int main(int argc, char* argv[]) {
 	}
 	auto ss_grid_agent = ts->getStateSpace().lock();
 	for (const auto& region : ts_props.environment.regions) {
-		LOG("Working on region: " << region.label);
+		//LOG("Working on region: " << region.label);
 		for (uint32_t i = region.lower_left_x; i <= region.upper_right_x; ++i) {
 			for (uint32_t j = region.lower_left_y; j <= region.upper_right_y; ++j) {
 				TP::DiscreteModel::State s(ss_grid_agent.get());	
@@ -110,11 +111,14 @@ int main(int argc, char* argv[]) {
 				for (const auto& outgoing_edge : ts->getOutgoingEdges(model_node)) {
 					TrueBehaviorType::CostDistributionArray& cost_array = true_behavior->getNAPElement(model_node, outgoing_edge.action);
 					cost_array[0].convolveWith(TP::Stats::Distributions::Normal(region.exit_cost, 0.3f*region.exit_cost + 0.2f));
-					LOG("Mapping state: " << s.to_str() << " action: " << outgoing_edge.action << " to cost: " << region.exit_cost);
+					//LOG("Mapping state: " << s.to_str() << " action: " << outgoing_edge.action << " to cost: " << region.exit_cost);
+					TrueBehaviorType::CostDistributionArray& cost_array_check = true_behavior->getNAPElement(model_node, outgoing_edge.action);
+					//LOG("CHECK Mapping node: " << model_node << " action: " << outgoing_edge.action << " cost mean: " << cost_array_check[0].mu << " cost var: " << cost_array_check[0].sigma_2);
 				}
 			}
 		}
 	}
+	LOG("sample: " << true_behavior->sample(137, 138, "up").cost_sample[0]);
 
 	true_behavior->print();
 
@@ -135,13 +139,13 @@ int main(int argc, char* argv[]) {
 		return true_behavior->sample(src_node, dst_node, action);
 	};
 	// Run the PRL
-	auto quantifier = prl.run(p_ev, samplerFunction);
+	auto quantifier = prl.run(p_ev, samplerFunction, max_steps);
 	LOG("Finished!");
-	PRINT_NAMED("Total Reward ", quantifier.cumulative_reward);
-	PRINT_NAMED("Total Cost   ", quantifier.cumulative_cost[0]);
-	PRINT_NAMED("Steps        ", quantifier.steps);
-	PRINT_NAMED("Average reward per step ", quantifier.cumulative_reward / static_cast<float>(quantifier.steps));
-	PRINT_NAMED("Average cost per step   ", quantifier.cumulative_cost[0] / static_cast<float>(quantifier.steps));
+	PRINT_NAMED("Total Reward............", quantifier.cumulative_reward);
+	PRINT_NAMED("Total Cost..............", quantifier.cumulative_cost[0]);
+	PRINT_NAMED("Steps...................", quantifier.steps);
+	PRINT_NAMED("Average reward per step.", quantifier.cumulative_reward / static_cast<float>(quantifier.steps));
+	PRINT_NAMED("Average cost per step...", quantifier.cumulative_cost[0] / static_cast<float>(quantifier.steps));
 
 	return 0;
 }

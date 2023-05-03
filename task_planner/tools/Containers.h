@@ -170,7 +170,10 @@ namespace Containers {
     template<std::size_t M, class T>
     struct FixedArray {
         public:
-            FixedArray() = default;
+            FixedArray() {
+                for (T& v : values) 
+                    v = T{};
+            }
             FixedArray(const std::array<T, M>& values_) : values(values_) {}
             FixedArray(const FixedArray& other) = default;
 

@@ -13,6 +13,7 @@ struct PRLQuantifier {
     float cumulative_reward = 0.0f;
     TP::Containers::FixedArray<COST_CRITERIA_M, float> cumulative_cost;
     uint32_t steps = 0u;
+    uint32_t max_steps = 0u;
 
     PRLQuantifier() {
         for (uint32_t i = 0; i < COST_CRITERIA_M; ++i) cumulative_cost[i] = 0.0f;
@@ -109,7 +110,7 @@ class ParetoReinforcementLearner {
         }
 
         template <typename SAMPLER_LAM_T>
-        void execute(const Plan& plan, SAMPLER_LAM_T sampler) {
+        bool execute(const Plan& plan, SAMPLER_LAM_T sampler) {
             auto node_it = plan.node_path.begin();
             for (auto edge_it = plan.edge_path.begin(); edge_it != plan.edge_path.end(); ++edge_it) {
                 const auto& src_node = *node_it;
@@ -125,22 +126,30 @@ class ParetoReinforcementLearner {
                         ++task_i;
                     }
                 }
+                if (m_quantifier.steps >= m_quantifier.max_steps)
+                    // Terminate
+                    return true;
             }
+            // Do not terminate
+            return false;
         }
 
         template <typename SAMPLER_LAM_T>
-        const PRLQuantifier<BEHAVIOR_HANDLER_T::numCostCriteria()>& run(const TrajectoryDistribution& p_ev, SAMPLER_LAM_T sampler) {
+        const PRLQuantifier<BEHAVIOR_HANDLER_T::numCostCriteria()>& run(const TrajectoryDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_steps) {
             ASSERT(m_initialized, "Must initialize before running");
-            // while (true)
-            ParetoFrontResult pf = computePlan(m_behavior_handler->getCompletedTasksHorizon());
-            if (!pf.success) {
-                LOG("Planner did not succeed!");
-                return m_quantifier;
+            m_quantifier.max_steps = max_steps;
+            while (true) {
+                ParetoFrontResult pf = computePlan(m_behavior_handler->getCompletedTasksHorizon());
+                if (!pf.success) {
+                    LOG("Planner did not succeed!");
+                    return m_quantifier;
+                }
+                auto plan = select(pf, p_ev);
+                if (execute(*plan, sampler))
+                    return m_quantifier;
+                m_behavior_handler->update(plan->node_path.end()->n_completed_tasks);
+                m_current_product_node = *plan->node_path.end();
             }
-            auto plan = select(pf, p_ev);
-            execute(*plan, sampler);
-            m_behavior_handler->update(plan->node_path.end()->n_completed_tasks);
-            return m_quantifier;
         }
 
         TrajectoryDistribution getTrajectoryDistribution(const Plan& plan) {

@@ -42,10 +42,10 @@ class TrueBehavior : public PRLStorage<TP::Stats::Distributions::Normal, TP::Con
             , m_product(product)
         {}
 
-        void setRewardDistribution(uint32_t task_i, const TP::Stats::Distributions::Normal& dist) {this->getTaskElement(task_i) = dist;}
-        void setCostDistribution(TP::WideNode node, const TP::DiscreteModel::Action& action, const CostDistributionArray& dist_array) {
-            this->getNAPElement(node, action) = dist_array;
-        }
+        //void setRewardDistribution(uint32_t task_i, const TP::Stats::Distributions::Normal& dist) {this->getTaskElement(task_i) = dist;}
+        //void setCostDistribution(TP::Node node, const TP::DiscreteModel::Action& action, const CostDistributionArray& dist_array) {
+        //    this->getNAPElement(node, action) = dist_array;
+        //}
 
         BehaviorSample<COST_CRITERIA_M> sample(TP::WideNode src_node, TP::WideNode dst_node, const TP::DiscreteModel::Action& action) {
             BehaviorSample<COST_CRITERIA_M> s(m_product->rank() - 1);
@@ -56,7 +56,9 @@ class TrueBehavior : public PRLStorage<TP::Stats::Distributions::Normal, TP::Con
                 }
             }
             for (uint32_t i = 0; i < COST_CRITERIA_M; ++i) {
-                s.cost_sample[i] = TP::max(TP::RNG::nrand(this->getNAPElement(src_node, action)[i]), 0.0f);
+                //LOG("Cost sample for src_node: " << src_node << " action: " << action << " mean: " << this->getNAPElement(src_node, action)[i].mu);
+                TP::Node src_model_node = m_product->getUnwrappedNode(src_node).ts_node;
+                s.cost_sample[i] = TP::max(TP::RNG::nrand(this->getNAPElement(src_model_node, action)[i]), 0.0f);
             }
             return s;
         }

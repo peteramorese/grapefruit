@@ -164,6 +164,7 @@ namespace PRL {
                 TP::Node src_model_node = m_product->getUnwrappedNode(src_node.base_node).ts_node;
                 typename CostBehaviorArray<COST_CRITERIA_M>::CostVector costs_only_cv = this->getNAPElement(src_model_node, action).getRectifiedUCBVector(m_state_visits[src_model_node]);
                 CostVector cv;
+                cv[0] = 0.0f;
                 for (uint32_t i=1; i<cv.size(); ++i) {
                     cv[i] = costs_only_cv[i - 1];
                 }
