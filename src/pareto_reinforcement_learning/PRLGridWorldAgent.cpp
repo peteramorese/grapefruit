@@ -4,6 +4,7 @@
 
 #include "BehaviorHandler.h"
 #include "PRL.h"
+#include "TrueBehavior.h"
 
 using namespace PRL;
 
@@ -72,23 +73,52 @@ int main(int argc, char* argv[]) {
 	using EdgeInheritor = TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>;
 	using SymbolicGraph = TP::DiscreteModel::SymbolicProductAutomaton<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA, EdgeInheritor>;
 	using BehaviorHandlerType = BehaviorHandler<SymbolicGraph, 1>;
-	using SamplerType = TrueBehavior<SymbolicGraph, 1>;
+	using TrueBehaviorType = TrueBehavior<SymbolicGraph, 1>;
 	using PreferenceDistributionType = TP::Stats::Distributions::FixedMultivariateNormal<BehaviorHandlerType::numBehaviors()>;
 
 	TP::Stats::Distributions::Normal default_reward;
 	default_reward.mu = 10.0f;
 	default_reward.sigma_2 = 1.0f;
-	typename SamplerType::CostDistributionArray default_cost_array;
-	default_cost_array[0].mu = 3.0f;
-	default_cost_array[0].sigma_2 = 0.5f;
+	typename TrueBehaviorType::CostDistributionArray default_cost_array;
+	default_cost_array[0].mu = 1.0f;
+	default_cost_array[0].sigma_2 = 0.1f;
+
 
  	std::shared_ptr<SymbolicGraph> product = std::make_shared<SymbolicGraph>(ts, dfas);
 	std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, 1.0f);
-	std::shared_ptr<SamplerType> sampler = std::make_shared<SamplerType>(product, dfas.size(), );
+	
+	// Make the true behavior
+	std::shared_ptr<TrueBehaviorType> true_behavior = std::make_shared<TrueBehaviorType>(product, dfas.size(), default_reward, default_cost_array);
+
+	std::vector<std::string> x_labels(ts_props.n_x);
+	std::vector<std::string> y_labels(ts_props.n_y);
+	for (int i=0; i<ts_props.n_x; ++i) {
+		x_labels[i] = "x" + std::to_string(i);
+	}
+	for (int i=0; i<ts_props.n_y; ++i) {
+		y_labels[i] = "y" + std::to_string(i);
+	}
+	auto ss_grid_agent = ts->getStateSpace().lock();
+	for (const auto& region : ts_props.environment.regions) {
+		LOG("Working on region: " << region.label);
+		for (uint32_t i = region.lower_left_x; i <= region.upper_right_x; ++i) {
+			for (uint32_t j = region.lower_left_y; j <= region.upper_right_y; ++j) {
+				TP::DiscreteModel::State s(ss_grid_agent.get());	
+				s[TP::DiscreteModel::GridWorldAgent::s_x_coord_label] = x_labels[i];
+				s[TP::DiscreteModel::GridWorldAgent::s_y_coord_label] = y_labels[j];
+				TP::Node model_node = ts->getGenericNodeContainer()[s];
+				for (const auto& outgoing_edge : ts->getOutgoingEdges(model_node)) {
+					TrueBehaviorType::CostDistributionArray& cost_array = true_behavior->getNAPElement(model_node, outgoing_edge.action);
+					cost_array[0].convolveWith(TP::Stats::Distributions::Normal(region.exit_cost, 0.3f*region.exit_cost + 0.2f));
+					LOG("Mapping state: " << s.to_str() << " action: " << outgoing_edge.action << " to cost: " << region.exit_cost);
+				}
+			}
+		}
+	}
+
+	true_behavior->print();
 
 	ParetoReinforcementLearner<BehaviorHandlerType> prl(behavior_handler);
-
-
 
 	// Initialize the agent's state
 	TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
@@ -101,8 +131,17 @@ int main(int argc, char* argv[]) {
 	p_ev.covariance(0, 0) = 1.5f; // reward variance
 	p_ev.covariance(1, 1) = 1.5f; // cost variance
 
+	auto samplerFunction = [&](TP::WideNode src_node, TP::WideNode dst_node, const TP::DiscreteModel::Action& action) {
+		return true_behavior->sample(src_node, dst_node, action);
+	};
 	// Run the PRL
-	prl.run(p_ev);
+	auto quantifier = prl.run(p_ev, samplerFunction);
+	LOG("Finished!");
+	PRINT_NAMED("Total Reward ", quantifier.cumulative_reward);
+	PRINT_NAMED("Total Cost   ", quantifier.cumulative_cost[0]);
+	PRINT_NAMED("Steps        ", quantifier.steps);
+	PRINT_NAMED("Average reward per step ", quantifier.cumulative_reward / static_cast<float>(quantifier.steps));
+	PRINT_NAMED("Average cost per step   ", quantifier.cumulative_cost[0] / static_cast<float>(quantifier.steps));
 
 	return 0;
 }

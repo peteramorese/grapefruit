@@ -240,10 +240,8 @@ namespace DiscreteModel {
 
             if (data["N Regions"]) {
                 uint32_t n_regions = data["N Regions"].as<uint32_t>();
-                LOG("b4");
                 if (!data["Region Labels"]) LOG("not found?");
                 std::vector<std::string> labels = data["Region Labels"].as<std::vector<std::string>>();
-                LOG("af");
                 std::vector<uint32_t> lower_left_cells_x = data["Lower Left Cells X"].as<std::vector<uint32_t>>();
                 std::vector<uint32_t> lower_left_cells_y = data["Lower Left Cells Y"].as<std::vector<uint32_t>>();
                 std::vector<uint32_t> upper_right_cells_x = data["Upper Right Cells X"].as<std::vector<uint32_t>>();
@@ -264,9 +262,9 @@ namespace DiscreteModel {
 
                     for (uint32_t i=0; i<labels.size(); ++i) {
                         if (!costs.empty())
-                            props.environment.addRegion(labels[i], lower_left_cells_x[i], lower_left_cells_y[i], upper_right_cells_x[i], upper_right_cells_y[i], colors[i]);
-                        else 
                             props.environment.addRegion(labels[i], lower_left_cells_x[i], lower_left_cells_y[i], upper_right_cells_x[i], upper_right_cells_y[i], colors[i], costs[i]);
+                        else 
+                            props.environment.addRegion(labels[i], lower_left_cells_x[i], lower_left_cells_y[i], upper_right_cells_x[i], upper_right_cells_y[i], colors[i]);
                     }
                 } else {
                     ASSERT(labels.size() == n_regions

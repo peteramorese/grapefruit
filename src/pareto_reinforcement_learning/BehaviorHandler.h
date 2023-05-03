@@ -79,12 +79,12 @@ namespace PRL {
         TP::ML::UCB ucb;
     };
 
-    template <class NAP_T, class TASK_T>
+    template <class TASK_T, class NAP_T>
     class PRLStorage {
         protected:
             struct NodeActionPair {
-                NodeActionPair(TP::WideNode node_, const TP::DiscreteModel::Action& action_) : node(node_), action(action_) {}
-                TP::WideNode node;
+                NodeActionPair(TP::Node node_, const TP::DiscreteModel::Action& action_) : node(node_), action(action_) {}
+                TP::Node node;
                 TP::DiscreteModel::Action action;
 
                 bool operator==(const NodeActionPair& other) const {
@@ -94,17 +94,17 @@ namespace PRL {
             struct NodeActionPairHash {
 
                 std::size_t operator()(const NodeActionPair& node_action_pair) const {
-                    return std::hash<TP::WideNode>{}(node_action_pair.node) ^ (std::hash<TP::DiscreteModel::Action>{}(node_action_pair.action) << 1);
+                    return std::hash<TP::Node>{}(node_action_pair.node) ^ (std::hash<TP::DiscreteModel::Action>{}(node_action_pair.action) << 1);
                 }
             };
         protected:
-            PRLStorage(uint32_t n_tasks, const NAP_T& default_nap_element, const TASK_T& default_task_element)
+            PRLStorage(uint32_t n_tasks, const TASK_T& default_task_element, const NAP_T& default_nap_element)
                 : m_task_elements(n_tasks, default_task_element)
                 , m_default_nap_element(default_nap_element)
             {}
 
         public:
-            inline NAP_T& getNAPElement(TP::WideNode node, const TP::DiscreteModel::Action& action) {
+            inline NAP_T& getNAPElement(TP::Node node, const TP::DiscreteModel::Action& action) {
                 auto it = this->m_node_action_pair_elements.find(NodeActionPair(node, action));
                 if (it != this->m_node_action_pair_elements.end()) {
                     return it->second;
@@ -128,15 +128,15 @@ namespace PRL {
     };
 
     template <class SYMBOLIC_GRAPH_T, uint32_t COST_CRITERIA_M>
-    class BehaviorHandler : public PRLStorage<CostBehaviorArray<COST_CRITERIA_M>, RewardBehavior> {
+    class BehaviorHandler : public PRLStorage<RewardBehavior, CostBehaviorArray<COST_CRITERIA_M>> {
         public:
             using CostVector = TP::Containers::FixedArray<COST_CRITERIA_M + 1, float>;
         public:
             BehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, uint8_t completed_tasks_horizon, float ucb_confidence) 
-                : PRLStorage<CostBehaviorArray<COST_CRITERIA_M>, RewardBehavior>(
+                : PRLStorage<RewardBehavior, CostBehaviorArray<COST_CRITERIA_M>>(
                     product->rank() - 1, 
-                    CostBehaviorArray<COST_CRITERIA_M>(ucb_confidence),
-                    RewardBehavior(ucb_confidence))
+                    RewardBehavior(ucb_confidence),
+                    CostBehaviorArray<COST_CRITERIA_M>(ucb_confidence))
                 , m_product(product)
                 , m_max_ucb_reward(0.0f)
                 , m_completed_tasks_horizon(completed_tasks_horizon)
@@ -161,7 +161,8 @@ namespace PRL {
             }
 
             CostVector getCostVector(const TaskHistoryNode<TP::WideNode>& src_node, const TaskHistoryNode<TP::WideNode>& dst_node, const TP::DiscreteModel::Action& action) {
-                typename CostBehaviorArray<COST_CRITERIA_M>::CostVector costs_only_cv = this->getNAPElement(src_node.base_node, action).getRectifiedUCBVector(m_state_visits[(TP::WideNode)src_node]);
+                TP::Node src_model_node = m_product->getUnwrappedNode(src_node.base_node).ts_node;
+                typename CostBehaviorArray<COST_CRITERIA_M>::CostVector costs_only_cv = this->getNAPElement(src_model_node, action).getRectifiedUCBVector(m_state_visits[src_model_node]);
                 CostVector cv;
                 for (uint32_t i=1; i<cv.size(); ++i) {
                     cv[i] = costs_only_cv[i - 1];
@@ -182,16 +183,16 @@ namespace PRL {
                 ASSERT(src_node.n_completed_tasks <= dst_node.n_completed_tasks, "Dst node has fewer completed tasks!");
                 reward = 0.0f;
                 if (src_node.n_completed_tasks < dst_node.n_completed_tasks) {
-                    LOG("found task completion transition diff: " << ((uint32_t)dst_node.n_completed_tasks - (uint32_t)src_node.n_completed_tasks));
+                    //LOG("found task completion transition diff: " << ((uint32_t)dst_node.n_completed_tasks - (uint32_t)src_node.n_completed_tasks));
                     for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
                         if (!m_product->acc(src_node.base_node, automaton_i) && m_product->acc(dst_node.base_node, automaton_i)) {
                             // Accumulate reward for each task satisfied
-                            LOG("ucb val: " << this->getTaskElement(automaton_i).getUCB(m_n_completed_tasks));
+                            //LOG("ucb val: " << this->getTaskElement(automaton_i).getUCB(m_n_completed_tasks));
                             reward += -this->getTaskElement(automaton_i).getUCB(m_n_completed_tasks);
                         }
                     }
                     reward += priceFunctionTransform(src_node.n_completed_tasks) - priceFunctionTransform(dst_node.n_completed_tasks);
-                    LOG("new reward: " << reward);
+                    //LOG("new reward: " << reward);
                 }
             }
 
@@ -200,9 +201,10 @@ namespace PRL {
             inline void setCompletedTasksHorizon(uint8_t horizon) const {m_completed_tasks_horizon = horizon;}
             inline uint8_t getCompletedTasksHorizon() const {return m_completed_tasks_horizon;}
 
-            void visit(TP::WideNode node, const TP::DiscreteModel::Action& action, const CostBehaviorArray<COST_CRITERIA_M>::CostVector& sample) {
-                ++m_state_visits[node];
-                this->getNAPElement(node, action).pull(sample);
+            void visit(const TaskHistoryNode<TP::WideNode>& node, const TP::DiscreteModel::Action& action, const CostBehaviorArray<COST_CRITERIA_M>::CostVector& sample) {
+                TP::Node src_model_node = m_product->getUnwrappedNode(node.base_node).ts_node;
+                ++m_state_visits[src_model_node];
+                this->getNAPElement(src_model_node, action).pull(sample);
             }
             
             void collect(TP::DiscreteModel::ProductRank task_i, float sample) {
@@ -217,7 +219,7 @@ namespace PRL {
             float m_ucb_confidence = 1.0f;
             
             // UCB parameters
-            std::unordered_map<TP::WideNode, uint32_t> m_state_visits;
+            std::unordered_map<TP::Node, uint32_t> m_state_visits;
             uint32_t m_n_completed_tasks = 0;
     };
 }

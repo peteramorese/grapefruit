@@ -47,7 +47,6 @@ class GuassianEFE {
         }
 
         static float entropy(const Eigen::Matrix<float, N, N>& covariance, bool use_cache = true) {
-            LOG("cov det: " << covariance.determinant());
             return 0.5f * (
                 std::log((use_cache && t_det_input_sigma_cache.cached) ? t_det_input_sigma_cache.det : covariance.determinant())
                 + static_cast<float>(N) * (1.0f + std::log(M_2_PI))

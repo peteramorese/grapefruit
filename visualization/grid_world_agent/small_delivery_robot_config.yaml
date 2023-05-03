@@ -1,0 +1,41 @@
+Grid X: 5
+Grid Y: 5
+Init X Coord: 0
+Init Y Coord: 0
+Coord Label Template: x_#_y_#
+N Regions: 4
+Region Labels:
+  - p1
+  - tacos
+  - pizza
+  - mud
+Lower Left Cells X:
+  - 2 #p1
+  - 4 #Tacos
+  - 2 #Pizza
+  - 1 #Mud
+Lower Left Cells Y:
+  - 0 #p1
+  - 1 #Tacos
+  - 4 #Pizza
+  - 2 #Mud
+Upper Right Cells X:
+  - 2 #p1
+  - 4 #Tacos
+  - 2 #Pizza
+  - 4 #Mud
+Upper Right Cells Y:
+  - 0 #p1
+  - 1 #Tacos
+  - 4 #Pizza
+  - 2 #Mud
+Region Colors:
+  - mediumseagreen #House 1 
+  - darkgoldenrod #Tacos
+  - firebrick #Pizza
+  - sienna #Mud
+Region Costs:
+  - 1.0
+  - 1.0
+  - 1.0
+  - 10.0

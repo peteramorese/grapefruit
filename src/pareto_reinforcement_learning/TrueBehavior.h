@@ -39,6 +39,7 @@ class TrueBehavior : public PRLStorage<TP::Stats::Distributions::Normal, TP::Con
             const TP::Stats::Distributions::Normal& default_reward, 
             const CostDistributionArray& default_cost)
             : PRLStorage<TP::Stats::Distributions::Normal, TP::Containers::FixedArray<COST_CRITERIA_M, TP::Stats::Distributions::Normal>>(n_tasks, default_reward, default_cost)
+            , m_product(product)
         {}
 
         void setRewardDistribution(uint32_t task_i, const TP::Stats::Distributions::Normal& dist) {this->getTaskElement(task_i) = dist;}
@@ -47,7 +48,7 @@ class TrueBehavior : public PRLStorage<TP::Stats::Distributions::Normal, TP::Con
         }
 
         BehaviorSample<COST_CRITERIA_M> sample(TP::WideNode src_node, TP::WideNode dst_node, const TP::DiscreteModel::Action& action) {
-            BehaviorSample<COST_CRITERIA_M> s;
+            BehaviorSample<COST_CRITERIA_M> s(m_product->rank() - 1);
             for (TP::DiscreteModel::ProductRank task_i = 0; task_i < m_product->rank() - 1; ++task_i) {
                 if (!m_product->acc(src_node, task_i) && m_product->acc(dst_node, task_i)) {
                     // Accumulate reward for each task satisfied
@@ -58,6 +59,19 @@ class TrueBehavior : public PRLStorage<TP::Stats::Distributions::Normal, TP::Con
                 s.cost_sample[i] = TP::max(TP::RNG::nrand(this->getNAPElement(src_node, action)[i]), 0.0f);
             }
             return s;
+        }
+
+        void print() const {
+            LOG("Node action pair distributions:");
+            for (const auto&[nap, cost_array] : this->m_node_action_pair_elements) {
+                TP::DiscreteModel::State s = m_product->getModel().getGenericNodeContainer()[m_product->getUnwrappedNode(nap.node).ts_node];
+                PRINT_NAMED("State: " << s.to_str() << " action: " << nap.action, "Cost mean: " << cost_array[0].mu << " variance: " << cost_array[0].sigma_2);
+            }
+            LOG("Task distributions:");
+            TP::DiscreteModel::ProductRank task_i;
+            for (const auto& task_element : this->m_task_elements) {
+                PRINT_NAMED("Task: " << (uint32_t)task_i, "Reward mean: " << task_element.mu << " variance: " << task_element.sigma_2);
+            }
         }
     private:
         std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;

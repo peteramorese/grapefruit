@@ -12,12 +12,13 @@ namespace TP {
 namespace DiscreteModel {
 
     struct RectangleGridWorldRegion {
-        RectangleGridWorldRegion(const std::string& label_, uint32_t lower_left_x_, uint32_t lower_left_y_, uint32_t upper_right_x_, uint32_t upper_right_y_, const std::string& color_ = std::string(), float exit_cost = 1.0f) 
+        RectangleGridWorldRegion(const std::string& label_, uint32_t lower_left_x_, uint32_t lower_left_y_, uint32_t upper_right_x_, uint32_t upper_right_y_, const std::string& color_ = std::string(), float exit_cost_ = 1.0f) 
             : label(label_)
             , lower_left_x(lower_left_x_)
             , lower_left_y(lower_left_y_)
             , upper_right_x(upper_right_x_) 
             , upper_right_y(upper_right_y_) 
+            , exit_cost(exit_cost_)
             , color(color_) {}
         std::string label;
         uint32_t lower_left_x;
@@ -69,13 +70,12 @@ namespace DiscreteModel {
     //    private:
     //        std::vector<std::vector<std::array<float, 4>>> cost_map;
     //};
-
     template <typename COST_T>
     class BadCellCostMap {
 
         public:
             BadCellCostMap(uint32_t n_x, uint32_t n_y, const COST_T& default_exit_cost) 
-                : cell_exit_costs(n_x, std::vector<COST_T>(n_y, default_exit_cost))
+                : m_cell_exit_costs(n_x, std::vector<COST_T>(n_y, default_exit_cost))
             {}
 
             COST_T& get(uint32_t x, uint32_t y) {
@@ -88,6 +88,7 @@ namespace DiscreteModel {
         private:
             std::vector<std::vector<COST_T>> m_cell_exit_costs;
     };
+
 
     struct GridWorldAgentProperties {
         uint32_t n_x;
