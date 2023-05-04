@@ -19,6 +19,7 @@ struct PRLSearchProblem {
         typedef TaskHistoryNode<SymbolicProductGraph::node_t> node_t;
         typedef BEHAVIOR_HANDLER_T::CostVector cost_t;
         typedef SymbolicProductGraph::edge_t edge_t;
+        typedef TP::DiscreteModel::Action action_t;
 
     public: // Methods & members required by any search problem
         

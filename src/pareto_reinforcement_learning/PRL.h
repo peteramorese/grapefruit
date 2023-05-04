@@ -37,7 +37,7 @@ class ParetoReinforcementLearner {
             TP::FormalMethods::DFA, 
             TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>>;
 
-        using Plan = TP::GraphSearch::PathSolution<
+        using PathSolution = TP::GraphSearch::PathSolution<
             typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::node_t, 
             typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::edge_t, 
             typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t>;
@@ -48,6 +48,8 @@ class ParetoReinforcementLearner {
             typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t>;
 
         using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<BEHAVIOR_HANDLER_T::numBehaviors()>;
+
+        using Plan = TP::Planner::Plan<PRLSearchProblem<BEHAVIOR_HANDLER_T>>;
 
         //typedef BehaviorSample<BEHAVIOR_HANDLER_T::numCostCriteria()>(*SamplerFunctionType)(TP::WideNode src_node, TP::WideNode dst_node, const TP::DiscreteModel::Action& action);
 
@@ -74,8 +76,8 @@ class ParetoReinforcementLearner {
             return result;
         }
 
-        std::list<Plan>::const_iterator select(const ParetoFrontResult& search_result, const TrajectoryDistribution& p_ev) {
-            typename std::list<Plan>::const_iterator min_it = search_result.solution_set.begin();
+        std::list<PathSolution>::const_iterator select(const ParetoFrontResult& search_result, const TrajectoryDistribution& p_ev) {
+            typename std::list<PathSolution>::const_iterator min_it = search_result.solution_set.begin();
             float min_efe = 0.0f;
 
             auto costToStr = [](const typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t& cv) {
@@ -112,13 +114,13 @@ class ParetoReinforcementLearner {
 
         template <typename SAMPLER_LAM_T>
         bool execute(const Plan& plan, SAMPLER_LAM_T sampler) {
-            auto node_it = plan.node_path.begin();
-            for (auto edge_it = plan.edge_path.begin(); edge_it != plan.edge_path.end(); ++edge_it) {
+            auto node_it = plan.product_node_sequence.begin();
+            for (const auto& action : plan.action_sequence) {
                 const auto& src_node = *node_it;
                 const auto& dst_node = *(++node_it);
-                BehaviorSample<BEHAVIOR_HANDLER_T::numCostCriteria()> sample = sampler(src_node.base_node, dst_node.base_node, edge_it->action);
+                BehaviorSample<BEHAVIOR_HANDLER_T::numCostCriteria()> sample = sampler(src_node.base_node, dst_node.base_node, action);
                 m_quantifier.addSample(sample);
-                m_behavior_handler->visit(src_node, edge_it->action, sample.cost_sample);
+                m_behavior_handler->visit(src_node, action, sample.cost_sample);
                 if (sample.hasRewards()) {
                     TP::DiscreteModel::ProductRank task_i;
                     for (auto[contains, r] : sample.getRewards()) {
@@ -131,6 +133,7 @@ class ParetoReinforcementLearner {
                     // Terminate
                     return true;
             }
+            plan.serialize("prl_plans/end_plan.yaml");
             // Do not terminate
             return false;
         }
@@ -145,15 +148,16 @@ class ParetoReinforcementLearner {
                     LOG("Planner did not succeed!");
                     return m_quantifier;
                 }
-                auto plan = select(pf, p_ev);
-                if (execute(*plan, sampler))
+                auto path_solution = select(pf, p_ev);
+                Plan plan(*path_solution, m_product, true);
+                if (execute(plan, sampler))
                     return m_quantifier;
-                m_behavior_handler->update((--plan->node_path.end())->n_completed_tasks);
-                m_current_product_node = *(--plan->node_path.end());
+                m_behavior_handler->update(plan.product_node_sequence.back().n_completed_tasks);
+                m_current_product_node = plan.product_node_sequence.back();
             }
         }
 
-        TrajectoryDistribution getTrajectoryDistribution(const Plan& plan) {
+        TrajectoryDistribution getTrajectoryDistribution(const PathSolution& plan) {
             constexpr uint32_t M = BEHAVIOR_HANDLER_T::numBehaviors();
             TP::Containers::FixedArray<M, TP::Stats::Distributions::Normal> individual_distributions;
             auto node_it = plan.node_path.begin();
