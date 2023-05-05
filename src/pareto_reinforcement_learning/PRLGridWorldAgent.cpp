@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
 	std::string plan_file_template = parser.parse<std::string>("plan-file-template", "plan_#.yaml", "Naming convention for output plan files");
 
 	uint32_t n_dfas = parser.parse<uint32_t>("n-dfas", 1, "Number of dfa files to read in");
-	uint32_t max_steps = parser.parse<uint32_t>("max-steps", 50, "Max number of steps");
+	uint32_t max_planning_instances = parser.parse<uint32_t>("instances", 10, "Max number of planning instances");
 	
 	if (parser.enableHelp()) return 0;
 
@@ -118,7 +118,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 	}
-	LOG("sample: " << true_behavior->sample(137, 138, "up").cost_sample[0]);
+	//LOG("sample: " << true_behavior->sample(137, 138, "up").cost_sample[0]);
 
 	true_behavior->print();
 
@@ -130,8 +130,8 @@ int main(int argc, char* argv[]) {
 
 	// Input the preference behavior distribution
 	PreferenceDistributionType p_ev;
-	p_ev.mu(0) = 2.0f; // mean reward
-	p_ev.mu(1) = 48.0f; // mean cost
+	p_ev.mu(0) = 10.0f; // mean reward
+	p_ev.mu(1) = 10.0f; // mean cost
 	p_ev.covariance(0, 0) = 1.5f; // reward variance
 	p_ev.covariance(1, 1) = 1.5f; // cost variance
 
@@ -139,7 +139,7 @@ int main(int argc, char* argv[]) {
 		return true_behavior->sample(src_node, dst_node, action);
 	};
 	// Run the PRL
-	auto quantifier = prl.run(p_ev, samplerFunction, max_steps);
+	auto quantifier = prl.run(p_ev, samplerFunction, max_planning_instances);
 	LOG("Finished!");
 	PRINT_NAMED("Total Reward............", quantifier.cumulative_reward);
 	PRINT_NAMED("Total Cost..............", quantifier.cumulative_cost[0]);

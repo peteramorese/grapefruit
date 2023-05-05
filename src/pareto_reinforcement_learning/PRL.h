@@ -13,7 +13,9 @@ struct PRLQuantifier {
     float cumulative_reward = 0.0f;
     TP::Containers::FixedArray<COST_CRITERIA_M, float> cumulative_cost;
     uint32_t steps = 0u;
-    uint32_t max_steps = 0u;
+    //uint32_t max_steps = 0u;
+    uint32_t decision_instances = 0u;
+    uint32_t max_decision_instances = 0u;
 
     PRLQuantifier() {
         for (uint32_t i = 0; i < COST_CRITERIA_M; ++i) cumulative_cost[i] = 0.0f;
@@ -89,12 +91,13 @@ class ParetoReinforcementLearner {
                 return s;
             };
 
+            uint32_t plan_i = 0;
             for (auto it = search_result.solution_set.begin(); it != search_result.solution_set.end(); ++it) {
                 
                 LOG("Considering solution: " << costToStr(it->path_cost));
 
                 TrajectoryDistribution traj_dist = getTrajectoryDistribution(*it);
-                LOG("-> trajectory distribution: mean: " << traj_dist.mu(0) << ", " << traj_dist.mu(1));
+                LOG("-> Trajectory distribution (reward mean: " << traj_dist.mu(0) << ", cost mean: " << traj_dist.mu(1) << ")");
 
                 float efe = GuassianEFE<BEHAVIOR_HANDLER_T::numBehaviors()>::calculate(traj_dist, p_ev);
                 //LOG("-> efe: " << efe);
@@ -106,6 +109,9 @@ class ParetoReinforcementLearner {
                 } else {
                     min_efe = efe;
                 }
+
+                Plan plan(*it, m_product, true);
+                plan.serialize("prl_plans/candidate_plan_" + std::to_string(plan_i++) + ".yaml", "Candidate Plan " + std::to_string(plan_i++));
             }
             LOG("solutions size: " << search_result.solution_set.size());
             LOG("Chosen solution: " << costToStr(min_it->path_cost));
@@ -129,20 +135,20 @@ class ParetoReinforcementLearner {
                         ++task_i;
                     }
                 }
-                if (m_quantifier.steps >= m_quantifier.max_steps)
-                    // Terminate
-                    return true;
+                //if (m_quantifier.steps >= m_quantifier.max_steps)
+                //    // Terminate
+                //    return true;
             }
-            plan.serialize("prl_plans/end_plan.yaml");
+            plan.serialize("prl_plans/end_plan.yaml", "Chosen Plan");
             // Do not terminate
             return false;
         }
 
         template <typename SAMPLER_LAM_T>
-        const PRLQuantifier<BEHAVIOR_HANDLER_T::numCostCriteria()>& run(const TrajectoryDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_steps) {
+        const PRLQuantifier<BEHAVIOR_HANDLER_T::numCostCriteria()>& run(const TrajectoryDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_decision_instances) {
             ASSERT(m_initialized, "Must initialize before running");
-            m_quantifier.max_steps = max_steps;
-            while (true) {
+            m_quantifier.max_decision_instances = max_decision_instances;
+            while (m_quantifier.decision_instances < max_decision_instances) {
                 ParetoFrontResult pf = computePlan(m_behavior_handler->getCompletedTasksHorizon());
                 if (!pf.success) {
                     LOG("Planner did not succeed!");
@@ -154,7 +160,9 @@ class ParetoReinforcementLearner {
                     return m_quantifier;
                 m_behavior_handler->update(plan.product_node_sequence.back().n_completed_tasks);
                 m_current_product_node = plan.product_node_sequence.back();
+                ++m_quantifier.decision_instances;
             }
+            return m_quantifier;
         }
 
         TrajectoryDistribution getTrajectoryDistribution(const PathSolution& plan) {

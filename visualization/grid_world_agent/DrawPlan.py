@@ -16,7 +16,7 @@ visualize_config = {
     "text_font_size": 15.0,
     "show_text": True,
     "show_ticks": False,
-    "show_title": False,
+    "show_title": True,
     "text_offset": (.1, .5),
     "traj_offset_magnitude": 0.2,
     "arrow_color": "path_line_color",
