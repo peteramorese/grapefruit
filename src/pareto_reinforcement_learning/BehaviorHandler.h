@@ -109,6 +109,7 @@ namespace PRL {
                 if (it != this->m_node_action_pair_elements.end()) {
                     return it->second;
                 } else {
+                    //LOG("MAKING NEW node: " << node << " action: " << action);
                     auto result = m_node_action_pair_elements.emplace(std::make_pair(NodeActionPair(node, action), m_default_nap_element));
                     return result.first->second;
                 }
@@ -121,6 +122,7 @@ namespace PRL {
             inline TASK_T& getTaskElement(TP::DiscreteModel::ProductRank task_i) {
                 return m_task_elements[task_i];
             }
+
         protected:
             NAP_T m_default_nap_element;
             std::unordered_map<NodeActionPair, NAP_T, NodeActionPairHash> m_node_action_pair_elements;
@@ -213,6 +215,11 @@ namespace PRL {
                 this->getTaskElement(task_i).pull(sample);
             }
 
+            void print() const {
+                for (const auto&[nap, element] : this->m_node_action_pair_elements) {
+                    PRINT_NAMED("Node: " << nap.node << " Action: " << nap.action, "estimate cost mean: " << element.getEstimateDistributions()[0].mu);
+                }
+            }
         private:
             std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;
             float m_max_ucb_reward = 0.0f;

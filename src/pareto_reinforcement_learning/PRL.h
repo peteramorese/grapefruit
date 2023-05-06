@@ -98,6 +98,8 @@ class ParetoReinforcementLearner {
 
                 TrajectoryDistribution traj_dist = getTrajectoryDistribution(*it);
                 LOG("-> Trajectory distribution (reward mean: " << traj_dist.mu(0) << ", cost mean: " << traj_dist.mu(1) << ")");
+                //float cost_mean = traj_dist.mu(1);
+                //std::cout<<" cost mean: " << cost_mean;
 
                 float efe = GuassianEFE<BEHAVIOR_HANDLER_T::numBehaviors()>::calculate(traj_dist, p_ev);
                 //LOG("-> efe: " << efe);
@@ -111,7 +113,8 @@ class ParetoReinforcementLearner {
                 }
 
                 Plan plan(*it, m_product, true);
-                plan.serialize("prl_plans/candidate_plan_" + std::to_string(plan_i++) + ".yaml", "Candidate Plan " + std::to_string(plan_i++));
+                plan.serialize("prl_plans/candidate_plan_" + std::to_string(plan_i++) + ".yaml", 
+                    "Candidate Plan " + std::to_string(plan_i++) + " at decision instance: " + std::to_string(m_quantifier.decision_instances));
             }
             LOG("solutions size: " << search_result.solution_set.size());
             LOG("Chosen solution: " << costToStr(min_it->path_cost));
