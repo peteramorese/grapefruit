@@ -65,7 +65,8 @@ class ParetoReinforcementLearner {
             LOG("PRL current product node: " << m_current_product_node);
             PRLSearchProblem<BEHAVIOR_HANDLER_T> problem(m_product, m_current_product_node, completed_tasks_horizon, m_behavior_handler);
             LOG("Planning...");
-            ParetoFrontResult result = TP::GraphSearch::NAMOAStar<typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t, decltype(problem)>::search(problem);
+            //ParetoFrontResult result = TP::GraphSearch::NAMOAStar<typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t, decltype(problem)>::search(problem);
+            ParetoFrontResult result = TP::GraphSearch::BOAStar<typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t, decltype(problem)>::search(problem);
             LOG("Done!");
             for (auto& sol : result.solution_set) {
                 // Inverse transform the solutions using the negative of the price function

@@ -164,7 +164,8 @@ namespace PRL {
 
             CostVector getCostVector(const TaskHistoryNode<TP::WideNode>& src_node, const TaskHistoryNode<TP::WideNode>& dst_node, const TP::DiscreteModel::Action& action) {
                 TP::Node src_model_node = m_product->getUnwrappedNode(src_node.base_node).ts_node;
-                typename CostBehaviorArray<COST_CRITERIA_M>::CostVector costs_only_cv = this->getNAPElement(src_model_node, action).getRectifiedUCBVector(m_state_visits[src_model_node]);
+                //typename CostBehaviorArray<COST_CRITERIA_M>::CostVector costs_only_cv = this->getNAPElement(src_model_node, action).getRectifiedUCBVector(m_state_visits[src_model_node]);
+                typename CostBehaviorArray<COST_CRITERIA_M>::CostVector costs_only_cv = this->getNAPElement(src_model_node, action).getRectifiedUCBVector(m_state_visits);
                 CostVector cv;
                 cv[0] = 0.0f;
                 for (uint32_t i=1; i<cv.size(); ++i) {
@@ -206,7 +207,9 @@ namespace PRL {
 
             void visit(const TaskHistoryNode<TP::WideNode>& node, const TP::DiscreteModel::Action& action, const CostBehaviorArray<COST_CRITERIA_M>::CostVector& sample) {
                 TP::Node src_model_node = m_product->getUnwrappedNode(node.base_node).ts_node;
-                ++m_state_visits[src_model_node];
+                //++m_state_visits[src_model_node];
+                ++m_state_visits;
+                LOG("state visits: " << m_state_visits);
                 this->getNAPElement(src_model_node, action).pull(sample);
             }
             
@@ -227,7 +230,8 @@ namespace PRL {
             float m_ucb_confidence = 1.0f;
             
             // UCB parameters
-            std::unordered_map<TP::Node, uint32_t> m_state_visits;
+            //std::unordered_map<TP::Node, uint32_t> m_state_visits;
+            uint32_t m_state_visits = 0;
             uint32_t m_n_completed_tasks = 0;
     };
 }

@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
 
 
  	std::shared_ptr<SymbolicGraph> product = std::make_shared<SymbolicGraph>(ts, dfas);
-	std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, 100.0f);
+	std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, 1.0f);
 	
 	// Make the true behavior
 	std::shared_ptr<TrueBehaviorType> true_behavior = std::make_shared<TrueBehaviorType>(product, dfas.size(), default_reward, default_cost_array);

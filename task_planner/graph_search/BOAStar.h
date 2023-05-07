@@ -54,7 +54,7 @@ namespace GraphSearch {
             using GraphNode = SEARCH_PROBLEM_T::node_t;
             typedef SEARCH_PROBLEM_T::edge_t edge_t;
             typedef SEARCH_PROBLEM_T::cost_t cost_t;
-            using EnumeratedNode = GraphNode;
+            using EnumeratedNode = Node;
 
         public:
             static MultiObjectiveSearchResult<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T> search(const SEARCH_PROBLEM_T& problem);
