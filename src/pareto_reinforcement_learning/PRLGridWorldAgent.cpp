@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
 	default_reward.mu = 10.0f;
 	default_reward.sigma_2 = 1.0f;
 	typename TrueBehaviorType::CostDistributionArray default_cost_array;
-	default_cost_array[0].mu = 1.0f;
+	default_cost_array[0].mu = 2.0f;
 	default_cost_array[0].sigma_2 = 0.1f;
 
 
@@ -142,12 +142,17 @@ int main(int argc, char* argv[]) {
 	// Run the PRL
 	auto quantifier = prl.run(p_ev, samplerFunction, max_planning_instances);
 	LOG("Finished!");
-	PRINT_NAMED("Total Reward............", quantifier.cumulative_reward);
-	PRINT_NAMED("Total Cost..............", quantifier.cumulative_cost[0]);
-	PRINT_NAMED("Steps...................", quantifier.steps);
-	PRINT_NAMED("Average reward per step.", quantifier.cumulative_reward / static_cast<float>(quantifier.steps));
-	PRINT_NAMED("Average cost per step...", quantifier.cumulative_cost[0] / static_cast<float>(quantifier.steps));
-	behavior_handler->print();
+	PRINT_NAMED("Total Reward.............................", quantifier.cumulative_reward);
+	PRINT_NAMED("Total Cost...............................", quantifier.cumulative_cost[0]);
+	PRINT_NAMED("Steps....................................", quantifier.steps);
+	PRINT_NAMED("Decision Instances.......................", quantifier.decision_instances);
+	PRINT_NAMED("Average reward per decision instance.....", quantifier.cumulative_reward / static_cast<float>(quantifier.decision_instances));
+	PRINT_NAMED("Average cost per per decision instance...", quantifier.cumulative_cost[0] / static_cast<float>(quantifier.decision_instances));
+	PRINT_NAMED("Average reward per step..................", quantifier.cumulative_reward / static_cast<float>(quantifier.steps));
+	PRINT_NAMED("Average cost per step....................", quantifier.cumulative_cost[0] / static_cast<float>(quantifier.steps));
+	//behavior_handler->print();
+
+	true_behavior->compare(*behavior_handler);
 
 	return 0;
 }

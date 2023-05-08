@@ -51,6 +51,8 @@ namespace PRL {
                 }
             }
 
+            inline uint32_t nSamples() const {return m_updaters[0].nSamples();}
+
         private:
             TP::Containers::FixedArray<M, TP::Stats::GaussianUpdater> m_updaters;
             TP::ML::UCB m_ucb;
@@ -113,6 +115,10 @@ namespace PRL {
                     auto result = m_node_action_pair_elements.emplace(std::make_pair(NodeActionPair(node, action), m_default_nap_element));
                     return result.first->second;
                 }
+            }
+
+            inline const NAP_T& lookupNAPElement(TP::Node node, const TP::DiscreteModel::Action& action) const {
+                return this->m_node_action_pair_elements.at(NodeActionPair(node, action));
             }
 
             inline const TASK_T& getTaskElement(TP::DiscreteModel::ProductRank task_i) const {
@@ -220,9 +226,12 @@ namespace PRL {
 
             void print() const {
                 for (const auto&[nap, element] : this->m_node_action_pair_elements) {
-                    PRINT_NAMED("Node: " << nap.node << " Action: " << nap.action, "estimate cost mean: " << element.getEstimateDistributions()[0].mu);
+                    TP::DiscreteModel::State s = m_product->getModel().getGenericNodeContainer()[nap.node];
+                    //LOG("here is the state" << s.to_str());
+                    PRINT_NAMED("State: " << s.to_str() << " Action: " << nap.action, "estimate cost mean: " << element.getEstimateDistributions()[0].mu);
                 }
             }
+
         private:
             std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;
             float m_max_ucb_reward = 0.0f;

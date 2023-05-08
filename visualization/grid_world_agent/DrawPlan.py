@@ -15,7 +15,7 @@ visualize_config = {
     "grid_line_style": "-",
     "text_font_size": 15.0,
     "show_text": True,
-    "show_ticks": False,
+    "show_ticks": True,
     "show_title": True,
     "text_offset": (.1, .5),
     "traj_offset_magnitude": 0.2,
@@ -148,7 +148,8 @@ class GridWorldAgentVisualizer:
         plt.gcf().set_size_inches(visualize_config["figure_size"][0], visualize_config["figure_size"][1])
         
     def display(self):
-        plt.show()
+        plt.show(block=False)
+        input("Press key to close")
 
     def display_environment(self):
         plt.figure()

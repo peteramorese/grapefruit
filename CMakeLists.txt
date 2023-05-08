@@ -22,7 +22,7 @@ ExternalProject_Add(yaml
 )
 
 set(TP_DEPENDENCY_INCLUDE_DIRS 
-    ${CMAKE_SOURCE_DIR}/dependencies/yaml-cpp
+    ${CMAKE_SOURCE_DIR}/dependencies/yaml-cpp/include
     ${EIGEN3_INCLUDE_DIRS}
 )
 set(TP_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/task_planner)

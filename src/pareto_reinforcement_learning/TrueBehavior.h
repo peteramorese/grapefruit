@@ -75,6 +75,23 @@ class TrueBehavior : public PRLStorage<TP::Stats::Distributions::Normal, TP::Con
                 PRINT_NAMED("Task: " << (uint32_t)task_i, "Reward mean: " << task_element.mu << " variance: " << task_element.sigma_2);
             }
         }
+
+        void compare(const BehaviorHandler<SYMBOLIC_GRAPH_T, COST_CRITERIA_M>& behavior_handler) const {
+            for (const auto&[nap, element] : this->m_node_action_pair_elements) {
+                TP::DiscreteModel::State s = m_product->getModel().getGenericNodeContainer()[nap.node];
+
+                float true_dist_mu = element[0].mu;
+                float true_dist_sigma2 = element[0].sigma_2;
+
+                auto cba = behavior_handler.lookupNAPElement(nap.node, nap.action);
+                auto estimate_dist = cba.getEstimateDistributions()[0];
+                float estimate_dist_mu = estimate_dist.mu;
+                float estimate_dist_sigma2 = estimate_dist.sigma_2;
+
+                PRINT_NAMED("State: " << s.to_str() << " Action: " << nap.action, 
+                    "Mu: (est: " << estimate_dist_mu << " act: " << true_dist_mu << "), Var: (est: " << estimate_dist_sigma2 << " act: " << true_dist_sigma2 <<"), N samples: " << cba.nSamples());
+            }
+        }
     private:
         std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;
 

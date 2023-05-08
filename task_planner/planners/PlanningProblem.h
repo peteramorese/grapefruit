@@ -15,6 +15,58 @@ namespace Planner {
 
     template <class SEARCH_PROBLEM_T>
     struct Plan {
+        public:
+            struct ConstStateIterator {
+                typename std::vector<typename SEARCH_PROBLEM_T::node_t>::const_iterator p_node_it;
+                typename std::vector<Node>::const_iterator ts_node_it;
+                typename std::vector<typename SEARCH_PROBLEM_T::graph_t::model_t::node_t>::const_iterator state_it;
+                ConstStateIterator operator++() {
+                    ConstStateIterator it = *this;
+                    ++p_node_it;
+                    ++ts_node_it;
+                    ++state_it;
+                    return it;
+                }
+                ConstStateIterator operator++(int) {
+                    ++p_node_it;
+                    ++ts_node_it; 
+                    ++state_it;
+                    return *this;
+                }
+                inline const typename SEARCH_PROBLEM_T::node_t& productNode() const {return *p_node_it;}
+                inline Node tsNode() const {return *ts_node_it;}
+                inline const typename SEARCH_PROBLEM_T::graph_t::model_t::node_t& state() const {return *state_it;}
+            };
+            struct StateIterator {
+                typename std::vector<typename SEARCH_PROBLEM_T::node_t>::iterator p_node_it;
+                typename std::vector<Node>::iterator ts_node_it; 
+                typename std::vector<typename SEARCH_PROBLEM_T::graph_t::model_t::node_t>::iterator state_it;
+                StateIterator operator++() {
+                    StateIterator it = *this;
+                    ++p_node_it;
+                    ++ts_node_it;
+                    ++state_it;
+                    return it;
+                }
+                StateIterator operator++(int) {
+                    ++p_node_it;
+                    ++ts_node_it; 
+                    ++state_it;
+                    return *this;
+                }
+                inline const typename SEARCH_PROBLEM_T::node_t& productNode() const {return *p_node_it;}
+                inline Node tsNode() const {return *ts_node_it;}
+                inline const typename SEARCH_PROBLEM_T::graph_t::model_t::node_t& state() const {return *state_it;}
+
+                operator ConstStateIterator() const {
+                    ConstStateIterator it;
+                    it.p_node_it = p_node_it;
+                    it.ts_node_it = ts_node_it;
+                    it.state_it = state_it;
+                    return it;
+                }
+            };
+
             typedef SEARCH_PROBLEM_T::graph_t::model_t::edge_t model_edge_t;
         public:
             Plan(const GraphSearch::PathSolution<typename SEARCH_PROBLEM_T::node_t, typename SEARCH_PROBLEM_T::edge_t, typename SEARCH_PROBLEM_T::cost_t>& path, const std::shared_ptr<typename SEARCH_PROBLEM_T::graph_t> sym_graph, bool success) 
@@ -83,6 +135,37 @@ namespace Planner {
                 fout << out.c_str();
             }
 
+            StateIterator begin() {
+                StateIterator it;
+                it.p_node_it = product_node_sequence.begin();
+                it.ts_node_it = ts_node_sequence.begin();
+                it.state_it = state_sequence.begin();
+                return it;
+            } 
+
+            StateIterator end() {
+                StateIterator it;
+                it.p_node_it = product_node_sequence.end();
+                it.ts_node_it = ts_node_sequence.end();
+                it.state_it = state_sequence.end();
+                return it;
+            } 
+
+            ConstStateIterator begin() const {
+                ConstStateIterator it;
+                it.p_node_it = product_node_sequence.begin();
+                it.ts_node_it = ts_node_sequence.begin();
+                it.state_it = state_sequence.begin();
+                return it;
+            } 
+
+            ConstStateIterator end() const {
+                ConstStateIterator it;
+                it.p_node_it = product_node_sequence.end();
+                it.ts_node_it = ts_node_sequence.end();
+                it.state_it = state_sequence.end();
+                return it;
+            } 
         public:
             std::vector<typename SEARCH_PROBLEM_T::node_t> product_node_sequence;
             std::vector<Node> ts_node_sequence;
@@ -90,6 +173,8 @@ namespace Planner {
             std::vector<typename SEARCH_PROBLEM_T::action_t> action_sequence;
             typename SEARCH_PROBLEM_T::cost_t cost;
     };
+
+
 
     template <class SEARCH_PROBLEM_T>
     using PlanSet = std::vector<Plan<SEARCH_PROBLEM_T>>;

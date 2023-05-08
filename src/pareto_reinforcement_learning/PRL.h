@@ -97,7 +97,9 @@ class ParetoReinforcementLearner {
                 
                 LOG("Considering solution: " << costToStr(it->path_cost));
 
-                TrajectoryDistribution traj_dist = getTrajectoryDistribution(*it);
+                Plan plan(*it, m_product, true);
+                //TrajectoryDistribution traj_dist = getTrajectoryDistribution(*it);
+                TrajectoryDistribution traj_dist = getTrajectoryDistribution(plan);
                 LOG("-> Trajectory distribution (reward mean: " << traj_dist.mu(0) << ", cost mean: " << traj_dist.mu(1) << ")");
                 //float cost_mean = traj_dist.mu(1);
                 //std::cout<<" cost mean: " << cost_mean;
@@ -113,7 +115,6 @@ class ParetoReinforcementLearner {
                     min_efe = efe;
                 }
 
-                Plan plan(*it, m_product, true);
                 plan.serialize("prl_plans/candidate_plan_" + std::to_string(plan_i++) + ".yaml", 
                     "Candidate Plan " + std::to_string(plan_i++) + " at decision instance: " + std::to_string(m_quantifier.decision_instances));
             }
@@ -169,20 +170,19 @@ class ParetoReinforcementLearner {
             return m_quantifier;
         }
 
-        TrajectoryDistribution getTrajectoryDistribution(const PathSolution& plan) {
+        TrajectoryDistribution getTrajectoryDistribution(const Plan& plan) {
             constexpr uint32_t M = BEHAVIOR_HANDLER_T::numBehaviors();
             TP::Containers::FixedArray<M, TP::Stats::Distributions::Normal> individual_distributions;
-            auto node_it = plan.node_path.begin();
-            for (auto edge_it = plan.edge_path.begin(); edge_it != plan.edge_path.end(); ++edge_it) {
-                const auto& src_node = *node_it;
-                const auto& dst_node = *(++node_it);
-                TP::Containers::FixedArray<M - 1, TP::Stats::Distributions::Normal> cost_distributions = m_behavior_handler->getNAPElement(static_cast<TP::WideNode>(src_node), edge_it->action).getEstimateDistributions();
+            auto src_state_it = plan.begin();
+            auto dst_state_it = ++plan.begin();
+            for (auto action_it = plan.action_sequence.begin(); action_it != plan.action_sequence.end(); ++action_it) {
+                TP::Containers::FixedArray<M - 1, TP::Stats::Distributions::Normal> cost_distributions = m_behavior_handler->getNAPElement(src_state_it.tsNode(), *action_it).getEstimateDistributions();
                 for (uint32_t m = 0; m < M; ++m) {
                     if (m != 0) {
                         individual_distributions[m].convolveWith(cost_distributions[m - 1]);
                     } else {
                         for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
-                            if (!m_product->acc(src_node.base_node, automaton_i) && m_product->acc(dst_node.base_node, automaton_i)) {
+                            if (!m_product->acc(src_state_it.productNode().base_node, automaton_i) && m_product->acc(dst_state_it.productNode().base_node, automaton_i)) {
                                 // Accumulate reward for each task satisfied
                                 individual_distributions[m].convolveWith(m_behavior_handler->getTaskElement(automaton_i).updater.getEstimateNormal());
                             }
@@ -190,6 +190,8 @@ class ParetoReinforcementLearner {
                     }
                     //LOG("Individual distribution " << m << " mean: " << individual_distributions[m].mu << " sigma2: " << individual_distributions[m].sigma_2);
                 }
+                ++src_state_it;
+                ++dst_state_it;
             }
             TrajectoryDistribution distribution;
             for (uint32_t m = 0; m < M; ++m) {

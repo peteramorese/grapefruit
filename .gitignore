@@ -1,5 +1,4 @@
 # Ignore build directory
-dependencies/
 build/
 spot_automaton_file_dump/dfas/
 **/__pycache__/

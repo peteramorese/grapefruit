@@ -12,4 +12,5 @@ target_link_libraries(Core PUBLIC
 )
 target_include_directories(Core PUBLIC
     ${TP_LIBRARY_DIR}
+    ${TP_DEPENDENCY_INCLUDE_DIRS}
 )

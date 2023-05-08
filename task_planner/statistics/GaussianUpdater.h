@@ -29,6 +29,8 @@ class GaussianUpdater {
                 1.0f / E(posterior.precisionMarginal()));
         }
 
+        uint32_t nSamples() const {return m_sample_set.size();}
+
     private:
         Distributions::NormalGamma m_ng;
         SampleSet m_sample_set;
