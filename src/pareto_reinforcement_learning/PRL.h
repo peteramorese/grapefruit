@@ -29,6 +29,8 @@ struct PRLQuantifier {
         cumulative_cost += sample.cost_sample;
         ++steps;
     }
+    float avgRewardPerDI() const {return cumulative_reward / static_cast<float>(decision_instances);}
+    float avgCostPerDI() const {return cumulative_cost / static_cast<float>(decision_instances);}
 };
 
 template <class BEHAVIOR_HANDLER_T>

@@ -115,7 +115,9 @@ int main(int argc, char* argv[]) {
 				float_arr[1] = cost.template get<1>().preferenceFunction();
 				return float_arr;
 			};
-			serializeParetoFront(plan_set, {{"Cost", "Sum-Delay Preference Cost"}}, objCostToFloatArray, pareto_front_filepath);
+			Serializer szr(pareto_front_filepath);
+			ParetoFrontSerializer::serializeParetoFront(szr, plan_set, {{"Cost", "Weighted-Sum Preference Cost"}}, objCostToFloatArray);
+			szr.done();
 		}
 	} else {
 		LOG("Planner failed using init state: " << init_state.to_str());

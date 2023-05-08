@@ -2,9 +2,11 @@
 
 #include <fstream>
 
+
 #include "core/State.h"
 #include "core/TransitionSystem.h"
 #include "core/Graph.h"
+#include "tools/Serializer.h"
 
 #include "graph_search/SearchProblem.h"
 
@@ -179,32 +181,60 @@ namespace Planner {
     template <class SEARCH_PROBLEM_T>
     using PlanSet = std::vector<Plan<SEARCH_PROBLEM_T>>;
 
-    template <class SEARCH_PROBLEM_T, typename LAM>
-    static void serializeParetoFront(const PlanSet<SEARCH_PROBLEM_T>& plan_set, const std::array<std::string, SEARCH_PROBLEM_T::numObjectives()>& axis_labels, LAM costToFloatArray, const std::string& filepath) {
-        constexpr uint32_t n_obj = SEARCH_PROBLEM_T::numObjectives();
+    class ParetoFrontSerializer {
+        public:
+            
+            template <class SEARCH_PROBLEM_T, typename LAM>
+            static void serializeParetoFront(Serializer& szr, const PlanSet<SEARCH_PROBLEM_T>& plan_set, const std::array<std::string, SEARCH_PROBLEM_T::numObjectives()>& axis_labels, LAM costToFloatArray) {
+                constexpr uint32_t n_obj = SEARCH_PROBLEM_T::numObjectives();
 
-        YAML::Emitter out;
+                YAML::Emitter& out = szr.get();
 
-        out << YAML::BeginMap;
+                out << YAML::BeginMap;
 
-        for (uint32_t obj_i = 0; obj_i < n_obj; ++obj_i) {
-            out << YAML::Key << "Objective Cost " + std::to_string(obj_i) << YAML::Value << YAML::BeginSeq;
-            for (const auto& plan : plan_set) {
-                Containers::FixedArray<n_obj, float> float_arr = costToFloatArray(plan.cost);
-                out << float_arr[obj_i];
+                for (uint32_t obj_i = 0; obj_i < n_obj; ++obj_i) {
+                    out << YAML::Key << "Objective " + std::to_string(obj_i) << YAML::Value << YAML::BeginSeq;
+                    for (const auto& plan : plan_set) {
+                        Containers::FixedArray<n_obj, float> float_arr = costToFloatArray(plan.cost);
+                        out << float_arr[obj_i];
+                    }
+                    out << YAML::EndSeq;
+                }
+
+                out << YAML::Key << "Axis Labels" << YAML::Value << YAML::BeginSeq;
+                for (uint32_t obj_i = 0; obj_i < n_obj; ++obj_i) {
+                    out << axis_labels[obj_i];
+                }
+                YAML::EndSeq;
+
+                out << YAML::EndMap;
             }
-            out << YAML::EndSeq;
-        }
+        
+            static void serialize2DParetoFront(Serializer& szr, const std::vector<std::pair<float, float>>& pareto_points, const std::array<std::string, 2>& axis_labels) {
+                YAML::Emitter& out = szr.get();
 
-        out << YAML::Key << "Axis Labels" << YAML::Value << YAML::BeginSeq;
-        for (uint32_t obj_i = 0; obj_i < n_obj; ++obj_i) {
-            out << axis_labels[obj_i];
-        }
-        YAML::EndSeq;
+                out << YAML::BeginMap;
 
-        out << YAML::EndMap;
-        std::ofstream fout(filepath);
-        fout << out.c_str();
-    }
+                out << YAML::Key << "Objective Cost 0" << YAML::Value << YAML::BeginSeq;
+                for (const auto[x, y] : pareto_points) {
+                    out << x;
+                }
+                out << YAML::EndSeq;
+
+                out << YAML::Key << "Objective Cost 1" << YAML::Value << YAML::BeginSeq;
+                for (const auto[x, y] : pareto_points) {
+                    out << y;
+                }
+                out << YAML::EndSeq;
+
+                out << YAML::Key << "Axis Labels" << YAML::Value << YAML::BeginSeq;
+                out << axis_labels[0];
+                out << axis_labels[1];
+                YAML::EndSeq;
+
+                out << YAML::EndMap;
+            }
+    };
+
 }
 }

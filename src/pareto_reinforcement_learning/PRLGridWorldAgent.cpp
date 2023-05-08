@@ -13,6 +13,7 @@ int main(int argc, char* argv[]) {
 	TP::ArgParser parser(argc, argv);
 
 	bool verbose = parser.hasFlag('v', "Run in verbose mode");
+	bool compare = parser.hasKey("compare", "Compare the learned estimates to the true estimates");
 
 	std::string formula_filepath = parser.parse<std::string>("formula-filepath", "formulas.yaml", "File that contains all formulas");
 
@@ -25,9 +26,15 @@ int main(int argc, char* argv[]) {
 	std::string plan_directory = parser.parse<std::string>("plan-directory", "./grid_world_plans", "Directory to output plan files");
 	std::string plan_file_template = parser.parse<std::string>("plan-file-template", "plan_#.yaml", "Naming convention for output plan files");
 
-	uint32_t n_dfas = parser.parse<uint32_t>("n-dfas", 1, "Number of dfa files to read in");
 	uint32_t max_planning_instances = parser.parse<uint32_t>("instances", 10, "Max number of planning instances");
-	
+
+	uint32_t n_trials = parser.parse<uint32_t>("trials", 1, "Number of trials to run");
+
+	float pc_mean = parser.parse<float>("pc-mean", 10.0f, "Preference distribution cost mean");
+	float pc_var = parser.parse<float>("pc-var", 4.0f, "Preference distribution mean");
+	float pr_mean = parser.parse<float>("pr-mean", 10.0f, "Preference distribution reward mean");
+	float pr_var = parser.parse<float>("pr-var", 4.0f, "Preference distribution reward mean");
+
 	if (parser.enableHelp()) return 0;
 
 	TP::DiscreteModel::GridWorldAgentProperties ts_props;
@@ -47,17 +54,6 @@ int main(int argc, char* argv[]) {
 	/////////////////   DFAs   /////////////////
 
 	auto dfas = TP::FormalMethods::createDFAsFromFile(formula_filepath);
-	//std::vector<std::shared_ptr<TP::FormalMethods::DFA>> dfas(n_dfas);
-
-	//TP::FormalMethods::Alphabet combined_alphbet;
-	//for (uint32_t i=0; i<n_dfas; ++i) {
-	//	dfas[i] = std::make_shared<TP::FormalMethods::DFA>();
-	//	std::string dfa_filepath = dfa_directory + "/" + TP::templateToLabel(dfa_file_template, i);
-	//	if (verbose) LOG("Reading in dfa file: " << dfa_filepath);
-	//	dfas[i]->deserialize(dfa_filepath);
-	//	combined_alphbet = combined_alphbet + dfas[i]->getAlphabet();
-	//	if (verbose) dfas[i]->print();
-	//}
 
 	TP::FormalMethods::Alphabet combined_alphbet;
 	for (const auto& dfa : dfas) {
@@ -78,19 +74,17 @@ int main(int argc, char* argv[]) {
 	using PreferenceDistributionType = TP::Stats::Distributions::FixedMultivariateNormal<BehaviorHandlerType::numBehaviors()>;
 
 	TP::Stats::Distributions::Normal default_reward;
-	default_reward.mu = 10.0f;
-	default_reward.sigma_2 = 1.0f;
+	default_reward.mu = pr_mean;
+	default_reward.sigma_2 = pr_var;
 	typename TrueBehaviorType::CostDistributionArray default_cost_array;
-	default_cost_array[0].mu = 2.0f;
-	default_cost_array[0].sigma_2 = 0.1f;
+	default_cost_array[0].mu = pc_mean;
+	default_cost_array[0].sigma_2 = pc_var;
 
 
  	std::shared_ptr<SymbolicGraph> product = std::make_shared<SymbolicGraph>(ts, dfas);
-	std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, 1.0f);
 	
-	// Make the true behavior
+	/////////////////   True Behavior   /////////////////
 	std::shared_ptr<TrueBehaviorType> true_behavior = std::make_shared<TrueBehaviorType>(product, dfas.size(), default_reward, default_cost_array);
-
 	std::vector<std::string> x_labels(ts_props.n_x);
 	std::vector<std::string> y_labels(ts_props.n_y);
 	for (int i=0; i<ts_props.n_x; ++i) {
@@ -101,7 +95,6 @@ int main(int argc, char* argv[]) {
 	}
 	auto ss_grid_agent = ts->getStateSpace().lock();
 	for (const auto& region : ts_props.environment.regions) {
-		//LOG("Working on region: " << region.label);
 		for (uint32_t i = region.lower_left_x; i <= region.upper_right_x; ++i) {
 			for (uint32_t j = region.lower_left_y; j <= region.upper_right_y; ++j) {
 				TP::DiscreteModel::State s(ss_grid_agent.get());	
@@ -111,48 +104,51 @@ int main(int argc, char* argv[]) {
 				for (const auto& outgoing_edge : ts->getOutgoingEdges(model_node)) {
 					TrueBehaviorType::CostDistributionArray& cost_array = true_behavior->getNAPElement(model_node, outgoing_edge.action);
 					cost_array[0].convolveWith(TP::Stats::Distributions::Normal(region.exit_cost, 0.3f*region.exit_cost + 0.2f));
-					//LOG("Mapping state: " << s.to_str() << " action: " << outgoing_edge.action << " to cost: " << region.exit_cost);
 					TrueBehaviorType::CostDistributionArray& cost_array_check = true_behavior->getNAPElement(model_node, outgoing_edge.action);
-					//LOG("CHECK Mapping node: " << model_node << " action: " << outgoing_edge.action << " cost mean: " << cost_array_check[0].mu << " cost var: " << cost_array_check[0].sigma_2);
 				}
 			}
 		}
 	}
-	//LOG("sample: " << true_behavior->sample(137, 138, "up").cost_sample[0]);
-	//PAUSE;
 
-	true_behavior->print();
+	if (verbose)
+		true_behavior->print();
 
-	ParetoReinforcementLearner<BehaviorHandlerType> prl(behavior_handler);
+	for (uint32_t trial = 0; trial < n_trials; ++trial) {
+		std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, 1.0f);
+		ParetoReinforcementLearner<BehaviorHandlerType> prl(behavior_handler);
 
-	// Initialize the agent's state
-	TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
-	prl.initialize(init_state);
+		// Initialize the agent's state
+		TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
+		prl.initialize(init_state);
 
-	// Input the preference behavior distribution
-	PreferenceDistributionType p_ev;
-	p_ev.mu(0) = 10.0f; // mean reward
-	p_ev.mu(1) = 10.0f; // mean cost
-	p_ev.covariance(0, 0) = 1.5f; // reward variance
-	p_ev.covariance(1, 1) = 1.5f; // cost variance
+		// Input the preference behavior distribution
+		PreferenceDistributionType p_ev;
+		p_ev.mu(0) = 10.0f; // mean reward
+		p_ev.mu(1) = 10.0f; // mean cost
+		p_ev.covariance(0, 0) = 1.5f; // reward variance
+		p_ev.covariance(1, 1) = 1.5f; // cost variance
 
-	auto samplerFunction = [&](TP::WideNode src_node, TP::WideNode dst_node, const TP::DiscreteModel::Action& action) {
-		return true_behavior->sample(src_node, dst_node, action);
-	};
-	// Run the PRL
-	auto quantifier = prl.run(p_ev, samplerFunction, max_planning_instances);
-	LOG("Finished!");
-	PRINT_NAMED("Total Reward.............................", quantifier.cumulative_reward);
-	PRINT_NAMED("Total Cost...............................", quantifier.cumulative_cost[0]);
-	PRINT_NAMED("Steps....................................", quantifier.steps);
-	PRINT_NAMED("Decision Instances.......................", quantifier.decision_instances);
-	PRINT_NAMED("Average reward per decision instance.....", quantifier.cumulative_reward / static_cast<float>(quantifier.decision_instances));
-	PRINT_NAMED("Average cost per per decision instance...", quantifier.cumulative_cost[0] / static_cast<float>(quantifier.decision_instances));
-	PRINT_NAMED("Average reward per step..................", quantifier.cumulative_reward / static_cast<float>(quantifier.steps));
-	PRINT_NAMED("Average cost per step....................", quantifier.cumulative_cost[0] / static_cast<float>(quantifier.steps));
-	//behavior_handler->print();
+		auto samplerFunction = [&](TP::WideNode src_node, TP::WideNode dst_node, const TP::DiscreteModel::Action& action) {
+			return true_behavior->sample(src_node, dst_node, action);
+		};
 
-	true_behavior->compare(*behavior_handler);
+		// Run the PRL
+		auto quantifier = prl.run(p_ev, samplerFunction, max_planning_instances);
+		if (verbose) {
+			LOG("Finished!");
+			PRINT_NAMED("Total Reward.............................", quantifier.cumulative_reward);
+			PRINT_NAMED("Total Cost...............................", quantifier.cumulative_cost[0]);
+			PRINT_NAMED("Steps....................................", quantifier.steps);
+			PRINT_NAMED("Decision Instances.......................", quantifier.decision_instances);
+			PRINT_NAMED("Average reward per decision instance.....", quantifier.avgRewardPerDI());
+			PRINT_NAMED("Average cost per per decision instance...", quantifier.avgCostPerDI());
+			PRINT_NAMED("Average reward per step..................", quantifier.cumulative_reward / static_cast<float>(quantifier.steps));
+			PRINT_NAMED("Average cost per step....................", quantifier.cumulative_cost[0] / static_cast<float>(quantifier.steps));
+		}
+
+		if (compare) 
+			true_behavior->compare(*behavior_handler);
+	}
 
 	return 0;
 }

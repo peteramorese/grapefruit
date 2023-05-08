@@ -7,6 +7,7 @@
 #include "tools/Debug.h"
 #include "tools/Misc.h"
 #include "tools/Test.h"
+#include "tools/Serializer.h"
 
 // Core
 #include "core/Graph.h"
