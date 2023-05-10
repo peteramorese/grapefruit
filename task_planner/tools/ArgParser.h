@@ -119,5 +119,24 @@ namespace TP {
         return static_cast<uint32_t>(parse<int>(key, default_value, description));
     }
 
+    template <>
+    float ArgParser::parse<float>(const std::string& key, float default_value, const std::string& description) {
+        std::string key_str = getKey(key);
+        m_descriptions.emplace_back(key_str, std::to_string(default_value), description);
+        for (uint32_t i=1; i<m_argc; ++i) {
+            if (m_checked[i]) continue;
+
+            std::string arg = m_argv[i];
+            if (arg == key_str) {
+                ASSERT(i < m_argc - 1, "Parse key: '" << key << "' given with no int value");
+                m_checked[i] = true;
+                m_checked[i + 1] = true;
+                std::string::size_type sz;
+                return std::stof(m_argv[i + 1], &sz);
+            }
+        }
+        return default_value;
+    }
+
 
 }

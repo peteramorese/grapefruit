@@ -30,7 +30,7 @@ struct PRLQuantifier {
         ++steps;
     }
     float avgRewardPerDI() const {return cumulative_reward / static_cast<float>(decision_instances);}
-    float avgCostPerDI() const {return cumulative_cost / static_cast<float>(decision_instances);}
+    float avgCostPerDI(uint32_t cost_criteria_i = 0) const {return cumulative_cost[cost_criteria_i] / static_cast<float>(decision_instances);}
 };
 
 template <class BEHAVIOR_HANDLER_T>
