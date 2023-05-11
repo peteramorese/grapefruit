@@ -1,0 +1,76 @@
+Grid X: 20
+Grid Y: 20
+Init X Coord: 0
+Init Y Coord: 0
+Coord Label Template: x_#_y_#
+N Regions: 9
+Region Labels:
+  - sediment_deposit
+  - rock_deposit
+  - dry_station
+  - mud
+  - mud
+  - sediment_1
+  - sediment_2
+  - rock_1
+  - rock_2
+Lower Left Cells X:
+  - 2 #sediment_deposit
+  - 15 #rock_deposit
+  - 12 #dry_station
+  - 0 #mud
+  - 11 #mud
+  - 4 #sediment_1
+  - 13 #sediment_2
+  - 0 #rock_1
+  - 10 #rock_2
+Lower Left Cells Y:
+  - 0 #sediment_deposit
+  - 0 #rock_deposit
+  - 5 #dry_station
+  - 8 #mud
+  - 11 #mud
+  - 11 #sediment_1
+  - 14 #sediment_2
+  - 16 #rock_1
+  - 19 #rock_2
+Upper Right Cells X:
+  - 3 #sediment_deposit
+  - 16 #rock_deposit
+  - 13 #dry_station
+  - 10 #mud
+  - 18 #mud
+  - 4 #sediment_1
+  - 13 #sediment_2
+  - 0 #rock_1
+  - 10 #rock_2
+Upper Right Cells Y:
+  - 0 #sediment_deposit
+  - 0 #rock_deposit
+  - 6 #dry_station
+  - 14 #mud
+  - 17 #mud
+  - 11 #sediment_1
+  - 14 #sediment_2
+  - 16 #rock_1
+  - 19 #rock_2
+Region Colors:
+  - coral #sediment_deposit
+  - coral #rock_deposit
+  - darkseagreen #dry_station
+  - saddlebrown #mud
+  - saddlebrown #mud
+  - navajowhite #sediment_1
+  - navajowhite #sediment_2
+  - gray #rock_1
+  - gray #rock_2
+Region Costs:
+  - #sediment_deposit
+  - #rock_deposit
+  - #dry_station
+  - #mud
+  - #mud
+  - #sediment_1
+  - #sediment_2
+  - #rock_1
+  - #rock_2

@@ -11,7 +11,7 @@ visualize_config = {
     "path_line_width": 2.0,
     "path_line_style": '-',
     "path_line_color": "blue",
-    "grid_line_width": 0.7,
+    "grid_line_width": 0.1,
     "grid_line_style": "-",
     "text_font_size": 15.0,
     "show_text": True,
