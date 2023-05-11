@@ -121,8 +121,11 @@ int main(int argc, char* argv[]) {
 	QuantifierSet<1> quantifier_set(p_ev);
 
 	for (uint32_t trial = 0; trial < n_trials; ++trial) {
+		if (!write_plans)
+			plan_directory = std::string();
+
 		std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, 1.0f);
-		ParetoReinforcementLearner<BehaviorHandlerType> prl(behavior_handler);
+		ParetoReinforcementLearner<BehaviorHandlerType> prl(behavior_handler, plan_directory);
 
 		// Initialize the agent's state
 		TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);

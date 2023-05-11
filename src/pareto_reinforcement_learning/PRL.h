@@ -58,9 +58,10 @@ class ParetoReinforcementLearner {
         //typedef BehaviorSample<BEHAVIOR_HANDLER_T::numCostCriteria()>(*SamplerFunctionType)(TP::WideNode src_node, TP::WideNode dst_node, const TP::DiscreteModel::Action& action);
 
     public:
-        ParetoReinforcementLearner(const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler)
+        ParetoReinforcementLearner(const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler, const std::string& write_plan_directory = std::string())
             : m_product(behavior_handler->getProduct())
             , m_behavior_handler(behavior_handler)
+            , m_write_plan_directory(write_plan_directory)
         {}
 
         ParetoFrontResult computePlan(uint8_t completed_tasks_horizon) {
@@ -117,8 +118,11 @@ class ParetoReinforcementLearner {
                     min_efe = efe;
                 }
 
-                plan.serialize("prl_plans/candidate_plan_" + std::to_string(plan_i++) + ".yaml", 
-                    "Candidate Plan " + std::to_string(plan_i++) + " at decision instance: " + std::to_string(m_quantifier.decision_instances));
+                if (!m_write_plan_directory.empty()) {
+                    plan.serialize(m_write_plan_directory + "/candidate_plan_" + std::to_string(plan_i) + ".yaml", 
+                        "Candidate Plan " + std::to_string(plan_i) + " at decision instance: " + std::to_string(m_quantifier.decision_instances));
+                }
+                ++plan_i;
             }
             LOG("solutions size: " << search_result.solution_set.size());
             LOG("Chosen solution: " << costToStr(min_it->path_cost));
@@ -226,6 +230,8 @@ class ParetoReinforcementLearner {
         bool m_initialized = false;
 
         PRLQuantifier<BEHAVIOR_HANDLER_T::numCostCriteria()> m_quantifier;
+
+        std::string m_write_plan_directory = "";
 
 };
 }

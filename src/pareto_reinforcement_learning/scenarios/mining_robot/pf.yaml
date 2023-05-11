@@ -1,0 +1,14 @@
+PRL Preference Mean:
+  - 50
+  - 10
+PRL Preference Variance:
+  - 25
+  - 4
+Objective 0:
+  - 298.843201
+Objective 1:
+  - 10.1100807
+Axis Labels:
+  - Cumulative Cost
+  - Cumulative Reward
+Color: firebrick

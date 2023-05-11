@@ -65,12 +65,12 @@ Region Colors:
   - gray #rock_1
   - gray #rock_2
 Region Costs:
-  - #sediment_deposit
-  - #rock_deposit
-  - #dry_station
-  - #mud
-  - #mud
-  - #sediment_1
-  - #sediment_2
-  - #rock_1
-  - #rock_2
+  - 0 #sediment_deposit
+  - 0 #rock_deposit
+  - 0 #dry_station
+  - 10 #mud
+  - 10 #mud
+  - 10 #sediment_1
+  - 10 #sediment_2
+  - 0 #rock_1
+  - 0 #rock_2
