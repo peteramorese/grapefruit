@@ -215,7 +215,6 @@ namespace PRL {
                 TP::Node src_model_node = m_product->getUnwrappedNode(node.base_node).ts_node;
                 //++m_state_visits[src_model_node];
                 ++m_state_visits;
-                LOG("state visits: " << m_state_visits);
                 this->getNAPElement(src_model_node, action).pull(sample);
             }
             

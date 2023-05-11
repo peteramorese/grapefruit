@@ -13,13 +13,13 @@ visualize_config = {
     "line_style": "-",
     "show_title": False,
     "grid_on": True,
-    "dot_size": 50,
+    "dot_size": 8,
     "figure_size": (3.9, 3.9),
     "margin_percent": (.2, .2),
     "default_color": "seagreen",
     "default_prl_pref_color": "firebrick",
     "default_axis_labels": ["Objective 0", "Objective 1"],
-    "discretization_N": 1000
+    "discretization_N": 100
 }
 
 class ParetoFrontVisualizer2D:
@@ -34,8 +34,8 @@ class ParetoFrontVisualizer2D:
 
         with open(filepath, "r") as f:
             self._data = yaml.safe_load(f)
-        self.x_bounds = ((1.0 - visualize_config["margin_percent"][0]) * min(self._data["Objective 0"]), (1.0 + visualize_config["margin_percent"][0]) * max(self._data["Objective 0"]))
-        self.y_bounds = ((1.0 - visualize_config["margin_percent"][1]) * min(self._data["Objective 1"]), (1.0 + visualize_config["margin_percent"][1]) * max(self._data["Objective 1"]))
+        self.x_bounds = (0.0, (1.0 + visualize_config["margin_percent"][0]) * max(self._data["Objective 0"]))
+        self.y_bounds = (0.0, (1.0 + visualize_config["margin_percent"][1]) * max(self._data["Objective 1"]))
 
     def _create_figure(self):
         plt.grid()
@@ -58,8 +58,8 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
     def serialize(self, filepath):
         super().serialize(filepath)
         mu = self._data["PRL Preference Mean"]
-        self.x_bounds = (min(self.x_bounds[0], (1.0 - visualize_config["margin_percent"][0]) * mu[0]), max(self.x_bounds[1], (1.0 + visualize_config["margin_percent"][0]) * mu[0]))
-        self.y_bounds = (min(self.y_bounds[0], (1.0 - visualize_config["margin_percent"][0]) * mu[1]), max(self.y_bounds[1], (1.0 + visualize_config["margin_percent"][0]) * mu[1]))
+        self.x_bounds = (0.0, max(self.x_bounds[1], (1.0 + visualize_config["margin_percent"][0]) * mu[0]))
+        self.y_bounds = (0.0, max(self.y_bounds[1], (1.0 + visualize_config["margin_percent"][0]) * mu[1]))
 
     def __plot_prl_pref(self):
         mean = self._data["PRL Preference Mean"]

@@ -5,6 +5,7 @@
 #include "BehaviorHandler.h"
 #include "PRL.h"
 #include "TrueBehavior.h"
+#include "Benchmark.h"
 
 using namespace PRL;
 
@@ -13,27 +14,23 @@ int main(int argc, char* argv[]) {
 	TP::ArgParser parser(argc, argv);
 
 	bool verbose = parser.hasFlag('v', "Run in verbose mode");
+	bool benchmark = parser.hasFlag('b', "Benchmark run");
+	bool write_plans = parser.hasFlag('w', "Write plans to plan files");
 	bool compare = parser.hasKey("compare", "Compare the learned estimates to the true estimates");
 
 	std::string formula_filepath = parser.parse<std::string>("formula-filepath", "formulas.yaml", "File that contains all formulas");
-
-	//std::string dfa_directory = parser.parse<std::string>("dfa-directory", "./dfas", "Directory that contains dfa files");
-	//std::string dfa_file_template = parser.parse<std::string>("dfa-file-template", "dfa_#.yaml", "Naming convention for dfa file");
-
 	std::string config_filepath = parser.parse<std::string>("config-filepath", "", "Filepath to grid world config");
-
-	bool write_plans = parser.hasFlag('w', "Write plans to plan files");
 	std::string plan_directory = parser.parse<std::string>("plan-directory", "./grid_world_plans", "Directory to output plan files");
+	std::string benchmark_filepath = parser.parse<std::string>("bm-filepath", "prl_grid_world_bm.yaml", "File that benchmark data will be written to");
 	std::string plan_file_template = parser.parse<std::string>("plan-file-template", "plan_#.yaml", "Naming convention for output plan files");
 
 	uint32_t max_planning_instances = parser.parse<uint32_t>("instances", 10, "Max number of planning instances");
-
 	uint32_t n_trials = parser.parse<uint32_t>("trials", 1, "Number of trials to run");
 
-	float pc_mean = parser.parse<float>("pc-mean", 10.0f, "Preference distribution cost mean");
-	float pc_var = parser.parse<float>("pc-var", 4.0f, "Preference distribution mean");
+	float pc_mean = parser.parse<float>("pc-mean", 50.0f, "Preference distribution cost mean");
+	float pc_var = parser.parse<float>("pc-var", 25.0f, "Preference distribution cost variance");
 	float pr_mean = parser.parse<float>("pr-mean", 10.0f, "Preference distribution reward mean");
-	float pr_var = parser.parse<float>("pr-var", 4.0f, "Preference distribution reward mean");
+	float pr_var = parser.parse<float>("pr-var", 4.0f, "Preference distribution reward variance");
 
 	if (parser.enableHelp()) return 0;
 
@@ -74,11 +71,11 @@ int main(int argc, char* argv[]) {
 	using PreferenceDistributionType = TP::Stats::Distributions::FixedMultivariateNormal<BehaviorHandlerType::numBehaviors()>;
 
 	TP::Stats::Distributions::Normal default_reward;
-	default_reward.mu = pr_mean;
-	default_reward.sigma_2 = pr_var;
+	default_reward.mu = 10.0f;
+	default_reward.sigma_2 = 3.0f;
 	typename TrueBehaviorType::CostDistributionArray default_cost_array;
-	default_cost_array[0].mu = pc_mean;
-	default_cost_array[0].sigma_2 = pc_var;
+	default_cost_array[0].mu = 5.0f;
+	default_cost_array[0].sigma_2 = 0.5f;
 
 
  	std::shared_ptr<SymbolicGraph> product = std::make_shared<SymbolicGraph>(ts, dfas);
@@ -113,6 +110,16 @@ int main(int argc, char* argv[]) {
 	if (verbose)
 		true_behavior->print();
 
+	// Make the preference behavior distribution
+	PreferenceDistributionType p_ev;
+	p_ev.mu(0) = pr_mean; // mean reward
+	p_ev.mu(1) = pc_mean; // mean cost
+	p_ev.covariance(0, 0) = pr_var; // reward variance
+	p_ev.covariance(1, 1) = pc_var; // cost variance
+
+
+	QuantifierSet<1> quantifier_set(p_ev);
+
 	for (uint32_t trial = 0; trial < n_trials; ++trial) {
 		std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, 1.0f);
 		ParetoReinforcementLearner<BehaviorHandlerType> prl(behavior_handler);
@@ -120,13 +127,6 @@ int main(int argc, char* argv[]) {
 		// Initialize the agent's state
 		TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
 		prl.initialize(init_state);
-
-		// Input the preference behavior distribution
-		PreferenceDistributionType p_ev;
-		p_ev.mu(0) = 10.0f; // mean reward
-		p_ev.mu(1) = 10.0f; // mean cost
-		p_ev.covariance(0, 0) = 1.5f; // reward variance
-		p_ev.covariance(1, 1) = 1.5f; // cost variance
 
 		auto samplerFunction = [&](TP::WideNode src_node, TP::WideNode dst_node, const TP::DiscreteModel::Action& action) {
 			return true_behavior->sample(src_node, dst_node, action);
@@ -148,6 +148,14 @@ int main(int argc, char* argv[]) {
 
 		if (compare) 
 			true_behavior->compare(*behavior_handler);
+
+		quantifier_set.push_back(std::move(quantifier));
+	}
+
+	if (benchmark) {
+		TP::Serializer szr(benchmark_filepath);
+		quantifier_set.serialize(szr, "Cumulative Cost", "Cumulative Reward");
+		szr.done();
 	}
 
 	return 0;

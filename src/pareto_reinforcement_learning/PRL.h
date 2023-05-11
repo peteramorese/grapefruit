@@ -176,7 +176,8 @@ class ParetoReinforcementLearner {
             constexpr uint32_t M = BEHAVIOR_HANDLER_T::numBehaviors();
             TP::Containers::FixedArray<M, TP::Stats::Distributions::Normal> individual_distributions;
             auto src_state_it = plan.begin();
-            auto dst_state_it = ++plan.begin();
+            auto dst_state_it = plan.begin();
+            ++dst_state_it;
             for (auto action_it = plan.action_sequence.begin(); action_it != plan.action_sequence.end(); ++action_it) {
                 TP::Containers::FixedArray<M - 1, TP::Stats::Distributions::Normal> cost_distributions = m_behavior_handler->getNAPElement(src_state_it.tsNode(), *action_it).getEstimateDistributions();
                 for (uint32_t m = 0; m < M; ++m) {
@@ -184,10 +185,13 @@ class ParetoReinforcementLearner {
                         individual_distributions[m].convolveWith(cost_distributions[m - 1]);
                     } else {
                         for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
+                            //LOG("Checking src node: " << src_state_it.productNode().base_node << " dst node: " << dst_state_it.productNode().base_node);
                             if (!m_product->acc(src_state_it.productNode().base_node, automaton_i) && m_product->acc(dst_state_it.productNode().base_node, automaton_i)) {
+                                //LOG("--Found an acceptance");
                                 // Accumulate reward for each task satisfied
                                 individual_distributions[m].convolveWith(m_behavior_handler->getTaskElement(automaton_i).updater.getEstimateNormal());
                             }
+                            //PAUSE;
                         }
                     }
                     //LOG("Individual distribution " << m << " mean: " << individual_distributions[m].mu << " sigma2: " << individual_distributions[m].sigma_2);
