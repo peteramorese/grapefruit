@@ -108,7 +108,8 @@ int main(int argc, char* argv[]) {
 				return float_arr;
 			};
 			Serializer szr(pareto_front_filepath);
-			ParetoFrontSerializer::serializeParetoFront(szr, plan_set, {{"Cost", "Weighted-Sum Preference Cost"}}, objCostToFloatArray);
+			ParetoFrontSerializer::serialize2DAxes(szr, {{"Cost", "Weighted-Sum Preference Cost"}});
+			ParetoFrontSerializer::serialize(szr, plan_set, "default", objCostToFloatArray);
 			szr.done();
 		}
 	} else {

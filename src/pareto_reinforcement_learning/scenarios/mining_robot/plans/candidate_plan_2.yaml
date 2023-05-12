@@ -1,12 +1,6 @@
-Title: "Candidate Plan 2 at decision instance: 999"
+Title: "Candidate Plan 2 at decision instance: 98"
 Action Sequence:
-  - right
-  - right
-  - right
-  - right
-  - right
-  - right
-  - right
+  - up
   - right
   - up
   - up
@@ -18,35 +12,30 @@ Action Sequence:
   - up
   - up
   - up
+  - down
+  - down
+  - down
+  - down
+  - down
+  - right
+  - right
+  - right
+  - right
+  - right
+  - right
+  - right
+  - right
   - left
-  - up
-  - up
-  - up
-  - up
-  - up
-  - up
-  - up
-  - up
-  - up
+  - left
+  - left
+  - left
   - down
-  - down
-  - down
-  - right
-  - down
-  - down
-  - down
-  - down
-  - down
-  - down
-  - right
-  - down
-  - down
-  - right
-  - down
-  - down
-  - right
-  - right
-  - down
+  - left
+  - left
+  - left
+  - left
+  - left
+  - left
   - down
   - down
   - down
@@ -54,55 +43,44 @@ Action Sequence:
   - down
 State Sequence:
   - x3, y0
-  - x4, y0
-  - x5, y0
-  - x6, y0
-  - x7, y0
-  - x8, y0
-  - x9, y0
-  - x10, y0
-  - x11, y0
-  - x11, y1
-  - x11, y2
-  - x11, y3
-  - x11, y4
-  - x11, y5
+  - x3, y1
+  - x4, y1
+  - x4, y2
+  - x4, y3
+  - x4, y4
+  - x4, y5
+  - x4, y6
+  - x4, y7
+  - x4, y8
+  - x4, y9
+  - x4, y10
+  - x4, y11
+  - x4, y10
+  - x4, y9
+  - x4, y8
+  - x4, y7
+  - x4, y6
+  - x5, y6
+  - x6, y6
+  - x7, y6
+  - x8, y6
+  - x9, y6
+  - x10, y6
   - x11, y6
-  - x11, y7
-  - x11, y8
-  - x11, y9
-  - x11, y10
-  - x10, y10
-  - x10, y11
-  - x10, y12
-  - x10, y13
-  - x10, y14
-  - x10, y15
-  - x10, y16
-  - x10, y17
-  - x10, y18
-  - x10, y19
-  - x10, y18
-  - x10, y17
-  - x10, y16
-  - x11, y16
-  - x11, y15
-  - x11, y14
-  - x11, y13
-  - x11, y12
-  - x11, y11
-  - x11, y10
-  - x12, y10
-  - x12, y9
-  - x12, y8
-  - x13, y8
-  - x13, y7
-  - x13, y6
-  - x14, y6
-  - x15, y6
-  - x15, y5
-  - x15, y4
-  - x15, y3
-  - x15, y2
-  - x15, y1
-  - x15, y0
+  - x12, y6
+  - x11, y6
+  - x10, y6
+  - x9, y6
+  - x8, y6
+  - x8, y5
+  - x7, y5
+  - x6, y5
+  - x5, y5
+  - x4, y5
+  - x3, y5
+  - x2, y5
+  - x2, y4
+  - x2, y3
+  - x2, y2
+  - x2, y1
+  - x2, y0

@@ -32,6 +32,8 @@ int main(int argc, char* argv[]) {
 	float pr_mean = parser.parse<float>("pr-mean", 10.0f, "Preference distribution reward mean");
 	float pr_var = parser.parse<float>("pr-var", 4.0f, "Preference distribution reward variance");
 
+	LOG("pc var: " << pc_var);
+	PAUSE;
 	if (parser.enableHelp()) return 0;
 
 	TP::DiscreteModel::GridWorldAgentProperties ts_props;
@@ -157,7 +159,7 @@ int main(int argc, char* argv[]) {
 
 	if (benchmark) {
 		TP::Serializer szr(benchmark_filepath);
-		quantifier_set.serialize(szr, "Cumulative Cost", "Cumulative Reward");
+		quantifier_set.serializeDIBehavior(szr, "Cumulative Cost", "Cumulative Reward");
 		szr.done();
 	}
 

@@ -183,13 +183,28 @@ namespace Planner {
 
     class ParetoFrontSerializer {
         public:
+
+            static void serialize2DAxes(Serializer& szr, const std::array<std::string, 2>& axis_labels) {
+                YAML::Emitter& out = szr.get();
+                out << YAML::Key << "Axis Labels" << YAML::Value << YAML::BeginSeq;
+                out << axis_labels[0];
+                out << axis_labels[1];
+                out << YAML::EndSeq;
+            }
             
             template <class SEARCH_PROBLEM_T, typename LAM>
-            static void serializeParetoFront(Serializer& szr, const PlanSet<SEARCH_PROBLEM_T>& plan_set, const std::array<std::string, SEARCH_PROBLEM_T::numObjectives()>& axis_labels, LAM costToFloatArray, const std::string& color = "firebrick") {
+            static void serialize(Serializer& szr, const PlanSet<SEARCH_PROBLEM_T>& plan_set, LAM costToFloatArray, const std::string& color = "firebrick") {
+                serialize(szr, plan_set, std::string(), costToFloatArray, color);
+            }
+
+            template <class SEARCH_PROBLEM_T, typename LAM>
+            static void serialize(Serializer& szr, const PlanSet<SEARCH_PROBLEM_T>& plan_set, std::string set_name, LAM costToFloatArray, const std::string& color = "firebrick") {
                 constexpr uint32_t n_obj = SEARCH_PROBLEM_T::numObjectives();
-
                 YAML::Emitter& out = szr.get();
-
+                if (!set_name.empty()) {
+                    set_name.insert(0, 1, ' ');
+                }
+                out << YAML::Key << "DataSet" + set_name << YAML::Value << YAML::BeginMap;
                 for (uint32_t obj_i = 0; obj_i < n_obj; ++obj_i) {
                     out << YAML::Key << "Objective " + std::to_string(obj_i) << YAML::Value << YAML::BeginSeq;
                     for (const auto& plan : plan_set) {
@@ -198,39 +213,28 @@ namespace Planner {
                     }
                     out << YAML::EndSeq;
                 }
-
-                out << YAML::Key << "Axis Labels" << YAML::Value << YAML::BeginSeq;
-                for (uint32_t obj_i = 0; obj_i < n_obj; ++obj_i) {
-                    out << axis_labels[obj_i];
-                }
-                out << YAML::EndSeq;
-
                 out << YAML::Key << "Color" << YAML::Value << color;
-
+                out << YAML::EndMap;
             }
         
-            static void serialize2DParetoFront(Serializer& szr, const std::vector<std::pair<float, float>>& pareto_points, const std::array<std::string, 2>& axis_labels, const std::string& color = "firebrick") {
+            static void serialize2D(Serializer& szr, const std::vector<std::pair<float, float>>& pareto_points, std::string set_name, const std::string& color = "firebrick") {
                 YAML::Emitter& out = szr.get();
-
-
+                if (!set_name.empty()) {
+                    set_name.insert(0, 1, ' ');
+                }
+                out << YAML::Key << "DataSet" + set_name << YAML::Value << YAML::BeginMap;
                 out << YAML::Key << "Objective 0" << YAML::Value << YAML::BeginSeq;
                 for (const auto[x, y] : pareto_points) {
                     out << x;
                 }
                 out << YAML::EndSeq;
-
                 out << YAML::Key << "Objective 1" << YAML::Value << YAML::BeginSeq;
                 for (const auto[x, y] : pareto_points) {
                     out << y;
                 }
                 out << YAML::EndSeq;
-
-                out << YAML::Key << "Axis Labels" << YAML::Value << YAML::BeginSeq;
-                out << axis_labels[0];
-                out << axis_labels[1];
-                out << YAML::EndSeq;
-
                 out << YAML::Key << "Color" << YAML::Value << color;
+                out << YAML::EndMap;
             }
     };
 
