@@ -1,0 +1,142 @@
+Title: "Candidate Plan 1 at decision instance: 98"
+Action Sequence:
+  - up
+  - right
+  - right
+  - right
+  - up
+  - right
+  - right
+  - right
+  - right
+  - right
+  - up
+  - right
+  - right
+  - up
+  - up
+  - up
+  - up
+  - up
+  - up
+  - up
+  - up
+  - up
+  - up
+  - up
+  - up
+  - up
+  - up
+  - up
+  - right
+  - right
+  - right
+  - right
+  - down
+  - right
+  - right
+  - down
+  - down
+  - down
+  - down
+  - down
+  - down
+  - down
+  - down
+  - down
+  - down
+  - left
+  - left
+  - down
+  - down
+  - left
+  - left
+  - left
+  - left
+  - down
+  - left
+  - left
+  - left
+  - left
+  - left
+  - left
+  - left
+  - left
+  - left
+  - left
+  - left
+  - down
+  - down
+  - down
+  - down
+State Sequence:
+  - x3, y0
+  - x3, y1
+  - x4, y1
+  - x5, y1
+  - x6, y1
+  - x6, y2
+  - x7, y2
+  - x8, y2
+  - x9, y2
+  - x10, y2
+  - x11, y2
+  - x11, y3
+  - x12, y3
+  - x13, y3
+  - x13, y4
+  - x13, y5
+  - x13, y6
+  - x13, y7
+  - x13, y8
+  - x13, y9
+  - x13, y10
+  - x13, y11
+  - x13, y12
+  - x13, y13
+  - x13, y14
+  - x13, y15
+  - x13, y16
+  - x13, y17
+  - x13, y18
+  - x14, y18
+  - x15, y18
+  - x16, y18
+  - x17, y18
+  - x17, y17
+  - x18, y17
+  - x19, y17
+  - x19, y16
+  - x19, y15
+  - x19, y14
+  - x19, y13
+  - x19, y12
+  - x19, y11
+  - x19, y10
+  - x19, y9
+  - x19, y8
+  - x19, y7
+  - x18, y7
+  - x17, y7
+  - x17, y6
+  - x17, y5
+  - x16, y5
+  - x15, y5
+  - x14, y5
+  - x13, y5
+  - x13, y4
+  - x12, y4
+  - x11, y4
+  - x10, y4
+  - x9, y4
+  - x8, y4
+  - x7, y4
+  - x6, y4
+  - x5, y4
+  - x4, y4
+  - x3, y4
+  - x2, y4
+  - x2, y3
+  - x2, y2
+  - x2, y1
+  - x2, y0

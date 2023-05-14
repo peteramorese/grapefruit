@@ -29,7 +29,7 @@ struct PRLSearchProblem {
             std::vector<node_t> history_nodes;
             history_nodes.reserve(children.size());
             for (uint32_t i=0; i<children.size(); ++i) {
-                if (children[i] > 1000) ERROR("error child from parent: " << node);
+                //if (children[i] > 1000) ERROR("error child from parent: " << node);
                 uint8_t n_tasks_completed = 0;
                 for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
                     if (!m_product->acc(node.base_node, automaton_i) && m_product->acc(children[i], automaton_i)) {

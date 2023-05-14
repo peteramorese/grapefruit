@@ -11,27 +11,44 @@ namespace PRL {
 
 template <uint32_t COST_CRITERIA_M>
 struct PRLQuantifier {
-    float cumulative_reward = 0.0f;
-    TP::Containers::FixedArray<COST_CRITERIA_M, float> cumulative_cost;
-    uint32_t steps = 0u;
-    //uint32_t max_steps = 0u;
-    uint32_t decision_instances = 0u;
-    uint32_t max_decision_instances = 0u;
+    public:
+        float cumulative_reward = 0.0f;
+        TP::Containers::FixedArray<COST_CRITERIA_M, float> cumulative_cost;
+        uint32_t steps = 0u;
+        uint32_t decision_instances = 0u;
+        uint32_t max_decision_instances = 0u;
 
-    PRLQuantifier() {
-        for (uint32_t i = 0; i < COST_CRITERIA_M; ++i) cumulative_cost[i] = 0.0f;
-    }
-    void addSample(const BehaviorSample<COST_CRITERIA_M>& sample) {
-        float total_reward_this_step = 0.0f;
-        for (auto[contains, r] : sample.getRewards()) {
-            if (contains) 
-                cumulative_reward += r;
+    public:
+        PRLQuantifier() {
+            for (uint32_t i = 0; i < COST_CRITERIA_M; ++i) cumulative_cost[i] = 0.0f;
         }
-        cumulative_cost += sample.cost_sample;
-        ++steps;
-    }
-    float avgRewardPerDI() const {return cumulative_reward / static_cast<float>(decision_instances);}
-    float avgCostPerDI(uint32_t cost_criteria_i = 0) const {return cumulative_cost[cost_criteria_i] / static_cast<float>(decision_instances);}
+        void addSample(const BehaviorSample<COST_CRITERIA_M>& sample) {
+            float total_reward_this_step = 0.0f;
+            for (auto[contains, r] : sample.getRewards()) {
+                if (contains) 
+                    total_reward_this_step += r;
+            }
+            cumulative_reward += total_reward_this_step;
+            cumulative_cost += sample.cost_sample;
+            m_sample_buffer[0] += total_reward_this_step;
+            for (uint32_t i = 0; i < COST_CRITERIA_M; ++i) {
+                m_sample_buffer[i + 1] += sample.cost_sample[i];
+            }
+            ++steps;
+        }
+        void finishDI() {
+            ++decision_instances;
+            m_di_behaviors.push_back(m_sample_buffer);
+            for (auto& v : m_sample_buffer)
+                v = 0.0f;
+        }
+        float avgRewardPerDI() const {return cumulative_reward / static_cast<float>(decision_instances);}
+        float avgCostPerDI(uint32_t cost_criteria_i = 0) const {return cumulative_cost[cost_criteria_i] / static_cast<float>(decision_instances);}
+        const std::vector<TP::Containers::FixedArray<COST_CRITERIA_M + 1, float>>& getDIBehaviors() const {return m_di_behaviors;}
+        
+    private:
+        std::vector<TP::Containers::FixedArray<COST_CRITERIA_M + 1, float>> m_di_behaviors;
+        TP::Containers::FixedArray<COST_CRITERIA_M + 1, float> m_sample_buffer;
 };
 
 template <class BEHAVIOR_HANDLER_T>
@@ -59,9 +76,10 @@ class ParetoReinforcementLearner {
         //typedef BehaviorSample<BEHAVIOR_HANDLER_T::numCostCriteria()>(*SamplerFunctionType)(TP::WideNode src_node, TP::WideNode dst_node, const TP::DiscreteModel::Action& action);
 
     public:
-        ParetoReinforcementLearner(const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler)
+        ParetoReinforcementLearner(const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler, const std::string& write_plan_directory = std::string())
             : m_product(behavior_handler->getProduct())
             , m_behavior_handler(behavior_handler)
+            , m_write_plan_directory(write_plan_directory)
         {}
 
         ParetoReinforcementLearner(const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler, const std::shared_ptr<Animator<BEHAVIOR_HANDLER_T>>& animator)
@@ -128,8 +146,10 @@ class ParetoReinforcementLearner {
 
                 traj_distributions.push_back(std::move(traj_dist));
                 
-                plan.serialize("prl_plans/candidate_plan_" + std::to_string(plan_i) + ".yaml", 
-                    "Candidate Plan " + std::to_string(plan_i) + " at decision instance: " + std::to_string(m_quantifier.decision_instances));
+                if (!m_write_plan_directory.empty()) {
+                    plan.serialize(m_write_plan_directory + "/candidate_plan_" + std::to_string(plan_i) + ".yaml", 
+                        "Candidate Plan " + std::to_string(plan_i) + " at decision instance: " + std::to_string(m_quantifier.decision_instances));
+                }
 
                 ++plan_i;
             }
@@ -164,6 +184,7 @@ class ParetoReinforcementLearner {
                 //    // Terminate
                 //    return true;
             }
+            m_quantifier.finishDI();
             plan.serialize("prl_plans/end_plan.yaml", "Chosen Plan");
             // Do not terminate
             return false;
@@ -246,6 +267,7 @@ class ParetoReinforcementLearner {
         PRLQuantifier<BEHAVIOR_HANDLER_T::numCostCriteria()> m_quantifier;
 
         std::shared_ptr<Animator<BEHAVIOR_HANDLER_T>> m_animator;
+        std::string m_write_plan_directory = "";
 
 };
 }

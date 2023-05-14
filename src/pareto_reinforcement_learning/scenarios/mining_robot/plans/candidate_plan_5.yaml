@@ -1,0 +1,114 @@
+Title: "Candidate Plan 5 at decision instance: 66"
+Action Sequence:
+  - up
+  - left
+  - left
+  - up
+  - up
+  - up
+  - up
+  - up
+  - up
+  - right
+  - up
+  - left
+  - up
+  - up
+  - up
+  - right
+  - up
+  - up
+  - up
+  - up
+  - up
+  - left
+  - left
+  - right
+  - right
+  - down
+  - right
+  - right
+  - right
+  - right
+  - down
+  - down
+  - right
+  - down
+  - down
+  - down
+  - down
+  - down
+  - down
+  - down
+  - down
+  - right
+  - right
+  - right
+  - right
+  - right
+  - right
+  - right
+  - right
+  - down
+  - down
+  - right
+  - down
+  - down
+  - down
+State Sequence:
+  - x3, y0
+  - x3, y1
+  - x2, y1
+  - x1, y1
+  - x1, y2
+  - x1, y3
+  - x1, y4
+  - x1, y5
+  - x1, y6
+  - x1, y7
+  - x2, y7
+  - x2, y8
+  - x1, y8
+  - x1, y9
+  - x1, y10
+  - x1, y11
+  - x2, y11
+  - x2, y12
+  - x2, y13
+  - x2, y14
+  - x2, y15
+  - x2, y16
+  - x1, y16
+  - x0, y16
+  - x1, y16
+  - x2, y16
+  - x2, y15
+  - x3, y15
+  - x4, y15
+  - x5, y15
+  - x6, y15
+  - x6, y14
+  - x6, y13
+  - x7, y13
+  - x7, y12
+  - x7, y11
+  - x7, y10
+  - x7, y9
+  - x7, y8
+  - x7, y7
+  - x7, y6
+  - x7, y5
+  - x8, y5
+  - x9, y5
+  - x10, y5
+  - x11, y5
+  - x12, y5
+  - x13, y5
+  - x14, y5
+  - x15, y5
+  - x15, y4
+  - x15, y3
+  - x16, y3
+  - x16, y2
+  - x16, y1
+  - x16, y0

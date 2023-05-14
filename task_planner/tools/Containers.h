@@ -264,6 +264,11 @@ namespace Containers {
             void operator+=(const FixedArray& other) {for (std::size_t i=0; i < M; ++i) values[i] += other.values[i];}
 
             void operator=(const FixedArray& other) {for (std::size_t i=0; i < M; ++i) values[i] = other.values[i];}
+
+            std::array<T, M>::iterator begin() {return values.begin();}
+            std::array<T, M>::iterator end() {return values.end();}
+            std::array<T, M>::const_iterator begin() const {return values.begin();}
+            std::array<T, M>::const_iterator end() const {return values.end();}
         private:
             std::array<T, M> values = std::array<T, M>();
             friend FixedArray operator+<M, T>(const FixedArray& lhs, const FixedArray& rhs);
