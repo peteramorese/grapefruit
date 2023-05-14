@@ -5,6 +5,7 @@
 #include "EFE.h"
 #include "PRLSearchProblem.h"
 #include "TrueBehavior.h"
+#include "Animator.h"
 
 namespace PRL {
 
@@ -63,6 +64,12 @@ class ParetoReinforcementLearner {
             , m_behavior_handler(behavior_handler)
         {}
 
+        ParetoReinforcementLearner(const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler, const std::shared_ptr<Animator<BEHAVIOR_HANDLER_T>>& animator)
+            : m_product(behavior_handler->getProduct())
+            , m_behavior_handler(behavior_handler)
+            , m_animator(animator)
+        {}
+
         ParetoFrontResult computePlan(uint8_t completed_tasks_horizon) {
             LOG("PRL current product node: " << m_current_product_node);
             PRLSearchProblem<BEHAVIOR_HANDLER_T> problem(m_product, m_current_product_node, completed_tasks_horizon, m_behavior_handler);
@@ -94,6 +101,8 @@ class ParetoReinforcementLearner {
                 return s;
             };
 
+            std::vector<TrajectoryDistribution> traj_distributions;
+            traj_distributions.reserve(search_result.solution_set.size())
             uint32_t plan_i = 0;
             for (auto it = search_result.solution_set.begin(); it != search_result.solution_set.end(); ++it) {
                 
@@ -117,11 +126,20 @@ class ParetoReinforcementLearner {
                     min_efe = efe;
                 }
 
-                plan.serialize("prl_plans/candidate_plan_" + std::to_string(plan_i++) + ".yaml", 
-                    "Candidate Plan " + std::to_string(plan_i++) + " at decision instance: " + std::to_string(m_quantifier.decision_instances));
+                traj_distributions.push_back(std::move(traj_dist));
+                
+                plan.serialize("prl_plans/candidate_plan_" + std::to_string(plan_i) + ".yaml", 
+                    "Candidate Plan " + std::to_string(plan_i) + " at decision instance: " + std::to_string(m_quantifier.decision_instances));
+
+                ++plan_i;
             }
             LOG("solutions size: " << search_result.solution_set.size());
             LOG("Chosen solution: " << costToStr(min_it->path_cost));
+
+            // Add to animator
+            if (m_animator)
+                m_animator->addInstance(search_result, min_it, std::move(traj_distributions));
+
             return min_it;
         }
 
@@ -226,6 +244,8 @@ class ParetoReinforcementLearner {
         bool m_initialized = false;
 
         PRLQuantifier<BEHAVIOR_HANDLER_T::numCostCriteria()> m_quantifier;
+
+        std::shared_ptr<Animator<BEHAVIOR_HANDLER_T>> m_animator;
 
 };
 }

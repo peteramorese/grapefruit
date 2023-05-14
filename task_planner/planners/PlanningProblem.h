@@ -117,10 +117,8 @@ namespace Planner {
                 }
             }
 
-            void serialize(const std::string& filepath, const std::string& title = std::string()) const {
-                YAML::Emitter out;
-
-                out << YAML::BeginMap;
+            void serialize(Serializer& szr, const std::string& title = std::string()) const {
+                YAML::Emitter& out = szr.get();
 
                 if (!title.empty()) 
                     out << YAML::Key << "Title" << YAML::Value << title;
@@ -132,9 +130,6 @@ namespace Planner {
                     out << s.to_str();
                 }
                 YAML::EndSeq;
-                out << YAML::EndMap;
-                std::ofstream fout(filepath);
-                fout << out.c_str();
             }
 
             StateIterator begin() {

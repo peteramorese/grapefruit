@@ -15,6 +15,7 @@ int main(int argc, char* argv[]) {
 
 	bool verbose = parser.hasFlag('v', "Run in verbose mode");
 	bool benchmark = parser.hasFlag('b', "Benchmark run");
+	bool animate = parser.hasFlag('a', "Generate animation file");
 	bool write_plans = parser.hasFlag('w', "Write plans to plan files");
 	bool compare = parser.hasKey("compare", "Compare the learned estimates to the true estimates");
 
@@ -22,6 +23,7 @@ int main(int argc, char* argv[]) {
 	std::string config_filepath = parser.parse<std::string>("config-filepath", "", "Filepath to grid world config");
 	std::string plan_directory = parser.parse<std::string>("plan-directory", "./grid_world_plans", "Directory to output plan files");
 	std::string benchmark_filepath = parser.parse<std::string>("bm-filepath", "prl_grid_world_bm.yaml", "File that benchmark data will be written to");
+	std::string animation_filepath = parser.parse<std::string>("animation-filepath", "prl_animation.yaml", "File that contains data necessary for animation");
 	std::string plan_file_template = parser.parse<std::string>("plan-file-template", "plan_#.yaml", "Naming convention for output plan files");
 
 	uint32_t max_planning_instances = parser.parse<uint32_t>("instances", 10, "Max number of planning instances");
@@ -34,6 +36,8 @@ int main(int argc, char* argv[]) {
 
 	if (parser.enableHelp()) return 0;
 
+	/////////////////   Transition System   /////////////////
+	
 	TP::DiscreteModel::GridWorldAgentProperties ts_props;
 	if (config_filepath.empty()) {
 		ts_props.n_x = 10;
@@ -81,6 +85,7 @@ int main(int argc, char* argv[]) {
  	std::shared_ptr<SymbolicGraph> product = std::make_shared<SymbolicGraph>(ts, dfas);
 	
 	/////////////////   True Behavior   /////////////////
+
 	std::shared_ptr<TrueBehaviorType> true_behavior = std::make_shared<TrueBehaviorType>(product, dfas.size(), default_reward, default_cost_array);
 	std::vector<std::string> x_labels(ts_props.n_x);
 	std::vector<std::string> y_labels(ts_props.n_y);
