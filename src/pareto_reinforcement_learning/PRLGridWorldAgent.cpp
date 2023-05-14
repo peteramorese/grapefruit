@@ -34,8 +34,6 @@ int main(int argc, char* argv[]) {
 	float pr_mean = parser.parse<float>("pr-mean", 10.0f, "Preference distribution reward mean");
 	float pr_var = parser.parse<float>("pr-var", 4.0f, "Preference distribution reward variance");
 
-	LOG("pc var: " << pc_var);
-	PAUSE;
 	if (parser.enableHelp()) return 0;
 
 	/////////////////   Transition System   /////////////////
@@ -126,13 +124,16 @@ int main(int argc, char* argv[]) {
 
 
 	QuantifierSet<1> quantifier_set(p_ev);
+	std::shared_ptr<Animator<BehaviorHandlerType>> animator;
+	if (animate)
+		animator = std::make_shared<Animator<BehaviorHandlerType>>(product, p_ev);
 
 	for (uint32_t trial = 0; trial < n_trials; ++trial) {
 		if (!write_plans)
 			plan_directory = std::string();
 
 		std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, 1.0f);
-		ParetoReinforcementLearner<BehaviorHandlerType> prl(behavior_handler, plan_directory);
+		ParetoReinforcementLearner<BehaviorHandlerType> prl(behavior_handler, plan_directory, animator);
 
 		// Initialize the agent's state
 		TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
@@ -165,6 +166,13 @@ int main(int argc, char* argv[]) {
 	if (benchmark) {
 		TP::Serializer szr(benchmark_filepath);
 		quantifier_set.serializeDIBehavior(szr, "Cumulative Cost", "Cumulative Reward");
+		szr.done();
+	}
+
+	LOG("b4 animate file");
+	if (animate) {
+		TP::Serializer szr(animation_filepath);
+		animator->serialize(szr);
 		szr.done();
 	}
 

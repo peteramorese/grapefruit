@@ -104,7 +104,9 @@ int main(int argc, char* argv[]) {
 			if (verbose) plan.print();	
 			if (write_plans) {
 				std::string plan_filepath = plan_directory + "/" + templateToLabel(plan_file_template, i);
-				plan.serialize(plan_filepath, title);
+				Serializer szr(plan_filepath);
+				plan.serialize(szr, title);
+				szr.done();
 			}
 			++i;
 		}

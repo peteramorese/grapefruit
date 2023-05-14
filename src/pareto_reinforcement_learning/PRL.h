@@ -76,15 +76,10 @@ class ParetoReinforcementLearner {
         //typedef BehaviorSample<BEHAVIOR_HANDLER_T::numCostCriteria()>(*SamplerFunctionType)(TP::WideNode src_node, TP::WideNode dst_node, const TP::DiscreteModel::Action& action);
 
     public:
-        ParetoReinforcementLearner(const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler, const std::string& write_plan_directory = std::string())
+        ParetoReinforcementLearner(const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler, const std::string& write_plan_directory = std::string(), const std::shared_ptr<Animator<BEHAVIOR_HANDLER_T>>& animator = nullptr)
             : m_product(behavior_handler->getProduct())
             , m_behavior_handler(behavior_handler)
             , m_write_plan_directory(write_plan_directory)
-        {}
-
-        ParetoReinforcementLearner(const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler, const std::shared_ptr<Animator<BEHAVIOR_HANDLER_T>>& animator)
-            : m_product(behavior_handler->getProduct())
-            , m_behavior_handler(behavior_handler)
             , m_animator(animator)
         {}
 
@@ -108,6 +103,7 @@ class ParetoReinforcementLearner {
 
         std::list<PathSolution>::const_iterator select(const ParetoFrontResult& search_result, const TrajectoryDistribution& p_ev) {
             typename std::list<PathSolution>::const_iterator min_it = search_result.solution_set.begin();
+            uint32_t min_ind = 0;
             float min_efe = 0.0f;
 
             auto costToStr = [](const typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t& cv) {
@@ -120,7 +116,7 @@ class ParetoReinforcementLearner {
             };
 
             std::vector<TrajectoryDistribution> traj_distributions;
-            traj_distributions.reserve(search_result.solution_set.size())
+            traj_distributions.reserve(search_result.solution_set.size());
             uint32_t plan_i = 0;
             for (auto it = search_result.solution_set.begin(); it != search_result.solution_set.end(); ++it) {
                 
@@ -139,6 +135,7 @@ class ParetoReinforcementLearner {
                     if (efe < min_efe) {
                         min_efe = efe;
                         min_it = it;
+                        min_ind = plan_i;
                     }
                 } else {
                     min_efe = efe;
@@ -147,8 +144,10 @@ class ParetoReinforcementLearner {
                 traj_distributions.push_back(std::move(traj_dist));
                 
                 if (!m_write_plan_directory.empty()) {
-                    plan.serialize(m_write_plan_directory + "/candidate_plan_" + std::to_string(plan_i) + ".yaml", 
+                    TP::Serializer szr(m_write_plan_directory + "/candidate_plan_" + std::to_string(plan_i) + ".yaml");
+                    plan.serialize(szr, 
                         "Candidate Plan " + std::to_string(plan_i) + " at decision instance: " + std::to_string(m_quantifier.decision_instances));
+                    szr.done();
                 }
 
                 ++plan_i;
@@ -158,7 +157,7 @@ class ParetoReinforcementLearner {
 
             // Add to animator
             if (m_animator)
-                m_animator->addInstance(search_result, min_it, std::move(traj_distributions));
+                m_animator->addInstance(search_result, min_ind, std::move(traj_distributions));
 
             return min_it;
         }
@@ -185,7 +184,9 @@ class ParetoReinforcementLearner {
                 //    return true;
             }
             m_quantifier.finishDI();
-            plan.serialize("prl_plans/end_plan.yaml", "Chosen Plan");
+            TP::Serializer szr(m_write_plan_directory + "/chosen_plan.yaml");
+            plan.serialize(szr, "Chosen Plan");
+            szr.done();
             // Do not terminate
             return false;
         }

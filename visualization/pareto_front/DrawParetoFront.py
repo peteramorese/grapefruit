@@ -32,7 +32,7 @@ class ParetoFrontVisualizer2D:
     def _reset(self):
         self._data.clear()
         
-    def serialize(self, filepath):
+    def deserialize(self, filepath):
         self._reset()
 
         with open(filepath, "r") as f:
@@ -83,8 +83,8 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
     def __init__(self):
         super().__init__()
 
-    def serialize(self, filepath):
-        super().serialize(filepath)
+    def deserialize(self, filepath):
+        super().deserialize(filepath)
         mu = self._data["PRL Preference Mean"]
         self._push_upper_axis_bounds((1.0 + visualize_config["margin_percent"][0]) * mu[0], (1.0 + visualize_config["margin_percent"][0]) * mu[1])
 
@@ -120,5 +120,5 @@ if __name__ == "__main__":
 
     visualizer = ParetoFrontVisualizer2D() if not args.prl else PRLParetoFrontVisualizer()
 
-    visualizer.serialize(args.filepath)
+    visualizer.deserialize(args.filepath)
     visualizer.display()

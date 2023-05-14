@@ -129,7 +129,7 @@ namespace Planner {
                 for (const auto& s : state_sequence) {
                     out << s.to_str();
                 }
-                YAML::EndSeq;
+                out << YAML::EndSeq;
             }
 
             StateIterator begin() {
