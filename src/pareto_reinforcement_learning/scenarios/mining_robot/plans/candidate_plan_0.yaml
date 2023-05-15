@@ -1,53 +1,34 @@
-Title: "Candidate Plan 0 at decision instance: 98"
+Title: "Candidate Plan 0 at decision instance: 0"
 Action Sequence:
+  - right
+  - up
+  - up
+  - right
+  - up
+  - up
   - up
   - right
   - up
   - up
   - up
   - up
+  - right
   - up
   - up
+  - right
+  - right
+  - right
+  - right
+  - right
+  - right
+  - right
+  - up
+  - right
   - up
   - up
-  - up
-  - up
-  - up
-  - up
-  - up
+  - right
+  - down
   - left
-  - left
-  - up
-  - left
-  - up
-  - right
-  - right
-  - right
-  - right
-  - right
-  - right
-  - right
-  - right
-  - right
-  - down
-  - right
-  - right
-  - down
-  - right
-  - up
-  - up
-  - up
-  - up
-  - right
-  - right
-  - right
-  - right
-  - down
-  - right
-  - right
-  - down
-  - down
-  - down
   - down
   - down
   - down
@@ -57,18 +38,6 @@ Action Sequence:
   - down
   - left
   - left
-  - down
-  - down
-  - left
-  - left
-  - left
-  - left
-  - down
-  - left
-  - left
-  - left
-  - left
-  - left
   - left
   - left
   - left
@@ -76,87 +45,62 @@ Action Sequence:
   - left
   - left
   - down
+  - down
+  - down
+  - left
   - down
   - down
   - down
 State Sequence:
-  - x3, y0
-  - x3, y1
-  - x4, y1
-  - x4, y2
-  - x4, y3
-  - x4, y4
-  - x4, y5
-  - x4, y6
-  - x4, y7
-  - x4, y8
+  - x0, y0
+  - x1, y0
+  - x1, y1
+  - x1, y2
+  - x2, y2
+  - x2, y3
+  - x2, y4
+  - x2, y5
+  - x3, y5
+  - x3, y6
+  - x3, y7
+  - x3, y8
+  - x3, y9
   - x4, y9
   - x4, y10
   - x4, y11
-  - x4, y12
-  - x4, y13
-  - x4, y14
-  - x3, y14
-  - x2, y14
-  - x2, y15
-  - x1, y15
-  - x1, y16
-  - x2, y16
-  - x3, y16
-  - x4, y16
-  - x5, y16
-  - x6, y16
-  - x7, y16
-  - x8, y16
-  - x9, y16
-  - x10, y16
-  - x10, y15
-  - x11, y15
-  - x12, y15
+  - x5, y11
+  - x6, y11
+  - x7, y11
+  - x8, y11
+  - x9, y11
+  - x10, y11
+  - x11, y11
+  - x11, y12
+  - x12, y12
+  - x12, y13
   - x12, y14
   - x13, y14
-  - x13, y15
-  - x13, y16
-  - x13, y17
-  - x13, y18
-  - x14, y18
-  - x15, y18
-  - x16, y18
-  - x17, y18
-  - x17, y17
-  - x18, y17
-  - x19, y17
-  - x19, y16
-  - x19, y15
-  - x19, y14
-  - x19, y13
-  - x19, y12
-  - x19, y11
-  - x19, y10
-  - x19, y9
-  - x19, y8
-  - x19, y7
-  - x18, y7
-  - x17, y7
-  - x17, y6
-  - x17, y5
-  - x16, y5
-  - x15, y5
-  - x14, y5
-  - x13, y5
-  - x13, y4
-  - x12, y4
-  - x11, y4
-  - x10, y4
-  - x9, y4
-  - x8, y4
-  - x7, y4
-  - x6, y4
-  - x5, y4
+  - x13, y13
+  - x12, y13
+  - x12, y12
+  - x12, y11
+  - x12, y10
+  - x12, y9
+  - x12, y8
+  - x12, y7
+  - x12, y6
+  - x11, y6
+  - x10, y6
+  - x9, y6
+  - x8, y6
+  - x7, y6
+  - x6, y6
+  - x5, y6
+  - x4, y6
+  - x4, y5
   - x4, y4
-  - x3, y4
-  - x2, y4
-  - x2, y3
-  - x2, y2
-  - x2, y1
-  - x2, y0
+  - x4, y3
+  - x3, y3
+  - x3, y2
+  - x3, y1
+  - x3, y0

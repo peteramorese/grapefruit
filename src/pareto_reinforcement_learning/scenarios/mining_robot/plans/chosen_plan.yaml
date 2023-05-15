@@ -1,4 +1,4 @@
-Title: "Candidate Plan 1 at decision instance: 0"
+Title: Chosen Plan
 Action Sequence:
   - right
   - up
@@ -22,27 +22,35 @@ Action Sequence:
   - right
   - right
   - right
-  - down
-  - down
-  - down
+  - up
+  - right
+  - up
+  - up
   - right
   - down
+  - left
+  - down
+  - down
+  - down
+  - down
+  - down
+  - down
+  - down
+  - left
+  - left
+  - left
+  - left
+  - left
+  - left
+  - left
+  - left
   - down
   - down
   - down
   - left
-  - left
-  - left
-  - down
-  - left
-  - left
-  - left
-  - left
   - down
   - down
-  - left
   - down
-  - left
 State Sequence:
   - x0, y0
   - x1, y0
@@ -67,24 +75,32 @@ State Sequence:
   - x9, y11
   - x10, y11
   - x11, y11
-  - x11, y10
-  - x11, y9
-  - x11, y8
+  - x11, y12
+  - x12, y12
+  - x12, y13
+  - x12, y14
+  - x13, y14
+  - x13, y13
+  - x12, y13
+  - x12, y12
+  - x12, y11
+  - x12, y10
+  - x12, y9
   - x12, y8
   - x12, y7
   - x12, y6
-  - x12, y5
-  - x12, y4
-  - x11, y4
-  - x10, y4
-  - x9, y4
-  - x9, y3
-  - x8, y3
-  - x7, y3
-  - x6, y3
-  - x5, y3
-  - x5, y2
-  - x5, y1
-  - x4, y1
-  - x4, y0
+  - x11, y6
+  - x10, y6
+  - x9, y6
+  - x8, y6
+  - x7, y6
+  - x6, y6
+  - x5, y6
+  - x4, y6
+  - x4, y5
+  - x4, y4
+  - x4, y3
+  - x3, y3
+  - x3, y2
+  - x3, y1
   - x3, y0
