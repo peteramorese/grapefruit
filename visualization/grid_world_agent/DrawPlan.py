@@ -22,7 +22,7 @@ visualize_config = {
     "traj_offset_magnitude": 0.2,
     "arrow_color": "path_line_color",
     "arrow_scale": 20.0,
-    "arrow_head_width": 5,
+    "arrow_head_width": 2,
     "cells_per_arrow": 2,
     "show_directions": True,
     "figure_size": (4, 4)
@@ -63,7 +63,7 @@ class GridWorldAgentVisualizer:
         self.reset()
         self._data = data
 
-    def sketch_plan(self, ax = None, color = visualize_config["path_line_color"], arrow_color = visualize_config["arrow_color"], label="title"):
+    def sketch_plan(self, ax = None, color = visualize_config["path_line_color"], arrow_color = visualize_config["arrow_color"], label="title", ls=visualize_config["path_line_style"]):
         if not ax:
             ax = self.sketch_environment()
         x_seq = list()
@@ -100,17 +100,17 @@ class GridWorldAgentVisualizer:
         if label:
             if label == "title":
                 label = self._data["Title"]
-            ax.plot(x_seq, y_seq, ls=visualize_config["path_line_style"], lw=visualize_config["path_line_width"], color=color, label=label)
+            ax.plot(x_seq, y_seq, lw=visualize_config["path_line_width"], color=color, label=label, ls=ls)
         else:
-            ax.plot(x_seq, y_seq, ls=visualize_config["path_line_style"], lw=visualize_config["path_line_width"], color=color)
+            ax.plot(x_seq, y_seq, lw=visualize_config["path_line_width"], color=color, ls=ls)
             
 
         if visualize_config["show_directions"]:
             cells_per_arrow = visualize_config["cells_per_arrow"]
             if arrow_color == "path_line_color":
-                ax.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=color, scale=visualize_config["arrow_scale"], headwidth = visualize_config["arrow_head_width"])
+                ax.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=color, scale=visualize_config["arrow_scale"], headwidth = visualize_config["arrow_head_width"], ls=ls)
             else:
-                ax.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=arrow_color, scale=visualize_config["arrow_scale"], headwidth = visualize_config["arrow_head_width"])
+                ax.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=arrow_color, scale=visualize_config["arrow_scale"], headwidth = visualize_config["arrow_head_width"], ls=ls)
 
         if visualize_config["show_endpoints"]:
             ax.scatter(x_seq[0], y_seq[0], c="r")

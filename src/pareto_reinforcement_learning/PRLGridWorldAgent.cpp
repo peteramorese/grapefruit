@@ -135,7 +135,7 @@ int main(int argc, char* argv[]) {
 			plan_directory = std::string();
 
 		std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, reward_confidence, cost_confidence);
-		ParetoReinforcementLearner<BehaviorHandlerType> prl(behavior_handler, plan_directory, animator);
+		ParetoReinforcementLearner<BehaviorHandlerType> prl(behavior_handler, plan_directory, animator, verbose);
 
 		// Initialize the agent's state
 		TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);

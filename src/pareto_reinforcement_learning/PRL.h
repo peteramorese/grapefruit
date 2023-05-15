@@ -35,31 +35,45 @@ class ParetoReinforcementLearner {
         //typedef BehaviorSample<BEHAVIOR_HANDLER_T::numCostCriteria()>(*SamplerFunctionType)(TP::WideNode src_node, TP::WideNode dst_node, const TP::DiscreteModel::Action& action);
 
     public:
-        ParetoReinforcementLearner(const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler, const std::string& write_plan_directory = std::string(), const std::shared_ptr<Animator<BEHAVIOR_HANDLER_T>>& animator = nullptr)
+        ParetoReinforcementLearner(const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler, const std::string& write_plan_directory = std::string(), const std::shared_ptr<Animator<BEHAVIOR_HANDLER_T>>& animator = nullptr, bool verbose = false)
             : m_product(behavior_handler->getProduct())
             , m_behavior_handler(behavior_handler)
             , m_write_plan_directory(write_plan_directory)
             , m_animator(animator)
+            , m_verbose(verbose)
         {}
 
-        ParetoFrontResult computePlan(uint8_t completed_tasks_horizon) {
+        void log(const std::string& msg, bool sub_msg = false) {
+            if (m_verbose) {
+                std::string spc = sub_msg ? "   " : "";
+                LOG("[Collection Instance: " << m_quantifier.decision_instances << "] " << spc << msg);
+            }
+        }
+
+        ParetoFrontResult plan(uint8_t completed_tasks_horizon) {
+            log("Planning Phase (1)");
             PRLSearchProblem<BEHAVIOR_HANDLER_T> problem(m_product, m_current_product_node, completed_tasks_horizon, m_behavior_handler);
-            LOG("Planning...");
-            //ParetoFrontResult result = TP::GraphSearch::NAMOAStar<typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t, decltype(problem)>::search(problem);
-            ParetoFrontResult result = TP::GraphSearch::BOAStar<typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t, decltype(problem)>::search(problem);
-            LOG("Done!");
+            log("Planning...", true);
+            ParetoFrontResult result = [&] {
+                if constexpr (BEHAVIOR_HANDLER_T::numBehaviors() == 2)
+                    // Use BOA
+                    return TP::GraphSearch::BOAStar<typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t, decltype(problem)>::search(problem);
+                else
+                    // Use NAMOA
+                    return TP::GraphSearch::NAMOAStar<typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t, decltype(problem)>::search(problem);
+            }();
+            log("Done!", true);
             for (auto& sol : result.solution_set) {
                 // Inverse transform the solutions using the negative of the price function
-                //LOG("prev mean reward: " << sol.path_cost.template get<0>());
                 sol.path_cost.template get<0>() += m_behavior_handler->priceFunctionTransform(completed_tasks_horizon);
                 // Convert back to reward function
                 sol.path_cost.template get<0>() *= -1.0f;
-                //LOG("post mean reward: " << sol.path_cost.template get<0>());
             }
             return result;
         }
 
         std::list<PathSolution>::const_iterator select(const ParetoFrontResult& search_result, const TrajectoryDistribution& p_ev) {
+            log("Selection Phase (2)");
             typename std::list<PathSolution>::const_iterator min_it = search_result.solution_set.begin();
             uint32_t min_ind = 0;
             float min_efe = 0.0f;
@@ -84,12 +98,17 @@ class ParetoReinforcementLearner {
             uint32_t plan_i = 0;
             for (auto it = search_result.solution_set.begin(); it != search_result.solution_set.end(); ++it) {
                 
-                LOG("Considering solution: " << costToStr(it->path_cost));
+                //LOG("Considering solution: " << costToStr(it->path_cost));
 
                 Plan plan(*it, m_product, true);
                 //TrajectoryDistribution traj_dist = getTrajectoryDistribution(*it);
                 TrajectoryDistribution traj_dist = getTrajectoryDistribution(plan);
-                LOG("-> Trajectory distribution (reward mean: " << traj_dist.mu(0) << ", cost mean: " << traj_dist.mu(1) << ")");
+                //LOG("-> Trajectory distribution (reward mean: " << traj_dist.mu(0) << ", cost mean: " << traj_dist.mu(1) << ")");
+                if (m_verbose) {
+                    PRINT_NAMED("    Solution candidate " << plan_i, "\n" << 
+                        "         [cost  : N(" << traj_dist.mu(1) <<", " << traj_dist.covariance(1,1) <<"), ucb: " << std::to_string(it->path_cost.template get<1>()) << "]\n" <<
+                        "         [reward: N(" << traj_dist.mu(0) <<", " << traj_dist.covariance(0,0) <<"), ucb: " << std::to_string(it->path_cost.template get<0>()) << "]");
+                }
                 //float cost_mean = traj_dist.mu(1);
                 //std::cout<<" cost mean: " << cost_mean;
 
@@ -117,8 +136,7 @@ class ParetoReinforcementLearner {
 
                 ++plan_i;
             }
-            LOG("solutions size: " << search_result.solution_set.size());
-            LOG("Chosen solution: " << costToStr(min_it->path_cost));
+            log("Chosen solution: " + std::to_string(min_ind), true);
 
             // Add to animator
             if (m_animator)
@@ -129,6 +147,7 @@ class ParetoReinforcementLearner {
 
         template <typename SAMPLER_LAM_T>
         bool execute(const Plan& plan, SAMPLER_LAM_T sampler) {
+            log("Execution Phase (3)");
             auto node_it = plan.product_node_sequence.begin();
             for (const auto& action : plan.action_sequence) {
                 const auto& src_node = *node_it;
@@ -161,15 +180,16 @@ class ParetoReinforcementLearner {
             ASSERT(m_initialized, "Must initialize before running");
             m_quantifier.max_decision_instances = max_decision_instances;
             while (m_quantifier.decision_instances < max_decision_instances) {
-                ParetoFrontResult pf = computePlan(m_behavior_handler->getCompletedTasksHorizon());
+                ParetoFrontResult pf = plan(m_behavior_handler->getCompletedTasksHorizon());
                 if (!pf.success) {
-                    LOG("Planner did not succeed!");
+                    ERROR("Planner did not succeed!");
                     return m_quantifier;
                 }
                 auto path_solution = select(pf, p_ev);
                 Plan plan(*path_solution, m_product, true);
                 if (execute(plan, sampler))
                     return m_quantifier;
+                log("Update Phase (4)");
                 m_behavior_handler->update(plan.product_node_sequence.back().n_completed_tasks);
                 m_current_product_node = plan.product_node_sequence.back();
             }
@@ -189,16 +209,12 @@ class ParetoReinforcementLearner {
                         individual_distributions[m].convolveWith(cost_distributions[m - 1]);
                     } else {
                         for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
-                            //LOG("Checking src node: " << src_state_it.productNode().base_node << " dst node: " << dst_state_it.productNode().base_node);
                             if (!m_product->acc(src_state_it.productNode().base_node, automaton_i) && m_product->acc(dst_state_it.productNode().base_node, automaton_i)) {
-                                //LOG("--Found an acceptance");
                                 // Accumulate reward for each task satisfied
                                 individual_distributions[m].convolveWith(m_behavior_handler->getTaskElement(automaton_i).updater.getEstimateNormal());
                             }
-                            //PAUSE;
                         }
                     }
-                    //LOG("Individual distribution " << m << " mean: " << individual_distributions[m].mu << " sigma2: " << individual_distributions[m].sigma_2);
                 }
                 ++src_state_it;
                 ++dst_state_it;
@@ -211,8 +227,6 @@ class ParetoReinforcementLearner {
                 }
             }
 
-            //Eigen::IOFormat OctaveFmt(Eigen::StreamPrecision, 0, ", ", ";\n", "", "", "[", "]");
-            //LOG("TrajectoryDistribution covariance: \n" << distribution.covariance.format(OctaveFmt));
             return distribution;
         }
 
@@ -233,6 +247,8 @@ class ParetoReinforcementLearner {
 
         std::shared_ptr<Animator<BEHAVIOR_HANDLER_T>> m_animator;
         std::string m_write_plan_directory = "";
+
+        bool m_verbose;
 
 };
 }

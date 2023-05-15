@@ -21,11 +21,14 @@ visualize_config = {
     "selection_line_color": "red",
     "ucb_line_color": "cadetblue",
     "show_point_lines": False,
+    "connect_points": None,
+    "plan_legend_location": "upper left",
+    "pf_legend_location": "upper right",
     "speed_intervals": {
-        "turtle": 2000,
-        "rabbit": 1000,
-        "cheetah": 500,
-        "plane": 250,
+        "turtle": 4000,
+        "rabbit": 2000,
+        "cheetah": 1000,
+        "plane": 500,
         "zoom": 100
     }
 }
@@ -57,11 +60,7 @@ class PRLAnimator:
             ax.axvline(ucb_val[0], ls=":")
             ax.axhline(ucb_val[1], ls=":")
 
-<<<<<<< HEAD
     def animate(self, repeat = True, save_file = None, playback_speed = "rabbit", starting_instance = 0, ending_instance = None, show_full_traj = False):
-=======
-    def animate(self, repeat = False):
->>>>>>> 8e2653b (Minor changes)
         fig, (plan_ax, pf_ax) = plt.subplots(1, 2)
 
         self.__initialize()
@@ -98,14 +97,7 @@ class PRLAnimator:
             pf_ax.clear()
             self._pf_visualizer.clear_data_sets()
             self._plan_visualizer.sketch_environment(plan_ax)
-<<<<<<< HEAD
             instance_key = "Instance " + str(frame + starting_instance)
-=======
-            self._pf_visualizer.sketch_preference_distribution(pf_ax)
-            print("FRAME: ", frame)
-            instance_key = "Instance " + str(frame)
-            #print("Animating ", instance_key)
->>>>>>> 8e2653b (Minor changes)
             try:
                 instance_data = self._data[instance_key]
             except ValueError:
@@ -126,38 +118,32 @@ class PRLAnimator:
                     mean = np.array(v["Plan Mean"])
                     variance = np.array(v["Plan Variance"])
                     ucb_val = np.array(v["Plan Pareto UCB"])
+                    self._plan_visualizer.load_from_dict(v.copy())
                     if k != chosen_plan:
                         color = visualize_config["candidate_plan_color"] 
                         title = k
+                        self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, ls=":")
                     else:
                         chosen_mean = mean
                         color = visualize_config["chosen_plan_color"]
                         title = "Chosen Plan"
-                    self._plan_visualizer.load_from_dict(v.copy())
-                    self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title)
+                        self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, ls="-")
                     self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k)
                     self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"))
 
-<<<<<<< HEAD
-            self._pf_visualizer.sketch_pareto_front(pf_ax, label="Samples", connect_points="line")
-=======
-            # Add samples to pf
-            self._pf_visualizer.add_data_set(samples.copy())
-            self._pf_visualizer.sketch_pareto_front(pf_ax, label="Samples", connect_points="arrows")
->>>>>>> 8e2653b (Minor changes)
+            self._pf_visualizer.sketch_pareto_front(pf_ax, label="Samples", connect_points=visualize_config["connect_points"])
             selection_line_pts = np.stack((pref_mean, chosen_mean))
             pf_ax.plot(selection_line_pts[:,0], selection_line_pts[:,1], color=visualize_config["selection_line_color"], ls=":")
             
             # Add legends
-            plan_ax.legend(fontsize=visualize_config["legend_font_size"], loc="upper left")
-            pf_ax.legend(fontsize=visualize_config["legend_font_size"], loc="upper left")
+            plan_ax.legend(fontsize=visualize_config["legend_font_size"], loc=visualize_config["plan_legend_location"])
+            pf_ax.legend(fontsize=visualize_config["legend_font_size"], loc=visualize_config["pf_legend_location"])
 
             # Update title
             plan_ax.set_title(instance_key)
             
             return plan_ax, pf_ax
         
-<<<<<<< HEAD
         if ending_instance and ending_instance < self._instances:
             assert ending_instance > starting_instance
             n_instances = ending_instance - starting_instance
@@ -168,11 +154,6 @@ class PRLAnimator:
         animator = FuncAnimation(fig, update, frames=n_instances, init_func=init, interval=visualize_config["speed_intervals"][playback_speed], blit=False, repeat=repeat)
         if save_file:
             animator.save(save_file)
-=======
-        print("Number of instances: ", self._instances)
-        animator = FuncAnimation(fig, update, frames=self._instances, init_func=init, interval=500, blit=True, repeat=repeat)
-        animator.save("test.gif")
->>>>>>> 8e2653b (Minor changes)
         plt.show()
             
 
@@ -181,15 +162,10 @@ class PRLAnimator:
 
 if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
-<<<<<<< HEAD
     parser.add_argument("-f", "--filepath",default="animation.yaml", help="Animation file")
     parser.add_argument("-r", "--repeat",action="store_true", help="Loop the animation")
     parser.add_argument("-s", "--save-filepath",default=None, help="Save the animation")
-    parser.add_argument("--playback-speed",default="rabbit", help="Playback speed from slow to quick: (turtle, rabbit, cheetah, plane, zoom)")
-=======
-    parser.add_argument("-f", "--filepath",default="animation.yaml", help="Specify animation file")
-    parser.add_argument("-r", "--repeat", action="store_true", help="Repeat animation")
->>>>>>> 8e2653b (Minor changes)
+    parser.add_argument("--speed",default="rabbit", help="Playback speed from slow to quick: (turtle, rabbit, cheetah, plane, zoom)")
     parser.add_argument("--config-filepath", default="../../build/bin/configs/grid_world_config.yaml", help="Specify a grid world config file")
     parser.add_argument("--start-instance", default=0, type=int, help="Animation starting instance")
     parser.add_argument("--full-traj", action="store_true", help="Show the trajectory before the start-instance")
@@ -197,16 +173,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     try:
-        assert args.playback_speed in visualize_config["speed_intervals"].keys()
+        assert args.speed in visualize_config["speed_intervals"].keys()
     except ValueError:
         print("Playback speed must be one of the preset values: (turtle, rabbit, cheetah, plane, zoom)")
 
     animator = PRLAnimator(args.config_filepath)
 
     animator.deserialize(args.filepath)
-<<<<<<< HEAD
-    animator.animate(repeat=args.repeat, save_file=args.save_filepath, playback_speed=args.playback_speed, starting_instance=args.start_instance, ending_instance=args.end_instance, show_full_traj=args.full_traj)
-=======
-    animator.animate(repeat = args.repeat)
->>>>>>> 8e2653b (Minor changes)
+    animator.animate(repeat=args.repeat, save_file=args.save_filepath, playback_speed=args.speed, starting_instance=args.start_instance, ending_instance=args.end_instance, show_full_traj=args.full_traj)
     #animator.draw(use_legend=True)
