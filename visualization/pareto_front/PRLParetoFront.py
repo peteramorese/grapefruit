@@ -8,7 +8,7 @@ import yaml
 import argparse
 from scipy.stats import multivariate_normal
 
-from DrawParetoFront import visualize_config, ParetoFrontVisualizer2D
+from .DrawParetoFront import visualize_config, ParetoFrontVisualizer2D
 
 class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
     def __init__(self):
@@ -19,7 +19,12 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
         mu = self._data["PRL Preference Mean"]
         self._push_upper_axis_bounds((1.0 + visualize_config["margin_percent"][0]) * mu[0], (1.0 + visualize_config["margin_percent"][0]) * mu[1])
 
-    def sketch_distribution(self, mean, variance, ax = None, fill_contour = True, levels = 2):
+    def load_from_dict(self, data: dict):
+        super().load_from_dict(data)
+        mu = self._data["PRL Preference Mean"]
+        self._push_upper_axis_bounds((1.0 + visualize_config["margin_percent"][0]) * mu[0], (1.0 + visualize_config["margin_percent"][0]) * mu[1])
+
+    def sketch_distribution(self, mean, variance, ax = None, fill_contour = True, levels = 20, name = None):
         if not ax:
             ax = plt.gca()
         x_ls = np.linspace(self.x_bounds[0], self.x_bounds[1], visualize_config["discretization_N"])
@@ -28,19 +33,15 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
         grid_point_arr = np.stack([x.flatten(), y.flatten()], axis=1)
         mu = np.array([mean[0], mean[1]])
         sigma = np.array([[variance[0], 0.0], [0.0, variance[1]]])
-        #print("sigma: ", sigma)
-        #sigma[0][0] = 100*100
-        #sigma[1][1] = 16
-        #print("sigma: ", sigma)
         pdf_vals = multivariate_normal.pdf(x=grid_point_arr, cov = sigma, mean = mu)
-        #pdf_vals = np.zeros(x.shape)
-        #for i in range(visualize_config["discretization_N"]):
-        #    for j in range(visualize_config["discretization_N"]):
-        #        pdf_vals[i, j] = dist.pdf([x[i, j], y[i, j]])
         if fill_contour:
-            ax.contourf(x, y, pdf_vals.reshape(x.shape), cmap='GnBu')        
+            ax.contourf(x, y, pdf_vals.reshape(x.shape), levels=levels, cmap='GnBu')
         else:
-            ax.contour(x, y, pdf_vals.reshape(x.shape), levels, cmap='GnBu')
+            ax.contour(x, y, pdf_vals.reshape(x.shape), levels=levels, cmap='GnBu')
+        if name:
+            ax.scatter(x=mean[0], y=mean[1], s=30, c='teal', label=name)
+        else:
+            ax.scatter(x=mean[0], y=mean[1], s=30, c='teal')
         return ax
 
     def sketch_pareto_front(self, ax = None):
@@ -48,7 +49,7 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
             ax = plt.gca()
         mean = self._data["PRL Preference Mean"]
         variance = self._data["PRL Preference Variance"]
-        ax = self.sketch_distribution(mean, variance, ax)
+        ax = self.sketch_distribution(mean, variance, ax, fill_contour=True, name="Preference")
         ax = super().sketch_pareto_front(ax, connect_points="arrows")
         return ax
 
@@ -60,4 +61,4 @@ if __name__ == "__main__":
     visualizer = PRLParetoFrontVisualizer()
 
     visualizer.deserialize(args.filepath)
-    visualizer.draw()
+    visualizer.draw(use_legend=True)

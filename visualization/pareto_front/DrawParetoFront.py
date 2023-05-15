@@ -43,6 +43,9 @@ class ParetoFrontVisualizer2D:
 
     def add_data_set(self, data_set):
         self._data_sets.append(data_set)
+
+    def clear_data_sets(self):
+        self._data_sets.clear()
     
     def sketch_pareto_front(self, ax = None, connect_points = None):
         if not ax:
@@ -68,12 +71,14 @@ class ParetoFrontVisualizer2D:
                 print("Unrecognized point connection type: ", visualize_config["connect_points"])
         return ax
 
-    def draw(self, block = True):
+    def draw(self, block = True, use_legend = False):
         plt.figure()
         ax = plt.gca()
         self.sketch_pareto_front(ax)
         plt.show(block=False)
         plt.gcf().set_size_inches(visualize_config["figure_size"][0], visualize_config["figure_size"][1])
+        if use_legend:
+            plt.legend(fontsize=15, loc="upper left")
         if block:
             self._block_for_input()
 

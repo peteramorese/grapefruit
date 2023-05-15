@@ -58,9 +58,10 @@ class GridWorldAgentVisualizer:
 
     def load_from_dict(self, data: dict):
         self.__reset()
+        print("INSERTING DATA: ", data)
         self._data = data
 
-    def sketch_plan(self, ax = None):
+    def sketch_plan(self, ax = None, color = visualize_config["path_line_color"], arrow_color = visualize_config["arrow_color"]):
         if not ax:
             ax = self.sketch_environment()
         x_seq = list()
@@ -95,14 +96,14 @@ class GridWorldAgentVisualizer:
             if visualize_config["show_title"]:
                 ax.set_title(self._data["Title"])
 
-        ax.plot(x_seq, y_seq, ls=visualize_config["path_line_style"], lw=visualize_config["path_line_width"], color=visualize_config["path_line_color"])
+        ax.plot(x_seq, y_seq, ls=visualize_config["path_line_style"], lw=visualize_config["path_line_width"], color=color)
 
         if visualize_config["show_directions"]:
             cells_per_arrow = visualize_config["cells_per_arrow"]
-            if visualize_config["arrow_color"] == "path_line_color":
-                ax.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=visualize_config["path_line_color"], scale=visualize_config["arrow_scale"], headwidth = visualize_config["arrow_head_width"])
+            if arrow_color == "path_line_color":
+                ax.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=color, scale=visualize_config["arrow_scale"], headwidth = visualize_config["arrow_head_width"])
             else:
-                ax.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=visualize_config["arrow_color"], scale=visualize_config["arrow_scale"], headwidth = visualize_config["arrow_head_width"])
+                ax.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=arrow_color, scale=visualize_config["arrow_scale"], headwidth = visualize_config["arrow_head_width"])
 
         if visualize_config["show_endpoints"]:
             ax.scatter(x_seq[0], y_seq[0], c="r")
@@ -142,6 +143,7 @@ class GridWorldAgentVisualizer:
         return ax
     
     def __reset(self):
+        print(self._data)
         self._data.clear()
         
     @staticmethod
