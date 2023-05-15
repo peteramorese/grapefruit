@@ -27,14 +27,32 @@ namespace TP {
             }
 
             template <typename T>
-            T parse(const std::string& key, T default_value = T{}, const std::string& description = std::string());
+            T parse(const std::string& key, T default_value = T{}, const std::string& description = std::string(), char flag = '\0') {
+                std::string key_str = getKey(key);
+                m_descriptions.emplace_back(key_str, from<T>(default_value), description);
+                for (uint32_t i=1; i<m_argc; ++i) {
+                    if (m_checked[i]) continue;
+
+                    std::string arg = m_argv[i];
+                    if (arg == key_str) {
+                        ASSERT(i < m_argc - 1, "Parse key: '" << key << "' given with no string value");
+                        m_checked[i] = true;
+                        m_checked[i + 1] = true;
+                        return to<T>(m_argv[i + 1]);
+                    }
+                }
+                return default_value;
+            }
 
             bool hasKey(const std::string& key, const std::string& description = std::string()) {
                 std::string key_str = getKey(key);
                 if (!description.empty()) m_descriptions.emplace_back(key_str, std::string(), description);
                 for (uint32_t i=1; i<m_argc; ++i) {
                     std::string arg = m_argv[i];
-                    if (arg == key_str) return true;
+                    if (arg == key_str) {
+                        m_checked[i] = true;
+                        return true;
+                    }
                 }
                 return false;
             }
@@ -50,6 +68,13 @@ namespace TP {
                         PRINT_NAMED(key, description);
                     }
                     return true;
+                }
+
+                for (uint32_t i=1; i<m_argc; ++i) {
+                    if (!m_checked[i]) {
+                        ERROR("Unrecognized arg '" << m_argv[i]);
+                        return true;
+                    }
                 }
                 return false;
             }
@@ -72,6 +97,14 @@ namespace TP {
             }
             inline std::string getKey(const std::string& key) const {return "--" + key;}
 
+            template <typename T>
+            T to(const std::string& str);
+
+            template <typename T>
+            std::string from(const T& v);
+        
+        private:
+
             std::vector<bool> m_checked;
             int m_argc;
             char** m_argv;
@@ -79,64 +112,27 @@ namespace TP {
     };
 
     template <>
-    std::string ArgParser::parse<std::string>(const std::string& key, std::string default_value, const std::string& description) {
-        std::string key_str = getKey(key);
-        m_descriptions.emplace_back(key_str, default_value, description);
-        for (uint32_t i=1; i<m_argc; ++i) {
-            if (m_checked[i]) continue;
-
-            std::string arg = m_argv[i];
-            if (arg == key_str) {
-                ASSERT(i < m_argc - 1, "Parse key: '" << key << "' given with no string value");
-                m_checked[i] = true;
-                m_checked[i + 1] = true;
-                return m_argv[i + 1];
-            }
-        }
-        return default_value;
-    }
+    std::string ArgParser::to<std::string>(const std::string& str) {return str;}
+    template <>
+    std::string ArgParser::from<std::string>(const std::string& v) {return v;}
 
     template <>
-    int ArgParser::parse<int>(const std::string& key, int default_value, const std::string& description) {
-        std::string key_str = getKey(key);
-        m_descriptions.emplace_back(key_str, std::to_string(default_value), description);
-        for (uint32_t i=1; i<m_argc; ++i) {
-            if (m_checked[i]) continue;
-
-            std::string arg = m_argv[i];
-            if (arg == key_str) {
-                ASSERT(i < m_argc - 1, "Parse key: '" << key << "' given with no int value");
-                m_checked[i] = true;
-                m_checked[i + 1] = true;
-                return std::stoi(m_argv[i + 1], std::string::size_type());
-            }
-        }
-        return default_value;
-    }
+    int ArgParser::to<int>(const std::string& str) {return std::stoi(str, std::string::size_type());}
+    template <>
+    std::string ArgParser::from<int>(const int& v) {return std::to_string(v);}
 
     template <>
-    uint32_t ArgParser::parse<uint32_t>(const std::string& key, uint32_t default_value, const std::string& description) {
-        return static_cast<uint32_t>(parse<int>(key, default_value, description));
-    }
+    uint32_t ArgParser::to<uint32_t>(const std::string& str) {return static_cast<uint32_t>(std::stoi(str, std::string::size_type()));}
+    template <>
+    std::string ArgParser::from<uint32_t>(const uint32_t& v) {return std::to_string(v);}
 
     template <>
-    float ArgParser::parse<float>(const std::string& key, float default_value, const std::string& description) {
-        std::string key_str = getKey(key);
-        m_descriptions.emplace_back(key_str, std::to_string(default_value), description);
-        for (uint32_t i=1; i<m_argc; ++i) {
-            if (m_checked[i]) continue;
-
-            std::string arg = m_argv[i];
-            if (arg == key_str) {
-                ASSERT(i < m_argc - 1, "Parse key: '" << key << "' given with no int value");
-                m_checked[i] = true;
-                m_checked[i + 1] = true;
-                std::string::size_type sz;
-                return std::stof(m_argv[i + 1], &sz);
-            }
-        }
-        return default_value;
+    float ArgParser::to<float>(const std::string& str) {
+        std::string::size_type sz;
+        return std::stof(str, &sz);
     }
+    template <>
+    std::string ArgParser::from<float>(const float& v) {return std::to_string(v);}
 
 
 }
