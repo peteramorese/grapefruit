@@ -2,6 +2,8 @@
 
 #include "TaskPlanner.h"
 
+#include "Quantifier.h"
+
 namespace PRL {
 
 template <class BEHAVIOR_HANDLER_T>
@@ -48,7 +50,7 @@ class Animator {
             m_instances.emplace_back(search_result, chosen_plan_index, std::move(plan_distribution));
         }
 
-        void serialize(TP::Serializer& szr) {
+        void serialize(TP::Serializer& szr, const PRLQuantifier<BEHAVIOR_HANDLER_T::numCostCriteria()>& quantifier) {
             static_assert(BEHAVIOR_HANDLER_T::numBehaviors() == 2, "Does not support serialization of more than one cost behavior");
 
             YAML::Emitter& out = szr.get();
@@ -65,8 +67,11 @@ class Animator {
             out << YAML::Key << "Instances" << YAML::Value << m_instances.size();
 
             uint32_t instance_i = 0;
+
+            const auto& instance_samples = quantifier.getDIBehaviors();
+            ASSERT(instance_samples.size() == m_instances.size(), "Number of instances in quantifier does not match");
             for (const auto& instance : m_instances) {
-                out << YAML::Key << "Instance " + std::to_string(instance_i++); 
+                out << YAML::Key << "Instance " + std::to_string(instance_i); 
                 out << YAML::Value << YAML::BeginMap;
 
                 out << YAML::Key << "Chosen Plan" << YAML::Value << "Candidate Plan " + std::to_string(instance.chosen_plan_index);
@@ -99,7 +104,12 @@ class Animator {
 
                     ++plan_i;
                 }
+
+                out << YAML::Key << "Sample" << YAML::Value << YAML::BeginSeq;
+                out << instance_samples[instance_i][1] << instance_samples[instance_i][0] << YAML::EndSeq;
+
                 out << YAML::EndMap;
+                ++instance_i;
             }
         }
 

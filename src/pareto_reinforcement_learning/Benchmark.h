@@ -20,6 +20,9 @@ class QuantifierSet {
             m_data.push_back(quantifier);
         }
 
+        const PRLQuantifier<COST_CRITERIA_M>& operator[](uint32_t i) const {return m_data[i];}
+        const PRLQuantifier<COST_CRITERIA_M>& back() const {return m_data.back();}
+
         void serializeAverageBehavior(TP::Serializer& szr, const std::string& obj_0_label, const std::string& obj_1_label) {
             static_assert(COST_CRITERIA_M == 1, "Only supports serialization of Bi-objective problems");
             

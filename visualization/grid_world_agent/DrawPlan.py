@@ -16,7 +16,7 @@ visualize_config = {
     "text_font_size": 15.0,
     "show_text": True,
     "show_ticks": False,
-    "show_title": True,
+    "show_title": False,
     "show_endpoints": True,
     "text_offset": (.1, .5),
     "traj_offset_magnitude": 0.2,
@@ -49,19 +49,22 @@ class GridWorldAgentVisualizer:
                 region["upper_right_y"] = self.__config["Upper Right Cells Y"][i]
                 region["color"] = self.__config["Region Colors"][i]
                 self.__environment.append(region)
+
+    def reset(self):
+        self._data.clear()
     
     def deserialize(self, filepath):
-        self.__reset()
+        self.reset()
 
         with open(filepath, "r") as f:
             self._data = yaml.safe_load(f)
 
     def load_from_dict(self, data: dict):
-        self.__reset()
+        self.reset()
         print("INSERTING DATA: ", data)
         self._data = data
 
-    def sketch_plan(self, ax = None, color = visualize_config["path_line_color"], arrow_color = visualize_config["arrow_color"]):
+    def sketch_plan(self, ax = None, color = visualize_config["path_line_color"], arrow_color = visualize_config["arrow_color"], label="title"):
         if not ax:
             ax = self.sketch_environment()
         x_seq = list()
@@ -92,11 +95,16 @@ class GridWorldAgentVisualizer:
             prev_offset = offset
 
         if "Title" in self._data:
-            print("Displaying: ", self._data["Title"])
             if visualize_config["show_title"]:
                 ax.set_title(self._data["Title"])
 
-        ax.plot(x_seq, y_seq, ls=visualize_config["path_line_style"], lw=visualize_config["path_line_width"], color=color)
+        if label:
+            if label == "title":
+                label = self._data["Title"]
+            ax.plot(x_seq, y_seq, ls=visualize_config["path_line_style"], lw=visualize_config["path_line_width"], color=color, label=label)
+        else:
+            ax.plot(x_seq, y_seq, ls=visualize_config["path_line_style"], lw=visualize_config["path_line_width"], color=color)
+            
 
         if visualize_config["show_directions"]:
             cells_per_arrow = visualize_config["cells_per_arrow"]
@@ -142,10 +150,6 @@ class GridWorldAgentVisualizer:
         
         return ax
     
-    def __reset(self):
-        print(self._data)
-        self._data.clear()
-        
     @staticmethod
     def __state_str_to_coord(state_str):
         split_str = state_str.split(", ")

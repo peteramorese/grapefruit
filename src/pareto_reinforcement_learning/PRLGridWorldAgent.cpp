@@ -161,18 +161,18 @@ int main(int argc, char* argv[]) {
 			true_behavior->compare(*behavior_handler);
 
 		quantifier_set.push_back(std::move(quantifier));
+
+		if (animate) {
+			TP::Serializer szr(animation_filepath);
+			animator->serialize(szr, quantifier_set.back());
+			szr.done();
+		}
+
 	}
 
 	if (benchmark) {
 		TP::Serializer szr(benchmark_filepath);
 		quantifier_set.serializeDIBehavior(szr, "Cumulative Cost", "Cumulative Reward");
-		szr.done();
-	}
-
-	LOG("b4 animate file");
-	if (animate) {
-		TP::Serializer szr(animation_filepath);
-		animator->serialize(szr);
 		szr.done();
 	}
 

@@ -42,12 +42,13 @@ class ParetoFrontVisualizer2D:
         self._organize_data_sets()
 
     def add_data_set(self, data_set):
+        self._push_upper_axis_bounds(max(data_set["Objective 0"]), max(data_set["Objective 1"]))
         self._data_sets.append(data_set)
 
     def clear_data_sets(self):
         self._data_sets.clear()
     
-    def sketch_pareto_front(self, ax = None, connect_points = None):
+    def sketch_pareto_front(self, ax = None, connect_points = None, label = None):
         if not ax:
             ax = plt.gca()
         ax.grid()
@@ -60,17 +61,17 @@ class ParetoFrontVisualizer2D:
         for set in self._data_sets:
             pt_color = set["Color"] if "Color" in set.keys() else visualize_config["default_color"]
             if connect_points is None:
-                ax.scatter(set["Objective 0"], set["Objective 1"], color=pt_color, s=visualize_config["dot_size"])
+                ax.scatter(set["Objective 0"], set["Objective 1"], color=pt_color, s=visualize_config["dot_size"], label=label)
             elif connect_points == "line":
-                ax.plot(set["Objective 0"], set["Objective 1"], color=pt_color, s=visualize_config["dot_size"])
+                ax.plot(set["Objective 0"], set["Objective 1"], color=pt_color, s=visualize_config["dot_size"], label=label)
             elif connect_points == "arrows":
                 x = np.array(set["Objective 0"])
                 y = np.array(set["Objective 1"])
-                ax.quiver(x[:-1], y[:-1], x[1:]-x[:-1], y[1:]-y[:-1], scale_units='xy', angles='xy', scale=1, color=pt_color, width=visualize_config["arrow_thickness"])
+                ax.quiver(x[:-1], y[:-1], x[1:]-x[:-1], y[1:]-y[:-1], scale_units='xy', angles='xy', scale=1, color=pt_color, width=visualize_config["arrow_thickness"], label=label)
             else:
                 print("Unrecognized point connection type: ", visualize_config["connect_points"])
         return ax
-
+    
     def draw(self, block = True, use_legend = False):
         plt.figure()
         ax = plt.gca()
