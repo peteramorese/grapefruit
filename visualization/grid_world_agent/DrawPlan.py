@@ -31,7 +31,7 @@ visualize_config = {
 class GridWorldAgentVisualizer:
 
     def __init__(self, config_filepath):
-        self.__plan_properties = dict()
+        self._data = dict()
 
         with open(config_filepath, "r") as f:
             self.__config = yaml.safe_load(f)
@@ -50,32 +50,15 @@ class GridWorldAgentVisualizer:
                 region["color"] = self.__config["Region Colors"][i]
                 self.__environment.append(region)
     
-    def __reset(self):
-        self.__plan_properties.clear()
-        
     def deserialize(self, filepath):
         self.__reset()
 
         with open(filepath, "r") as f:
-            self.__plan_properties = yaml.safe_load(f)
+            self._data = yaml.safe_load(f)
 
-    @staticmethod
-    def __state_str_to_coord(state_str):
-        split_str = state_str.split(", ")
-        assert len(split_str) == 2
-        return (int(split_str[0].replace('x', '')), int(split_str[1].replace('y', '')))
-    
-    def __draw_regions(self, ax, show_unique_regions_only = True):
-        unique_regions = set()
-        for region in self.__environment:
-            width = region["upper_right_x"] - region["lower_left_x"] + 1
-            height = region["upper_right_y"] - region["lower_left_y"] + 1
-            rectangle = matplotlib.patches.Rectangle((region["lower_left_x"] - 0.5, region["lower_left_y"] - 0.5), width, height, color=region["color"])
-            ax.add_patch(rectangle)
-            if visualize_config["show_text"] and (region["label"] not in unique_regions or not show_unique_regions_only):
-                ax.text(region["lower_left_x"] - 0.5 + visualize_config["text_offset"][0], region["lower_left_y"] - 0.5 + visualize_config["text_offset"][1], region["label"], fontsize=visualize_config["text_font_size"])
-                unique_regions.add(region["label"])
-
+    def load_from_dict(self, data: dict):
+        self.__reset()
+        self._data = data
 
     def sketch_plan(self, ax = None):
         if not ax:
@@ -84,12 +67,12 @@ class GridWorldAgentVisualizer:
         y_seq = list()
         u_seq = list()
         v_seq = list()
-        x_seq.append(self.__state_str_to_coord(self.__plan_properties["State Sequence"][0])[0])
-        y_seq.append(self.__state_str_to_coord(self.__plan_properties["State Sequence"][0])[1])
+        x_seq.append(self.__state_str_to_coord(self._data["State Sequence"][0])[0])
+        y_seq.append(self.__state_str_to_coord(self._data["State Sequence"][0])[1])
         prev_offset = np.array([0.0, 0.0])
-        for i in range(1, len(self.__plan_properties["State Sequence"])):
-            s_prev_coord = self.__state_str_to_coord(self.__plan_properties["State Sequence"][i-1])
-            s_coord = self.__state_str_to_coord(self.__plan_properties["State Sequence"][i])
+        for i in range(1, len(self._data["State Sequence"])):
+            s_prev_coord = self.__state_str_to_coord(self._data["State Sequence"][i-1])
+            s_coord = self.__state_str_to_coord(self._data["State Sequence"][i])
             direction = np.array([s_coord[0] - s_prev_coord[0], s_coord[1] - s_prev_coord[1], 0.0])
             u_seq.append(direction[0])
             v_seq.append(direction[1])
@@ -107,10 +90,10 @@ class GridWorldAgentVisualizer:
                 y_seq.append(s_coord[1])
             prev_offset = offset
 
-        if "Title" in self.__plan_properties:
-            print("Displaying: ", self.__plan_properties["Title"])
+        if "Title" in self._data:
+            print("Displaying: ", self._data["Title"])
             if visualize_config["show_title"]:
-                ax.set_title(self.__plan_properties["Title"])
+                ax.set_title(self._data["Title"])
 
         ax.plot(x_seq, y_seq, ls=visualize_config["path_line_style"], lw=visualize_config["path_line_width"], color=visualize_config["path_line_color"])
 
@@ -137,10 +120,7 @@ class GridWorldAgentVisualizer:
         plt.show(block=False)
         plt.gcf().set_size_inches(visualize_config["figure_size"][0], visualize_config["figure_size"][1])
         if block:
-            self.block_for_input()
-
-    def block_for_input(self):
-        input("Press key to close")
+            self._block_for_input()
 
     def sketch_environment(self, ax = None):
         if not ax:
@@ -161,7 +141,28 @@ class GridWorldAgentVisualizer:
         
         return ax
     
+    def __reset(self):
+        self._data.clear()
+        
+    @staticmethod
+    def __state_str_to_coord(state_str):
+        split_str = state_str.split(", ")
+        assert len(split_str) == 2
+        return (int(split_str[0].replace('x', '')), int(split_str[1].replace('y', '')))
+    
+    def __draw_regions(self, ax, show_unique_regions_only = True):
+        unique_regions = set()
+        for region in self.__environment:
+            width = region["upper_right_x"] - region["lower_left_x"] + 1
+            height = region["upper_right_y"] - region["lower_left_y"] + 1
+            rectangle = matplotlib.patches.Rectangle((region["lower_left_x"] - 0.5, region["lower_left_y"] - 0.5), width, height, color=region["color"])
+            ax.add_patch(rectangle)
+            if visualize_config["show_text"] and (region["label"] not in unique_regions or not show_unique_regions_only):
+                ax.text(region["lower_left_x"] - 0.5 + visualize_config["text_offset"][0], region["lower_left_y"] - 0.5 + visualize_config["text_offset"][1], region["label"], fontsize=visualize_config["text_font_size"])
+                unique_regions.add(region["label"])
 
+    def _block_for_input(self):
+        input("Press key to close")
 
 
 
