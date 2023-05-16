@@ -61,7 +61,6 @@ class GridWorldAgentVisualizer:
 
     def load_from_dict(self, data: dict):
         self.reset()
-        print("INSERTING DATA: ", data)
         self._data = data
 
     def sketch_plan(self, ax = None, color = visualize_config["path_line_color"], arrow_color = visualize_config["arrow_color"], label="title"):

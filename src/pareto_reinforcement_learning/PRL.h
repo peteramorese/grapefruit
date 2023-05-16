@@ -43,7 +43,6 @@ class ParetoReinforcementLearner {
         {}
 
         ParetoFrontResult computePlan(uint8_t completed_tasks_horizon) {
-            LOG("PRL current product node: " << m_current_product_node);
             PRLSearchProblem<BEHAVIOR_HANDLER_T> problem(m_product, m_current_product_node, completed_tasks_horizon, m_behavior_handler);
             LOG("Planning...");
             //ParetoFrontResult result = TP::GraphSearch::NAMOAStar<typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t, decltype(problem)>::search(problem);
@@ -74,8 +73,14 @@ class ParetoReinforcementLearner {
                 return s;
             };
 
+            // Hold the trajectory distributions for the animation
             std::vector<TrajectoryDistribution> traj_distributions;
             traj_distributions.reserve(search_result.solution_set.size());
+
+            // Hold the ucb pareto points for the animation
+            std::vector<typename BEHAVIOR_HANDLER_T::CostVector> ucb_pareto_points;
+            ucb_pareto_points.reserve(search_result.solution_set.size());
+
             uint32_t plan_i = 0;
             for (auto it = search_result.solution_set.begin(); it != search_result.solution_set.end(); ++it) {
                 
@@ -101,6 +106,7 @@ class ParetoReinforcementLearner {
                 }
 
                 traj_distributions.push_back(std::move(traj_dist));
+                ucb_pareto_points.push_back(it->path_cost);
                 
                 if (!m_write_plan_directory.empty()) {
                     TP::Serializer szr(m_write_plan_directory + "/candidate_plan_" + std::to_string(plan_i) + ".yaml");
@@ -116,7 +122,7 @@ class ParetoReinforcementLearner {
 
             // Add to animator
             if (m_animator)
-                m_animator->addInstance(search_result, min_ind, std::move(traj_distributions));
+                m_animator->addInstance(search_result, min_ind, std::move(traj_distributions), std::move(ucb_pareto_points));
 
             return min_it;
         }
@@ -166,7 +172,6 @@ class ParetoReinforcementLearner {
                     return m_quantifier;
                 m_behavior_handler->update(plan.product_node_sequence.back().n_completed_tasks);
                 m_current_product_node = plan.product_node_sequence.back();
-                ++m_quantifier.decision_instances;
             }
             return m_quantifier;
         }

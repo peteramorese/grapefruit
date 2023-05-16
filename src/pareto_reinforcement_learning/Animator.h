@@ -27,15 +27,17 @@ class Animator {
         using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<BEHAVIOR_HANDLER_T::numBehaviors()>;
 
         struct Instance {
-            Instance(const ParetoFrontResult& search_result_, uint32_t chosen_plan_index_, std::vector<TrajectoryDistribution>&& plan_distributions_)
+            Instance(const ParetoFrontResult& search_result_, uint32_t chosen_plan_index_, std::vector<TrajectoryDistribution>&& plan_distributions_, std::vector<typename BEHAVIOR_HANDLER_T::CostVector>&& ucb_pareto_points_)
                 : search_result(search_result_)
                 , chosen_plan_index(chosen_plan_index_)
                 , plan_distributions(std::move(plan_distributions_))
+                , ucb_pareto_points(std::move(ucb_pareto_points_))
             {}
 
             ParetoFrontResult search_result;
             uint32_t chosen_plan_index;
             std::vector<TrajectoryDistribution> plan_distributions;
+            std::vector<typename BEHAVIOR_HANDLER_T::CostVector> ucb_pareto_points;
         };
 
         using Plan = TP::Planner::Plan<PRLSearchProblem<BEHAVIOR_HANDLER_T>>;
@@ -46,8 +48,11 @@ class Animator {
             , m_preference(preference)
         {}
 
-        void addInstance(const ParetoFrontResult& search_result, uint32_t chosen_plan_index, std::vector<TrajectoryDistribution>&& plan_distribution) {
-            m_instances.emplace_back(search_result, chosen_plan_index, std::move(plan_distribution));
+        void addInstance(const ParetoFrontResult& search_result, 
+                uint32_t chosen_plan_index, 
+                std::vector<TrajectoryDistribution>&& plan_distribution,
+                std::vector<typename BEHAVIOR_HANDLER_T::CostVector>&& ucb_pareto_points) {
+            m_instances.emplace_back(search_result, chosen_plan_index, std::move(plan_distribution), std::move(ucb_pareto_points));
         }
 
         void serialize(TP::Serializer& szr, const PRLQuantifier<BEHAVIOR_HANDLER_T::numCostCriteria()>& quantifier) {
@@ -70,6 +75,7 @@ class Animator {
 
             const auto& instance_samples = quantifier.getDIBehaviors();
             ASSERT(instance_samples.size() == m_instances.size(), "Number of instances in quantifier does not match");
+            LOG("Serializing " << m_instances.size() << " instances");
             for (const auto& instance : m_instances) {
                 out << YAML::Key << "Instance " + std::to_string(instance_i); 
                 out << YAML::Value << YAML::BeginMap;
@@ -82,11 +88,9 @@ class Animator {
                 //plan.serialize(szr, "Chosen Plan");
                 //out << YAML::EndMap;
 
-                LOG("num plan distributions: " << instance.plan_distributions.size());
                 uint32_t plan_i = 0;
                 for (auto it = instance.search_result.solution_set.begin(); it != instance.search_result.solution_set.end(); ++it) {
                     std::string title = "Candidate Plan " + std::to_string(plan_i);
-                    LOG("SERIALIZNG plan title " << title);
                     out << YAML::Key << title << YAML::Value << YAML::BeginMap;
                     Plan plan(*it, m_product, true);
                     plan.serialize(szr, title);
@@ -98,6 +102,10 @@ class Animator {
 
                     out << YAML::Key << "Plan Variance" << YAML::Value << YAML::BeginSeq;
                     out << instance.plan_distributions[plan_i].covariance(1, 1) << instance.plan_distributions[plan_i].covariance(0, 0);
+                    out << YAML::EndSeq;
+
+                    out << YAML::Key << "Plan Pareto UCB" << YAML::Value << YAML::BeginSeq;
+                    out << instance.ucb_pareto_points[plan_i][1] << instance.ucb_pareto_points[plan_i][0];
                     out << YAML::EndSeq;
 
                     out << YAML::EndMap;

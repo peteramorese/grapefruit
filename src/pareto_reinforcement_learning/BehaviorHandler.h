@@ -65,6 +65,7 @@ namespace PRL {
         {}
 
         float getUCB(uint32_t n_tasks_completed) const {
+            //LOG("Reward ucb: " << ucb.getReward(getEstimateMean(), n_tasks_completed) << " with " << n_tasks_completed << " completed tasks");
             return ucb.getReward(getEstimateMean(), n_tasks_completed);
         }
 
@@ -140,15 +141,14 @@ namespace PRL {
         public:
             using CostVector = TP::Containers::FixedArray<COST_CRITERIA_M + 1, float>;
         public:
-            BehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, uint8_t completed_tasks_horizon, float ucb_confidence) 
+            BehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, uint8_t completed_tasks_horizon, float reward_ucb_confidence, float cost_ucb_confidence) 
                 : PRLStorage<RewardBehavior, CostBehaviorArray<COST_CRITERIA_M>>(
                     product->rank() - 1, 
-                    RewardBehavior(ucb_confidence),
-                    CostBehaviorArray<COST_CRITERIA_M>(ucb_confidence))
+                    RewardBehavior(reward_ucb_confidence),
+                    CostBehaviorArray<COST_CRITERIA_M>(cost_ucb_confidence))
                 , m_product(product)
                 , m_max_ucb_reward(0.0f)
                 , m_completed_tasks_horizon(completed_tasks_horizon)
-                , m_ucb_confidence(ucb_confidence)
             {
                 update(0);
             }
@@ -157,8 +157,6 @@ namespace PRL {
             static constexpr std::size_t numCostCriteria() noexcept {return COST_CRITERIA_M;}
             
             void update(uint32_t n_completed_tasks) {
-                // Increase the number of tasks completed to update the UCB index
-                m_n_completed_tasks += n_completed_tasks;
 
                 // Determine the new max reward for the planning instance
                 m_max_ucb_reward = 0.0f;
@@ -220,13 +218,13 @@ namespace PRL {
             
             void collect(TP::DiscreteModel::ProductRank task_i, float sample) {
                 ++m_n_completed_tasks;
+                //LOG("Collecting task " << (uint32_t)task_i << ": " << m_n_completed_tasks);
                 this->getTaskElement(task_i).pull(sample);
             }
 
             void print() const {
                 for (const auto&[nap, element] : this->m_node_action_pair_elements) {
                     TP::DiscreteModel::State s = m_product->getModel().getGenericNodeContainer()[nap.node];
-                    //LOG("here is the state" << s.to_str());
                     PRINT_NAMED("State: " << s.to_str() << " Action: " << nap.action, "estimate cost mean: " << element.getEstimateDistributions()[0].mu);
                 }
             }
@@ -235,10 +233,8 @@ namespace PRL {
             std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;
             float m_max_ucb_reward = 0.0f;
             uint8_t m_completed_tasks_horizon = 1;
-            float m_ucb_confidence = 1.0f;
             
             // UCB parameters
-            //std::unordered_map<TP::Node, uint32_t> m_state_visits;
             uint32_t m_state_visits = 0;
             uint32_t m_n_completed_tasks = 0;
     };

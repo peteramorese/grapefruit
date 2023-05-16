@@ -33,6 +33,8 @@ int main(int argc, char* argv[]) {
 	float pc_var = parser.parse<float>("pc-var", 25.0f, "Preference distribution cost variance");
 	float pr_mean = parser.parse<float>("pr-mean", 10.0f, "Preference distribution reward mean");
 	float pr_var = parser.parse<float>("pr-var", 4.0f, "Preference distribution reward variance");
+	float reward_confidence = parser.parse<float>("rconf", 2.0f, "UCB confidence in reward (exploration/expoitation)");
+	float cost_confidence = parser.parse<float>("cconf", 1.0f, "UCB confidence in cost (exploration/expoitation)");
 
 	if (parser.enableHelp()) return 0;
 
@@ -132,7 +134,7 @@ int main(int argc, char* argv[]) {
 		if (!write_plans)
 			plan_directory = std::string();
 
-		std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, 1.0f);
+		std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, reward_confidence, cost_confidence);
 		ParetoReinforcementLearner<BehaviorHandlerType> prl(behavior_handler, plan_directory, animator);
 
 		// Initialize the agent's state
