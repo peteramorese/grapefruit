@@ -57,7 +57,7 @@ class PRLAnimator:
             ax.axvline(ucb_val[0], ls=":")
             ax.axhline(ucb_val[1], ls=":")
 
-    def animate(self, repeat = True, save_file = None, playback_speed = "rabbit", starting_instance = 0, ending_instance = None):
+    def animate(self, repeat = True, save_file = None, playback_speed = "rabbit", starting_instance = 0, ending_instance = None, show_full_traj = False):
         fig, (plan_ax, pf_ax) = plt.subplots(1, 2)
 
         self.__initialize()
@@ -69,16 +69,17 @@ class PRLAnimator:
             "Objective 1": [],
         }
 
-        for inst in range(starting_instance):
-            instance_key = "Instance " + str(inst + starting_instance)
-            try:
-                instance_data = self._data[instance_key]
-            except ValueError:
-                print(instance_key," not found in animation file")
+        if show_full_traj:
+            for inst in range(starting_instance):
+                instance_key = "Instance " + str(inst + starting_instance)
+                try:
+                    instance_data = self._data[instance_key]
+                except ValueError:
+                    print(instance_key," not found in animation file")
 
-            # Add sample
-            samples["Objective 0"].append(instance_data["Sample"][0])
-            samples["Objective 1"].append(instance_data["Sample"][1])
+                # Add sample
+                samples["Objective 0"].append(instance_data["Sample"][0])
+                samples["Objective 1"].append(instance_data["Sample"][1])
 
         def init():
             self._plan_visualizer.sketch_environment(plan_ax)
@@ -140,6 +141,7 @@ class PRLAnimator:
             return plan_ax, pf_ax
         
         if ending_instance and ending_instance < self._instances:
+            assert ending_instance > starting_instance
             n_instances = ending_instance - starting_instance
         else:
             print("starting instance: ", starting_instance)
@@ -162,6 +164,7 @@ if __name__ == "__main__":
     parser.add_argument("--playback-speed",default="rabbit", help="Playback speed from slow to quick: (turtle, rabbit, cheetah, plane, zoom)")
     parser.add_argument("--config-filepath", default="../../build/bin/configs/grid_world_config.yaml", help="Specify a grid world config file")
     parser.add_argument("--start-instance", default=0, type=int, help="Animation starting instance")
+    parser.add_argument("--full-traj", action="store_true", help="Show the trajectory before the start-instance")
     parser.add_argument("--end-instance", default=None, type=int, help="Animation ending instance")
     args = parser.parse_args()
 
@@ -173,5 +176,5 @@ if __name__ == "__main__":
     animator = PRLAnimator(args.config_filepath)
 
     animator.deserialize(args.filepath)
-    animator.animate(repeat=args.repeat, save_file=args.save_filepath, playback_speed=args.playback_speed, starting_instance=args.start_instance, ending_instance=args.end_instance)
+    animator.animate(repeat=args.repeat, save_file=args.save_filepath, playback_speed=args.playback_speed, starting_instance=args.start_instance, ending_instance=args.end_instance, show_full_traj=args.full_traj)
     #animator.draw(use_legend=True)
