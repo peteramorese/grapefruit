@@ -20,6 +20,7 @@ visualize_config = {
     "default_axis_labels": ["Objective 0", "Objective 1"],
     "discretization_N": 100,
     "arrow_thickness": 0.003,
+    "line_width": 1.00,
 }
 
 class ParetoFrontVisualizer2D:
@@ -63,7 +64,8 @@ class ParetoFrontVisualizer2D:
             if connect_points is None:
                 ax.scatter(set["Objective 0"], set["Objective 1"], color=pt_color, s=visualize_config["dot_size"], label=label)
             elif connect_points == "line":
-                ax.plot(set["Objective 0"], set["Objective 1"], color=pt_color, s=visualize_config["dot_size"], label=label)
+                #ax.scatter(set["Objective 0"], set["Objective 1"], color=pt_color, s=visualize_config["dot_size"], label=label)
+                ax.plot(set["Objective 0"], set["Objective 1"], color=pt_color, lw=visualize_config["line_width"], ls=visualize_config["line_style"])
             elif connect_points == "arrows":
                 x = np.array(set["Objective 0"])
                 y = np.array(set["Objective 1"])

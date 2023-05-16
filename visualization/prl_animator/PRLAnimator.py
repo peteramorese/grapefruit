@@ -57,7 +57,7 @@ class PRLAnimator:
             ax.axvline(ucb_val[0], ls=":")
             ax.axhline(ucb_val[1], ls=":")
 
-    def animate(self, repeat = True, save_file = None, playback_speed = "rabbit"):
+    def animate(self, repeat = True, save_file = None, playback_speed = "rabbit", starting_instance = 0, ending_instance = None):
         fig, (plan_ax, pf_ax) = plt.subplots(1, 2)
 
         self.__initialize()
@@ -68,6 +68,17 @@ class PRLAnimator:
             "Objective 0": [],
             "Objective 1": [],
         }
+
+        for inst in range(starting_instance):
+            instance_key = "Instance " + str(inst + starting_instance)
+            try:
+                instance_data = self._data[instance_key]
+            except ValueError:
+                print(instance_key," not found in animation file")
+
+            # Add sample
+            samples["Objective 0"].append(instance_data["Sample"][0])
+            samples["Objective 1"].append(instance_data["Sample"][1])
 
         def init():
             self._plan_visualizer.sketch_environment(plan_ax)
@@ -82,7 +93,7 @@ class PRLAnimator:
             pf_ax.clear()
             self._pf_visualizer.clear_data_sets()
             self._plan_visualizer.sketch_environment(plan_ax)
-            instance_key = "Instance " + str(frame)
+            instance_key = "Instance " + str(frame + starting_instance)
             try:
                 instance_data = self._data[instance_key]
             except ValueError:
@@ -115,7 +126,7 @@ class PRLAnimator:
                     self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k)
                     self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"))
 
-            self._pf_visualizer.sketch_pareto_front(pf_ax, label="Samples", connect_points="arrows")
+            self._pf_visualizer.sketch_pareto_front(pf_ax, label="Samples", connect_points="line")
             selection_line_pts = np.stack((pref_mean, chosen_mean))
             pf_ax.plot(selection_line_pts[:,0], selection_line_pts[:,1], color=visualize_config["selection_line_color"], ls=":")
             
@@ -128,8 +139,13 @@ class PRLAnimator:
             
             return plan_ax, pf_ax
         
-        print("Number of instances: ", self._instances, " playback speed: ", visualize_config["speed_intervals"][playback_speed])
-        animator = FuncAnimation(fig, update, frames=self._instances, init_func=init, interval=visualize_config["speed_intervals"][playback_speed], blit=False, repeat=repeat)
+        if ending_instance and ending_instance < self._instances:
+            n_instances = ending_instance - starting_instance
+        else:
+            print("starting instance: ", starting_instance)
+            n_instances = self._instances - starting_instance
+        print("Animation starting from instance: ", starting_instance, " until instance: ", starting_instance + n_instances)
+        animator = FuncAnimation(fig, update, frames=n_instances, init_func=init, interval=visualize_config["speed_intervals"][playback_speed], blit=False, repeat=repeat)
         if save_file:
             animator.save(save_file)
         plt.show()
@@ -140,11 +156,13 @@ class PRLAnimator:
 
 if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
-    parser.add_argument("-f", "--filepath",default="animation.yaml", help="Specify animation file")
+    parser.add_argument("-f", "--filepath",default="animation.yaml", help="Animation file")
     parser.add_argument("-r", "--repeat",action="store_true", help="Loop the animation")
     parser.add_argument("-s", "--save-filepath",default=None, help="Save the animation")
     parser.add_argument("--playback-speed",default="rabbit", help="Playback speed from slow to quick: (turtle, rabbit, cheetah, plane, zoom)")
     parser.add_argument("--config-filepath", default="../../build/bin/configs/grid_world_config.yaml", help="Specify a grid world config file")
+    parser.add_argument("--start-instance", default=0, type=int, help="Animation starting instance")
+    parser.add_argument("--end-instance", default=None, type=int, help="Animation ending instance")
     args = parser.parse_args()
 
     try:
@@ -155,5 +173,5 @@ if __name__ == "__main__":
     animator = PRLAnimator(args.config_filepath)
 
     animator.deserialize(args.filepath)
-    animator.animate(repeat=args.repeat, save_file=args.save_filepath, playback_speed=args.playback_speed)
+    animator.animate(repeat=args.repeat, save_file=args.save_filepath, playback_speed=args.playback_speed, starting_instance=args.start_instance, ending_instance=args.end_instance)
     #animator.draw(use_legend=True)
