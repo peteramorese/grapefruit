@@ -51,7 +51,7 @@ class MultivariateGaussianUpdater {
         }
 
         Distributions::FixedMultivariateNormal<N> getEstimateNormal() const {
-            Distributions::NormalInverseWishart<N> posterior - m_niw.posterior(m_samples_set);
+            Distributions::FixedNormalInverseWishart<N> posterior = m_niw.posterior(m_sample_set);
             return Distributions::FixedMultivariateNormal<N>(
                 E(posterior.meanMarginal()),
                 1.0f / posterior.lambda * E(posterior.covarianceMarginal())
@@ -61,7 +61,7 @@ class MultivariateGaussianUpdater {
         inline uint32_t nSamples() const {return m_sample_set.size();}
 
     private:
-        Distributions::NormalInverseWishart<N> m_niw;
+        Distributions::FixedNormalInverseWishart<N> m_niw;
         SampleSet<float> m_sample_set;
 };
 

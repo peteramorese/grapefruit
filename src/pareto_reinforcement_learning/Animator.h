@@ -10,9 +10,9 @@ template <class BEHAVIOR_HANDLER_T>
 class Animator {
     public:
         using ParetoFrontResult = TP::GraphSearch::MultiObjectiveSearchResult<
-            typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::node_t, 
-            typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::edge_t, 
-            typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t>;
+            typename SearchProblem<BEHAVIOR_HANDLER_T>::node_t, 
+            typename SearchProblem<BEHAVIOR_HANDLER_T>::edge_t, 
+            typename SearchProblem<BEHAVIOR_HANDLER_T>::cost_t>;
 
         using SymbolicProductGraph = TP::DiscreteModel::SymbolicProductAutomaton<
             TP::DiscreteModel::TransitionSystem, 
@@ -20,9 +20,9 @@ class Animator {
             TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>>;
 
         using PathSolution = TP::GraphSearch::PathSolution<
-            typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::node_t, 
-            typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::edge_t, 
-            typename PRLSearchProblem<BEHAVIOR_HANDLER_T>::cost_t>;
+            typename SearchProblem<BEHAVIOR_HANDLER_T>::node_t, 
+            typename SearchProblem<BEHAVIOR_HANDLER_T>::edge_t, 
+            typename SearchProblem<BEHAVIOR_HANDLER_T>::cost_t>;
 
         using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<BEHAVIOR_HANDLER_T::numBehaviors()>;
 
@@ -40,7 +40,7 @@ class Animator {
             std::vector<typename BEHAVIOR_HANDLER_T::CostVector> ucb_pareto_points;
         };
 
-        using Plan = TP::Planner::Plan<PRLSearchProblem<BEHAVIOR_HANDLER_T>>;
+        using Plan = TP::Planner::Plan<SearchProblem<BEHAVIOR_HANDLER_T>>;
 
     public:
         Animator(const std::shared_ptr<SymbolicProductGraph>& product, const TrajectoryDistribution& preference)
@@ -55,7 +55,7 @@ class Animator {
             m_instances.emplace_back(search_result, chosen_plan_index, std::move(plan_distribution), std::move(ucb_pareto_points));
         }
 
-        void serialize(TP::Serializer& szr, const PRLQuantifier<BEHAVIOR_HANDLER_T::numCostCriteria()>& quantifier) {
+        void serialize(TP::Serializer& szr, const RewardCostQuantifier<BEHAVIOR_HANDLER_T::numCostCriteria()>& quantifier) {
             static_assert(BEHAVIOR_HANDLER_T::numBehaviors() == 2, "Does not support serialization of more than one cost behavior");
 
             YAML::Emitter& out = szr.get();
@@ -67,14 +67,15 @@ class Animator {
             out << YAML::Key << "PRL Preference Variance";
             out << YAML::Value << YAML::BeginSeq;
             // Cost (1) is x axis, reward (0) is y axis
-            out << m_preference.covariance(1, 1) << m_preference.covariance(0, 0);
+            out << m_preference.Sigma(1, 1) << m_preference.Sigma(0, 0);
             out << YAML::EndSeq;
             out << YAML::Key << "Instances" << YAML::Value << m_instances.size();
 
             uint32_t instance_i = 0;
 
-            const auto& instance_samples = quantifier.getDIBehaviors();
-            ASSERT(instance_samples.size() == m_instances.size(), "Number of instances in quantifier does not match");
+            const auto& instance_cost_samples = quantifier.getInstanceCosts();
+            const auto& instance_reward_samples = quantifier.getInstanceRewards();
+            ASSERT(instance_cost_samples.size() == m_instances.size(), "Number of instances in quantifier does not match");
             LOG("Serializing " << m_instances.size() << " instances");
             for (const auto& instance : m_instances) {
                 out << YAML::Key << "Instance " + std::to_string(instance_i); 
@@ -101,7 +102,7 @@ class Animator {
                     out << YAML::EndSeq;
 
                     out << YAML::Key << "Plan Variance" << YAML::Value << YAML::BeginSeq;
-                    out << instance.plan_distributions[plan_i].covariance(1, 1) << instance.plan_distributions[plan_i].covariance(0, 0);
+                    out << instance.plan_distributions[plan_i].Sigma(1, 1) << instance.plan_distributions[plan_i].Sigma(0, 0);
                     out << YAML::EndSeq;
 
                     out << YAML::Key << "Plan Pareto UCB" << YAML::Value << YAML::BeginSeq;
@@ -114,7 +115,7 @@ class Animator {
                 }
 
                 out << YAML::Key << "Sample" << YAML::Value << YAML::BeginSeq;
-                out << instance_samples[instance_i][1] << instance_samples[instance_i][0] << YAML::EndSeq;
+                out << instance_cost_samples[instance_i][0] << instance_reward_samples[instance_i] << YAML::EndSeq;
 
                 out << YAML::EndMap;
                 ++instance_i;

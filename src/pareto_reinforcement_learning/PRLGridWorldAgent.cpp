@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
 
 	using EdgeInheritor = TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>;
 	using SymbolicGraph = TP::DiscreteModel::SymbolicProductAutomaton<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA, EdgeInheritor>;
-	using BehaviorHandlerType = BehaviorHandler<SymbolicGraph, 1>;
+	using BehaviorHandlerType = RewardCostBehaviorHandler<SymbolicGraph, 1>;
 	using TrueBehaviorType = TrueBehavior<SymbolicGraph, 1>;
 	using PreferenceDistributionType = TP::Stats::Distributions::FixedMultivariateNormal<BehaviorHandlerType::numBehaviors()>;
 
@@ -106,9 +106,9 @@ int main(int argc, char* argv[]) {
 				s[TP::DiscreteModel::GridWorldAgent::s_y_coord_label] = y_labels[j];
 				TP::Node model_node = ts->getGenericNodeContainer()[s];
 				for (const auto& outgoing_edge : ts->getOutgoingEdges(model_node)) {
-					TrueBehaviorType::CostDistributionArray& cost_array = true_behavior->getNAPElement(model_node, outgoing_edge.action);
+					TrueBehaviorType::CostDistributionArray& cost_array = true_behavior->getNAElement(model_node, outgoing_edge.action);
 					cost_array[0].convolveWith(TP::Stats::Distributions::Normal(region.exit_cost, 0.3f*region.exit_cost + 0.2f));
-					TrueBehaviorType::CostDistributionArray& cost_array_check = true_behavior->getNAPElement(model_node, outgoing_edge.action);
+					TrueBehaviorType::CostDistributionArray& cost_array_check = true_behavior->getNAElement(model_node, outgoing_edge.action);
 				}
 			}
 		}
@@ -121,11 +121,11 @@ int main(int argc, char* argv[]) {
 	PreferenceDistributionType p_ev;
 	p_ev.mu(0) = pr_mean; // mean reward
 	p_ev.mu(1) = pc_mean; // mean cost
-	p_ev.covariance(0, 0) = pr_var; // reward variance
-	p_ev.covariance(1, 1) = pc_var; // cost variance
+	p_ev.Sigma(0, 0) = pr_var; // reward variance
+	p_ev.Sigma(1, 1) = pc_var; // cost variance
 
 
-	QuantifierSet<1> quantifier_set(p_ev);
+	RewardCostQuantifierSet<1> quantifier_set(p_ev);
 	std::shared_ptr<Animator<BehaviorHandlerType>> animator;
 	if (animate)
 		animator = std::make_shared<Animator<BehaviorHandlerType>>(product, p_ev);
@@ -152,9 +152,9 @@ int main(int argc, char* argv[]) {
 			PRINT_NAMED("Total Reward.............................", quantifier.cumulative_reward);
 			PRINT_NAMED("Total Cost...............................", quantifier.cumulative_cost[0]);
 			PRINT_NAMED("Steps....................................", quantifier.steps);
-			PRINT_NAMED("Decision Instances.......................", quantifier.decision_instances);
-			PRINT_NAMED("Average reward per decision instance.....", quantifier.avgRewardPerDI());
-			PRINT_NAMED("Average cost per per decision instance...", quantifier.avgCostPerDI());
+			PRINT_NAMED("Instances................................", quantifier.instances);
+			PRINT_NAMED("Average reward per instance..............", quantifier.avgRewardPerInstance());
+			PRINT_NAMED("Average cost per per instance............", quantifier.avgCostPerInstance());
 			PRINT_NAMED("Average reward per step..................", quantifier.cumulative_reward / static_cast<float>(quantifier.steps));
 			PRINT_NAMED("Average cost per step....................", quantifier.cumulative_cost[0] / static_cast<float>(quantifier.steps));
 		}
@@ -174,7 +174,7 @@ int main(int argc, char* argv[]) {
 
 	if (benchmark) {
 		TP::Serializer szr(benchmark_filepath);
-		quantifier_set.serializeDIBehavior(szr, "Cumulative Cost", "Cumulative Reward");
+		quantifier_set.serializeInstances(szr, "Cumulative Cost", "Cumulative Reward");
 		szr.done();
 	}
 

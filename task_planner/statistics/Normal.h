@@ -48,7 +48,7 @@ struct MultivariateNormal {
         Eigen::MatrixXf Sigma;
 
     public:
-        MultivariateNormal(uint32_t N) : mu(N), covariance(N, N) {}
+        MultivariateNormal(uint32_t N) : mu(N), Sigma(N, N) {}
 
         float pdf(const Eigen::VectorXf& x) const {
             // TODO
@@ -85,12 +85,12 @@ inline static float var(const Distributions::Normal& p) {return p.sigma_2;}
 inline static Distributions::Normal convolve(const Distributions::Normal& lhs, const Distributions::Normal& rhs) {return Distributions::Normal(lhs.mu + rhs.mu, lhs.sigma_2 + rhs.sigma_2);}
 
 inline static const Eigen::VectorXf& E(const Distributions::MultivariateNormal& p) {return p.mu;}
-inline static const Eigen::MatrixXf& cov(const Distributions::MultivariateNormal& p) {return p.covariance;}
+inline static const Eigen::MatrixXf& cov(const Distributions::MultivariateNormal& p) {return p.Sigma;}
 
 template <std::size_t N>
-inline static const Eigen::Matrix<float, N, 1>& E(const FixedMultivariateNormal<N>& p) {return p.mu;}
+inline static const Eigen::Matrix<float, N, 1>& E(const Distributions::FixedMultivariateNormal<N>& p) {return p.mu;}
 template <std::size_t N>
-inline static const Eigen::Matrix<float, N, N>& var(const FixedMultivariateNormal<N>& p) {return p.Sigma;}
+inline static const Eigen::Matrix<float, N, N>& var(const Distributions::FixedMultivariateNormal<N>& p) {return p.Sigma;}
 //inline static Distributions::MultivariateNormal convolve(const Distributions::MultivariateNormal& lhs, const Distributions::MultivariateNormal& rhs) {
 //    return Distributions::Normal(lhs.mu + rhs.mu, lhs.covariance + rhs.covariance);
 //}

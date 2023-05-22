@@ -16,18 +16,18 @@ class GuassianEFE {
 
     public:
         static float calculate(const Distribution& input_dist, const Distribution& p_ev_dist) {
-            return kld(input_dist, p_ev_dist) + entropy(input_dist.covariance, true);
+            return kld(input_dist, p_ev_dist) + entropy(input_dist.Sigma, true);
         }
 
     private:
         static float kld(const Distribution& lhs, const Distribution& rhs) {
-            float det_rhs_covariance = rhs.covariance.determinant();
-            Eigen::Matrix<float, N, N> inv_rhs_covariance = rhs.covariance.inverse();
-            Eigen::Matrix<float, N, N> inv_rhs_cov_by_lhs_cov = inv_rhs_covariance * lhs.covariance;
+            float det_rhs_covariance = rhs.Sigma.determinant();
+            Eigen::Matrix<float, N, N> inv_rhs_covariance = rhs.Sigma.inverse();
+            Eigen::Matrix<float, N, N> inv_rhs_cov_by_lhs_cov = inv_rhs_covariance * lhs.Sigma;
             Eigen::Matrix<float, N, 1> mean_diff = rhs.mu - lhs.mu;
             
             // Compute determinant and cache it for entropy calculation
-            t_det_input_sigma_cache.det = lhs.covariance.determinant();
+            t_det_input_sigma_cache.det = lhs.Sigma.determinant();
             t_det_input_sigma_cache.cached = true;
 
             //LOG("input det: " << t_det_input_sigma_cache.det);
@@ -39,7 +39,7 @@ class GuassianEFE {
             //LOG("rhs_covariance: \n" << rhs.covariance.format(OctaveFmt));
             //LOG("inv_rhs_covariance: \n" << inv_rhs_covariance.format(OctaveFmt));
             return 0.5f * (
-                std::log(rhs.covariance.determinant() / t_det_input_sigma_cache.det) 
+                std::log(rhs.Sigma.determinant() / t_det_input_sigma_cache.det) 
                 - static_cast<float>(N)
                 + inv_rhs_cov_by_lhs_cov.trace()
                 + mean_diff.transpose() * inv_rhs_covariance * mean_diff

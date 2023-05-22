@@ -19,16 +19,16 @@ namespace PRL {
                 : TP::ML::UCB(confidence)
             {}
 
-            CostVector getRectifiedUCBVector(uint32_t state_visits) const {
-                CostVector cv;
+            typename MultivariateCost<M>::CostVector getRectifiedUCBVector(uint32_t state_visits) const {
+                typename MultivariateCost<M>::CostVector cv;
                 auto mean = TP::Stats::E(m_updater.getEstimateNormal());
                 for (uint32_t i = 0; i < M; ++i) {
-                    cv[i] = m_ucb.getRectifiedCost(mean[i], state_visits);
+                    cv[i] = getRectifiedCost(mean[i], state_visits);
                 }
                 return cv;
             }
 
-            void pull(const CostVector& sample) {
+            void pull(const MultivariateCost<M>::CostVector& sample) {
                 TP::ML::UCB::pull(); 
                 m_updater.update(TP::convert<float, M>(sample));
             }
@@ -50,8 +50,8 @@ namespace PRL {
                 : m_ucb(confidence)
             {}
 
-            CostVector getRectifiedUCBVector(uint32_t state_visits) const {
-                CostVector cv;
+            typename MultivariateCost<M>::CostVector getRectifiedUCBVector(uint32_t state_visits) const {
+                typename MultivariateCost<M>::CostVector cv;
                 for (uint32_t i = 0; i < M; ++i) {
                     cv[i] = m_ucb.getRectifiedCost(TP::Stats::E(m_updaters[i].getEstimateNormal()), state_visits);
                 }
@@ -66,7 +66,7 @@ namespace PRL {
                 return distributions;
             }
 
-            void pull(const CostVector& sample) { 
+            void pull(const MultivariateCost<M>::CostVector& sample) { 
                 m_ucb.pull(); 
                 for (uint32_t i = 0; i < M; ++i) {
                     m_updaters[i].update(sample[i]);

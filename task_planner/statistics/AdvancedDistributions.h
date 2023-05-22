@@ -61,10 +61,10 @@ struct FixedMultivariateT {
         Eigen::Matrix<float, N, 1> mu = Eigen::Matrix<float, N, 1>::Zero();
         Eigen::Matrix<float, N, N> Sigma = Eigen::Matrix<float, N, N>::Zero();
     public:
-        FixedMultivariateT(float nu_, const Eigen::Matrix<float, N, 1>& mu_, cosnt Eigen::Matrix<float, N, N>& sigma_)
+        FixedMultivariateT(float nu_, const Eigen::Matrix<float, N, 1>& mu_, const Eigen::Matrix<float, N, N>& sigma_)
             : nu(nu_)
             , mu(mu_)
-            , sigma(sigma_)
+            , Sigma(sigma_)
         {}
 
         // TODO normalizationConstant()
@@ -87,7 +87,6 @@ struct FixedInverseWishart {
             , Psi(Psi_)
         {}
 
-        constexpr std::size_t uniqueElements() const {return N * (N - 1u) / 2;}
         static constexpr std::size_t uniqueElements() {return N * (N - 1u) / 2;}
 
         // TODO normalizationConstant()
@@ -107,19 +106,19 @@ inline static float var(const Distributions::LocationScaleT& p) {ASSERT(p.nu > 2
 
 // FixedMultivariateT
 template <std::size_t N>
-inline static const Eigen::Matrix<float, N, 1>& E(const FixedMultivariateT<N>& p) {ASSERT(p.nu > 1.0f, "DOF must be greater than 1.0"); return p.mu;}
+inline static const Eigen::Matrix<float, N, 1>& E(const Distributions::FixedMultivariateT<N>& p) {ASSERT(p.nu > 1.0f, "DOF must be greater than 1.0"); return p.mu;}
 template <std::size_t N>
-inline static Eigen::Matrix<float, N, N> var(const FixedMultivariateT<N>& p) {ASSERT(p.nu > 2.0f, "DOF must be greater than 2.0"); return p.Sigma * (p.nu / (p.nu - 2.0f));}
+inline static Eigen::Matrix<float, N, N> var(const Distributions::FixedMultivariateT<N>& p) {ASSERT(p.nu > 2.0f, "DOF must be greater than 2.0"); return p.Sigma * (p.nu / (p.nu - 2.0f));}
 
 // FixedInverseWishart
 template <std::size_t N>
-inline static Eigen::Matrix<float, N, N> E(const FixedInverseWishart<N>& p) {
+inline static Eigen::Matrix<float, N, N> E(const Distributions::FixedInverseWishart<N>& p) {
     ASSERT(p.nu > static_cast<float>(N + 1u), "DOF must be greater than N + 1"); 
     return p.Psi * (1.0f / (p.nu - static_cast<float>(N) - 1.0f));
 }
 template <std::size_t N>
-static Eigen::Matrix<float, FixedInverseWishart<N>::uniqueElements(), FixedInverseWishart<N>::uniqueElements()> var(const FixedInverseWishart<N>& p) {
-    using uniqueN = FixedInverseWishart<N>::uniqueElements();
+static Eigen::Matrix<float, Distributions::FixedInverseWishart<N>::uniqueElements(), Distributions::FixedInverseWishart<N>::uniqueElements()> var(const Distributions::FixedInverseWishart<N>& p) {
+    constexpr uint32_t uniqueN = Distributions::FixedInverseWishart<N>::uniqueElements();
     float N_f = static_cast<float>(N);
     ASSERT(p.nu > static_cast<float>(N + 1u), "DOF must be creater than N (+ 1) <- check wikipedia");
     

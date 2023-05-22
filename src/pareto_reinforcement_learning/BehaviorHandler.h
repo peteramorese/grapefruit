@@ -6,16 +6,17 @@
 
 #include "HistoryNode.h"
 #include "Storage.h"
+#include "Behavior.h"
 
 namespace PRL {
 
-    template <uint32_t M>
-    class CostBehaviorHandler : public NodeActionStorage<JointCostArray> {
+    template <class SYMBOLIC_GRAPH_T, uint32_t M>
+    class CostBehaviorHandler : public NodeActionStorage<JointCostArray<M>> {
         public:
-            using CostVector = TP::Containers::FixedArray<M + 1, float>;
+            using CostVector = TP::Containers::FixedArray<M, float>;
         public:
             CostBehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, uint8_t completed_tasks_horizon, float ucb_confidence)
-                : NodeActionStorage<JointCostArray>(JointCostArray(ucb_confidence))
+                : NodeActionStorage<JointCostArray<M>>(JointCostArray<M>(ucb_confidence))
                 , m_product(product)
                 , m_completed_tasks_horizon(completed_tasks_horizon)
             {}
@@ -48,7 +49,7 @@ namespace PRL {
         public:
             using CostVector = TP::Containers::FixedArray<COST_CRITERIA_M + 1, float>;
         public:
-            BehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, uint8_t completed_tasks_horizon, float reward_ucb_confidence, float cost_ucb_confidence) 
+            RewardCostBehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, uint8_t completed_tasks_horizon, float reward_ucb_confidence, float cost_ucb_confidence) 
                 : TaskNodeActionStorage<RewardBehavior, IndependentCostArray<COST_CRITERIA_M>>(
                     product->rank() - 1, 
                     RewardBehavior(reward_ucb_confidence),
@@ -76,7 +77,7 @@ namespace PRL {
             CostVector getCostVector(const TaskHistoryNode<TP::WideNode>& src_node, const TaskHistoryNode<TP::WideNode>& dst_node, const TP::DiscreteModel::Action& action) {
                 TP::Node src_model_node = m_product->getUnwrappedNode(src_node.base_node).ts_node;
                 //typename CostBehaviorArray<COST_CRITERIA_M>::CostVector costs_only_cv = this->getNAPElement(src_model_node, action).getRectifiedUCBVector(m_state_visits[src_model_node]);
-                typename CostBehaviorArray<COST_CRITERIA_M>::CostVector costs_only_cv = this->getNAElement(src_model_node, action).getRectifiedUCBVector(m_state_visits);
+                typename IndependentCostArray<COST_CRITERIA_M>::CostVector costs_only_cv = this->getNAElement(src_model_node, action).getRectifiedUCBVector(m_state_visits);
                 CostVector cv;
                 cv[0] = 0.0f;
                 for (uint32_t i=1; i<cv.size(); ++i) {
@@ -116,7 +117,7 @@ namespace PRL {
             inline void setCompletedTasksHorizon(uint8_t horizon) const {m_completed_tasks_horizon = horizon;}
             inline uint8_t getCompletedTasksHorizon() const {return m_completed_tasks_horizon;}
 
-            void visit(const TaskHistoryNode<TP::WideNode>& node, const TP::DiscreteModel::Action& action, const CostBehaviorArray<COST_CRITERIA_M>::CostVector& sample) {
+            void visit(const TaskHistoryNode<TP::WideNode>& node, const TP::DiscreteModel::Action& action, const IndependentCostArray<COST_CRITERIA_M>::CostVector& sample) {
                 TP::Node src_model_node = m_product->getUnwrappedNode(node.base_node).ts_node;
                 //++m_state_visits[src_model_node];
                 ++m_state_visits;

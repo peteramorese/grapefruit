@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 #include "TaskPlanner.h"
 
 namespace PRL {
@@ -23,8 +25,10 @@ namespace PRL {
                 }
             };
 
-        protected:
-            PRLStorage(const NA_ELEMENT_T& default_nap_element)
+        public:
+            NodeActionStorage(const NA_ELEMENT_T& default_nap_element)
+                : m_default_na_element(default_nap_element)
+            {}
 
             inline NA_ELEMENT_T& getNAElement(TP::Node node, const TP::DiscreteModel::Action& action) {
                 auto it = this->m_node_action_pair_elements.find(NodeActionPair(node, action));
@@ -41,7 +45,7 @@ namespace PRL {
             }
 
         protected:
-            std::unordered_map<NodeActionPair, NAP_T, NodeActionPairHash> m_node_action_pair_elements;
+            std::unordered_map<NodeActionPair, NA_ELEMENT_T, NodeActionPairHash> m_node_action_pair_elements;
 
         private:
             NA_ELEMENT_T m_default_na_element;
@@ -50,23 +54,23 @@ namespace PRL {
     template <class TASK_ELEMENT_T, class NA_ELEMENT_T>
     class TaskNodeActionStorage : public NodeActionStorage<NA_ELEMENT_T> {
         protected:
-            PRLStorage(uint32_t n_tasks, const TASK_ELEMENT_T& default_task_element, const NAP_T& default_na_element)
+            TaskNodeActionStorage(uint32_t n_tasks, const TASK_ELEMENT_T& default_task_element, const NA_ELEMENT_T& default_na_element)
                 : NodeActionStorage<NA_ELEMENT_T>(default_na_element)
                 , m_task_elements(n_tasks, default_task_element)
             {}
 
         public:
 
-            inline const TASK_T& getTaskElement(TP::DiscreteModel::ProductRank task_i) const {
+            inline const TASK_ELEMENT_T& getTaskElement(TP::DiscreteModel::ProductRank task_i) const {
                 return m_task_elements[task_i];
             }
 
-            inline TASK_T& getTaskElement(TP::DiscreteModel::ProductRank task_i) {
+            inline TASK_ELEMENT_T& getTaskElement(TP::DiscreteModel::ProductRank task_i) {
                 return m_task_elements[task_i];
             }
 
         protected:
-            std::vector<TASK_T> m_task_elements;
+            std::vector<TASK_ELEMENT_T> m_task_elements;
     };
 
 }

@@ -5,7 +5,6 @@
 
 namespace PRL {
 
-
 template <uint32_t COST_CRITERIA_M>
 struct BehaviorSample {
     public:
@@ -30,7 +29,7 @@ struct BehaviorSample {
 };
 
 template <class SYMBOLIC_GRAPH_T, uint32_t COST_CRITERIA_M>
-class TrueBehavior : public PRLStorage<TP::Stats::Distributions::Normal, TP::Containers::FixedArray<COST_CRITERIA_M, TP::Stats::Distributions::Normal>> {
+class TrueBehavior : public TaskNodeActionStorage<TP::Stats::Distributions::Normal, TP::Containers::FixedArray<COST_CRITERIA_M, TP::Stats::Distributions::Normal>> {
     public:
         using CostDistributionArray = TP::Containers::FixedArray<COST_CRITERIA_M, TP::Stats::Distributions::Normal>;
     public:
@@ -38,7 +37,7 @@ class TrueBehavior : public PRLStorage<TP::Stats::Distributions::Normal, TP::Con
             uint32_t n_tasks, 
             const TP::Stats::Distributions::Normal& default_reward, 
             const CostDistributionArray& default_cost)
-            : PRLStorage<TP::Stats::Distributions::Normal, TP::Containers::FixedArray<COST_CRITERIA_M, TP::Stats::Distributions::Normal>>(n_tasks, default_reward, default_cost)
+            : TaskNodeActionStorage<TP::Stats::Distributions::Normal, TP::Containers::FixedArray<COST_CRITERIA_M, TP::Stats::Distributions::Normal>>(n_tasks, default_reward, default_cost)
             , m_product(product)
         {}
 
@@ -58,7 +57,7 @@ class TrueBehavior : public PRLStorage<TP::Stats::Distributions::Normal, TP::Con
             for (uint32_t i = 0; i < COST_CRITERIA_M; ++i) {
                 //LOG("Cost sample for src_node: " << src_node << " action: " << action << " mean: " << this->getNAPElement(src_node, action)[i].mu);
                 TP::Node src_model_node = m_product->getUnwrappedNode(src_node).ts_node;
-                s.cost_sample[i] = TP::max(TP::RNG::nrand(this->getNAPElement(src_model_node, action)[i]), 0.0f);
+                s.cost_sample[i] = TP::max(TP::RNG::nrand(this->getNAElement(src_model_node, action)[i]), 0.0f);
             }
             return s;
         }
@@ -76,14 +75,14 @@ class TrueBehavior : public PRLStorage<TP::Stats::Distributions::Normal, TP::Con
             }
         }
 
-        void compare(const BehaviorHandler<SYMBOLIC_GRAPH_T, COST_CRITERIA_M>& behavior_handler) const {
+        void compare(const RewardCostBehaviorHandler<SYMBOLIC_GRAPH_T, COST_CRITERIA_M>& behavior_handler) const {
             for (const auto&[nap, element] : this->m_node_action_pair_elements) {
                 TP::DiscreteModel::State s = m_product->getModel().getGenericNodeContainer()[nap.node];
 
                 float true_dist_mu = element[0].mu;
                 float true_dist_sigma2 = element[0].sigma_2;
 
-                auto cba = behavior_handler.lookupNAPElement(nap.node, nap.action);
+                auto cba = behavior_handler.lookupNAElement(nap.node, nap.action);
                 auto estimate_dist = cba.getEstimateDistributions()[0];
                 float estimate_dist_mu = estimate_dist.mu;
                 float estimate_dist_sigma2 = estimate_dist.sigma_2;

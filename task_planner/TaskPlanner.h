@@ -8,7 +8,7 @@
 #include "tools/Misc.h"
 #include "tools/Serializer.h"
 #include "tools/Test.h"
-#include "tools/TypeConversion.h"
+#include "tools/TypeConversions.h"
 
 // Core
 #include "core/Graph.h"

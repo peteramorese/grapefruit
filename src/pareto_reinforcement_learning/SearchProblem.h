@@ -8,7 +8,7 @@
 namespace PRL {
 
 template <class BEHAVIOR_HANDLER_T>
-struct PRLSearchProblem {
+struct SearchProblem {
     public: // Dependent types required by any search problem
         using SymbolicProductGraph = TP::DiscreteModel::SymbolicProductAutomaton<
             TP::DiscreteModel::TransitionSystem, 
@@ -61,7 +61,7 @@ struct PRLSearchProblem {
         //HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
     public:
-        PRLSearchProblem(const std::shared_ptr<SymbolicProductGraph>& product, SymbolicProductGraph::node_t init_node, uint8_t completed_tasks_horizon, const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler)
+        SearchProblem(const std::shared_ptr<SymbolicProductGraph>& product, SymbolicProductGraph::node_t init_node, uint8_t completed_tasks_horizon, const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler)
             : m_product(product)
             , m_behavior_handler(behavior_handler)
             , m_completed_tasks_horizon(completed_tasks_horizon)
