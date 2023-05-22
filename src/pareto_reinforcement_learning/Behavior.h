@@ -4,7 +4,7 @@
 
 namespace PRL {
 
-    template <uint32_t M>
+    template <uint64_t M>
     class MultivariateCost {
         public:
             using CostVector = TP::Containers::FixedArray<M, float>;
@@ -12,7 +12,7 @@ namespace PRL {
             static constexpr uint32_t size() {return M;}
     };
 
-    template <uint32_t M>
+    template <uint64_t M>
     class JointCostArray : public MultivariateCost<M>, public TP::ML::UCB {
         public:
             JointCostArray(float confidence) 
@@ -30,7 +30,7 @@ namespace PRL {
 
             void pull(const MultivariateCost<M>::CostVector& sample) {
                 TP::ML::UCB::pull(); 
-                m_updater.update(TP::convert<float, M>(sample));
+                m_updater.update(sample);
             }
         
             inline TP::Stats::Distributions::FixedMultivariateNormal<M> getEstimateDistribution() const {
@@ -43,7 +43,7 @@ namespace PRL {
             TP::Stats::MultivariateGaussianUpdater<M> m_updater;
     };
 
-    template <uint32_t M>
+    template <uint64_t M>
     class IndependentCostArray : public MultivariateCost<M> {
         public:
             IndependentCostArray(float confidence)

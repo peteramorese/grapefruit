@@ -52,9 +52,19 @@ class RNG {
 
         inline static void seed(uint32_t s) {s_seeded_gen().seed(s);}
 
+        inline static float nrand() {
+            std::normal_distribution<> dist;
+            return dist(s_random_gen());
+        }
+
         inline static float nrand(double mean, double std) {
             std::normal_distribution<> dist(mean, std);
             return dist(s_random_gen());
+        }
+
+        inline static float nsrand() {
+            std::normal_distribution<> dist;
+            return dist(s_seeded_gen());
         }
 
         inline static float nsrand(double mean, double std) {
@@ -70,9 +80,11 @@ class RNG {
             return nsrand(dist.mu, dist.std());
         }
 
-        template <uint32_t N>
+        template <std::size_t N>
         static Eigen::Matrix<float, N, 1> mvnrand(const Stats::Distributions::FixedMultivariateNormalSampler<N>& sampler) {
-            return sampler.mean() + sampler.transform() * Eigen::
+            Eigen::Matrix<float, N, 1> rv;
+            rv.unaryExpr([&](auto x) {return nrand();});
+            return sampler.mean() + sampler.transform() * rv;
         }
 };
 

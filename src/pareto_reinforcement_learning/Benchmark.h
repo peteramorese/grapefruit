@@ -5,26 +5,26 @@
 
 namespace PRL {
 
-template <uint32_t COST_CRITERIA_M>
-class RewardCostQuantifierSet {
+template <uint64_t M>
+class QuantifierSet {
     public:
-        using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<COST_CRITERIA_M + 1>;
+        using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<M>;
     public:
-        RewardCostQuantifierSet(const TrajectoryDistribution& preference) : m_preference(preference) {}
+        QuantifierSet(const TrajectoryDistribution& preference) : m_preference(preference) {}
 
-        void push_back(RewardCostQuantifier<COST_CRITERIA_M>&& quantifier) {
+        void push_back(Quantifier<M>&& quantifier) {
             m_data.push_back(std::move(quantifier));
         }
 
-        void push_back(const RewardCostQuantifier<COST_CRITERIA_M>& quantifier) {
+        void push_back(const Quantifier<M>& quantifier) {
             m_data.push_back(quantifier);
         }
 
-        const RewardCostQuantifier<COST_CRITERIA_M>& operator[](uint32_t i) const {return m_data[i];}
-        const RewardCostQuantifier<COST_CRITERIA_M>& back() const {return m_data.back();}
+        const Quantifier<M>& operator[](uint32_t i) const {return m_data[i];}
+        const Quantifier<M>& back() const {return m_data.back();}
 
         void serializeAverageBehavior(TP::Serializer& szr, const std::string& obj_0_label, const std::string& obj_1_label) {
-            static_assert(COST_CRITERIA_M == 1, "Only supports serialization of Bi-objective problems");
+            static_assert(M == 2, "Only supports serialization of Bi-objective problems");
             
             YAML::Emitter& out = szr.get();
             out << YAML::Key << "PRL Preference Mean";
@@ -49,7 +49,7 @@ class RewardCostQuantifierSet {
         }
 
         void serializeInstances(TP::Serializer& szr, const std::string& obj_0_label, const std::string& obj_1_label) {
-            static_assert(COST_CRITERIA_M == 1, "Only supports serialization of Bi-objective problems");
+            static_assert(M == 1, "Only supports serialization of Bi-objective problems");
             
             YAML::Emitter& out = szr.get();
             out << YAML::Key << "PRL Preference Mean";
@@ -79,7 +79,7 @@ class RewardCostQuantifierSet {
             TP::Planner::ParetoFrontSerializer::serialize2DAxes(szr, axis_labels);
         }
     private:
-        std::vector<RewardCostQuantifier<COST_CRITERIA_M>> m_data;
+        std::vector<Quantifier<M>> m_data;
         TrajectoryDistribution m_preference;
 };
 

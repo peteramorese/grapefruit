@@ -4,7 +4,7 @@
 
 namespace PRL {
 
-template <uint32_t M>
+template <uint64_t M>
 struct Quantifier {
     public:
         TP::Containers::FixedArray<M, float> cumulative_cost;
@@ -12,7 +12,7 @@ struct Quantifier {
         uint32_t instances = 0u;
         uint32_t max_instances = 0u;
     public:
-        CostQuantifier() {
+        Quantifier() {
             for (uint32_t i = 0; i < M; ++i) {
                 cumulative_cost[i] = 0.0f;
                 m_cost_sample_buffer[i] = 0.0f;
@@ -32,7 +32,13 @@ struct Quantifier {
                 v = 0.0f;
         }
 
-        float avgCostPerInstance(uint32_t cost_criteria_i = 0) const {return cumulative_cost[cost_criteria_i] / static_cast<float>(instances);}
+        TP::Containers::FixedArray<M, float> avgCostPerInstance() const {
+            TP::Containers::FixedArray<M, float> avg;
+            for (uint32_t i = 0; i < M; ++i)
+                avg[i] = cumulative_cost[i] / static_cast<float>(instances);
+            return avg;
+        }
+
         const std::vector<TP::Containers::FixedArray<M, float>>& getInstanceCosts() const {return m_instance_costs;}
 
     private:

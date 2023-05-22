@@ -177,7 +177,7 @@ namespace Containers {
             FixedArray(const std::array<T, M>& values_) : values(values_) {}
             FixedArray(const FixedArray& other) = default;
 
-            static constexpr uint32_t size() {return M;}
+            static constexpr std::size_t size() {return M;}
 
             T& operator[](std::size_t i) {return values[i];}
 

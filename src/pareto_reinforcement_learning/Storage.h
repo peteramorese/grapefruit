@@ -26,11 +26,11 @@ namespace PRL {
             };
 
         public:
-            Storage(const NA_ELEMENT_T& default_element)
+            Storage(const ELEMENT_T& default_element)
                 : m_default_na_element(default_element)
             {}
 
-            inline NA_ELEMENT_T& getElement(TP::Node node, const TP::DiscreteModel::Action& action) {
+            inline ELEMENT_T& getElement(TP::Node node, const TP::DiscreteModel::Action& action) {
                 auto it = this->m_node_action_pair_elements.find(NodeActionPair(node, action));
                 if (it != this->m_node_action_pair_elements.end()) {
                     return it->second;
@@ -40,7 +40,7 @@ namespace PRL {
                 }
             }
 
-            inline const NA_ELEMENT_T& lookupElement(TP::Node node, const TP::DiscreteModel::Action& action) const {
+            inline const ELEMENT_T& lookupElement(TP::Node node, const TP::DiscreteModel::Action& action) const {
                 return this->m_node_action_pair_elements.at(NodeActionPair(node, action));
             }
 

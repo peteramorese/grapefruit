@@ -82,18 +82,105 @@ struct FixedInverseWishart {
         float nu = static_cast<float>(N);
         Eigen::Matrix<float, N, N> Psi = Eigen::Matrix<float, N, N>::Identity();
     public:
+        FixedInverseWishart() = default;
         FixedInverseWishart(float nu_, const Eigen::Matrix<float, N, N>& Psi_)
             : nu(nu_)
             , Psi(Psi_)
         {}
 
-        static constexpr std::size_t uniqueElements() {return N * (N - 1u) / 2;}
-
         // TODO normalizationConstant()
         // TODO pdf()
 };
 
+template <std::size_t N>
+struct MinimalFixedInverseWishart {
+    
+    /*
+    Unique elements correspond to the upper triangular elements iterating over columns then rows, i.e.
+
+    Psi_minimal = [sig11 sig12 sig13 sig22 sig23 sig33]^T
+
+    coresponding to the upper triangular unique elements of Psi:
+
+    [sig11 sig12 sig13]
+    [____  sig22 sig23]
+    [____  _____ sig33]
+    */
+
+    private:
+        inline static constexpr std::size_t N_minimal = N * (N - 1u) / 2;
+        static_assert(N >= 2, "Use Gamma distribution for 1D scalar variance");
+
+    public:
+        float nu = static_cast<float>(N);
+        Eigen::Matrix<float, N_minimal, 1> Psi_minimal = Eigen::Matrix<float, N, N>::Zero();
+
+    public:
+        MinimalFixedInverseWishart() {
+            std::size_t diff = 0;
+            std::size_t next_diff = N;
+            for (std::size_t i = 0; i < N_minimal; ++i) {
+                if (diff == next_diff || i == 0) {
+                    Psi_minimal(i, 0) = 1.0f; // diagonal
+                    --next_diff;
+                    diff = 0;
+                } else {
+                    Psi_minimal(i, 0) = 0.0f; // off diagonal
+                }
+                ++diff;
+            }
+        }
+        MinimalFixedInverseWishart(float nu_, const Eigen::Matrix<float, N, N>& Psi_)
+            : nu(nu_)
+        {
+            std::size_t i_minimal = 0;
+            for (std::size_t i = 0; i < N; ++i) {
+                for (std::size_t j = i; j < N; ++j) {
+                    Psi_minimal(i_minimal++, 1) = Psi_(i, j);
+                }
+            }
+        }
+
+        MinimalFixedInverseWishart(float nu_, const Eigen::Matrix<float, N_minimal, 1>& Psi_minimal_)
+            : nu(nu_)
+            , Psi_minimal(Psi_minimal_)
+        {}
+
+        static constexpr std::size_t uniqueElements() {return N_minimal;}
+};
+
+
 } // namespace Distributions
+
+// Conversion between minimal and full Wishart representations
+template <std::size_t N>
+Distributions::FixedInverseWishart<N> minimalWishartToWishart(const Distributions::MinimalFixedInverseWishart<N> minimal_ws) {
+    Eigen::Matrix<float, N, N> Psi;
+    std::size_t i_minimal = 0;
+    for (std::size_t i = 0; i < N; ++i) {
+        for (std::size_t j = i; j < N; ++j) {
+            Psi(i, j) = minimal_ws.Psi_minimal(i_minimal++, 1);
+        }
+    }
+    for (std::size_t i = 0; i < N; ++i) {
+        for (std::size_t j = i + 1; j < N; ++j) {
+            Psi(j, i) = minimal_ws.Psi(i, j);
+        }
+    }
+    return FixedInverseWishart<N>(minimal_ws.nu, Psi);
+}
+
+template <std::size_t N>
+Distributions::MinimalFixedInverseWishart<N> WishartToMinimalWishart(const Distributions::FixedInverseWishart<N> ws) {
+    Eigen::Matrix<float, Distributions::MinimalFixedInverseWishart<N>::uniqueElements(), 1> Psi_minimal;
+    std::size_t i_minimal = 0;
+    for (std::size_t i = 0; i < N; ++i) {
+        for (std::size_t j = i; j < N; ++j) {
+            Psi_minimal(i_minimal++, 1) = ws.Psi(i, j);
+        }
+    }
+    return MinimalFixedInverseWishart<N>(ws.nu, Psi_minimal);
+}
 
 // Expectation and variance overloads
 // Gamma
@@ -110,17 +197,20 @@ inline static const Eigen::Matrix<float, N, 1>& E(const Distributions::FixedMult
 template <std::size_t N>
 inline static Eigen::Matrix<float, N, N> var(const Distributions::FixedMultivariateT<N>& p) {ASSERT(p.nu > 2.0f, "DOF must be greater than 2.0"); return p.Sigma * (p.nu / (p.nu - 2.0f));}
 
-// FixedInverseWishart
+// TODO: FixedInverseWishart
+
+// MinimalFixedInverseWishart
 template <std::size_t N>
-inline static Eigen::Matrix<float, N, N> E(const Distributions::FixedInverseWishart<N>& p) {
+inline static Eigen::Matrix<float, Distributions::FixedInverseWishart<N>::uniqueElements(), 1> E(const Distributions::MinimalFixedInverseWishart<N>& p) {
     ASSERT(p.nu > static_cast<float>(N + 1u), "DOF must be greater than N + 1"); 
-    return p.Psi * (1.0f / (p.nu - static_cast<float>(N) - 1.0f));
+    return p.Psi_minimal * (1.0f / (p.nu - static_cast<float>(N) - 1.0f));
 }
-template <std::size_t N>
-static Eigen::Matrix<float, Distributions::FixedInverseWishart<N>::uniqueElements(), Distributions::FixedInverseWishart<N>::uniqueElements()> var(const Distributions::FixedInverseWishart<N>& p) {
-    constexpr uint32_t uniqueN = Distributions::FixedInverseWishart<N>::uniqueElements();
+template <std::size_t N> // TODO: bool MINIMAL = true
+static Eigen::Matrix<float, Distributions::MinimalFixedInverseWishart<N>::uniqueElements(), Distributions::MinimalFixedInverseWishart<N>::uniqueElements()> var(const Distributions::MinimalFixedInverseWishart<N>& p) {
+    constexpr uint32_t uniqueN = Distributions::MinimalFixedInverseWishart<N>::uniqueElements();
     float N_f = static_cast<float>(N);
     ASSERT(p.nu > static_cast<float>(N + 1u), "DOF must be creater than N (+ 1) <- check wikipedia");
+    Eigen::Matrix<float, uniqueN, uniqueN> covariance = Eigen::Matrix<float, uniqueN, uniqueN>::Zero();
     
     /*
     Unique elements correspond to the upper triangular elements iterating over columns then rows, i.e.
@@ -135,7 +225,6 @@ static Eigen::Matrix<float, Distributions::FixedInverseWishart<N>::uniqueElement
     [____  sig22]
     */
 
-    Eigen::Matrix<float, uniqueN, uniqueN> covariance = Eigen::Matrix<float, uniqueN, uniqueN>::Zero();
     uint32_t row = 0;
     for (uint32_t i = 0; i < N; ++i) {
         for (uint32_t j = i; i < N; ++i) {

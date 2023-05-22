@@ -1,5 +1,6 @@
 #pragma once
 
+#include "tools/Containers.h"
 #include "statistics/Normal.h"
 #include "statistics/NormalGamma.h"
 #include "statistics/NormalInverseWishart.h"
@@ -41,20 +42,30 @@ class MultivariateGaussianUpdater {
     public:
         using Sample = Eigen::Matrix<float, N, 1>;
     public:
-        MultivariateGaussianUpdater() = default;
-        MultivariateGaussianUpdater(const Eigen::Matrix<float, N, 1>& mu, const Eigen::Matrix<float, N, N>& Lambda, float kappa, float nu)
-            : m_niw(mu, Lambda, kappa, nu)
+        MultivariateGaussianUpdater() 
+            : m_sample_set(Eigen::Matrix<float, N, 1>::Zero())
         {}
 
-        inline void update(const Sample& sample) {
+        MultivariateGaussianUpdater(const Eigen::Matrix<float, N, 1>& mu, const Eigen::Matrix<float, N, N>& Lambda, float kappa, float nu)
+            : m_niw(mu, Lambda, kappa, nu)
+            , m_sample_set(Eigen::Matrix<float, N, 1>::Zero())
+        {}
+
+        inline void update(const Eigen::Matrix<float, N, 1>& sample) {
             m_sample_set.add(sample);
+        }
+
+        inline void update(const Containers::FixedArray<N, float>& sample) {
+            Eigen::Matrix<float, N, 1> out;
+            toColMatrix<float, N>(sample, out);
+            m_sample_set.add(out);
         }
 
         Distributions::FixedMultivariateNormal<N> getEstimateNormal() const {
             Distributions::FixedNormalInverseWishart<N> posterior = m_niw.posterior(m_sample_set);
             return Distributions::FixedMultivariateNormal<N>(
                 E(posterior.meanMarginal()),
-                1.0f / posterior.lambda * E(posterior.covarianceMarginal())
+                1.0f / posterior.kappa * E(minimalWishartToWishart(posterior.covarianceMarginal()))
             );
         }
 
@@ -62,7 +73,7 @@ class MultivariateGaussianUpdater {
 
     private:
         Distributions::FixedNormalInverseWishart<N> m_niw;
-        SampleSet<float> m_sample_set;
+        SampleSet<Eigen::Matrix<float, N, 1>> m_sample_set;
 };
 
 }

@@ -86,6 +86,7 @@ class FixedMultivariateNormalSampler {
             m_transform = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().asDiagonal();
         }
 
+        const FixedMultivariateNormal<N>& dist() const {return m_dist;}
         const Eigen::Matrix<float, N, 1>& mean() const {return m_dist.mu;}
         const Eigen::Matrix<float, N, N>& transform() const {return m_transform;}
 

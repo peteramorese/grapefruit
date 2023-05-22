@@ -6,28 +6,35 @@
 
 namespace PRL {
 
-template <class BEHAVIOR_HANDLER_T>
+template <uint64_t M>
 class Animator {
     public:
-        using ParetoFrontResult = TP::GraphSearch::MultiObjectiveSearchResult<
-            typename SearchProblem<BEHAVIOR_HANDLER_T>::node_t, 
-            typename SearchProblem<BEHAVIOR_HANDLER_T>::edge_t, 
-            typename SearchProblem<BEHAVIOR_HANDLER_T>::cost_t>;
-
         using SymbolicProductGraph = TP::DiscreteModel::SymbolicProductAutomaton<
             TP::DiscreteModel::TransitionSystem, 
             TP::FormalMethods::DFA, 
             TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>>;
 
-        using PathSolution = TP::GraphSearch::PathSolution<
-            typename SearchProblem<BEHAVIOR_HANDLER_T>::node_t, 
-            typename SearchProblem<BEHAVIOR_HANDLER_T>::edge_t, 
-            typename SearchProblem<BEHAVIOR_HANDLER_T>::cost_t>;
+        using BehaviorHandlerType = BehaviorHandler<SymbolicProductGraph, M>;
 
-        using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<BEHAVIOR_HANDLER_T::numBehaviors()>;
+        using PathSolution = TP::GraphSearch::PathSolution<
+            typename SearchProblem<BehaviorHandlerType>::node_t, 
+            typename SearchProblem<BehaviorHandlerType>::edge_t, 
+            typename SearchProblem<BehaviorHandlerType>::cost_t>;
+
+        using ParetoFrontResult = TP::GraphSearch::MultiObjectiveSearchResult<
+            typename SearchProblem<BehaviorHandlerType>::node_t, 
+            typename SearchProblem<BehaviorHandlerType>::edge_t, 
+            typename SearchProblem<BehaviorHandlerType>::cost_t>;
+
+        using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<M>;
+
+        using Plan = TP::Planner::Plan<SearchProblem<BehaviorHandlerType>>;
 
         struct Instance {
-            Instance(const ParetoFrontResult& search_result_, uint32_t chosen_plan_index_, std::vector<TrajectoryDistribution>&& plan_distributions_, std::vector<typename BEHAVIOR_HANDLER_T::CostVector>&& ucb_pareto_points_)
+            Instance(const ParetoFrontResult& search_result_, 
+                    uint32_t chosen_plan_index_, 
+                    std::vector<TrajectoryDistribution>&& plan_distributions_, 
+                    std::vector<typename BehaviorHandlerType::CostVector>&& ucb_pareto_points_)
                 : search_result(search_result_)
                 , chosen_plan_index(chosen_plan_index_)
                 , plan_distributions(std::move(plan_distributions_))
@@ -37,10 +44,8 @@ class Animator {
             ParetoFrontResult search_result;
             uint32_t chosen_plan_index;
             std::vector<TrajectoryDistribution> plan_distributions;
-            std::vector<typename BEHAVIOR_HANDLER_T::CostVector> ucb_pareto_points;
+            std::vector<typename BehaviorHandlerType::CostVector> ucb_pareto_points;
         };
-
-        using Plan = TP::Planner::Plan<SearchProblem<BEHAVIOR_HANDLER_T>>;
 
     public:
         Animator(const std::shared_ptr<SymbolicProductGraph>& product, const TrajectoryDistribution& preference)
@@ -51,12 +56,12 @@ class Animator {
         void addInstance(const ParetoFrontResult& search_result, 
                 uint32_t chosen_plan_index, 
                 std::vector<TrajectoryDistribution>&& plan_distribution,
-                std::vector<typename BEHAVIOR_HANDLER_T::CostVector>&& ucb_pareto_points) {
+                std::vector<typename BehaviorHandlerType::CostVector>&& ucb_pareto_points) {
             m_instances.emplace_back(search_result, chosen_plan_index, std::move(plan_distribution), std::move(ucb_pareto_points));
         }
 
-        void serialize(TP::Serializer& szr, const RewardCostQuantifier<BEHAVIOR_HANDLER_T::numCostCriteria()>& quantifier) {
-            static_assert(BEHAVIOR_HANDLER_T::numBehaviors() == 2, "Does not support serialization of more than one cost behavior");
+        void serialize(TP::Serializer& szr, const Quantifier<M>& quantifier) {
+            static_assert(M == 2, "Does not support serialization of more than one cost behavior");
 
             YAML::Emitter& out = szr.get();
             out << YAML::Key << "PRL Preference Mean";
@@ -74,7 +79,6 @@ class Animator {
             uint32_t instance_i = 0;
 
             const auto& instance_cost_samples = quantifier.getInstanceCosts();
-            const auto& instance_reward_samples = quantifier.getInstanceRewards();
             ASSERT(instance_cost_samples.size() == m_instances.size(), "Number of instances in quantifier does not match");
             LOG("Serializing " << m_instances.size() << " instances");
             for (const auto& instance : m_instances) {
@@ -115,7 +119,7 @@ class Animator {
                 }
 
                 out << YAML::Key << "Sample" << YAML::Value << YAML::BeginSeq;
-                out << instance_cost_samples[instance_i][0] << instance_reward_samples[instance_i] << YAML::EndSeq;
+                out << instance_cost_samples[instance_i][0] << YAML::EndSeq;
 
                 out << YAML::EndMap;
                 ++instance_i;
