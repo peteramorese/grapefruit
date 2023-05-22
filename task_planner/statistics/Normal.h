@@ -41,7 +41,6 @@ struct Normal {
 
 };
 
-
 struct MultivariateNormal {
     public:
         Eigen::VectorXf mu;
@@ -76,6 +75,25 @@ struct FixedMultivariateNormal {
         }
 };
 
+class RNG;
+template <std::size_t N>
+class FixedMultivariateNormalSampler {
+    public:
+        FixedMultivariateNormalSampler(const FixedMultivariateNormal<N>& dist)
+            : m_dist(dist)
+        {
+            Eigen::SelfAdjointEigenSolver<Eigen::Matrix<float, N, N>> solver(dist.Sigma);
+            m_transform = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().asDiagonal();
+        }
+
+        const Eigen::Matrix<float, N, 1>& mean() const {return m_dist.mu;}
+        const Eigen::Matrix<float, N, N>& transform() const {return m_transform;}
+
+    private:
+        FixedMultivariateNormal<N> m_dist;
+        Eigen::Matrix<float, N, N> m_transform;
+        friend class RNG;
+};
 
 } // namespace Distributions
 

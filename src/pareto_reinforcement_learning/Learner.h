@@ -11,14 +11,14 @@
 namespace PRL {
 
 template <uint32_t M>
-class CostLearner {
+class Learner {
     public:
         using SymbolicProductGraph = TP::DiscreteModel::SymbolicProductAutomaton<
             TP::DiscreteModel::TransitionSystem, 
             TP::FormalMethods::DFA, 
             TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>>;
 
-        using BehaviorHandlerType = CostBehaviorHandler<SymbolicProductGraph, M>;
+        using BehaviorHandlerType = BehaviorHandler<SymbolicProductGraph, M>;
 
         using PathSolution = TP::GraphSearch::PathSolution<
             typename SearchProblem<BehaviorHandlerType>::node_t, 

@@ -81,27 +81,4 @@ namespace PRL {
 
     };
 
-    struct RewardBehavior {
-        RewardBehavior(float confidence) 
-            : ucb(confidence)
-        {}
-
-        float getUCB(uint32_t n_tasks_completed) const {
-            //LOG("Reward ucb: " << ucb.getReward(getEstimateMean(), n_tasks_completed) << " with " << n_tasks_completed << " completed tasks");
-            return ucb.getReward(getEstimateMean(), n_tasks_completed);
-        }
-
-        float getEstimateMean() const {
-            return TP::Stats::E(updater.getEstimateNormal());
-        }
-
-        void pull(float sample) {
-            ucb.pull();
-            updater.update(sample);
-        }
-
-        TP::Stats::GaussianUpdater updater;
-        TP::ML::UCB ucb;
-    };
-
 }

@@ -5,37 +5,12 @@
 
 namespace PRL {
 
-template <uint32_t COST_CRITERIA_M>
-struct BehaviorSample {
-    public:
-        TP::Containers::FixedArray<COST_CRITERIA_M, float> cost_sample;
-
-    public:
-        BehaviorSample(TP::DiscreteModel::ProductRank n_tasks)
-            : m_rewards(n_tasks, std::make_pair(false, 0.0f))
-        {}
-
-        inline void addReward(TP::DiscreteModel::ProductRank task_i, float r) {
-            m_rewards[task_i].first = true;
-            m_rewards[task_i].second = r; 
-            m_has_rewards = true;
-        }
-        inline bool hasRewards() const {return m_has_rewards;}
-        inline const std::vector<std::pair<bool, float>>& getRewards() const {return m_rewards;}
-
-    private:
-        std::vector<std::pair<bool, float>> m_rewards;
-        bool m_has_rewards = false;
-};
-
-template <class SYMBOLIC_GRAPH_T, uint32_t COST_CRITERIA_M>
-class TrueBehavior : public TaskNodeActionStorage<TP::Stats::Distributions::Normal, TP::Containers::FixedArray<COST_CRITERIA_M, TP::Stats::Distributions::Normal>> {
+template <class SYMBOLIC_GRAPH_T, uint32_t M>
+class TrueBehavior : public Storage<TP::Stats::Distributions::Normal, TP::Containers::FixedArray<COST_CRITERIA_M, TP::Stats::Distributions::Normal>> {
     public:
         using CostDistributionArray = TP::Containers::FixedArray<COST_CRITERIA_M, TP::Stats::Distributions::Normal>;
     public:
         TrueBehavior(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product,
-            uint32_t n_tasks, 
-            const TP::Stats::Distributions::Normal& default_reward, 
             const CostDistributionArray& default_cost)
             : TaskNodeActionStorage<TP::Stats::Distributions::Normal, TP::Containers::FixedArray<COST_CRITERIA_M, TP::Stats::Distributions::Normal>>(n_tasks, default_reward, default_cost)
             , m_product(product)

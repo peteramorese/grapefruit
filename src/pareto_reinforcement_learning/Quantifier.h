@@ -5,7 +5,7 @@
 namespace PRL {
 
 template <uint32_t M>
-struct CostQuantifier {
+struct Quantifier {
     public:
         TP::Containers::FixedArray<M, float> cumulative_cost;
         uint32_t steps = 0u;
@@ -38,39 +38,6 @@ struct CostQuantifier {
     private:
         std::vector<TP::Containers::FixedArray<M, float>> m_instance_costs;
         TP::Containers::FixedArray<M, float> m_cost_sample_buffer;
-};
-
-template <uint32_t COST_CRITERIA_M>
-struct RewardCostQuantifier : CostQuantifier<COST_CRITERIA_M> {
-    public:
-        float cumulative_reward = 0.0f;
-
-    public:
-        void addSample(const BehaviorSample<COST_CRITERIA_M>& sample) {
-            CostQuantifier<COST_CRITERIA_M>::addSample(sample.cost_sample);
-            float total_reward_this_step = 0.0f;
-            for (auto[contains, r] : sample.getRewards()) {
-                if (contains) 
-                    total_reward_this_step += r;
-            }
-            m_reward_sample_buffer += total_reward_this_step;
-            cumulative_reward += total_reward_this_step;
-        }
-
-        virtual void finishInstance() override {
-            CostQuantifier<COST_CRITERIA_M>::finishInstance();
-            m_instance_rewards.push_back(m_reward_sample_buffer);
-            m_reward_sample_buffer = 0.0f;
-        }
-
-        float avgRewardPerInstance() const {return cumulative_reward / static_cast<float>(this->instances);}
-        const std::vector<float>& getInstanceRewards() const {return m_instance_rewards;}
-
-    public:
-        std::vector<float> m_instance_rewards;
-        float m_reward_sample_buffer = 0.0f;
-
-        
 };
 
 }

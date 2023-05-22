@@ -6,8 +6,8 @@
 
 namespace PRL {
 
-    template <class NA_ELEMENT_T>
-    class NodeActionStorage {
+    template <class ELEMENT_T>
+    class Storage {
         protected:
             struct NodeActionPair {
                 NodeActionPair(TP::Node node_, const TP::DiscreteModel::Action& action_) : node(node_), action(action_) {}
@@ -26,11 +26,11 @@ namespace PRL {
             };
 
         public:
-            NodeActionStorage(const NA_ELEMENT_T& default_nap_element)
-                : m_default_na_element(default_nap_element)
+            Storage(const NA_ELEMENT_T& default_element)
+                : m_default_na_element(default_element)
             {}
 
-            inline NA_ELEMENT_T& getNAElement(TP::Node node, const TP::DiscreteModel::Action& action) {
+            inline NA_ELEMENT_T& getElement(TP::Node node, const TP::DiscreteModel::Action& action) {
                 auto it = this->m_node_action_pair_elements.find(NodeActionPair(node, action));
                 if (it != this->m_node_action_pair_elements.end()) {
                     return it->second;
@@ -40,37 +40,15 @@ namespace PRL {
                 }
             }
 
-            inline const NA_ELEMENT_T& lookupNAElement(TP::Node node, const TP::DiscreteModel::Action& action) const {
+            inline const NA_ELEMENT_T& lookupElement(TP::Node node, const TP::DiscreteModel::Action& action) const {
                 return this->m_node_action_pair_elements.at(NodeActionPair(node, action));
             }
 
         protected:
-            std::unordered_map<NodeActionPair, NA_ELEMENT_T, NodeActionPairHash> m_node_action_pair_elements;
+            std::unordered_map<NodeActionPair, ELEMENT_T, NodeActionPairHash> m_node_action_pair_elements;
 
         private:
-            NA_ELEMENT_T m_default_na_element;
+            ELEMENT_T m_default_na_element;
     };
     
-    template <class TASK_ELEMENT_T, class NA_ELEMENT_T>
-    class TaskNodeActionStorage : public NodeActionStorage<NA_ELEMENT_T> {
-        protected:
-            TaskNodeActionStorage(uint32_t n_tasks, const TASK_ELEMENT_T& default_task_element, const NA_ELEMENT_T& default_na_element)
-                : NodeActionStorage<NA_ELEMENT_T>(default_na_element)
-                , m_task_elements(n_tasks, default_task_element)
-            {}
-
-        public:
-
-            inline const TASK_ELEMENT_T& getTaskElement(TP::DiscreteModel::ProductRank task_i) const {
-                return m_task_elements[task_i];
-            }
-
-            inline TASK_ELEMENT_T& getTaskElement(TP::DiscreteModel::ProductRank task_i) {
-                return m_task_elements[task_i];
-            }
-
-        protected:
-            std::vector<TASK_ELEMENT_T> m_task_elements;
-    };
-
 }

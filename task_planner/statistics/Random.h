@@ -1,6 +1,7 @@
 #pragma once
 
 #include <random>
+#include <Eigen/Dense>
 
 #include "tools/Logging.h"
 #include "statistics/Normal.h"
@@ -67,6 +68,11 @@ class RNG {
 
         inline static float nsrand(const Stats::Distributions::Normal& dist) {
             return nsrand(dist.mu, dist.std());
+        }
+
+        template <uint32_t N>
+        static Eigen::Matrix<float, N, 1> mvnrand(const Stats::Distributions::FixedMultivariateNormalSampler<N>& sampler) {
+            return sampler.mean() + sampler.transform() * Eigen::
         }
 };
 
