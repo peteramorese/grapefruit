@@ -4,20 +4,36 @@
 
 namespace PRL {
 
-template <uint32_t COST_CRITERIA_M>
-struct PRLQuantifier {
+template <uint32_t M>
+struct CostQuantifier {
     public:
-        float cumulative_reward = 0.0f;
-        TP::Containers::FixedArray<COST_CRITERIA_M, float> cumulative_cost;
+        TP::Containers::FixedArray<M, float> cumulative_cost;
         uint32_t steps = 0u;
         uint32_t decision_instances = 0u;
         uint32_t max_decision_instances = 0u;
+    public:
+        Quantifier() {
+            for (uint32_t i = 0; i < M; ++i) cumulative_cost[i] = 0.0f;
+        }
+
+        
+        virtual void addSample(const BehaviorSample<COST_CRITERIA_M>& sample) {
+            cumulative_cost += sample.cost_sample;
+            m_sample_buffer[0] += total_reward_this_step;
+            for (uint32_t i = 0; i < COST_CRITERIA_M; ++i) {
+                m_sample_buffer[i + 1] += sample.cost_sample[i];
+            }
+            ++steps;
+        }
+}
+
+template <uint32_t COST_CRITERIA_M>
+struct RewardCostQuantifier : CostQuantifier<COST_CRITERIA_M> {
+    public:
+        float cumulative_reward = 0.0f;
 
     public:
-        PRLQuantifier() {
-            for (uint32_t i = 0; i < COST_CRITERIA_M; ++i) cumulative_cost[i] = 0.0f;
-        }
-        void addSample(const BehaviorSample<COST_CRITERIA_M>& sample) {
+        virtual void addSample(const BehaviorSample<COST_CRITERIA_M>& sample) override {
             float total_reward_this_step = 0.0f;
             for (auto[contains, r] : sample.getRewards()) {
                 if (contains) 

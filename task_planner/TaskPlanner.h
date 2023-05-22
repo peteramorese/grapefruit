@@ -6,8 +6,9 @@
 #include "tools/Algorithms.h"
 #include "tools/Debug.h"
 #include "tools/Misc.h"
-#include "tools/Test.h"
 #include "tools/Serializer.h"
+#include "tools/Test.h"
+#include "tools/TypeConversion.h"
 
 // Core
 #include "core/Graph.h"
@@ -52,5 +53,6 @@
 #include "statistics/StatTools.h"
 #include "statistics/Normal.h"
 #include "statistics/NormalGamma.h"
+#include "statistics/NormalInverseWishart.h"
 #include "statistics/AdvancedDistributions.h"
 #include "statistics/GaussianUpdater.h"
