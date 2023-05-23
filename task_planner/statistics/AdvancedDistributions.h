@@ -90,6 +90,8 @@ struct FixedInverseWishart {
 
         // TODO normalizationConstant()
         // TODO pdf()
+
+        static constexpr std::size_t uniqueElements() {return N * (N + 1u) / 2;}
 };
 
 template <std::size_t N>

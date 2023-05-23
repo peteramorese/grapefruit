@@ -6,11 +6,97 @@
 
 #include "TaskPlanner.h"
 
+#include "TrajectoryDistributionEstimator.h"
 
 namespace PRL {
 
 template <std::size_t N>
-class GuassianEFE {
+class GaussianEFE {
+    public:
+        using ModelDistribution = TP::Stats::Distributions::FixedMultivariateNormal<N>;
+        //using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements()>;
+
+    public:
+        static float calculate(const TrajectoryDistributionUpdaters<N>& traj_updaters, const ModelDistribution& pref_dist, uint32_t n_samples) {
+            const auto& parameters_mvn = traj_updaters.getConvolutedEstimateMVN();
+            ModelDistribution ceq_obs_dist = getCEQObservationDistribution(traj_updaters);
+            return preferenceLikelihood(pref_dist, ceq_obs_dist)
+                + parameters_mvn.entropy()
+                + expectedPosteriorEntropy(traj_updaters, n_samples);
+        }
+
+    private:
+
+        static ModelDistribution getCEQObservationDistribution(const TrajectoryDistributionUpdaters<N>& prior_updaters) {
+            const auto& parameters_mvn = prior_updaters.getConvolutedEstimateMVN();
+            Eigen::Matrix<float, TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements(), 1> parameters_mean = TP::Stats::E(parameters_mvn);
+            Eigen::Matrix<float, N, 1> mean_of_mean;
+            Eigen::Matrix<float, N, N> mean_of_covariance;
+            for (std::size_t i = 0; i < TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements(); ++i) {
+                mean_of_mean(i) = parameters_mean(i);
+            }
+            std::size_t row = 0;
+            std::size_t col = 0;
+            for (std::size_t i = 0; i < TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements() - N; ++i) {
+                mean_of_covariance(row, col) = parameters_mean(i + N);
+                if (col > row) 
+                    mean_of_covariance(col, row) = parameters_mean(i + N);
+                if (col == N - 1) {
+                    ++row;
+                    col = row;
+                }
+            }
+            return ModelDistribution(mean_of_mean, mean_of_covariance);
+        }
+
+        static float preferenceLikelihood(const ModelDistribution& pref_dist, const ModelDistribution& ceq_obs_dist) {
+            float sum = std::log(std::pow(std::sqrt(M_2_PI), N) * pref_dist.Sigma.determinant());
+            Eigen::Matrix<float, N, N> Sigma_ev_inv = pref_dist.Sigma.inverse();
+            
+            // First term
+            sum += 0.5f * pref_dist.mu.transpose() * Sigma_ev_inv * pref_dist.mu;
+
+            // Second term
+            sum += - pref_dist.mu.transpose() * Sigma_ev_inv * ceq_obs_dist.mu;
+
+            // Third term
+            sum += 0.5f * ((Sigma_ev_inv * ceq_obs_dist.Sigma).trace() + ceq_obs_dist.mu.transpose() * Sigma_ev_inv * ceq_obs_dist.mu);
+
+            return sum;
+        }
+
+        static float expectedPosteriorEntropy(const TrajectoryDistributionUpdaters<N>& prior_updaters, uint32_t n_samples) {
+            std::vector<TP::Stats::Distributions::FixedMultivariateNormal<N>> estimate_dists = prior_updaters.getIndividualEstimateDistributions();
+            const std::vector<TP::Stats::MultivariateGaussianUpdater<N>*>& updaters = prior_updaters.getIndividualUpdaters();
+            
+            // Make sampler for each individual dist, since we need to sample each (s,a)
+            std::vector<TP::Stats::Distributions::FixedMultivariateNormalSampler<N>> samplers;
+            samplers.reserve(estimate_dists.size());
+            for (const auto& dist : estimate_dists) {
+                samplers.emplace_back(dist);
+            }
+
+            float unnormalized_entropy = 0.0f;
+
+            // Sample the expected entropy
+            for (uint32_t s = 0; s < n_samples; ++s) {
+                // Convoluted posterior estimate
+                TrajectoryDistributionConvolver<N> posterior_convolver;
+                auto sampler_it = samplers.begin();
+                for (const auto& updater : updaters) {
+                    Eigen::Matrix<float, N, 1> obs = TP::RNG::mvnrand(*sampler_it++);
+                    TP::Stats::Distributions::FixedNormalInverseWishart<N> posterior = updater->tempPosterior(obs);
+                    posterior_convolver.add(posterior);
+                }
+                
+                unnormalized_entropy += posterior_convolver.getConvolutedEstimateMVN().entropy();
+            }
+            return unnormalized_entropy / static_cast<float>(n_samples);
+        }
+};
+
+template <std::size_t N>
+class CertaintyEquivalenceGaussianEFE {
     public:
         using Distribution = TP::Stats::Distributions::FixedMultivariateNormal<N>;
 
@@ -30,14 +116,6 @@ class GuassianEFE {
             t_det_input_sigma_cache.det = lhs.Sigma.determinant();
             t_det_input_sigma_cache.cached = true;
 
-            //LOG("input det: " << t_det_input_sigma_cache.det);
-            //LOG("rhs det: " << rhs.covariance.determinant());
-            //LOG("inv trace: " << inv_rhs_cov_by_lhs_cov.trace());
-            //LOG("First term: " << std::log(rhs.covariance.determinant() / t_det_input_sigma_cache.det));
-            //LOG("Fourth term: " << mean_diff.transpose() * inv_rhs_covariance * mean_diff);
-            //Eigen::IOFormat OctaveFmt(Eigen::StreamPrecision, 0, ", ", ";\n", "", "", "[", "]");
-            //LOG("rhs_covariance: \n" << rhs.covariance.format(OctaveFmt));
-            //LOG("inv_rhs_covariance: \n" << inv_rhs_covariance.format(OctaveFmt));
             return 0.5f * (
                 std::log(rhs.Sigma.determinant() / t_det_input_sigma_cache.det) 
                 - static_cast<float>(N)

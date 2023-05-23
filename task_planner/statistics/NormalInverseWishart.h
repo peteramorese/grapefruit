@@ -32,7 +32,7 @@ class FixedNormalInverseWishart {
             , nu(nu_)
         {}
 
-        static constexpr std::size_t uniqueElements() {return N * (N + 1u) / 2;} // Mean elements + unique elements of covariance
+        static constexpr std::size_t uniqueElements() {return N * (N + 3) / 2;} // Mean elements + unique elements of covariance
 
         FixedMultivariateT<N> meanMarginal() const {
             float dof = nu - static_cast<float>(N) + 1.0f;

@@ -29,6 +29,12 @@ class SampleSet {
             m_avg = (n * m_avg + sample) / (n + 1.0f);
             m_sample_set.push_back(std::move(sample));
         }
+
+        inline void pop_back() {
+            float n = static_cast<float>(m_sample_set.size());
+            m_avg = (n * m_avg - m_sample_set.back()) / (n - 1.0f);
+            m_sample_set.pop_back();
+        }
     private:
         std::vector<T> m_sample_set;
         T m_avg = T{};

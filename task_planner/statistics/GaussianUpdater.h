@@ -30,6 +30,8 @@ class GaussianUpdater {
                 1.0f / E(posterior.precisionMarginal()));
         }
 
+        const Distributions::NormalGamma& dist() const {return m_ng;}
+
         inline uint32_t nSamples() const {return m_sample_set.size();}
 
     private:
@@ -67,6 +69,23 @@ class MultivariateGaussianUpdater {
                 E(posterior.meanMarginal()),
                 1.0f / posterior.kappa * E(minimalWishartToWishart(posterior.covarianceMarginal()))
             );
+        }
+
+        //Distributions::FixedMultivariateNormal<N> getEstimateNormalPosterior(const Eigen::Matrix<float, N, 1>& sample) {
+        //    Distributions::FixedNormalInverseWishart<N> posterior = tempPosterior(sample);
+        //    return Distributions::FixedMultivariateNormal<N>(
+        //        E(posterior.meanMarginal()),
+        //        1.0f / posterior.kappa * E(minimalWishartToWishart(posterior.covarianceMarginal()))
+        //    );
+        //}
+
+        Distributions::FixedNormalInverseWishart<N> dist() const {return m_niw.posterior(m_sample_set);}
+        Distributions::FixedNormalInverseWishart<N> tempPosterior(const Eigen::Matrix<float, N, 1>& sample) {
+            /* Get the posterior as if the sample was added, but sample is not kept */
+            m_sample_set.add(sample); // add the sample to the sample set
+            Distributions::FixedNormalInverseWishart<N> posterior = m_niw.posterior(m_sample_set); // calculate as if sample was part of the set
+            m_sample_set.pop_back(); // remove the sample from the set
+            return posterior;
         }
 
         inline uint32_t nSamples() const {return m_sample_set.size();}

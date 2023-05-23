@@ -39,6 +39,9 @@ namespace PRL {
 
             inline uint32_t nSamples() const {return m_updater.nSamples();}
 
+            const TP::Stats::MultivariateGaussianUpdater<M>& getUpdater() const {return m_updater;}
+            TP::Stats::MultivariateGaussianUpdater<M>& getUpdater() {return m_updater;}
+
         private:
             TP::Stats::MultivariateGaussianUpdater<M> m_updater;
     };

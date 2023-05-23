@@ -47,7 +47,7 @@ int main() {
     niw.Lambda(0, 1) = 0.11f;
     niw.Lambda(1, 0) = 0.11f;
     niw.kappa = 2.0f;
-    auto mvn = Stats::matchNIWToMVN(niw);
+    auto mvn = Stats::MomentMatch::niw2mvn(niw);
     std::cout<< mvn.mu << std::endl;
     std::cout<< mvn.Sigma << std::endl;
 

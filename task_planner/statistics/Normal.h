@@ -73,9 +73,19 @@ struct FixedMultivariateNormal {
             // TODO
             return 0.0f;
         }
+
+        void convolveWith(const FixedMultivariateNormal<N>& other) {
+            mu += other.mu;
+            Sigma += other.Sigma;
+        }
+
+        float entropy() const {
+            constexpr float d = static_cast<float>(N);
+            return 0.5f * (std::log(Sigma.determinant()) + d * (1.0f + std::log(M_2_PI)));
+        }
+
 };
 
-class RNG;
 template <std::size_t N>
 class FixedMultivariateNormalSampler {
     public:
@@ -93,7 +103,6 @@ class FixedMultivariateNormalSampler {
     private:
         FixedMultivariateNormal<N> m_dist;
         Eigen::Matrix<float, N, N> m_transform;
-        friend class RNG;
 };
 
 } // namespace Distributions

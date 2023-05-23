@@ -28,6 +28,7 @@ int main(int argc, char* argv[]) {
 
 	uint32_t max_planning_instances = parser.parse<uint32_t>("instances", 10, "Max number of planning instances");
 	uint32_t n_trials = parser.parse<uint32_t>("trials", 1, "Number of trials to run");
+	uint32_t n_efe_samples = parser.parse<uint32_t>("efe-samples", 10000, "Number of samples used for approximating the expected posterior entropy");
 
 	float pc_mean = parser.parse<float>("pc-mean", 50.0f, "Preference distribution cost mean");
 	float pc_var = parser.parse<float>("pc-var", 25.0f, "Preference distribution cost variance");
@@ -138,7 +139,7 @@ int main(int argc, char* argv[]) {
 			plan_directory = std::string();
 
 		std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, confidence);
-		Learner<M> prl(behavior_handler, plan_directory, animator, verbose);
+		Learner<M> prl(behavior_handler, n_efe_samples, plan_directory, animator, verbose);
 
 		// Initialize the agent's state
 		TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);

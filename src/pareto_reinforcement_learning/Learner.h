@@ -7,6 +7,7 @@
 #include "TrueBehavior.h"
 #include "Quantifier.h"
 #include "Animator.h"
+#include "TrajectoryDistributionEstimator.h"
 
 namespace PRL {
 
@@ -30,14 +31,15 @@ class Learner {
             typename SearchProblem<BehaviorHandlerType>::edge_t, 
             typename SearchProblem<BehaviorHandlerType>::cost_t>;
 
-        using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<M>;
+        using PreferenceDistribution = TP::Stats::Distributions::FixedMultivariateNormal<M>;
 
         using Plan = TP::Planner::Plan<SearchProblem<BehaviorHandlerType>>;
 
     public:
-        Learner(const std::shared_ptr<BehaviorHandlerType>& behavior_handler, const std::string& write_plan_directory = std::string(), const std::shared_ptr<Animator<M>>& animator = nullptr, bool verbose = false)
+        Learner(const std::shared_ptr<BehaviorHandlerType>& behavior_handler, uint32_t n_samples = 10000, const std::string& write_plan_directory = std::string(), const std::shared_ptr<Animator<M>>& animator = nullptr, bool verbose = false)
             : m_product(behavior_handler->getProduct())
             , m_behavior_handler(behavior_handler)
+            , m_n_samples(n_samples)
             , m_write_plan_directory(write_plan_directory)
             , m_animator(animator)
             , m_verbose(verbose)
@@ -60,15 +62,15 @@ class Learner {
             return result;
         }
 
-        std::list<PathSolution>::const_iterator select(const ParetoFrontResult& search_result, const TrajectoryDistribution& p_ev) {
+        std::list<PathSolution>::const_iterator select(const ParetoFrontResult& search_result, const PreferenceDistribution& p_ev) {
             log("Selection Phase (2)");
             typename std::list<PathSolution>::const_iterator min_it = search_result.solution_set.begin();
             uint32_t min_ind = 0;
             float min_efe = 0.0f;
 
-            // Hold the trajectory distributions for the animation
-            std::vector<TrajectoryDistribution> traj_distributions;
-            traj_distributions.reserve(search_result.solution_set.size());
+            //// Hold the trajectory distributions for the animation
+            //std::vector<TrajectoryDistribution> traj_distributions;
+            //traj_distributions.reserve(search_result.solution_set.size());
 
             // Hold the ucb pareto points for the animation
             std::vector<typename BehaviorHandlerType::CostVector> ucb_pareto_points;
@@ -78,14 +80,14 @@ class Learner {
             for (auto it = search_result.solution_set.begin(); it != search_result.solution_set.end(); ++it) {
 
                 Plan plan(*it, m_product, true);
-                TrajectoryDistribution traj_dist = getTrajectoryDistribution(plan);
+                TrajectoryDistributionUpdaters<M> traj_updaters = getTrajectoryUpdaters(plan);
                 if (m_verbose) {
                     PRINT_NAMED("    Solution candidate " << plan_i, "\n" << 
-                        "         [cost  : N(" << traj_dist.mu(1) <<", " << traj_dist.Sigma(1,1) <<"), ucb: " << std::to_string(it->path_cost.template get<1>()) << "]\n" <<
-                        "         [reward: N(" << traj_dist.mu(0) <<", " << traj_dist.Sigma(0,0) <<"), ucb: " << std::to_string(it->path_cost.template get<0>()) << "]");
+                        "         [cost ucb....:" << std::to_string(it->path_cost.template get<1>()) << "]\n" <<
+                        "         [reward ucb..:" << std::to_string(it->path_cost.template get<0>()) << "]");
                 }
 
-                float efe = GuassianEFE<M>::calculate(traj_dist, p_ev);
+                float efe = GaussianEFE<M>::calculate(traj_updaters, p_ev, m_n_samples);
                 //LOG("-> efe: " << efe);
                 if (it != search_result.solution_set.begin()) {
                     if (efe < min_efe) {
@@ -97,23 +99,23 @@ class Learner {
                     min_efe = efe;
                 }
 
-                traj_distributions.push_back(std::move(traj_dist));
-                ucb_pareto_points.push_back(it->path_cost);
+                //traj_distributions.push_back(std::move(traj_dist));
+                //ucb_pareto_points.push_back(it->path_cost);
                 
-                if (!m_write_plan_directory.empty()) {
-                    TP::Serializer szr(m_write_plan_directory + "/candidate_plan_" + std::to_string(plan_i) + ".yaml");
-                    plan.serialize(szr, 
-                        "Candidate Plan " + std::to_string(plan_i) + " at instance: " + std::to_string(m_quantifier.instances));
-                    szr.done();
-                }
+                //if (!m_write_plan_directory.empty()) {
+                //    TP::Serializer szr(m_write_plan_directory + "/candidate_plan_" + std::to_string(plan_i) + ".yaml");
+                //    plan.serialize(szr, 
+                //        "Candidate Plan " + std::to_string(plan_i) + " at instance: " + std::to_string(m_quantifier.instances));
+                //    szr.done();
+                //}
 
                 ++plan_i;
             }
             log("Chosen solution: " + std::to_string(min_ind), true);
 
-            // Add to animator
-            if (m_animator)
-                m_animator->addInstance(search_result, min_ind, std::move(traj_distributions), std::move(ucb_pareto_points));
+            //// Add to animator
+            //if (m_animator)
+            //    m_animator->addInstance(search_result, min_ind, std::move(traj_distributions), std::move(ucb_pareto_points));
 
             return min_it;
         }
@@ -138,7 +140,7 @@ class Learner {
         }
 
         template <typename SAMPLER_LAM_T>
-        const Quantifier<M>& run(const TrajectoryDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_instances) {
+        const Quantifier<M>& run(const PreferenceDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_instances) {
             ASSERT(m_initialized, "Must initialize before running");
             m_quantifier.max_instances = max_instances;
             while (m_quantifier.instances < max_instances) {
@@ -158,37 +160,15 @@ class Learner {
             return m_quantifier;
         }
 
-        TrajectoryDistribution getTrajectoryDistribution(const Plan& plan) {
-            //TP::Containers::FixedArray<M, TP::Stats::Distributions::Normal> individual_distributions;
-            //auto src_state_it = plan.begin();
-            //auto dst_state_it = plan.begin();
-            //++dst_state_it;
-            //for (auto action_it = plan.action_sequence.begin(); action_it != plan.action_sequence.end(); ++action_it) {
-            //    TP::Containers::FixedArray<M - 1, TP::Stats::Distributions::Normal> cost_distributions = m_behavior_handler->getNAElement(src_state_it.tsNode(), *action_it).getEstimateDistributions();
-            //    for (uint32_t m = 0; m < M; ++m) {
-            //        if (m != 0) {
-            //            individual_distributions[m].convolveWith(cost_distributions[m - 1]);
-            //        } else {
-            //            for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
-            //                if (!m_product->acc(src_state_it.productNode().base_node, automaton_i) && m_product->acc(dst_state_it.productNode().base_node, automaton_i)) {
-            //                    // Accumulate reward for each task satisfied
-            //                    individual_distributions[m].convolveWith(m_behavior_handler->getTaskElement(automaton_i).updater.getEstimateNormal());
-            //                }
-            //            }
-            //        }
-            //    }
-            //    ++src_state_it;
-            //    ++dst_state_it;
-            //}
-            TrajectoryDistribution distribution;
-            //for (uint32_t m = 0; m < M; ++m) {
-            //    distribution.mu(m) = individual_distributions[m].mu;
-            //    for (uint32_t n = 0; n < M; ++n) {
-            //        distribution.Sigma(m, n) = (m != n) ? 0.0f : individual_distributions[m].sigma_2;
-            //    }
-            //}
+        TrajectoryDistributionUpdaters<M> getTrajectoryUpdaters(const Plan& plan) {
+            TrajectoryDistributionUpdaters<M> updaters;
+            auto state_it = plan.begin();
+            for (auto action_it = plan.action_sequence.begin(); action_it != plan.action_sequence.end(); ++action_it) {
+                updaters.add(m_behavior_handler->getElement(state_it.tsNode(), *action_it).getUpdater());
+                ++state_it;
+            }
 
-            return distribution;
+            return updaters;
         }
 
         void initialize(const TP::DiscreteModel::State& init_state) {
@@ -211,6 +191,7 @@ class Learner {
         std::shared_ptr<BehaviorHandlerType> m_behavior_handler;
         SymbolicProductGraph::node_t m_current_product_node;
         bool m_initialized = false;
+        uint32_t m_n_samples;
 
         Quantifier<M> m_quantifier;
 
