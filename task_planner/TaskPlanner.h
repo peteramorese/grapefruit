@@ -49,10 +49,11 @@
 #include "learning/UCB.h"
 
 // Statistics
-#include "statistics/Random.h"
-#include "statistics/StatTools.h"
+#include "statistics/AdvancedDistributions.h"
+#include "statistics/GaussianUpdater.h"
+#include "statistics/MomentMatch.h"
 #include "statistics/Normal.h"
 #include "statistics/NormalGamma.h"
 #include "statistics/NormalInverseWishart.h"
-#include "statistics/AdvancedDistributions.h"
-#include "statistics/GaussianUpdater.h"
+#include "statistics/Random.h"
+#include "statistics/StatTools.h"

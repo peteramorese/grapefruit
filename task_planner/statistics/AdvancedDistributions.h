@@ -121,11 +121,11 @@ struct MinimalFixedInverseWishart {
             std::size_t next_diff = N;
             for (std::size_t i = 0; i < N_minimal; ++i) {
                 if (diff == next_diff || i == 0) {
-                    Psi_minimal(i, 0) = 1.0f; // diagonal
+                    Psi_minimal(i) = 1.0f; // diagonal
                     --next_diff;
                     diff = 0;
                 } else {
-                    Psi_minimal(i, 0) = 0.0f; // off diagonal
+                    Psi_minimal(i) = 0.0f; // off diagonal
                 }
                 ++diff;
             }
@@ -136,7 +136,7 @@ struct MinimalFixedInverseWishart {
             std::size_t i_minimal = 0;
             for (std::size_t i = 0; i < N; ++i) {
                 for (std::size_t j = i; j < N; ++j) {
-                    Psi_minimal(i_minimal++, 1) = Psi_(i, j);
+                    Psi_minimal(i_minimal++) = Psi_(i, j);
                 }
             }
         }
@@ -255,7 +255,7 @@ static Eigen::Matrix<float, N * N, N * N> var(const Distributions::FixedInverseW
 
 // MinimalFixedInverseWishart
 template <std::size_t N>
-inline static Eigen::Matrix<float, Distributions::FixedInverseWishart<N>::uniqueElements(), 1> E(const Distributions::MinimalFixedInverseWishart<N>& p) {
+inline static Eigen::Matrix<float, Distributions::MinimalFixedInverseWishart<N>::uniqueElements(), 1> E(const Distributions::MinimalFixedInverseWishart<N>& p) {
     ASSERT(p.nu > static_cast<float>(N + 1u), "DOF must be greater than N + 1"); 
     return p.Psi_minimal * (1.0f / (p.nu - static_cast<float>(N) - 1.0f));
 }
