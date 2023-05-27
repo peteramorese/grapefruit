@@ -31,22 +31,17 @@ class GaussianEFE {
             const auto& parameters_mvn = prior_updaters.getConvolutedEstimateMVN();
             Eigen::Matrix<float, TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements(), 1> parameters_mean = TP::Stats::E(parameters_mvn);
             Eigen::Matrix<float, N, 1> mean_of_mean;
-            Eigen::Matrix<float, N, N> mean_of_covariance;
+            Eigen::Matrix<float, ModelDistribution::uniqueCovarianceElements(), 1> mean_of_covariance;
             for (std::size_t i = 0; i < TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements(); ++i) {
-                mean_of_mean(i) = parameters_mean(i);
+                if (i < N) 
+                    mean_of_mean(i) = parameters_mean(i);
+                else
+                    mean_of_covariance(i - N) = parameters_mean(i);
             }
-            std::size_t row = 0;
-            std::size_t col = 0;
-            for (std::size_t i = 0; i < TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements() - N; ++i) {
-                mean_of_covariance(row, col) = parameters_mean(i + N);
-                if (col > row) 
-                    mean_of_covariance(col, row) = parameters_mean(i + N);
-                if (col == N - 1) {
-                    ++row;
-                    col = row;
-                }
-            }
-            return ModelDistribution(mean_of_mean, mean_of_covariance);
+            ModelDistribution dist;
+            dist.mu = mean_of_mean;
+            dist.setSigmaFromUniqueElementVector(mean_of_covariance);
+            return dist;
         }
 
         static float preferenceLikelihood(const ModelDistribution& pref_dist, const ModelDistribution& ceq_obs_dist) {

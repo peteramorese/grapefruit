@@ -12,7 +12,7 @@ namespace DiscreteModel {
         ASSERT(model_props.init_coordinate_x < model_props.n_x, "Init x coordinate (" << model_props.init_coordinate_x << ") exceeds the x-grid-dimension");
         ASSERT(model_props.init_coordinate_y < model_props.n_y, "Init y coordinate (" << model_props.init_coordinate_y << ") exceeds the y-grid-dimension");
 
-        bool standard_propositions = model_props.environment.empty();
+        bool standard_propositions = model_props.environment.regions.empty();
 
 
         /////////////////   State Space   /////////////////
@@ -121,7 +121,7 @@ namespace DiscreteModel {
                         Condition ap;
                         ap.addCondition(ConditionArg::Label, s_x_coord_label, ConditionOperator::Equals, ConditionArg::Variable, x_labels[i]);
                         ap.addCondition(ConditionArg::Label, s_y_coord_label, ConditionOperator::Equals, ConditionArg::Variable, y_labels[j]);
-                        ap.setName(region.label);
+                        ap.setName(region.proposition);
 
                         ts->addProposition(ap);
                     }
@@ -174,7 +174,7 @@ namespace DiscreteModel {
 
         out << YAML::Key << "Coord Label Template" << YAML::Value << model_props.coord_label_template;
 
-        if (!model_props.environment.empty()) {
+        if (!model_props.environment.regions.empty()) {
             out << YAML::Key << "N Regions" << YAML::Value << model_props.environment.regions.size();
 
             out << YAML::Key << "Regions Labels" << YAML::Value;
@@ -238,45 +238,20 @@ namespace DiscreteModel {
             props.init_coordinate_y = data["Init Y Coord"].as<uint32_t>();
             props.coord_label_template = data["Coord Label Template"].as<std::string>();
 
-            if (data["N Regions"]) {
-                uint32_t n_regions = data["N Regions"].as<uint32_t>();
-                if (!data["Region Labels"]) LOG("not found?");
-                std::vector<std::string> labels = data["Region Labels"].as<std::vector<std::string>>();
-                std::vector<uint32_t> lower_left_cells_x = data["Lower Left Cells X"].as<std::vector<uint32_t>>();
-                std::vector<uint32_t> lower_left_cells_y = data["Lower Left Cells Y"].as<std::vector<uint32_t>>();
-                std::vector<uint32_t> upper_right_cells_x = data["Upper Right Cells X"].as<std::vector<uint32_t>>();
-                std::vector<uint32_t> upper_right_cells_y = data["Upper Right Cells Y"].as<std::vector<uint32_t>>();
-                if (data["Region Colors"]) {
-                    std::vector<std::string> colors = data["Region Colors"].as<std::vector<std::string>>();
-                    ASSERT(labels.size() == n_regions
-                        && lower_left_cells_x.size() == n_regions
-                        && lower_left_cells_y.size() == n_regions
-                        && upper_right_cells_x.size() == n_regions
-                        && upper_right_cells_y.size() == n_regions
-                        && colors.size() == n_regions, "Mismatch in environment region parameters");
+            if (data["Region Labels"]) {
+                for (const auto& label : data["Region Labels"].as<std::vector<std::string>>()) {
+                    ASSERT(data[label], "Region: " << label << " was specified in 'Region Labels', but data not found");
+                    YAML::Node region_node = data[label];
+                    std::vector<uint32_t> bounds = region_node["Bounds"].as<std::vector<uint32_t>>();
+                    ASSERT(bounds.size() == 4, "Must specify four bounds (x_lower, x_upper, y_lower, y_upper)");
+                    std::string color = region_node["Color"].as<std::string>();
 
-                    std::vector<float> costs;
-                    if (data["Region Costs"]) {
-                        costs = data["Region Costs"].as<std::vector<float>>();
-                    }
+                    std::string proposition = label;
+                    if (region_node["Proposition"]) // proposition is overriden if the key exists
+                        proposition = region_node["Proposition"].as<std::string>();
 
-                    for (uint32_t i=0; i<labels.size(); ++i) {
-                        if (!costs.empty())
-                            props.environment.addRegion(labels[i], lower_left_cells_x[i], lower_left_cells_y[i], upper_right_cells_x[i], upper_right_cells_y[i], colors[i], costs[i]);
-                        else 
-                            props.environment.addRegion(labels[i], lower_left_cells_x[i], lower_left_cells_y[i], upper_right_cells_x[i], upper_right_cells_y[i], colors[i]);
-                    }
-                } else {
-                    ASSERT(labels.size() == n_regions
-                        && lower_left_cells_x.size() == n_regions
-                        && lower_left_cells_y.size() == n_regions
-                        && upper_right_cells_x.size() == n_regions
-                        && upper_right_cells_y.size() == n_regions, "Mismatch in environment region parameters");
-
-                    for (uint32_t i=0; i<labels.size(); ++i) {
-                        props.environment.addRegion(labels[i], lower_left_cells_x[i], lower_left_cells_y[i], upper_right_cells_x[i], upper_right_cells_y[i]);
-                    }
-
+                    RectangleGridWorldRegion region{label, proposition, bounds[0], bounds[1], bounds[2], bounds[3], color};
+                    props.environment.regions.push_back(std::move(region));
                 }
             }
 

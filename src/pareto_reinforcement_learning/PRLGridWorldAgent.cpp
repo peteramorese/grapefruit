@@ -70,56 +70,21 @@ int main(int argc, char* argv[]) {
 
 	/////////////////   Planner   /////////////////
 
-	constexpr uint64_t M = 2;
+	constexpr uint64_t N = 2;
 	using EdgeInheritor = TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>;
 	using SymbolicGraph = TP::DiscreteModel::SymbolicProductAutomaton<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA, EdgeInheritor>;
-	using BehaviorHandlerType = BehaviorHandler<SymbolicGraph, M>;
-	using TrueBehaviorType = TrueBehavior<SymbolicGraph, M>;
-	using PreferenceDistributionType = TP::Stats::Distributions::FixedMultivariateNormal<M>;
+	using BehaviorHandlerType = BehaviorHandler<SymbolicGraph, N>;
+	using PreferenceDistributionType = TP::Stats::Distributions::FixedMultivariateNormal<N>;
 
  	std::shared_ptr<SymbolicGraph> product = std::make_shared<SymbolicGraph>(ts, dfas);
 
-	typename TrueBehaviorType::Distribution default_cost_distribution;
-	// TODO
-	//TP::Stats::Distributions::Normal default_reward;
-	//default_reward.mu = 10.0f;
-	//default_reward.sigma_2 = 3.0f;
-	//default_cost_array[0].mu = 5.0f;
-	//default_cost_array[0].sigma_2 = 0.5f;
-
-
-	
 	/////////////////   True Behavior   /////////////////
 
-	std::shared_ptr<TrueBehaviorType> true_behavior = std::make_shared<TrueBehaviorType>(product, default_cost_distribution);
-	std::vector<std::string> x_labels(ts_props.n_x);
-	std::vector<std::string> y_labels(ts_props.n_y);
-	for (int i=0; i<ts_props.n_x; ++i) {
-		x_labels[i] = "x" + std::to_string(i);
-	}
-	for (int i=0; i<ts_props.n_y; ++i) {
-		y_labels[i] = "y" + std::to_string(i);
-	}
-	auto ss_grid_agent = ts->getStateSpace().lock();
-	for (const auto& region : ts_props.environment.regions) {
-		for (uint32_t i = region.lower_left_x; i <= region.upper_right_x; ++i) {
-			for (uint32_t j = region.lower_left_y; j <= region.upper_right_y; ++j) {
-				TP::DiscreteModel::State s(ss_grid_agent.get());	
-				s[TP::DiscreteModel::GridWorldAgent::s_x_coord_label] = x_labels[i];
-				s[TP::DiscreteModel::GridWorldAgent::s_y_coord_label] = y_labels[j];
-				TP::Node model_node = ts->getGenericNodeContainer()[s];
-				// TODO
-				//for (const auto& outgoing_edge : ts->getOutgoingEdges(model_node)) {
-				//	TrueBehaviorType::CostDistributionArray& cost_array = true_behavior->getNAElement(model_node, outgoing_edge.action);
-				//	cost_array[0].convolveWith(TP::Stats::Distributions::Normal(region.exit_cost, 0.3f*region.exit_cost + 0.2f));
-				//	TrueBehaviorType::CostDistributionArray& cost_array_check = true_behavior->getNAElement(model_node, outgoing_edge.action);
-				//}
-			}
-		}
-	}
+	std::shared_ptr<GridWorldTrueBehavior<N>> true_behavior = std::make_shared<GridWorldTrueBehavior<N>>(product, config_filepath);
 
-	//if (verbose)
-	//	true_behavior->print();
+	if (verbose)
+		true_behavior->print();
+	PAUSE;
 
 	// Make the preference behavior distribution
 	PreferenceDistributionType p_ev;
@@ -129,17 +94,17 @@ int main(int argc, char* argv[]) {
 	p_ev.Sigma(1, 1) = pc_var; // cost variance
 
 
-	QuantifierSet<2> quantifier_set(p_ev);
-	std::shared_ptr<Animator<M>> animator;
+	QuantifierSet<N> quantifier_set(p_ev);
+	std::shared_ptr<Animator<N>> animator;
 	if (animate)
-		animator = std::make_shared<Animator<M>>(product, p_ev);
+		animator = std::make_shared<Animator<N>>(product, p_ev);
 
 	for (uint32_t trial = 0; trial < n_trials; ++trial) {
 		if (!write_plans)
 			plan_directory = std::string();
 
 		std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, confidence);
-		Learner<M> prl(behavior_handler, n_efe_samples, plan_directory, animator, verbose);
+		Learner<N> prl(behavior_handler, n_efe_samples, plan_directory, animator, verbose);
 
 		// Initialize the agent's state
 		TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
@@ -154,15 +119,15 @@ int main(int argc, char* argv[]) {
 		if (verbose) {
 			LOG("Finished!");
 			std::string total_cost_str{};
-			for (uint32_t i = 0; i < M; ++i) 
-				total_cost_str += std::to_string(quantifier.cumulative_cost[i]) + ((i < M) ? ", " : "");
+			for (uint32_t i = 0; i < N; ++i) 
+				total_cost_str += std::to_string(quantifier.cumulative_cost[i]) + ((i < N) ? ", " : "");
 			PRINT_NAMED("Total Cost...............................", total_cost_str);
 			PRINT_NAMED("Steps....................................", quantifier.steps);
 			PRINT_NAMED("Instances................................", quantifier.instances);
 			std::string avg_cost_str{};
 			auto avg_cost_per_instance = quantifier.avgCostPerInstance();
-			for (uint32_t i = 0; i < M; ++i) 
-				avg_cost_str += std::to_string(avg_cost_per_instance[i]) + ((i < M) ? ", " : "");
+			for (uint32_t i = 0; i < N; ++i) 
+				avg_cost_str += std::to_string(avg_cost_per_instance[i]) + ((i < N) ? ", " : "");
 			PRINT_NAMED("Average cost per per instance............", avg_cost_str);
 		}
 

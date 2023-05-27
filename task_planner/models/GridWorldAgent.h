@@ -12,35 +12,18 @@ namespace TP {
 namespace DiscreteModel {
 
     struct RectangleGridWorldRegion {
-        RectangleGridWorldRegion(const std::string& label_, uint32_t lower_left_x_, uint32_t lower_left_y_, uint32_t upper_right_x_, uint32_t upper_right_y_, const std::string& color_ = std::string(), float exit_cost_ = 1.0f) 
-            : label(label_)
-            , lower_left_x(lower_left_x_)
-            , lower_left_y(lower_left_y_)
-            , upper_right_x(upper_right_x_) 
-            , upper_right_y(upper_right_y_) 
-            , exit_cost(exit_cost_)
-            , color(color_) {}
         std::string label;
+        std::string proposition;
         uint32_t lower_left_x;
-        uint32_t lower_left_y;
         uint32_t upper_right_x;
+        uint32_t lower_left_y;
         uint32_t upper_right_y;
-        std::string color = "orange";
-        float exit_cost = 1.0f;
+        std::string color;
     };
 
     struct GridWorldEnvironment {
         std::vector<RectangleGridWorldRegion> regions;
-        void addRegion(const std::string& label, uint32_t lower_left_cell_x, uint32_t lower_left_cell_y, uint32_t upper_right_cell_x, uint32_t upper_right_cell_y) {
-            regions.emplace_back(label, lower_left_cell_x, lower_left_cell_y, upper_right_cell_x, upper_right_cell_y);
-        }
-        void addRegion(const std::string& label, uint32_t lower_left_cell_x, uint32_t lower_left_cell_y, uint32_t upper_right_cell_x, uint32_t upper_right_cell_y, const std::string& color) {
-            regions.emplace_back(label, lower_left_cell_x, lower_left_cell_y, upper_right_cell_x, upper_right_cell_y, color);
-        }
-        void addRegion(const std::string& label, uint32_t lower_left_cell_x, uint32_t lower_left_cell_y, uint32_t upper_right_cell_x, uint32_t upper_right_cell_y, const std::string& color, float exit_cost) {
-            regions.emplace_back(label, lower_left_cell_x, lower_left_cell_y, upper_right_cell_x, upper_right_cell_y, color, exit_cost);
-        }
-        bool empty() const {return regions.empty();}
+        // TODO cost map
     };
 
     //class GridWorldCostMap {

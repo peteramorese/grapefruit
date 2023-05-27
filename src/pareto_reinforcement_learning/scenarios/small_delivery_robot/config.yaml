@@ -3,39 +3,55 @@ Grid Y: 5
 Init X Coord: 0
 Init Y Coord: 0
 Coord Label Template: x_#_y_#
-N Regions: 4
 Region Labels:
   - p1
   - tacos
   - pizza
   - mud
-Lower Left Cells X:
-  - 2 #p1
-  - 4 #Tacos
-  - 2 #Pizza
-  - 1 #Mud
-Lower Left Cells Y:
-  - 0 #p1
-  - 1 #Tacos
-  - 4 #Pizza
-  - 2 #Mud
-Upper Right Cells X:
-  - 2 #p1
-  - 4 #Tacos
-  - 2 #Pizza
-  - 4 #Mud
-Upper Right Cells Y:
-  - 0 #p1
-  - 1 #Tacos
-  - 4 #Pizza
-  - 2 #Mud
-Region Colors:
-  - mediumseagreen #House 1 
-  - darkgoldenrod #Tacos
-  - firebrick #Pizza
-  - sienna #Mud
-Region Costs:
-  - 0.0
-  - 0.0
-  - 0.0
-  - 10.0
+PRL Cost Objectives:
+  - Energy
+  - Time
+
+PRL Default Cost: # Default PRL cost for transitions
+  PRL Cost Mean:
+    - 5.0
+    - 10.0
+  PRL Cost Covariance: # Unique elements (upper triangular)
+    - 1.0 # 11
+    - 0.2 # 12
+    - 0.5 # 22
+p1:
+  Bounds:
+    - 2
+    - 2
+    - 0
+    - 0
+  Color: mediumseagreen
+tacos:
+  Bounds:
+    - 4
+    - 4
+    - 1
+    - 1
+  Color: darkgoldenrod
+pizza:
+  Bounds:
+    - 2
+    - 2
+    - 4
+    - 4
+  Color: tomato
+mud:
+  Bounds:
+    - 1
+    - 4
+    - 2
+    - 2
+  Color: sienna
+  PRL Cost Mean: # Water takes more energy, but is quicker
+    - 20.0
+    - 5.0
+  PRL Cost Covariance: # Unique elements (upper triangular)
+    - 5.0 # 11
+    - 0.1 # 12
+    - 1.5 # 22

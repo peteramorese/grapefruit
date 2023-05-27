@@ -1,5 +1,2 @@
 DFAs:
-  - "GF(sediment_1 & F(sediment_deposit)) & G(mud -> (!sediment_deposit | !rock_deposit) U dry_station)"
-  - "GF(sediment_2 & F(sediment_deposit)) & G(mud -> (!sediment_deposit | !rock_deposit) U dry_station)"
-  - "GF(rock_1 & F(rock_deposit)) & G(mud -> (!sediment_deposit | !rock_deposit) U dry_station)"
-  - "GF(rock_2 & F(rock_deposit)) & G(mud -> (!sediment_deposit | !rock_deposit) U dry_station)"
+  - "GF((sediment & F(sediment_deposit)) | (rock & F(rock_deposit))) & G(water -> (!sediment_deposit | !rock_deposit) U dry_station)"

@@ -84,21 +84,40 @@ struct FixedMultivariateNormal {
             return 0.5f * (std::log(Sigma.determinant()) + d * (1.0f + std::log(M_2_PI)));
         }
 
+        static constexpr std::size_t uniqueCovarianceElements() {return N * (N + 1u) / 2;}
+
+        void setSigmaFromUniqueElementVector(const Eigen::Matrix<float, uniqueCovarianceElements(), 1>& Sigma_) {
+            std::size_t row = 0;
+            std::size_t col = 0;
+            for (std::size_t i = 0; i < uniqueCovarianceElements(); ++i) {
+                Sigma(row, col) = Sigma_(i);
+                if (col > row) 
+                    Sigma(col, row) = Sigma_(i);
+                if (col == N - 1) {
+                    ++row;
+                    col = row;
+                }
+            }
+        }
 };
 
 template <std::size_t N>
 class FixedMultivariateNormalSampler {
     public:
-        FixedMultivariateNormalSampler(const FixedMultivariateNormal<N>& dist)
-            : m_dist(dist)
+        FixedMultivariateNormalSampler(const FixedMultivariateNormal<N>& dist) 
         {
-            Eigen::SelfAdjointEigenSolver<Eigen::Matrix<float, N, N>> solver(dist.Sigma);
-            m_transform = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().asDiagonal();
+            resetDist(dist);
         }
 
         const FixedMultivariateNormal<N>& dist() const {return m_dist;}
         const Eigen::Matrix<float, N, 1>& mean() const {return m_dist.mu;}
         const Eigen::Matrix<float, N, N>& transform() const {return m_transform;}
+
+        void resetDist(const FixedMultivariateNormal<N>& dist) {
+            m_dist = dist;
+            Eigen::SelfAdjointEigenSolver<Eigen::Matrix<float, N, N>> solver(dist.Sigma);
+            m_transform = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().asDiagonal();
+        }
 
     private:
         FixedMultivariateNormal<N> m_dist;

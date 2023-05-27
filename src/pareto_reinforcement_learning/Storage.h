@@ -46,8 +46,6 @@ namespace PRL {
 
         protected:
             std::unordered_map<NodeActionPair, ELEMENT_T, NodeActionPairHash> m_node_action_pair_elements;
-
-        private:
             ELEMENT_T m_default_na_element;
     };
     
