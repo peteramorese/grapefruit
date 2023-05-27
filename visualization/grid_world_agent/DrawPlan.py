@@ -15,7 +15,7 @@ visualize_config = {
     "grid_line_style": "-",
     "text_font_size": 15.0,
     "show_text": True,
-    "show_ticks": False,
+    "show_ticks": True,
     "show_title": False,
     "show_endpoints": True,
     "text_offset": (.1, .5),

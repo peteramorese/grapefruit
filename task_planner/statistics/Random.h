@@ -82,9 +82,8 @@ class RNG {
 
         template <std::size_t N>
         static Eigen::Matrix<float, N, 1> mvnrand(const Stats::Distributions::FixedMultivariateNormalSampler<N>& sampler) {
-            Eigen::Matrix<float, N, 1> rv;
-            rv.unaryExpr([&](auto x) {return nrand();});
-            return sampler.mean() + sampler.transform() * rv;
+            Eigen::Matrix<float, N, 1> rv = Eigen::Matrix<float, N, 1>::Zero();
+            return sampler.mean() + sampler.transform() * rv.unaryExpr([&](auto x) {return nrand();});
         }
 };
 

@@ -48,7 +48,7 @@ mud:
     - 2
     - 2
   Color: sienna
-  PRL Cost Mean: # Water takes more energy, but is quicker
+  PRL Cost Mean: 
     - 20.0
     - 5.0
   PRL Cost Covariance: # Unique elements (upper triangular)

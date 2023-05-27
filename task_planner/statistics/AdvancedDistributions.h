@@ -61,10 +61,10 @@ struct FixedMultivariateT {
         Eigen::Matrix<float, N, 1> mu = Eigen::Matrix<float, N, 1>::Zero();
         Eigen::Matrix<float, N, N> Sigma = Eigen::Matrix<float, N, N>::Zero();
     public:
-        FixedMultivariateT(float nu_, const Eigen::Matrix<float, N, 1>& mu_, const Eigen::Matrix<float, N, N>& sigma_)
+        FixedMultivariateT(float nu_, const Eigen::Matrix<float, N, 1>& mu_, const Eigen::Matrix<float, N, N>& Sigma_)
             : nu(nu_)
             , mu(mu_)
-            , Sigma(sigma_)
+            , Sigma(Sigma_)
         {}
 
         // TODO normalizationConstant()

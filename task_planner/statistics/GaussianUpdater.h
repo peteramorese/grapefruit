@@ -67,7 +67,7 @@ class MultivariateGaussianUpdater {
             Distributions::FixedNormalInverseWishart<N> posterior = m_niw.posterior(m_sample_set);
             return Distributions::FixedMultivariateNormal<N>(
                 E(posterior.meanMarginal()),
-                1.0f / posterior.kappa * E(minimalWishartToWishart(posterior.covarianceMarginal()))
+                E(minimalWishartToWishart(posterior.covarianceMarginal()))
             );
         }
 

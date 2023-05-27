@@ -7,6 +7,7 @@
 
 #include "statistics/StatTools.h"
 #include "tools/Logging.h"
+#include "tools/Debug.h"
 
 #define _USE_MATH_DEFINES
 
