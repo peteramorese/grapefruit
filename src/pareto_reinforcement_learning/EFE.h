@@ -25,11 +25,10 @@ class GaussianEFE {
                 + expectedPosteriorEntropy(traj_updaters, n_samples);
         }
 
-    private:
-
         static ModelDistribution getCEQObservationDistribution(const TrajectoryDistributionUpdaters<N>& prior_updaters) {
             const auto& parameters_mvn = prior_updaters.getConvolutedEstimateMVN();
             Eigen::Matrix<float, TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements(), 1> parameters_mean = TP::Stats::E(parameters_mvn);
+            //LOG("parameters dist mean: \n" << parameters_mean << "\n");
             Eigen::Matrix<float, N, 1> mean_of_mean;
             Eigen::Matrix<float, ModelDistribution::uniqueCovarianceElements(), 1> mean_of_covariance;
             for (std::size_t i = 0; i < TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements(); ++i) {
@@ -43,6 +42,8 @@ class GaussianEFE {
             dist.setSigmaFromUniqueElementVector(mean_of_covariance);
             return dist;
         }
+
+    private:
 
         static float preferenceLikelihood(const ModelDistribution& pref_dist, const ModelDistribution& ceq_obs_dist) {
             float sum = std::log(std::pow(std::sqrt(M_2_PI), N) * pref_dist.Sigma.determinant());
@@ -80,6 +81,7 @@ class GaussianEFE {
                 auto sampler_it = samplers.begin();
                 for (const auto& updater : updaters) {
                     Eigen::Matrix<float, N, 1> obs = TP::RNG::mvnrand(*sampler_it++);
+                    //LOG(" sampled observation: " << obs.transpose());
                     TP::Stats::Distributions::FixedNormalInverseWishart<N> posterior = updater->tempPosterior(obs);
                     posterior_convolver.add(posterior);
                 }

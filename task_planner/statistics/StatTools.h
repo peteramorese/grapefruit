@@ -11,7 +11,10 @@ class SampleSet {
         typedef T type;
     public:
         SampleSet() = default;
-        SampleSet(const T& preset_avg) : m_avg(preset_avg) {}
+        SampleSet(const T& preset_avg) 
+            : m_preset_avg(preset_avg)
+            , m_avg(preset_avg) 
+        {}
         
         inline const T& avg() const {return m_avg;}
         inline uint32_t size() const {return m_sample_set.size();}
@@ -32,10 +35,11 @@ class SampleSet {
 
         inline void pop_back() {
             float n = static_cast<float>(m_sample_set.size());
-            m_avg = (n * m_avg - m_sample_set.back()) / (n - 1.0f);
+            m_avg = (m_sample_set.size() > 1) ? (n * m_avg - m_sample_set.back()) / (n - 1.0f) : m_preset_avg;
             m_sample_set.pop_back();
         }
     private:
+        T m_preset_avg = T{};
         std::vector<T> m_sample_set;
         T m_avg = T{};
 };

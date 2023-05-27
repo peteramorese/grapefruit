@@ -10,6 +10,7 @@ class TrajectoryDistributionConvolver {
         void add(const TP::Stats::Distributions::FixedNormalInverseWishart<N>& niw) {
             /* NIW's must be persistent */
             m_mvn.convolveWith(TP::Stats::MomentMatch::niw2mvn(niw));
+            //LOG("mm mvn mean \n" << TP::Stats::MomentMatch::niw2mvn(niw).mu);
             m_individual_distributions.push_back(niw);
         }
 
@@ -43,7 +44,9 @@ class TrajectoryDistributionUpdaters : public TrajectoryDistributionConvolver<N>
 
         void add(TP::Stats::MultivariateGaussianUpdater<N>& updater) {
             /* Updaters must be persistent */
+            //LOG("mm niw mean: \n" << updater.dist().mu);
             TrajectoryDistributionConvolver<N>::add(updater.dist());
+            //PAUSE;
             m_individual_updaters.push_back(&updater);
         }
 

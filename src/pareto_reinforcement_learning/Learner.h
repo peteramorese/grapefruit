@@ -36,11 +36,10 @@ class Learner {
         using Plan = TP::Planner::Plan<SearchProblem<N>>;
 
     public:
-        Learner(const std::shared_ptr<BehaviorHandlerType>& behavior_handler, uint32_t n_samples = 10000, const std::string& write_plan_directory = std::string(), const std::shared_ptr<Animator<N>>& animator = nullptr, bool verbose = false)
+        Learner(const std::shared_ptr<BehaviorHandlerType>& behavior_handler, uint32_t n_samples = 1000, const std::shared_ptr<Animator<N>>& animator = nullptr, bool verbose = false)
             : m_product(behavior_handler->getProduct())
             , m_behavior_handler(behavior_handler)
             , m_n_samples(n_samples)
-            , m_write_plan_directory(write_plan_directory)
             , m_animator(animator)
             , m_verbose(verbose)
         {}
@@ -68,9 +67,9 @@ class Learner {
             uint32_t min_ind = 0;
             float min_efe = 0.0f;
 
-            //// Hold the trajectory distributions for the animation
-            //std::vector<TrajectoryDistribution> traj_distributions;
-            //traj_distributions.reserve(search_result.solution_set.size());
+            // Hold the trajectory distributions for the animation
+            std::vector<TP::Stats::Distributions::FixedMultivariateNormal<N>> estimate_traj_distributions;
+            estimate_traj_distributions.reserve(search_result.solution_set.size());
 
             // Hold the ucb pareto points for the animation
             std::vector<typename BehaviorHandlerType::CostVector> ucb_pareto_points;
@@ -99,23 +98,19 @@ class Learner {
                     min_efe = efe;
                 }
 
-                //traj_distributions.push_back(std::move(traj_dist));
-                //ucb_pareto_points.push_back(it->path_cost);
+                auto estimate_traj_distribution = GaussianEFE<N>::getCEQObservationDistribution(traj_updaters);
+                //LOG("ceq dist mean: \n" << estimate_traj_distribution.mu << "\n");
+                //PAUSE;
+                estimate_traj_distributions.push_back(estimate_traj_distribution);
+                ucb_pareto_points.push_back(it->path_cost);
                 
-                //if (!m_write_plan_directory.empty()) {
-                //    TP::Serializer szr(m_write_plan_directory + "/candidate_plan_" + std::to_string(plan_i) + ".yaml");
-                //    plan.serialize(szr, 
-                //        "Candidate Plan " + std::to_string(plan_i) + " at instance: " + std::to_string(m_quantifier.instances));
-                //    szr.done();
-                //}
-
                 ++plan_i;
             }
             log("Chosen solution: " + std::to_string(min_ind), true);
 
-            //// Add to animator
-            //if (m_animator)
-            //    m_animator->addInstance(search_result, min_ind, std::move(traj_distributions), std::move(ucb_pareto_points));
+            // Add to animator
+            if (m_animator)
+                m_animator->addInstance(search_result, min_ind, std::move(estimate_traj_distributions), std::move(ucb_pareto_points));
 
             return min_it;
         }
@@ -132,9 +127,6 @@ class Learner {
                 m_behavior_handler->visit(src_node, action, sample);
             }
             m_quantifier.finishInstance();
-            //TP::Serializer szr(m_write_plan_directory + "/chosen_plan.yaml");
-            //plan.serialize(szr, "Chosen Plan");
-            //szr.done();
 
             // Do not terminate
             return false;
@@ -155,7 +147,6 @@ class Learner {
                 if (execute(plan, sampler))
                     return m_quantifier;
                 log("Update Phase (4)");
-                //m_behavior_handler->update(plan.product_node_sequence.back().n_completed_tasks);
                 m_current_product_node = plan.product_node_sequence.back();
             }
             return m_quantifier;
@@ -197,9 +188,7 @@ class Learner {
         Quantifier<N> m_quantifier;
 
         std::shared_ptr<Animator<N>> m_animator;
-        std::string m_write_plan_directory = "";
 
         bool m_verbose;
-
 };
 }

@@ -15,20 +15,17 @@ int main(int argc, char* argv[]) {
 
 	bool verbose = parser.hasFlag('v', "Run in verbose mode");
 	bool benchmark = parser.hasFlag('b', "Benchmark run");
-	bool animate = parser.hasFlag('a', "Generate animation file");
-	bool write_plans = parser.hasFlag('w', "Write plans to plan files");
+	bool animate = parser.hasFlag('a', "Animate run");
 	bool compare = parser.hasKey("compare", "Compare the learned estimates to the true estimates");
 
 	std::string formula_filepath = parser.parse<std::string>("formula-filepath", "formulas.yaml", "File that contains all formulas");
 	std::string config_filepath = parser.parse<std::string>("config-filepath", "", "Filepath to grid world config");
-	std::string plan_directory = parser.parse<std::string>("plan-directory", "./grid_world_plans", "Directory to output plan files");
 	std::string benchmark_filepath = parser.parse<std::string>("bm-filepath", "prl_grid_world_bm.yaml", "File that benchmark data will be written to");
 	std::string animation_filepath = parser.parse<std::string>("animation-filepath", "prl_animation.yaml", "File that contains data necessary for animation");
-	std::string plan_file_template = parser.parse<std::string>("plan-file-template", "plan_#.yaml", "Naming convention for output plan files");
 
 	uint32_t max_planning_instances = parser.parse<uint32_t>("instances", 10, "Max number of planning instances");
 	uint32_t n_trials = parser.parse<uint32_t>("trials", 1, "Number of trials to run");
-	uint32_t n_efe_samples = parser.parse<uint32_t>("efe-samples", 10000, "Number of samples used for approximating the expected posterior entropy");
+	uint32_t n_efe_samples = parser.parse<uint32_t>("efe-samples", 1000, "Number of samples used for approximating the expected posterior entropy");
 
 	float pc_mean = parser.parse<float>("pc-mean", 50.0f, "Preference distribution cost mean");
 	float pc_var = parser.parse<float>("pc-var", 25.0f, "Preference distribution cost variance");
@@ -99,11 +96,9 @@ int main(int argc, char* argv[]) {
 		animator = std::make_shared<Animator<N>>(product, p_ev);
 
 	for (uint32_t trial = 0; trial < n_trials; ++trial) {
-		if (!write_plans)
-			plan_directory = std::string();
 
 		std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, confidence);
-		Learner<N> prl(behavior_handler, n_efe_samples, plan_directory, animator, verbose);
+		Learner<N> prl(behavior_handler, n_efe_samples, animator, verbose);
 
 		// Initialize the agent's state
 		TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
@@ -135,11 +130,11 @@ int main(int argc, char* argv[]) {
 
 		quantifier_set.push_back(std::move(quantifier));
 
-		//if (animate) {
-		//	TP::Serializer szr(animation_filepath);
-		//	animator->serialize(szr, quantifier_set.back());
-		//	szr.done();
-		//}
+		if (animate) {
+			TP::Serializer szr(animation_filepath);
+			animator->serialize(szr, quantifier_set.back());
+			szr.done();
+		}
 
 	}
 

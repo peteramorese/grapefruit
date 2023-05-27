@@ -61,18 +61,18 @@ class Animator {
         }
 
         void serialize(TP::Serializer& szr, const Quantifier<N>& quantifier) {
-            static_assert(N == 2, "Does not support serialization of more than one cost behavior");
+            static_assert(N == 2, "Does not support serialization of more than two cost objectives");
 
             YAML::Emitter& out = szr.get();
             out << YAML::Key << "PRL Preference Mean";
             out << YAML::Value << YAML::BeginSeq;
             // Cost (1) is x axis, reward (0) is y axis
-            out << m_preference.mu(1) << m_preference.mu(0);
+            out << m_preference.mu(0) << m_preference.mu(1);
             out << YAML::EndSeq;
-            out << YAML::Key << "PRL Preference Variance";
+            out << YAML::Key << "PRL Preference Covariance";
             out << YAML::Value << YAML::BeginSeq;
             // Cost (1) is x axis, reward (0) is y axis
-            out << m_preference.Sigma(1, 1) << m_preference.Sigma(0, 0);
+            out << m_preference.Sigma(0, 0) << m_preference.Sigma(0, 1) << m_preference.Sigma(1, 1);
             out << YAML::EndSeq;
             out << YAML::Key << "Instances" << YAML::Value << m_instances.size();
 
@@ -101,16 +101,16 @@ class Animator {
                     plan.serialize(szr, title);
                     //out << YAML::EndMap;
 
-                    out << YAML::Key << "Plan Mean" << YAML::Value << YAML::BeginSeq;
-                    out << instance.plan_distributions[plan_i].mu(1) << instance.plan_distributions[plan_i].mu(0);
+                    out << YAML::Key << "Plan Mean Mean" << YAML::Value << YAML::BeginSeq;
+                    out << instance.plan_distributions[plan_i].mu(0) << instance.plan_distributions[plan_i].mu(1);
                     out << YAML::EndSeq;
 
-                    out << YAML::Key << "Plan Variance" << YAML::Value << YAML::BeginSeq;
-                    out << instance.plan_distributions[plan_i].Sigma(1, 1) << instance.plan_distributions[plan_i].Sigma(0, 0);
+                    out << YAML::Key << "Plan Mean Variance" << YAML::Value << YAML::BeginSeq;
+                    out << instance.plan_distributions[plan_i].Sigma(0, 0) << instance.plan_distributions[plan_i].Sigma(0, 1) << instance.plan_distributions[plan_i].Sigma(1, 1);
                     out << YAML::EndSeq;
 
                     out << YAML::Key << "Plan Pareto UCB" << YAML::Value << YAML::BeginSeq;
-                    out << instance.ucb_pareto_points[plan_i][1] << instance.ucb_pareto_points[plan_i][0];
+                    out << instance.ucb_pareto_points[plan_i][0] << instance.ucb_pareto_points[plan_i][1];
                     out << YAML::EndSeq;
 
                     out << YAML::EndMap;
@@ -119,7 +119,7 @@ class Animator {
                 }
 
                 out << YAML::Key << "Sample" << YAML::Value << YAML::BeginSeq;
-                out << instance_cost_samples[instance_i][0] << YAML::EndSeq;
+                out << instance_cost_samples[instance_i][0] << instance_cost_samples[instance_i][1] << YAML::EndSeq;
 
                 out << YAML::EndMap;
                 ++instance_i;
