@@ -211,7 +211,6 @@ static Eigen::Matrix<float, N * N, N * N> var(const Distributions::FixedInverseW
     float N_f = static_cast<float>(N);
     ASSERT(p.nu >= static_cast<float>(N), "DOF must be geq than N");
     Eigen::Matrix<float, N * N, N * N> covariance = Eigen::Matrix<float, N * N, N * N>::Zero();
-    LOG("sz: " << N * N << " rows: " << covariance.rows() << " cols: " << covariance.cols());
     
     /*
     Rows and columns are ordered acording to the order read from right to left over each row, i.e.
@@ -307,6 +306,9 @@ static Eigen::Matrix<float, Distributions::MinimalFixedInverseWishart<N>::unique
             ++row;
         }
     }
+    //LOG("wishart covariance: \n" << covariance);
+    //LOG("nu: " << p.nu << " N_f: " << N_f);
+    //PAUSE;
     return covariance;
 }
 

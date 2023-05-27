@@ -105,7 +105,7 @@ class Animator {
                     out << instance.plan_distributions[plan_i].mu(0) << instance.plan_distributions[plan_i].mu(1);
                     out << YAML::EndSeq;
 
-                    out << YAML::Key << "Plan Mean Variance" << YAML::Value << YAML::BeginSeq;
+                    out << YAML::Key << "Plan Mean Covariance" << YAML::Value << YAML::BeginSeq;
                     out << instance.plan_distributions[plan_i].Sigma(0, 0) << instance.plan_distributions[plan_i].Sigma(0, 1) << instance.plan_distributions[plan_i].Sigma(1, 1);
                     out << YAML::EndSeq;
 

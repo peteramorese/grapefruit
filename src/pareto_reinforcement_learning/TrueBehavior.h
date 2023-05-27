@@ -80,8 +80,8 @@ class GridWorldTrueBehavior : public TrueBehavior<
                 ASSERT(data["PRL Default Cost"], "Missing default transition cost for PRL");
 
                 YAML::Node default_cost_node = data["PRL Default Cost"]; 
-                std::vector<float> default_mean = default_cost_node["PRL Cost Mean"].as<std::vector<float>>();
-                std::vector<float> default_minimal_covariance = default_cost_node["PRL Cost Covariance"].as<std::vector<float>>();
+                std::vector<float> default_mean = default_cost_node["Mean"].as<std::vector<float>>();
+                std::vector<float> default_minimal_covariance = default_cost_node["Covariance"].as<std::vector<float>>();
                 ASSERT(default_mean.size() == N, "Mean (" << default_mean.size() <<") dimension does not match compile-time dimension (" << N << ")");
                 ASSERT(default_minimal_covariance.size() == TP::Stats::Distributions::FixedMultivariateNormal<N>::uniqueCovarianceElements(), 
                     "Mean (" << default_minimal_covariance.size() <<") dimension does not match compile-time minimal covariance dimension (" << TP::Stats::Distributions::FixedMultivariateNormal<N>::uniqueCovarianceElements() << ")");

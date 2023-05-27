@@ -21,7 +21,7 @@ class FixedNormalInverseWishart {
         Eigen::Matrix<float, N, 1> mu = Eigen::Matrix<float, N, 1>::Zero();
         Eigen::Matrix<float, N, N> Lambda = Eigen::Matrix<float, N, N>::Identity();
         float kappa = 1.0f;
-        float nu = static_cast<float>(N + 3);
+        float nu = static_cast<float>(N + 4);
 
     public:
         FixedNormalInverseWishart() = default;

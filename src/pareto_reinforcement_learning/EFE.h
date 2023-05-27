@@ -19,10 +19,14 @@ class GaussianEFE {
     public:
         static float calculate(const TrajectoryDistributionUpdaters<N>& traj_updaters, const ModelDistribution& pref_dist, uint32_t n_samples) {
             const auto& parameters_mvn = traj_updaters.getConvolutedEstimateMVN();
+            //LOG("prior cov: \n" << parameters_mvn.Sigma);
             ModelDistribution ceq_obs_dist = getCEQObservationDistribution(traj_updaters);
+            //LOG("preference likelihood: " << preferenceLikelihood(pref_dist, ceq_obs_dist));
+            //LOG("prior entropy: " << parameters_mvn.entropy());
+            //LOG("exp post entropy: " << expectedPosteriorEntropy(traj_updaters, n_samples));
             return preferenceLikelihood(pref_dist, ceq_obs_dist)
-                + parameters_mvn.entropy()
-                + expectedPosteriorEntropy(traj_updaters, n_samples);
+                - parameters_mvn.entropy()
+                - expectedPosteriorEntropy(traj_updaters, n_samples);
         }
 
         static ModelDistribution getCEQObservationDistribution(const TrajectoryDistributionUpdaters<N>& prior_updaters) {
@@ -57,7 +61,6 @@ class GaussianEFE {
 
             // Third term
             sum += 0.5f * ((Sigma_ev_inv * ceq_obs_dist.Sigma).trace() + ceq_obs_dist.mu.transpose() * Sigma_ev_inv * ceq_obs_dist.mu);
-
             return sum;
         }
 
@@ -88,6 +91,7 @@ class GaussianEFE {
                 
                 unnormalized_entropy += posterior_convolver.getConvolutedEstimateMVN().entropy();
             }
+
             return unnormalized_entropy / static_cast<float>(n_samples);
         }
 };

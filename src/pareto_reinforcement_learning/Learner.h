@@ -87,7 +87,7 @@ class Learner {
                 }
 
                 float efe = GaussianEFE<N>::calculate(traj_updaters, p_ev, m_n_samples);
-                //LOG("-> efe: " << efe);
+                LOG("-> efe: " << efe);
                 if (it != search_result.solution_set.begin()) {
                     if (efe < min_efe) {
                         min_efe = efe;

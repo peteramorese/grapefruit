@@ -6,6 +6,7 @@
 #include "Learner.h"
 #include "TrueBehavior.h"
 #include "Benchmark.h"
+#include "Misc.h"
 
 using namespace PRL;
 
@@ -27,10 +28,6 @@ int main(int argc, char* argv[]) {
 	uint32_t n_trials = parser.parse<uint32_t>("trials", 1, "Number of trials to run");
 	uint32_t n_efe_samples = parser.parse<uint32_t>("efe-samples", 1000, "Number of samples used for approximating the expected posterior entropy");
 
-	float pc_mean = parser.parse<float>("pc-mean", 50.0f, "Preference distribution cost mean");
-	float pc_var = parser.parse<float>("pc-var", 25.0f, "Preference distribution cost variance");
-	float pr_mean = parser.parse<float>("pr-mean", 10.0f, "Preference distribution reward mean");
-	float pr_var = parser.parse<float>("pr-var", 4.0f, "Preference distribution reward variance");
 	float confidence = parser.parse<float>("confidence", 1.0f, "UCB confidence for planner (exploration/expoitation)");
 
 	if (parser.enableHelp()) return 0;
@@ -83,11 +80,7 @@ int main(int argc, char* argv[]) {
 	//	true_behavior->print();
 
 	// Make the preference behavior distribution
-	PreferenceDistributionType p_ev;
-	p_ev.mu(0) = pr_mean; // mean reward
-	p_ev.mu(1) = pc_mean; // mean cost
-	p_ev.Sigma(0, 0) = pr_var; // reward variance
-	p_ev.Sigma(1, 1) = pc_var; // cost variance
+	PreferenceDistributionType p_ev = deserializePreferenceDist<N>(config_filepath);
 
 
 	QuantifierSet<N> quantifier_set(p_ev);

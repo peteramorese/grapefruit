@@ -24,7 +24,7 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
         #mu = self._data["PRL Preference Mean"]
         #self._push_upper_axis_bounds((1.0 + visualize_config["margin_percent"][0]) * mu[0], (1.0 + visualize_config["margin_percent"][0]) * mu[1])
 
-    def sketch_distribution(self, mean, variance, ax = None, fill_contour = True, levels = 20, label = None, marker = "o"):
+    def sketch_distribution(self, mean, covariance, ax = None, fill_contour = True, levels = 20, label = None, marker = "o", cmap = "GnBu", marker_color = "teal"):
         if not ax:
             ax = plt.gca()
 
@@ -37,22 +37,22 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
         x, y = np.meshgrid(x_ls, y_ls)
         grid_point_arr = np.stack([x.flatten(), y.flatten()], axis=1)
         mu = np.array([mean[0], mean[1]])
-        sigma = np.array([[variance[0], 0.0], [0.0, variance[1]]])
+        sigma = np.array([[covariance[0], covariance[1]], [covariance[1], covariance[2]]])
         pdf_vals = multivariate_normal.pdf(x=grid_point_arr, cov = sigma, mean = mu)
         if fill_contour:
-            ax.contourf(x, y, pdf_vals.reshape(x.shape), levels=levels, cmap='GnBu')
+            ax.contourf(x, y, pdf_vals.reshape(x.shape), levels=levels, cmap=cmap)
         else:
-            ax.contour(x, y, pdf_vals.reshape(x.shape), levels=levels, cmap='GnBu')
+            ax.contour(x, y, pdf_vals.reshape(x.shape), levels=levels, cmap=cmap)
         if label:
-            ax.scatter(x=mean[0], y=mean[1], s=30, c='teal', marker=marker, label=label)
+            ax.scatter(x=mean[0], y=mean[1], s=30, c=marker_color, marker=marker, label=label)
         else:
-            ax.scatter(x=mean[0], y=mean[1], s=30, c='teal', marker=marker)
+            ax.scatter(x=mean[0], y=mean[1], s=30, c=marker_color, marker=marker)
         return ax
 
     def sketch_preference_distribution(self, ax = None, fill_contour = True, levels = 20, label = "Preference"):
         mean = self._data["PRL Preference Mean"]
-        variance = self._data["PRL Preference Variance"]
-        ax = self.sketch_distribution(mean, variance, ax, fill_contour=True, label=label, marker = "D")
+        covariance = self._data["PRL Preference Covariance"]
+        ax = self.sketch_distribution(mean, covariance, ax, fill_contour=True, label=label, marker = "D")
 
     def draw(self, block = True, use_legend = False):
         plt.figure()
