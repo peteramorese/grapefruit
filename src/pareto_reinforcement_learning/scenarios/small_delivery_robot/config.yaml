@@ -15,12 +15,12 @@ PRL Cost Objectives:
 # Preference distribution
 PRL Preference: 
   Mean:
-    - 50.0
-    - 30.0
+    - 65.0
+    - 52.0
   Covariance: # Unique elements (upper triangular)
-    - 15.0 # 11
-    - 10.2 # 12
-    - 13.5 # 22
+    - 35.0 # 11
+    - -10.2 # 12
+    - 33.5 # 22
 
 # Default PRL cost for transitions
 PRL Default Cost: 

@@ -17,16 +17,17 @@ class GaussianEFE {
         //using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements()>;
 
     public:
-        static float calculate(const TrajectoryDistributionUpdaters<N>& traj_updaters, const ModelDistribution& pref_dist, uint32_t n_samples) {
+        static float calculate(const TrajectoryDistributionUpdaters<N>& traj_updaters, const ModelDistribution& pref_dist, uint32_t n_samples, float* information_gain = nullptr) {
             const auto& parameters_mvn = traj_updaters.getConvolutedEstimateMVN();
             //LOG("prior cov: \n" << parameters_mvn.Sigma);
             ModelDistribution ceq_obs_dist = getCEQObservationDistribution(traj_updaters);
             //LOG("preference likelihood: " << preferenceLikelihood(pref_dist, ceq_obs_dist));
             //LOG("prior entropy: " << parameters_mvn.entropy());
             //LOG("exp post entropy: " << expectedPosteriorEntropy(traj_updaters, n_samples));
-            return preferenceLikelihood(pref_dist, ceq_obs_dist)
-                - parameters_mvn.entropy()
-                - expectedPosteriorEntropy(traj_updaters, n_samples);
+            float info_gain = parameters_mvn.entropy() + expectedPosteriorEntropy(traj_updaters, n_samples);
+            if (information_gain)
+                *information_gain = info_gain;
+            return preferenceLikelihood(pref_dist, ceq_obs_dist) - info_gain;
         }
 
         static ModelDistribution getCEQObservationDistribution(const TrajectoryDistributionUpdaters<N>& prior_updaters) {

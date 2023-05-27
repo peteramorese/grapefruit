@@ -86,8 +86,9 @@ class Learner {
                         "         [reward ucb..:" << std::to_string(it->path_cost.template get<0>()) << "]");
                 }
 
-                float efe = GaussianEFE<N>::calculate(traj_updaters, p_ev, m_n_samples);
-                LOG("-> efe: " << efe);
+                float info_gain;
+                float efe = GaussianEFE<N>::calculate(traj_updaters, p_ev, m_n_samples, &info_gain);
+                LOG("-> efe: " << efe << " (info gain: " << info_gain << ")");
                 if (it != search_result.solution_set.begin()) {
                     if (efe < min_efe) {
                         min_efe = efe;
