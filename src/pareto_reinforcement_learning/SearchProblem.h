@@ -7,7 +7,7 @@
 
 namespace PRL {
 
-template <class BEHAVIOR_HANDLER_T>
+template <uint64_t N>
 struct SearchProblem {
     public: // Dependent types required by any search problem
         using SymbolicProductGraph = TP::DiscreteModel::SymbolicProductAutomaton<
@@ -17,7 +17,7 @@ struct SearchProblem {
 
         typedef SymbolicProductGraph graph_t;
         typedef TaskHistoryNode<SymbolicProductGraph::node_t> node_t;
-        typedef BEHAVIOR_HANDLER_T::CostVector cost_t;
+        typedef BehaviorHandler<SymbolicProductGraph, N>::CostVector cost_t;
         typedef SymbolicProductGraph::edge_t edge_t;
         typedef TP::DiscreteModel::Action action_t;
 
@@ -61,7 +61,7 @@ struct SearchProblem {
         //HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
     public:
-        SearchProblem(const std::shared_ptr<SymbolicProductGraph>& product, SymbolicProductGraph::node_t init_node, uint8_t completed_tasks_horizon, const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler)
+        SearchProblem(const std::shared_ptr<SymbolicProductGraph>& product, SymbolicProductGraph::node_t init_node, uint8_t completed_tasks_horizon, const std::shared_ptr<BehaviorHandler<SymbolicProductGraph, N>>& behavior_handler)
             : m_product(product)
             , m_behavior_handler(behavior_handler)
             , m_completed_tasks_horizon(completed_tasks_horizon)
@@ -72,7 +72,7 @@ struct SearchProblem {
 
     private:
         std::shared_ptr<SymbolicProductGraph> m_product;
-        std::shared_ptr<BEHAVIOR_HANDLER_T> m_behavior_handler;
+        std::shared_ptr<BehaviorHandler<SymbolicProductGraph, N>> m_behavior_handler;
         const uint8_t m_completed_tasks_horizon;
 };
 }

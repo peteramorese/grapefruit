@@ -6,7 +6,7 @@
 
 namespace PRL {
 
-template <uint64_t M>
+template <uint64_t N>
 class Animator {
     public:
         using SymbolicProductGraph = TP::DiscreteModel::SymbolicProductAutomaton<
@@ -14,21 +14,21 @@ class Animator {
             TP::FormalMethods::DFA, 
             TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>>;
 
-        using BehaviorHandlerType = BehaviorHandler<SymbolicProductGraph, M>;
+        using BehaviorHandlerType = BehaviorHandler<SymbolicProductGraph, N>;
 
         using PathSolution = TP::GraphSearch::PathSolution<
-            typename SearchProblem<BehaviorHandlerType>::node_t, 
-            typename SearchProblem<BehaviorHandlerType>::edge_t, 
-            typename SearchProblem<BehaviorHandlerType>::cost_t>;
+            typename SearchProblem<N>::node_t, 
+            typename SearchProblem<N>::edge_t, 
+            typename SearchProblem<N>::cost_t>;
 
         using ParetoFrontResult = TP::GraphSearch::MultiObjectiveSearchResult<
-            typename SearchProblem<BehaviorHandlerType>::node_t, 
-            typename SearchProblem<BehaviorHandlerType>::edge_t, 
-            typename SearchProblem<BehaviorHandlerType>::cost_t>;
+            typename SearchProblem<N>::node_t, 
+            typename SearchProblem<N>::edge_t, 
+            typename SearchProblem<N>::cost_t>;
 
-        using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<M>;
+        using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<N>;
 
-        using Plan = TP::Planner::Plan<SearchProblem<BehaviorHandlerType>>;
+        using Plan = TP::Planner::Plan<SearchProblem<N>>;
 
         struct Instance {
             Instance(const ParetoFrontResult& search_result_, 
@@ -60,8 +60,8 @@ class Animator {
             m_instances.emplace_back(search_result, chosen_plan_index, std::move(plan_distribution), std::move(ucb_pareto_points));
         }
 
-        void serialize(TP::Serializer& szr, const Quantifier<M>& quantifier) {
-            static_assert(M == 2, "Does not support serialization of more than one cost behavior");
+        void serialize(TP::Serializer& szr, const Quantifier<N>& quantifier) {
+            static_assert(N == 2, "Does not support serialization of more than one cost behavior");
 
             YAML::Emitter& out = szr.get();
             out << YAML::Key << "PRL Preference Mean";

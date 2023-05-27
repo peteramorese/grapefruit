@@ -21,7 +21,7 @@ class TrueBehavior : public Storage<TP::Stats::Distributions::FixedMultivariateN
             TP::Node src_model_node = m_product->getUnwrappedNode(src_node).ts_node;
             Eigen::Matrix<float, N, 1> sample = TP::RNG::mvnrand(this->getElement(src_model_node, action));
             for (uint32_t i = 0; i < N; ++i) {
-                rectified_sample[i] = TP::max(sample(i, 1), 0.0f);
+                rectified_sample[i] = TP::max(sample(i), 0.0f);
             }
             return rectified_sample;
         }

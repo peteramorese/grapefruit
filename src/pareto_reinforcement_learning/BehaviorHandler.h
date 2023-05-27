@@ -10,18 +10,18 @@
 
 namespace PRL {
 
-    template <class SYMBOLIC_GRAPH_T, uint64_t M>
-    class BehaviorHandler : public Storage<JointCostArray<M>> {
+    template <class SYMBOLIC_GRAPH_T, uint64_t N>
+    class BehaviorHandler : public Storage<JointCostArray<N>> {
         public:
-            using CostVector = TP::Containers::FixedArray<M, float>;
+            using CostVector = TP::Containers::FixedArray<N, float>;
         public:
             BehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, uint8_t completed_tasks_horizon, float ucb_confidence)
-                : Storage<JointCostArray<M>>(JointCostArray<M>(ucb_confidence))
+                : Storage<JointCostArray<N>>(JointCostArray<N>(ucb_confidence))
                 , m_product(product)
                 , m_completed_tasks_horizon(completed_tasks_horizon)
             {}
 
-            static constexpr std::size_t size() noexcept {return M;}
+            static constexpr std::size_t size() noexcept {return N;}
             uint8_t getCompletedTasksHorizon() const {return m_completed_tasks_horizon;}
 
             CostVector getCostVector(const TaskHistoryNode<TP::WideNode>& src_node, const TaskHistoryNode<TP::WideNode>& dst_node, const TP::DiscreteModel::Action& action) {

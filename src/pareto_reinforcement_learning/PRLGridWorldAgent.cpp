@@ -82,9 +82,8 @@ int main(int argc, char* argv[]) {
 
 	std::shared_ptr<GridWorldTrueBehavior<N>> true_behavior = std::make_shared<GridWorldTrueBehavior<N>>(product, config_filepath);
 
-	if (verbose)
-		true_behavior->print();
-	PAUSE;
+	//if (verbose)
+	//	true_behavior->print();
 
 	// Make the preference behavior distribution
 	PreferenceDistributionType p_ev;
