@@ -146,6 +146,8 @@ class GridWorldTrueBehavior : public TrueBehavior<
                                 for (const auto& outgoing_edge : ts.getOutgoingEdges(model_node)) {
                                     TP::Stats::Distributions::FixedMultivariateNormalSampler<N>& sampler = this->getElement(model_node, outgoing_edge.action);
                                     TP::Stats::Distributions::FixedMultivariateNormal<N> dist = sampler.dist(); // copy out the distribution
+                                    LOG("dist: \n" << dist.Sigma);
+                                    PAUSE;
                                     dist.convolveWith(region_dist);
                                     sampler.resetDist(dist); // place in new distribution
                                 }

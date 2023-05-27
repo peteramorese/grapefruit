@@ -38,16 +38,22 @@ class GridWorldAgentVisualizer:
 
         self.__grid_size = (self.__config["Grid X"], self.__config["Grid Y"])
         self.__environment = None
-        if "N Regions" in self.__config:
+        if "Region Labels" in self.__config:
             self.__environment = list()
-            for i in range(self.__config["N Regions"]):
+            region_labels = self.__config["Region Labels"]
+            print("region labels: ", region_labels)
+            for region_label in region_labels:
+                region_data = self.__config[region_label]
                 region = dict()
-                region["label"] = self.__config["Region Labels"][i]
-                region["lower_left_x"] = self.__config["Lower Left Cells X"][i]
-                region["lower_left_y"] = self.__config["Lower Left Cells Y"][i]
-                region["upper_right_x"] = self.__config["Upper Right Cells X"][i]
-                region["upper_right_y"] = self.__config["Upper Right Cells Y"][i]
-                region["color"] = self.__config["Region Colors"][i]
+                print("found region: ", region_label)
+                region["label"] = region_data["Proposition"] if "Proposition" in region_data.keys() else region_label
+                bounds = region_data["Bounds"]
+                assert len(bounds) == 4
+                region["lower_left_x"] = bounds[0]
+                region["upper_right_x"] = bounds[1]
+                region["lower_left_y"] = bounds[2]
+                region["upper_right_y"] = bounds[3]
+                region["color"] = region_data["Color"]
                 self.__environment.append(region)
 
     def reset(self):

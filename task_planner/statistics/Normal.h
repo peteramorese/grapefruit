@@ -96,6 +96,8 @@ struct FixedMultivariateNormal {
                 if (col == N - 1) {
                     ++row;
                     col = row;
+                } else {
+                    ++col;
                 }
             }
         }
