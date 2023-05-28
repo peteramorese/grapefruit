@@ -11,9 +11,9 @@ namespace TP {
 class RNG {
     private:
         inline static std::random_device& s_rd() {static std::random_device rd; return rd;}
-        inline static std::mt19937& s_random_gen() {static std::mt19937 gen(s_rd()()); return gen;}
-        inline static std::mt19937_64& s_random_gen_64() {static std::mt19937_64 gen(s_rd()()); return gen;}
-        inline static std::mt19937& s_seeded_gen() {static std::mt19937 gen(123); return gen;}
+        inline static std::mt19937& s_random_gen() {static thread_local std::mt19937 gen(s_rd()()); return gen;}
+        inline static std::mt19937_64& s_random_gen_64() {static thread_local std::mt19937_64 gen(s_rd()()); return gen;}
+        inline static std::mt19937& s_seeded_gen() {static thread_local std::mt19937 gen(123); return gen;}
         inline static std::uniform_real_distribution<float>& s_real_dist() {static std::uniform_real_distribution<float> real_dist(0.0f, 1.0f); return real_dist;}
         inline static std::uniform_int_distribution<>& s_int_dist() {static std::uniform_int_distribution<> int_dist(INT32_MIN, INT32_MAX); return int_dist;}
 

@@ -80,11 +80,11 @@ class MultivariateGaussianUpdater {
         //}
 
         Distributions::FixedNormalInverseWishart<N> dist() const {return m_niw.posterior(m_sample_set);}
-        Distributions::FixedNormalInverseWishart<N> tempPosterior(const Eigen::Matrix<float, N, 1>& sample) {
+
+        Distributions::FixedNormalInverseWishart<N> tempPosterior(const Eigen::Matrix<float, N, 1>& sample) const {
             /* Get the posterior as if the sample was added, but sample is not kept */
-            m_sample_set.add(sample); // add the sample to the sample set
-            Distributions::FixedNormalInverseWishart<N> posterior = m_niw.posterior(m_sample_set); // calculate as if sample was part of the set
-            m_sample_set.pop_back(); // remove the sample from the set
+            PosteriorSampleSet<Eigen::Matrix<float, N, 1>> posterior_sample_set(&m_sample_set, sample);
+            Distributions::FixedNormalInverseWishart<N> posterior = m_niw.posterior(posterior_sample_set); // calculate as if sample was part of the set
             return posterior;
         }
 

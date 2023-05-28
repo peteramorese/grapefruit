@@ -99,7 +99,7 @@ class GridWorldTrueBehavior : public TrueBehavior<
                 TP::Stats::Distributions::FixedMultivariateNormal<N> default_dist;
                 default_dist.mu = default_mean_converted;
                 default_dist.setSigmaFromUniqueElementVector(default_minimal_cov_converted);
-                this->m_default_na_element.resetDist(default_dist);
+                this->m_default_na_element = TP::Stats::Distributions::FixedMultivariateNormalSampler<N>(default_dist);
 
 
                 std::vector<std::string> x_labels(props.n_x);
@@ -147,7 +147,8 @@ class GridWorldTrueBehavior : public TrueBehavior<
                                     TP::Stats::Distributions::FixedMultivariateNormalSampler<N>& sampler = this->getElement(model_node, outgoing_edge.action);
                                     TP::Stats::Distributions::FixedMultivariateNormal<N> dist = sampler.dist(); // copy out the distribution
                                     dist.convolveWith(region_dist);
-                                    sampler.resetDist(dist); // place in new distribution
+                                    sampler = TP::Stats::Distributions::FixedMultivariateNormalSampler<N>(dist);
+                                    //sampler.resetDist(dist); // place in new distribution
                                 }
                             }
                         }

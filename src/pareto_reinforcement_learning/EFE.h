@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <future>
 
 #include <Eigen/Core>
 
@@ -10,7 +11,7 @@
 
 namespace PRL {
 
-template <std::size_t N>
+template <std::size_t N, uint8_t THREAD_COUNT = 10>
 class GaussianEFE {
     public:
         using ModelDistribution = TP::Stats::Distributions::FixedMultivariateNormal<N>;
@@ -66,8 +67,8 @@ class GaussianEFE {
         }
 
         static float expectedPosteriorEntropy(const TrajectoryDistributionUpdaters<N>& prior_updaters, uint32_t n_samples) {
-            std::vector<TP::Stats::Distributions::FixedMultivariateNormal<N>> estimate_dists = prior_updaters.getIndividualEstimateDistributions();
-            const std::vector<TP::Stats::MultivariateGaussianUpdater<N>*>& updaters = prior_updaters.getIndividualUpdaters();
+            const std::vector<TP::Stats::Distributions::FixedMultivariateNormal<N>>& estimate_dists = prior_updaters.getIndividualEstimateDistributions();
+            const std::vector<const TP::Stats::MultivariateGaussianUpdater<N>*>& updaters = prior_updaters.getIndividualUpdaters();
             
             // Make sampler for each individual dist, since we need to sample each (s,a)
             std::vector<TP::Stats::Distributions::FixedMultivariateNormalSampler<N>> samplers;
@@ -76,14 +77,36 @@ class GaussianEFE {
                 samplers.emplace_back(dist);
             }
 
-            float unnormalized_entropy = 0.0f;
+            // Allocate samples to each thread
+            std::array<float, THREAD_COUNT> unnormalized_entropy_sums;
+            std::array<uint32_t, THREAD_COUNT> thread_samples;
+            uint32_t samples_per_thread = n_samples / THREAD_COUNT;
+            for (uint32_t& s : thread_samples) {
+                s = samples_per_thread;
+            }
+            thread_samples[0] += n_samples - THREAD_COUNT * samples_per_thread; // append remainder samples to first thread
 
+            std::array<std::future<float>, THREAD_COUNT> futures;
+            
+            for (uint8_t thread = 0; thread < THREAD_COUNT; ++thread) {
+                futures[thread] = std::async(std::launch::async, workerPosteriorEntropySampler, &samplers, &updaters, thread_samples[thread]);
+            }
+
+            float unnormalized_entropy = 0.0f;
+            for (uint8_t thread = 0; thread < THREAD_COUNT; ++thread) {
+                unnormalized_entropy += futures[thread].get();
+            }
+            return unnormalized_entropy / static_cast<float>(n_samples);
+        }
+
+        static float workerPosteriorEntropySampler(const std::vector<TP::Stats::Distributions::FixedMultivariateNormalSampler<N>>* samplers, const std::vector<const TP::Stats::MultivariateGaussianUpdater<N>*>* updaters, uint32_t thread_samples) {
+            float unnormalized_entropy = 0.0f;
             // Sample the expected entropy
-            for (uint32_t s = 0; s < n_samples; ++s) {
+            for (uint32_t s = 0; s < thread_samples; ++s) {
                 // Convoluted posterior estimate
-                TrajectoryDistributionConvolver<N> posterior_convolver;
-                auto sampler_it = samplers.begin();
-                for (const auto& updater : updaters) {
+                TrajectoryDistributionConvolver<N> posterior_convolver(updaters->size());
+                auto sampler_it = samplers->begin();
+                for (const auto& updater : *updaters) {
                     Eigen::Matrix<float, N, 1> obs = TP::RNG::mvnrand(*sampler_it++);
                     //LOG(" sampled observation: " << obs.transpose());
                     TP::Stats::Distributions::FixedNormalInverseWishart<N> posterior = updater->tempPosterior(obs);
@@ -92,8 +115,7 @@ class GaussianEFE {
                 
                 unnormalized_entropy += posterior_convolver.getConvolutedEstimateMVN().entropy();
             }
-
-            return unnormalized_entropy / static_cast<float>(n_samples);
+            return unnormalized_entropy;
         }
 };
 

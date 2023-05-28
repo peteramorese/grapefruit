@@ -47,14 +47,33 @@ class FixedNormalInverseWishart {
             float n = static_cast<float>(sample_set.size());
             const Eigen::Matrix<float, N, 1>& x_bar = sample_set.avg();
 
-            Eigen::Matrix<float, N, N> susq_err = Eigen::Matrix<float, N, N>::Zero();
+            Eigen::Matrix<float, N, N> sum_of_squares = Eigen::Matrix<float, N, N>::Zero();
             for (const auto& x : sample_set.getSamples()) {
-                susq_err += (x - x_bar) * (x - x_bar).transpose();
+                sum_of_squares += (x - x_bar) * (x - x_bar).transpose();
             }
 
             return FixedNormalInverseWishart<N>(
                 (kappa * mu + n * x_bar) / (kappa + n),
-                Lambda + susq_err + (kappa * n) / (kappa + n) * (x_bar - mu) * (x_bar - mu).transpose(),
+                Lambda + sum_of_squares + (kappa * n) / (kappa + n) * (x_bar - mu) * (x_bar - mu).transpose(),
+                kappa + n,
+                nu + n
+            );
+        }
+
+        FixedNormalInverseWishart<N> posterior(const PosteriorSampleSet<Eigen::Matrix<float, N, 1>>& posterior_sample_set) const {
+            float n = static_cast<float>(posterior_sample_set.size());
+            const Eigen::Matrix<float, N, 1> x_bar = posterior_sample_set.avg();
+
+            Eigen::Matrix<float, N, N> sum_of_squares = Eigen::Matrix<float, N, N>::Zero();
+            for (const auto& x : posterior_sample_set.getPriorSamples()) {
+                sum_of_squares += (x - x_bar) * (x - x_bar).transpose();
+            }
+            sum_of_squares += (posterior_sample_set.getPosteriorSample() - x_bar) * (posterior_sample_set.getPosteriorSample() - x_bar).transpose();
+            
+
+            return FixedNormalInverseWishart<N>(
+                (kappa * mu + n * x_bar) / (kappa + n),
+                Lambda + sum_of_squares + (kappa * n) / (kappa + n) * (x_bar - mu) * (x_bar - mu).transpose(),
                 kappa + n,
                 nu + n
             );

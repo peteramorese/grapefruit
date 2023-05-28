@@ -7,6 +7,12 @@ namespace PRL {
 template <std::size_t N>
 class TrajectoryDistributionConvolver {
     public:
+        TrajectoryDistributionConvolver() = default;
+        TrajectoryDistributionConvolver(std::size_t capacity) 
+        {
+            m_individual_distributions.reserve(capacity);
+        }
+
         void add(const TP::Stats::Distributions::FixedNormalInverseWishart<N>& niw) {
             /* NIW's must be persistent */
             m_mvn.convolveWith(TP::Stats::MomentMatch::niw2mvn(niw));
@@ -41,8 +47,13 @@ template <std::size_t N>
 class TrajectoryDistributionUpdaters : public TrajectoryDistributionConvolver<N> {
     public:
         TrajectoryDistributionUpdaters() = default;
+        TrajectoryDistributionUpdaters(std::size_t capacity) 
+            : TrajectoryDistributionConvolver<N>(capacity)
+        {
+            m_individual_updaters.reserve(capacity);
+        }
 
-        void add(TP::Stats::MultivariateGaussianUpdater<N>& updater) {
+        void add(const TP::Stats::MultivariateGaussianUpdater<N>& updater) {
             /* Updaters must be persistent */
             //LOG("mm niw mean: \n" << updater.dist().mu);
             TrajectoryDistributionConvolver<N>::add(updater.dist());
@@ -50,10 +61,10 @@ class TrajectoryDistributionUpdaters : public TrajectoryDistributionConvolver<N>
             m_individual_updaters.push_back(&updater);
         }
 
-        inline const std::vector<TP::Stats::MultivariateGaussianUpdater<N>*>& getIndividualUpdaters() const {return m_individual_updaters;}
+        inline const std::vector<const TP::Stats::MultivariateGaussianUpdater<N>*>& getIndividualUpdaters() const {return m_individual_updaters;}
 
     private:
-        std::vector<TP::Stats::MultivariateGaussianUpdater<N>*> m_individual_updaters;
+        std::vector<const TP::Stats::MultivariateGaussianUpdater<N>*> m_individual_updaters;
 };
 
 }

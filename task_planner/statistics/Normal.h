@@ -109,23 +109,27 @@ class FixedMultivariateNormalSampler {
     public:
         FixedMultivariateNormalSampler(const FixedMultivariateNormal<N>& dist) 
         {
-            resetDist(dist);
+            //resetDist(dist);
+            m_dist = dist;
+            Eigen::SelfAdjointEigenSolver<Eigen::Matrix<float, N, N>> solver(dist.Sigma);
+            m_transform = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().asDiagonal();
         }
 
         const FixedMultivariateNormal<N>& dist() const {return m_dist;}
         const Eigen::Matrix<float, N, 1>& mean() const {return m_dist.mu;}
         const Eigen::Matrix<float, N, N>& transform() const {return m_transform;}
 
-        void resetDist(const FixedMultivariateNormal<N>& dist) {
-            m_dist = dist;
-            Eigen::SelfAdjointEigenSolver<Eigen::Matrix<float, N, N>> solver(dist.Sigma);
-            m_transform = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().asDiagonal();
-        }
+        //void resetDist(const FixedMultivariateNormal<N>& dist) {
+        //    m_dist = dist;
+        //    Eigen::SelfAdjointEigenSolver<Eigen::Matrix<float, N, N>> solver(dist.Sigma);
+        //    m_transform = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().asDiagonal();
+        //}
 
     private:
         FixedMultivariateNormal<N> m_dist;
         Eigen::Matrix<float, N, N> m_transform;
 };
+
 
 } // namespace Distributions
 

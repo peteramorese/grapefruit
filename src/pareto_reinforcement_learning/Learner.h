@@ -81,6 +81,7 @@ class Learner {
                 Plan plan(*it, m_product, true);
                 TrajectoryDistributionUpdaters<N> traj_updaters = getTrajectoryUpdaters(plan);
                 if (m_verbose) {
+                    //std::string
                     PRINT_NAMED("    Solution candidate " << plan_i, "\n" << 
                         "         [cost ucb....:" << std::to_string(it->path_cost.template get<1>()) << "]\n" <<
                         "         [reward ucb..:" << std::to_string(it->path_cost.template get<0>()) << "]");

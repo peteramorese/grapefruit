@@ -17,11 +17,22 @@ PRL Cost Objectives:
   - Energy
   - Time
 
-PRL Default Cost: # Default PRL cost for transitions
-  PRL Cost Mean:
+# Preference distribution
+PRL Preference: 
+  Mean:
+    - 160.0
+    - 50.0
+  Covariance: # Unique elements (upper triangular)
+    - 55.0 # 11
+    - -10.2 # 12
+    - 33.5 # 22
+
+# Default PRL cost for transitions
+PRL Default Cost: 
+  Mean:
     - 5.0
     - 10.0
-  PRL Cost Covariance: # Unique elements (upper triangular)
+  Covariance: # Unique elements (upper triangular)
     - 1.0 # 11
     - 0.2 # 12
     - 0.5 # 22
