@@ -168,6 +168,7 @@ class Learner {
         void initialize(const TP::DiscreteModel::State& init_state) {
             TP::Containers::SizedArray<TP::Node> init_aut_nodes(m_product->rank() - 1);
             for (uint32_t i=0; i<init_aut_nodes.size(); ++i) init_aut_nodes[i] = *(m_product->getAutomaton(i).getInitStates().begin());
+            LOG("Init model state: " <<  m_product->getModel().getGenericNodeContainer()[init_state]);
             m_current_product_node = m_product->getWrappedNode(m_product->getModel().getGenericNodeContainer()[init_state], init_aut_nodes);
             m_initialized = true;
         }

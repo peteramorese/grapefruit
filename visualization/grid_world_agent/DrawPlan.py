@@ -28,7 +28,9 @@ visualize_config = {
     "show_directions": True,
     "figure_size": (4, 4),
     "obstacle_color": [0.2, 0.2, 0.2],
-    "region_scale": 0.03
+    "region_scale": 0.03,
+    "default_region_alpha": 0.7,
+    "fancy_corner": .6
 }
 
 class GridWorldAgentVisualizer:
@@ -58,6 +60,8 @@ class GridWorldAgentVisualizer:
                 region["lower_left_y"] = bounds[2]
                 region["upper_right_y"] = bounds[3]
                 region["color"] = region_data["Color"]
+                region["fancy"] = region_data["Fancy"] if "Fancy" in region_data.keys() else True
+                region["alpha"] = region_data["Alpha"] if "Alpha" in region_data.keys() else visualize_config["default_region_alpha"]
                 self.__environment.append(region)
         if "Obstacles" in self.__config:
             self.__obstacles = list()
@@ -184,11 +188,20 @@ class GridWorldAgentVisualizer:
     def __draw_regions(self, ax, show_unique_region_labels_only = True):
         unique_regions = set()
         for region in self.__environment:
-            width = region["upper_right_x"] - region["lower_left_x"] + 1 - visualize_config["region_scale"] - .3
-            height = region["upper_right_y"] - region["lower_left_y"] + 1 - visualize_config["region_scale"] - .3
-            x = region["lower_left_x"] - 0.5 + .5*visualize_config["region_scale"] + .3 / 2
-            y = region["lower_left_y"] - 0.5 + .5*visualize_config["region_scale"] + .3 / 2
-            rectangle = FancyBboxPatch((x, y), width, height, color=region["color"], mutation_scale=.3)
+            if region["fancy"]:
+                corner = visualize_config["fancy_corner"]
+                width = region["upper_right_x"] - region["lower_left_x"] + 1 - visualize_config["region_scale"] - corner
+                height = region["upper_right_y"] - region["lower_left_y"] + 1 - visualize_config["region_scale"] - corner
+                x = region["lower_left_x"] - 0.5 + .5*visualize_config["region_scale"] + corner / 2
+                y = region["lower_left_y"] - 0.5 + .5*visualize_config["region_scale"] + corner / 2
+                rectangle = FancyBboxPatch((x, y), width, height, color=region["color"], mutation_scale=corner, alpha=region["alpha"])
+            else:
+                width = region["upper_right_x"] - region["lower_left_x"] + 1 - visualize_config["region_scale"]
+                height = region["upper_right_y"] - region["lower_left_y"] + 1 - visualize_config["region_scale"]
+                x = region["lower_left_x"] - 0.5
+                y = region["lower_left_y"] - 0.5
+                rectangle = Rectangle((x, y), width, height, color=region["color"], alpha=region["alpha"])
+
             ax.add_patch(rectangle)
             if visualize_config["show_text"] and (region["label"] not in unique_regions or not show_unique_region_labels_only):
                 ax.text(region["lower_left_x"] - 0.5 + visualize_config["text_offset"][0], region["lower_left_y"] - 0.5 + visualize_config["text_offset"][1], region["label"], fontsize=visualize_config["text_font_size"])

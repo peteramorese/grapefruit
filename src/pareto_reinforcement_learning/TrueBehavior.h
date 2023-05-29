@@ -72,6 +72,8 @@ class GridWorldTrueBehavior : public TrueBehavior<
             try {
                 data = YAML::LoadFile(filepath);
 
+                bool make_pos_semi_def = data["Square Covariance"] ? data["Square Covariance"].as<bool>() : false;
+
                 ASSERT(data["PRL Cost Objectives"], "Missing cost objectives for PRL");
                 std::vector<std::string> objective_labels = data["PRL Cost Objectives"].as<std::vector<std::string>>();
                 ASSERT(objective_labels.size() == N, "Number of objectives (" << objective_labels.size() <<") does not match compile-time dimension (" << N << ")");
@@ -99,6 +101,8 @@ class GridWorldTrueBehavior : public TrueBehavior<
                 TP::Stats::Distributions::FixedMultivariateNormal<N> default_dist;
                 default_dist.mu = default_mean_converted;
                 default_dist.setSigmaFromUniqueElementVector(default_minimal_cov_converted);
+                if (make_pos_semi_def)
+                    default_dist.Sigma = default_dist.Sigma * default_dist.Sigma;
                 this->m_default_na_element = TP::Stats::Distributions::FixedMultivariateNormalSampler<N>(default_dist);
 
 
@@ -135,6 +139,8 @@ class GridWorldTrueBehavior : public TrueBehavior<
                         TP::Stats::Distributions::FixedMultivariateNormal<N> region_dist;
                         region_dist.mu = mean_converted;
                         region_dist.setSigmaFromUniqueElementVector(minimal_cov_converted);
+                        if (make_pos_semi_def)
+                            region_dist.Sigma = region_dist.Sigma * region_dist.Sigma;
 
                         for (uint32_t i = region.lower_left_x; i <= region.upper_right_x; ++i) {
                             for (uint32_t j = region.lower_left_y; j <= region.upper_right_y; ++j) {
@@ -142,13 +148,14 @@ class GridWorldTrueBehavior : public TrueBehavior<
                                 TP::DiscreteModel::State s(ts.getStateSpace().lock().get());	
                                 s[TP::DiscreteModel::GridWorldAgent::s_x_coord_label] = x_labels[i];
                                 s[TP::DiscreteModel::GridWorldAgent::s_y_coord_label] = y_labels[j];
+                                if (!ts.getGenericNodeContainer().contains(s))
+                                    continue;
                                 TP::Node model_node = ts.getGenericNodeContainer()[s];
                                 for (const auto& outgoing_edge : ts.getOutgoingEdges(model_node)) {
                                     TP::Stats::Distributions::FixedMultivariateNormalSampler<N>& sampler = this->getElement(model_node, outgoing_edge.action);
                                     TP::Stats::Distributions::FixedMultivariateNormal<N> dist = sampler.dist(); // copy out the distribution
                                     dist.convolveWith(region_dist);
                                     sampler = TP::Stats::Distributions::FixedMultivariateNormalSampler<N>(dist);
-                                    //sampler.resetDist(dist); // place in new distribution
                                 }
                             }
                         }

@@ -110,6 +110,7 @@ class FixedMultivariateNormalSampler {
         FixedMultivariateNormalSampler(const FixedMultivariateNormal<N>& dist) 
         {
             //resetDist(dist);
+            ASSERT(checkPositiveSemiDef(dist.Sigma), "Sigma is not positive semi-definite. Sigma: \n" << dist.Sigma);
             m_dist = dist;
             Eigen::SelfAdjointEigenSolver<Eigen::Matrix<float, N, N>> solver(dist.Sigma);
             m_transform = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().asDiagonal();
@@ -124,6 +125,14 @@ class FixedMultivariateNormalSampler {
         //    Eigen::SelfAdjointEigenSolver<Eigen::Matrix<float, N, N>> solver(dist.Sigma);
         //    m_transform = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().asDiagonal();
         //}
+    private:
+        static bool checkPositiveSemiDef(const Eigen::Matrix<float, N, N>& Sigma) {
+            const auto ldlt = Sigma.template selfadjointView<Eigen::Upper>().ldlt();
+            //Eigen::LLT<Eigen::Matrix<float, N, N>> llt(dist.Sigma);
+            if (ldlt.info() == Eigen::NumericalIssue || !ldlt.isPositive())
+                return false;
+            return true;
+        }
 
     private:
         FixedMultivariateNormal<N> m_dist;

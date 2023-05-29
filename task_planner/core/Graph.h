@@ -275,6 +275,7 @@ class BijectiveGenericNodeContainer {
 				return {m_node_to_ind.at(node), false};
 			}
 		}
+		inline bool contains(const NODE_T& node) const {return m_node_to_ind.contains(node);}
 		inline std::size_t size() const {return m_ind_to_node.size();}
 		void clear() {m_ind_to_node.clear(); m_node_to_ind.clear();}
 	protected:
