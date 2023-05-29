@@ -3,6 +3,7 @@
 import os
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle, FancyBboxPatch
 import numpy as np
 import yaml
 import argparse
@@ -25,7 +26,9 @@ visualize_config = {
     "arrow_head_width": 2,
     "cells_per_arrow": 2,
     "show_directions": True,
-    "figure_size": (4, 4)
+    "figure_size": (4, 4),
+    "obstacle_color": [0.2, 0.2, 0.2],
+    "region_scale": 0.03
 }
 
 class GridWorldAgentVisualizer:
@@ -38,6 +41,7 @@ class GridWorldAgentVisualizer:
 
         self.__grid_size = (self.__config["Grid X"], self.__config["Grid Y"])
         self.__environment = None
+        self.__obstacles = None
         if "Region Labels" in self.__config:
             self.__environment = list()
             region_labels = self.__config["Region Labels"]
@@ -55,6 +59,19 @@ class GridWorldAgentVisualizer:
                 region["upper_right_y"] = bounds[3]
                 region["color"] = region_data["Color"]
                 self.__environment.append(region)
+        if "Obstacles" in self.__config:
+            self.__obstacles = list()
+            for obs_label, data in self.__config["Obstacles"].items():
+                obstacle = dict()
+                obstacle["label"] = obs_label
+                bounds = data["Bounds"]
+                assert len(bounds) == 4
+                obstacle["lower_left_x"] = bounds[0]
+                obstacle["upper_right_x"] = bounds[1]
+                obstacle["lower_left_y"] = bounds[2]
+                obstacle["upper_right_y"] = bounds[3]
+                self.__obstacles.append(obstacle)
+
 
     def reset(self):
         self._data.clear()
@@ -152,6 +169,9 @@ class GridWorldAgentVisualizer:
 
         if self.__environment:
             self.__draw_regions(ax)
+
+        if self.__obstacles:
+            self.__draw_obstacles(ax)
         
         return ax
     
@@ -161,16 +181,26 @@ class GridWorldAgentVisualizer:
         assert len(split_str) == 2
         return (int(split_str[0].replace('x', '')), int(split_str[1].replace('y', '')))
     
-    def __draw_regions(self, ax, show_unique_regions_only = True):
+    def __draw_regions(self, ax, show_unique_region_labels_only = True):
         unique_regions = set()
         for region in self.__environment:
-            width = region["upper_right_x"] - region["lower_left_x"] + 1
-            height = region["upper_right_y"] - region["lower_left_y"] + 1
-            rectangle = matplotlib.patches.Rectangle((region["lower_left_x"] - 0.5, region["lower_left_y"] - 0.5), width, height, color=region["color"])
+            width = region["upper_right_x"] - region["lower_left_x"] + 1 - visualize_config["region_scale"] - .3
+            height = region["upper_right_y"] - region["lower_left_y"] + 1 - visualize_config["region_scale"] - .3
+            x = region["lower_left_x"] - 0.5 + .5*visualize_config["region_scale"] + .3 / 2
+            y = region["lower_left_y"] - 0.5 + .5*visualize_config["region_scale"] + .3 / 2
+            rectangle = FancyBboxPatch((x, y), width, height, color=region["color"], mutation_scale=.3)
             ax.add_patch(rectangle)
-            if visualize_config["show_text"] and (region["label"] not in unique_regions or not show_unique_regions_only):
+            if visualize_config["show_text"] and (region["label"] not in unique_regions or not show_unique_region_labels_only):
                 ax.text(region["lower_left_x"] - 0.5 + visualize_config["text_offset"][0], region["lower_left_y"] - 0.5 + visualize_config["text_offset"][1], region["label"], fontsize=visualize_config["text_font_size"])
                 unique_regions.add(region["label"])
+    
+    def __draw_obstacles(self, ax):
+        for obstacle in self.__obstacles:
+            width = obstacle["upper_right_x"] - obstacle["lower_left_x"] + 1
+            height = obstacle["upper_right_y"] - obstacle["lower_left_y"] + 1
+            rectangle = Rectangle((obstacle["lower_left_x"] - 0.5, obstacle["lower_left_y"] - 0.5), width, height, color=visualize_config["obstacle_color"])
+            ax.add_patch(rectangle)
+
 
     def _block_for_input(self):
         input("Press key to close")

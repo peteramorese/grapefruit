@@ -3,6 +3,7 @@
 import os
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.patches import Ellipse
 import numpy as np
 import yaml
 import argparse
@@ -24,7 +25,7 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
         #mu = self._data["PRL Preference Mean"]
         #self._push_upper_axis_bounds((1.0 + visualize_config["margin_percent"][0]) * mu[0], (1.0 + visualize_config["margin_percent"][0]) * mu[1])
 
-    def sketch_distribution(self, mean, covariance, ax = None, fill_contour = True, levels = 20, label = None, marker = "o", cmap = "GnBu", marker_color = "teal"):
+    def sketch_distribution(self, mean, covariance, ax = None, fill_contour = True, levels = 2, label = None, marker = "o", cmap = "GnBu", marker_color = "teal"):
         if not ax:
             ax = plt.gca()
 
@@ -32,17 +33,33 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
 
         ax.set_xlim(self.x_bounds)
         ax.set_ylim(self.y_bounds)
-        x_ls = np.linspace(self.x_bounds[0], self.x_bounds[1], visualize_config["discretization_N"])
-        y_ls = np.linspace(self.y_bounds[0], self.y_bounds[1], visualize_config["discretization_N"])
-        x, y = np.meshgrid(x_ls, y_ls)
-        grid_point_arr = np.stack([x.flatten(), y.flatten()], axis=1)
         mu = np.array([mean[0], mean[1]])
         sigma = np.array([[covariance[0], covariance[1]], [covariance[1], covariance[2]]])
-        pdf_vals = multivariate_normal.pdf(x=grid_point_arr, cov = sigma, mean = mu)
         if fill_contour:
+            x_ls = np.linspace(self.x_bounds[0], self.x_bounds[1], visualize_config["discretization_N"])
+            y_ls = np.linspace(self.y_bounds[0], self.y_bounds[1], visualize_config["discretization_N"])
+            x, y = np.meshgrid(x_ls, y_ls)
+            grid_point_arr = np.stack([x.flatten(), y.flatten()], axis=1)
+            pdf_vals = multivariate_normal.pdf(x=grid_point_arr, cov = sigma, mean = mu)
             ax.contourf(x, y, pdf_vals.reshape(x.shape), levels=levels, cmap=cmap)
         else:
-            ax.contour(x, y, pdf_vals.reshape(x.shape), levels=levels, cmap=cmap)
+            """
+            Source: https://stackoverflow.com/questions/12301071/multidimensional-confidence-intervals/12321306#12321306
+            """
+            vals, vecs = np.linalg.eigh(sigma)
+            order = vals.argsort()[::-1]
+            vals = vals[order]
+            vecs = vecs[:,order]
+            theta = np.degrees(np.arctan2(*vecs[:,0][::-1]))
+            cmap_vals = np.linspace(0.6, 0.8, levels)
+            cmap_object = matplotlib.cm.get_cmap(cmap)
+            for i in range(levels):
+                w, h = 2 * (i + 1) * np.sqrt(vals)
+                color = cmap_object(cmap_vals[i])
+                ellipse = Ellipse(xy = mu, width=w, height=h, angle=theta, lw=visualize_config["line_width"], fill=False, color=color)
+                ax.add_artist(ellipse)
+        
+
         if label:
             ax.scatter(x=mean[0], y=mean[1], s=30, c=marker_color, marker=marker, label=label)
         else:

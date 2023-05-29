@@ -11,6 +11,9 @@ int main(int argc, char* argv[]) {
  
 	std::string config_filepath = parser.parse<std::string>("config-filepath", "", "Filepath to grid world config");
 
+	if (parser.enableHelp())
+		return 0;
+
 	DiscreteModel::GridWorldAgentProperties ts_props = DiscreteModel::GridWorldAgent::deserializeConfig(config_filepath);
 
 	std::shared_ptr<DiscreteModel::TransitionSystem> ts = DiscreteModel::GridWorldAgent::generate(ts_props);

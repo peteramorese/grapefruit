@@ -17,7 +17,7 @@ namespace DiscreteModel {
 
         /////////////////   State Space   /////////////////
 
-       std::shared_ptr<StateSpace> ss_grid_agent = std::make_shared<StateSpace>(2);;
+        std::shared_ptr<StateSpace> ss_grid_agent = std::make_shared<StateSpace>(2);;
 
         std::vector<std::string> x_labels(model_props.n_x);
         std::vector<std::string> y_labels(model_props.n_y);
@@ -42,6 +42,8 @@ namespace DiscreteModel {
 
         for (uint32_t i=0; i<model_props.n_x; ++i) { // x
             for (uint32_t j=0; j<model_props.n_y; ++j) { // y
+                if (model_props.environment.inObstacle(i, j))
+                    continue;
                 State src_state(ss_grid_agent.get());
 
                 src_state = {x_labels[i], y_labels[j]};
@@ -52,6 +54,8 @@ namespace DiscreteModel {
                     switch (dir) {
                         case 0: // left 
                             if (i > 0) {
+                                if (model_props.environment.inObstacle(i - 1, j))
+                                    continue;
                                 dst_state[s_x_coord_label] = x_labels[i - 1];
                                 float cost = (model_props.cost_map) ? model_props.cost_map->operator()(i, j, i-1, j) : 1.0f;
                                 ts->connect(src_state, dst_state, TransitionSystemLabel(cost, "left"));
@@ -64,6 +68,8 @@ namespace DiscreteModel {
                             continue;
                         case 1: // right
                             if (i < (model_props.n_x - 1)) {
+                                if (model_props.environment.inObstacle(i + 1, j))
+                                    continue;
                                 dst_state[s_x_coord_label] = x_labels[i + 1];
                                 float cost = (model_props.cost_map) ? model_props.cost_map->operator()(i, j, i+1, j) : 1.0f;
                                 ts->connect(src_state, dst_state, TransitionSystemLabel(cost, "right"));
@@ -77,6 +83,8 @@ namespace DiscreteModel {
                             continue;
                         case 2: // down
                             if (j > 0) {
+                                if (model_props.environment.inObstacle(i, j - 1))
+                                    continue;
                                 dst_state[s_y_coord_label] = y_labels[j - 1];
                                 float cost = (model_props.cost_map) ? model_props.cost_map->operator()(i, j, i, j-1) : 1.0f;
                                 ts->connect(src_state, dst_state, TransitionSystemLabel(cost, "down"));
@@ -90,6 +98,8 @@ namespace DiscreteModel {
                             continue;
                         case 3: // up
                             if (j < (model_props.n_y - 1)) {
+                                if (model_props.environment.inObstacle(i, j + 1))
+                                    continue;
                                 dst_state[s_y_coord_label] = y_labels[j + 1];
                                 float cost = (model_props.cost_map) ? model_props.cost_map->operator()(i, j, i, j+1) : 1.0f;
                                 ts->connect(src_state, dst_state, TransitionSystemLabel(cost, "up"));
@@ -252,6 +262,17 @@ namespace DiscreteModel {
 
                     RectangleGridWorldRegion region{label, proposition, bounds[0], bounds[1], bounds[2], bounds[3], color};
                     props.environment.regions.push_back(std::move(region));
+                }
+            }
+            if (data["Obstacles"]) {
+                YAML::Node obstacles_node = data["Obstacles"];
+                for (YAML::const_iterator it = obstacles_node.begin(); it != obstacles_node.end(); ++it) {
+                    std::string label = it->first.as<std::string>();
+                    //YAML::Node bounds_node = it->second;
+                    std::vector<uint32_t> bounds = it->second["Bounds"].as<std::vector<uint32_t>>();
+                    ASSERT(bounds.size() == 4, "Must specify four bounds (x_lower, x_upper, y_lower, y_upper)");
+                    Obstacle obstacle{label, bounds[0], bounds[1], bounds[2], bounds[3]};
+                    props.environment.obstacles.push_back(std::move(obstacle));
                 }
             }
 

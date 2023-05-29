@@ -11,7 +11,7 @@
 
 namespace PRL {
 
-template <std::size_t N, uint8_t THREAD_COUNT = 10>
+template <std::size_t N, uint8_t THREAD_COUNT = 16>
 class GaussianEFE {
     public:
         using ModelDistribution = TP::Stats::Distributions::FixedMultivariateNormal<N>;
