@@ -1,5 +1,5 @@
 #include "TransitionSystem.h"
-
+#include "tools/Debug.h"
 
 namespace TP {
 namespace DiscreteModel {
@@ -49,14 +49,14 @@ namespace DiscreteModel {
         if (observation == "1") return true;
 
         std::vector<std::string> proposition_stack(1);
-        std::vector<bool> bool_stack(1);
+        std::vector<bool> bool_stack(1); // automatically gets set using the null previous operator
         std::vector<bool> negate_next_stack = {false};
         std::vector<char> prev_operator_stack = {'\0'};
         bool collapse = false;
 
+        bool sub_eval = false;
         for (uint32_t i = 0; i < observation.size(); ++i) {
             char character = observation[i];
-            bool sub_eval = false;
 
             switch (character) {
                 case '!': negate_next_stack.back() = !negate_next_stack.back(); continue;
@@ -68,8 +68,11 @@ namespace DiscreteModel {
                     prev_operator_stack.push_back('\0');
                     continue;
                 case ')':
+                    sub_eval = false;
                     ASSERT(bool_stack.size() > 1, "Found ')' with out opening bracket");
-                    if (!collapse) sub_eval = evaluateAllPropositionsAtState(proposition_stack.back(), state);
+                    if (!collapse) {
+                        sub_eval = evaluateAllPropositionsAtState(proposition_stack.back(), state);
+                    }
                     if (negate_next_stack.back()) sub_eval = !sub_eval;
                     proposition_stack.back().clear();
                     switch (prev_operator_stack.back()) {
@@ -118,9 +121,7 @@ namespace DiscreteModel {
 
     void TransitionSystem::addObservationsToNode(Node node, const FormalMethods::Alphabet& alphabet) {
         for (const auto& observation : alphabet) {
-            //LOG("parsing and observing state: " << m_node_container[node].to_str() << " w obs: " << observation);
             if (parseAndObserve(m_node_container[node], observation)) {
-                //LOG("found!!");
                 m_observation_container.addObservationToNode(node, observation);
             }
         }

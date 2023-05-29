@@ -21,8 +21,30 @@ namespace DiscreteModel {
         std::string color;
     };
 
+    struct Obstacle {
+        std::string label;
+        uint32_t lower_left_x;
+        uint32_t upper_right_x;
+        uint32_t lower_left_y;
+        uint32_t upper_right_y;
+        inline bool within(uint32_t x, uint32_t y) const {
+            return x >= lower_left_x 
+                && x <= upper_right_x 
+                && y >= lower_left_y
+                && y <= upper_right_y;
+        }
+    };
+
     struct GridWorldEnvironment {
         std::vector<RectangleGridWorldRegion> regions;
+        std::vector<Obstacle> obstacles;
+        bool inObstacle(uint32_t x, uint32_t y) const {
+            for (const auto& obstacle : obstacles) {
+                if (obstacle.within(x, y))
+                    return true;
+            }
+            return false;
+        }
         // TODO cost map
     };
 

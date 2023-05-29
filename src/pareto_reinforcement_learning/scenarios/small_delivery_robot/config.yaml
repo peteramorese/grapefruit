@@ -32,6 +32,14 @@ PRL Default Cost:
     - 0.2 # 12
     - 1.0 # 22
 
+Obstacles:
+  wall_1:
+    Bounds:
+      - 0
+      - 2
+      - 4
+      - 4
+
 # Regions
 p1:
   Bounds:

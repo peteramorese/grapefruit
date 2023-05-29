@@ -15,6 +15,7 @@ from grid_world_agent.DrawPlan import GridWorldAgentVisualizer
 from pareto_front.PRLParetoFront import PRLParetoFrontVisualizer
 
 visualize_config = {
+    "line_width": 0.4,
     "chosen_plan_color": "crimson",
     "candidate_plan_color": "cadetblue",
     "show_legend": False,
@@ -55,8 +56,8 @@ class PRLAnimator:
     def __plot_ucb_pareto_point(self, ax, dist_mean, ucb_val, label = None, color = visualize_config["ucb_line_color"]):
         diff = np.stack((dist_mean, ucb_val))
         #ax.quiver(dist_mean[0], dist_mean[1], diff[0], diff[1], color=visualize_config["ucb_line_color"], ls="--", )
-        ax.plot(diff[:,0], diff[:,1], color=visualize_config["ucb_line_color"], ls="--")
-        ax.scatter(ucb_val[0], ucb_val[1], marker="x", s=20, color=color, label=label)
+        ax.plot(diff[:,0], diff[:,1], color=visualize_config["ucb_line_color"], ls="--", lw=visualize_config["line_width"])
+        ax.scatter(ucb_val[0], ucb_val[1], marker="x", s=15, color=color, label=label)
         if visualize_config["show_point_lines"]:
             ax.axvline(ucb_val[0], ls=":")
             ax.axhline(ucb_val[1], ls=":")
@@ -136,7 +137,7 @@ class PRLAnimator:
 
             self._pf_visualizer.sketch_pareto_front(pf_ax, label="Samples", connect_points=visualize_config["connect_points"])
             selection_line_pts = np.stack((pref_mean, chosen_mean))
-            pf_ax.plot(selection_line_pts[:,0], selection_line_pts[:,1], color=visualize_config["selection_line_color"], ls=":")
+            pf_ax.plot(selection_line_pts[:,0], selection_line_pts[:,1], color=visualize_config["selection_line_color"], ls=":", lw=visualize_config["line_width"])
             
             # Add legends
             if visualize_config["show_legend"]:
