@@ -22,13 +22,15 @@ class GaussianEFE {
             const auto& parameters_mvn = traj_updaters.getConvolutedEstimateMVN();
             //LOG("prior cov: \n" << parameters_mvn.Sigma);
             ModelDistribution ceq_obs_dist = getCEQObservationDistribution(traj_updaters);
-            //LOG("preference likelihood: " << preferenceLikelihood(pref_dist, ceq_obs_dist));
+            //LOG("ceq obs dist cov: \n" << ceq_obs_dist.Sigma);
+            float preference_likelihood = preferenceLikelihood(pref_dist, ceq_obs_dist);
+            //LOG("preference likelihood: " << preference_likelihood);
             //LOG("prior entropy: " << parameters_mvn.entropy());
             //LOG("exp post entropy: " << expectedPosteriorEntropy(traj_updaters, n_samples));
-            float info_gain = parameters_mvn.entropy() + expectedPosteriorEntropy(traj_updaters, n_samples);
+            float info_gain = parameters_mvn.entropy() - expectedPosteriorEntropy(traj_updaters, n_samples);
             if (information_gain)
                 *information_gain = info_gain;
-            return preferenceLikelihood(pref_dist, ceq_obs_dist) - info_gain;
+            return preference_likelihood - info_gain;
         }
 
         static ModelDistribution getCEQObservationDistribution(const TrajectoryDistributionUpdaters<N>& prior_updaters) {
@@ -96,7 +98,7 @@ class GaussianEFE {
             for (uint8_t thread = 0; thread < THREAD_COUNT; ++thread) {
                 unnormalized_entropy += futures[thread].get();
             }
-            return unnormalized_entropy / static_cast<float>(n_samples);
+            return -unnormalized_entropy / static_cast<float>(n_samples);
         }
 
         static float workerPosteriorEntropySampler(const std::vector<TP::Stats::Distributions::FixedMultivariateNormalSampler<N>>* samplers, const std::vector<const TP::Stats::MultivariateGaussianUpdater<N>*>* updaters, uint32_t thread_samples) {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Eigen/Dense>
+
 namespace TP {
 
     template <typename T>
@@ -38,5 +40,23 @@ namespace TP {
             ++i;
         }
         return label_template;
+    }
+
+    template <class MATRIX_T>
+    static bool isMatrixPositiveSemiDef(const MATRIX_T& matrix) {
+        if (!matrix.isApprox(matrix.transpose()))
+            return false;
+        const auto ldlt = matrix.template selfadjointView<Eigen::Upper>().ldlt();
+        if (ldlt.info() == Eigen::NumericalIssue || !ldlt.isPositive())
+            return false;
+        return true;
+    }
+
+    template <class MATRIX_T>
+    static bool isCovariancePositiveSemiDef(const MATRIX_T& covariance) {
+        const auto ldlt = covariance.template selfadjointView<Eigen::Upper>().ldlt();
+        if (ldlt.info() == Eigen::NumericalIssue || !ldlt.isPositive())
+            return false;
+        return true;
     }
 }

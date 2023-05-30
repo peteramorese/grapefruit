@@ -31,6 +31,7 @@ TP::Stats::Distributions::FixedMultivariateNormal<N> deserializePreferenceDist(c
         TP::Stats::Distributions::FixedMultivariateNormal<N> dist;
         dist.mu = mean_converted;
         dist.setSigmaFromUniqueElementVector(minimal_cov_converted);
+        ASSERT(TP::isCovariancePositiveSemiDef(dist.Sigma), "Preference Covariance: \n" << dist.Sigma <<"\nis not positive semi-definite");
         return dist;
     } catch (YAML::ParserException e) {
         ERROR("Failed to load file" << config_filepath << " ("<< e.what() <<")");

@@ -103,6 +103,8 @@ class GridWorldTrueBehavior : public TrueBehavior<
                 default_dist.setSigmaFromUniqueElementVector(default_minimal_cov_converted);
                 if (make_pos_semi_def)
                     default_dist.Sigma = default_dist.Sigma * default_dist.Sigma;
+                ASSERT(TP::isCovariancePositiveSemiDef(default_dist.Sigma), "Default Cost Covariance: \n" << default_dist.Sigma <<"\nis not positive semi-definite");
+
                 this->m_default_na_element = TP::Stats::Distributions::FixedMultivariateNormalSampler<N>(default_dist);
 
 
@@ -142,6 +144,8 @@ class GridWorldTrueBehavior : public TrueBehavior<
                         if (make_pos_semi_def)
                             region_dist.Sigma = region_dist.Sigma * region_dist.Sigma;
 
+                        ASSERT(TP::isCovariancePositiveSemiDef(region_dist.Sigma), "Region: " << region.label << " Cost Covariance: \n" << region_dist.Sigma <<"\nis not positive semi-definite");
+                        
                         for (uint32_t i = region.lower_left_x; i <= region.upper_right_x; ++i) {
                             for (uint32_t j = region.lower_left_y; j <= region.upper_right_y; ++j) {
                                 auto ts = this->m_product->getModel();

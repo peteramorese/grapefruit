@@ -18,7 +18,7 @@ visualize_config = {
     "default_color": "seagreen",
     "default_prl_pref_color": "firebrick",
     "default_axis_labels": ["Objective 0", "Objective 1"],
-    "discretization_N": 100,
+    "discretization_N": 1000,
     "arrow_thickness": 0.003,
     "line_width": 1.00,
 }

@@ -82,9 +82,10 @@ class Learner {
                 TrajectoryDistributionUpdaters<N> traj_updaters = getTrajectoryUpdaters(plan);
                 if (m_verbose) {
                     //std::string
-                    PRINT_NAMED("    Solution candidate " << plan_i, "\n" << 
-                        "         [cost ucb....:" << std::to_string(it->path_cost.template get<1>()) << "]\n" <<
-                        "         [reward ucb..:" << std::to_string(it->path_cost.template get<0>()) << "]");
+                    PRINT_NAMED("    Solution candidate ", plan_i);
+                    for (uint32_t i = 0; i < N; ++i) {
+                        PRINT("      [Cost ucb (obj " << i <<")]:" << it->path_cost[i]);
+                    }
                 }
 
                 float info_gain;

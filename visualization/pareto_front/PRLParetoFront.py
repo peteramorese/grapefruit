@@ -67,9 +67,11 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
         return ax
 
     def sketch_preference_distribution(self, ax = None, fill_contour = True, levels = 20, label = "Preference"):
+        print("sketching pref dist")
         mean = self._data["PRL Preference Mean"]
+        print("MEAN READ in:", mean)
         covariance = self._data["PRL Preference Covariance"]
-        ax = self.sketch_distribution(mean, covariance, ax, fill_contour=True, label=label, marker = "D")
+        ax = self.sketch_distribution(mean, covariance, ax, fill_contour=True, label=label, levels = 20, marker = "D")
 
     def draw(self, block = True, use_legend = False):
         plt.figure()

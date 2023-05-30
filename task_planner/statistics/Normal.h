@@ -8,6 +8,7 @@
 #include "statistics/StatTools.h"
 #include "tools/Logging.h"
 #include "tools/Debug.h"
+#include "tools/Misc.h"
 
 #define _USE_MATH_DEFINES
 
@@ -110,7 +111,7 @@ class FixedMultivariateNormalSampler {
         FixedMultivariateNormalSampler(const FixedMultivariateNormal<N>& dist) 
         {
             //resetDist(dist);
-            ASSERT(checkPositiveSemiDef(dist.Sigma), "Sigma is not positive semi-definite. Sigma: \n" << dist.Sigma);
+            ASSERT(isCovariancePositiveSemiDef(dist.Sigma), "Sigma is not positive semi-definite. Sigma: \n" << dist.Sigma);
             m_dist = dist;
             Eigen::SelfAdjointEigenSolver<Eigen::Matrix<float, N, N>> solver(dist.Sigma);
             m_transform = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().asDiagonal();
@@ -119,20 +120,6 @@ class FixedMultivariateNormalSampler {
         const FixedMultivariateNormal<N>& dist() const {return m_dist;}
         const Eigen::Matrix<float, N, 1>& mean() const {return m_dist.mu;}
         const Eigen::Matrix<float, N, N>& transform() const {return m_transform;}
-
-        //void resetDist(const FixedMultivariateNormal<N>& dist) {
-        //    m_dist = dist;
-        //    Eigen::SelfAdjointEigenSolver<Eigen::Matrix<float, N, N>> solver(dist.Sigma);
-        //    m_transform = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().asDiagonal();
-        //}
-    private:
-        static bool checkPositiveSemiDef(const Eigen::Matrix<float, N, N>& Sigma) {
-            const auto ldlt = Sigma.template selfadjointView<Eigen::Upper>().ldlt();
-            //Eigen::LLT<Eigen::Matrix<float, N, N>> llt(dist.Sigma);
-            if (ldlt.info() == Eigen::NumericalIssue || !ldlt.isPositive())
-                return false;
-            return true;
-        }
 
     private:
         FixedMultivariateNormal<N> m_dist;
