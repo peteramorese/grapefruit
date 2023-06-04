@@ -46,7 +46,7 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
         #mu = self._data["PRL Preference Mean"]
         #self._push_upper_axis_bounds((1.0 + visualize_config["margin_percent"][0]) * mu[0], (1.0 + visualize_config["margin_percent"][0]) * mu[1])
 
-    def sketch_distribution(self, mean, covariance, ax = None, fill_contour = True, levels = 2, label = None, marker = "o", cmap = "GnBu", marker_color = "teal", zorder = None):
+    def sketch_distribution(self, mean, covariance, ax = None, fill_contour = True, levels = 2, label = None, marker = "o", cmap = "GnBu", marker_color = "teal", zorder = None, lw = visualize_config["line_width"]):
         if not ax:
             ax = plt.gca()
 
@@ -62,7 +62,7 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
             x, y = np.meshgrid(x_ls, y_ls)
             grid_point_arr = np.stack([x.flatten(), y.flatten()], axis=1)
             pdf_vals = multivariate_normal.pdf(x=grid_point_arr, cov = sigma, mean = mu)
-            ax.contourf(x, y, pdf_vals.reshape(x.shape), levels=levels, cmap=cmap)
+            ax.contourf(x, y, pdf_vals.reshape(x.shape), levels=levels, cmap=cmap, zorder=zorder)
         else:
             """
             Source: https://stackoverflow.com/questions/12301071/multidimensional-confidence-intervals/12321306#12321306
@@ -77,7 +77,7 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
             for i in range(levels):
                 w, h = 2 * (i + 1) * np.sqrt(vals)
                 color = cmap_object(cmap_vals[i])
-                ellipse = Ellipse(xy = mu, width=w, height=h, angle=theta, lw=visualize_config["line_width"], fill=False, color=color, zorder=zorder)
+                ellipse = Ellipse(xy = mu, width=w, height=h, angle=theta, lw=lw, fill=False, color=color, zorder=zorder)
                 ax.add_artist(ellipse)
         
 
@@ -87,10 +87,10 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
             ax.scatter(x=mean[0], y=mean[1], s=1, c=marker_color, marker=marker)
         return ax
 
-    def sketch_preference_distribution(self, ax = None, fill_contour = True, levels = 20, label = "Preference"):
+    def sketch_preference_distribution(self, ax = None, fill_contour = True, levels = 20, label = "Preference", zorder = None):
         mean = self._data["PRL Preference Mean"]
         covariance = self._data["PRL Preference Covariance"]
-        ax = self.sketch_distribution(mean, covariance, ax, fill_contour=True, label=label, levels = 20, marker = "D")
+        ax = self.sketch_distribution(mean, covariance, ax, fill_contour=True, label=label, levels = 20, marker = "D", zorder=zorder)
 
     def draw(self, block = True, use_legend = False, start_instance = None, xmax = None, ymax = None):
         if not start_instance:

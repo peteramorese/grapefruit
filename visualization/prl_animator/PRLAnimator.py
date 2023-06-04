@@ -32,7 +32,8 @@ visualize_config = {
         "cheetah": 1000,
         "plane": 500,
         "zoom": 100
-    }
+    },
+    "figure_size": (4, 8),
 }
 
 class PRLAnimator:
@@ -83,7 +84,9 @@ class PRLAnimator:
         pref_mean = self._data["PRL Preference Mean"]
         
         if plan_ax is None or pf_ax is None:
-            fig, (plan_ax, pf_ax) = plt.subplots(1, 2)
+            fig, (plan_ax, pf_ax) = plt.subplots(2, 1)
+            fig.set_size_inches(visualize_config["figure_size"][0], visualize_config["figure_size"][1])
+            fig.subplots_adjust(wspace=.02, hspace=.02, left=.15)
         if single_frame:
             self.initialize()
 
@@ -112,7 +115,6 @@ class PRLAnimator:
         # Add samples to pf
         self._pf_visualizer.add_data_set(samples.copy())
         # Plot preference first (base layer)
-        self._pf_visualizer.sketch_preference_distribution(pf_ax)
 
         for k, v in instance_data.items():
             if k.startswith("Candidate Plan"):
@@ -131,12 +133,14 @@ class PRLAnimator:
                     color = visualize_config["chosen_plan_color"]
                     title = "Chosen Plan"
                     self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, ls="-", zorder=len(instance_data) + 1)
-                    self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k, cmap="OrRd", marker_color="red", zorder=len(instance_data) + 1)
+                    self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k, cmap="OrRd", marker_color="red", zorder=len(instance_data) + 1, lw=2)
                     self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"), color="red")
 
         self._pf_visualizer.sketch_pareto_front(pf_ax, label="Samples", connect_points=visualize_config["connect_points"])
         selection_line_pts = np.stack((pref_mean, chosen_mean))
         pf_ax.plot(selection_line_pts[:,0], selection_line_pts[:,1], color=visualize_config["selection_line_color"], ls=":", lw=visualize_config["line_width"])
+
+        self._pf_visualizer.sketch_preference_distribution(pf_ax, zorder=0)
         
         # Add legends
         if visualize_config["show_legend"]:
@@ -151,13 +155,15 @@ class PRLAnimator:
             input("Press key to close")
         return plan_ax, pf_ax
 
-    def animate(self, repeat = True, save_file = None, playback_speed = "rabbit", starting_instance = 0, ending_instance = None, show_full_traj = False):
+    def animate(self, repeat = True, save_file = None, playback_speed = "rabbit", starting_instance = 0, ending_instance = None, show_all_data = False):
         fig, (plan_ax, pf_ax) = plt.subplots(1, 2)
+
+        fig.set_size_inches(visualize_config["figure_size"][0], visualize_config["figure_size"][1])
 
         self.initialize()
 
 
-        if show_full_traj:
+        if show_all_data:
             samples = self.collect_samples(starting_instance)
         else:
             samples = {
@@ -263,7 +269,7 @@ if __name__ == "__main__":
     parser.add_argument("--speed",default="rabbit", help="Playback speed from slow to quick: (turtle, rabbit, cheetah, plane, zoom)")
     parser.add_argument("--config-filepath", default="../../build/bin/configs/grid_world_config.yaml", help="Specify a grid world config file")
     parser.add_argument("--start-instance", default=0, type=int, help="Animation starting instance")
-    parser.add_argument("--full-traj", action="store_true", help="Show the trajectory before the start-instance")
+    parser.add_argument("--all-data", action="store_true", help="Show the sampled data from before the start-instance")
     parser.add_argument("--end-instance", default=None, type=int, help="Animation ending instance")
     parser.add_argument("--plot-frame", type=int, help="Plot a single frame")
     args = parser.parse_args()
@@ -273,7 +279,7 @@ if __name__ == "__main__":
     if args.plot_frame:
         animator.deserialize(args.filepath)
         samples = None
-        if args.full_traj:
+        if args.all_data:
             samples = animator.collect_samples(args.plot_frame)
         animator.plot_frame(args.plot_frame, samples=samples)
     else:
@@ -283,5 +289,5 @@ if __name__ == "__main__":
             print("Playback speed must be one of the preset values: (turtle, rabbit, cheetah, plane, zoom)")
 
         animator.deserialize(args.filepath)
-        animator.animate(repeat=args.repeat, save_file=args.save_filepath, playback_speed=args.speed, starting_instance=args.start_instance, ending_instance=args.end_instance, show_full_traj=args.full_traj)
+        animator.animate(repeat=args.repeat, save_file=args.save_filepath, playback_speed=args.speed, starting_instance=args.start_instance, ending_instance=args.end_instance, show_all_data=args.all_data)
     #animator.draw(use_legend=True)
