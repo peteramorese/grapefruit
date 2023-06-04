@@ -48,6 +48,12 @@ class MultivariateGaussianUpdater {
             : m_sample_set(Eigen::Matrix<float, N, 1>::Zero())
         {}
 
+        MultivariateGaussianUpdater(const Eigen::Matrix<float, N, 1>& default_mu) 
+            : m_sample_set(Eigen::Matrix<float, N, 1>::Zero())
+        {
+            m_niw.mu = default_mu;
+        }
+
         MultivariateGaussianUpdater(const Eigen::Matrix<float, N, 1>& mu, const Eigen::Matrix<float, N, N>& Lambda, float kappa, float nu)
             : m_niw(mu, Lambda, kappa, nu)
             , m_sample_set(Eigen::Matrix<float, N, 1>::Zero())

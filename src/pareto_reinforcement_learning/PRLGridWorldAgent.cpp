@@ -98,6 +98,8 @@ int main(int argc, char* argv[]) {
 	// Make the preference behavior distribution
 	PreferenceDistributionType p_ev = deserializePreferenceDist<N>(config_filepath);
 
+	// Get the default transition mean if the file contains it
+	std::pair<bool, Eigen::Matrix<float, N, 1>> default_mean = deserializeDefaultMean<N>(config_filepath);
 
 	QuantifierSet<N> quantifier_set(p_ev);
 	std::shared_ptr<DataCollector<N>> data_collector;
@@ -106,7 +108,12 @@ int main(int argc, char* argv[]) {
 
 	for (uint32_t trial = 0; trial < n_trials; ++trial) {
 
-		std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, confidence);
+		std::shared_ptr<BehaviorHandlerType> behavior_handler;
+		if (default_mean.first)
+			behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, confidence, default_mean.second);
+		else 
+			behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, confidence);
+
 		Learner<N> prl(behavior_handler, n_efe_samples, data_collector, verbose);
 
 		// Initialize the agent's state

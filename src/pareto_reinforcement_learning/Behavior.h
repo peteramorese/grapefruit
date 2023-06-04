@@ -19,6 +19,11 @@ namespace PRL {
                 : TP::ML::UCB(confidence)
             {}
 
+            JointCostArray(float confidence, const Eigen::Matrix<float, M, 1>& default_mean) 
+                : TP::ML::UCB(confidence)
+                , m_updater(default_mean)
+            {}
+
             typename MultivariateCost<M>::CostVector getRectifiedUCBVector(uint32_t state_visits) const {
                 typename MultivariateCost<M>::CostVector cv;
                 auto mean = TP::Stats::E(m_updater.getEstimateNormal());

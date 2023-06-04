@@ -21,6 +21,12 @@ namespace PRL {
                 , m_completed_tasks_horizon(completed_tasks_horizon)
             {}
 
+            BehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, uint8_t completed_tasks_horizon, float ucb_confidence, const Eigen::Matrix<float, N, 1>& default_mean)
+                : Storage<JointCostArray<N>>(JointCostArray<N>(ucb_confidence, default_mean))
+                , m_product(product)
+                , m_completed_tasks_horizon(completed_tasks_horizon)
+            {}
+            
             static constexpr std::size_t size() noexcept {return N;}
             uint8_t getCompletedTasksHorizon() const {return m_completed_tasks_horizon;}
 

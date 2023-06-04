@@ -17,9 +17,6 @@ Region Labels:
   - Mud_1
   - Mud_2
   - Mud_3
-  - Ground_1
-  - Ground_2
-  #- Ground_3
 
 PRL Cost Objectives:
   - Time
@@ -31,26 +28,22 @@ Square Covariance: True
 # Preference distribution
 PRL Preference: 
   Mean:
-    - 76.0
-    - 10.0
+    - 100.0
+    - 20.0
   Covariance: # Unique elements (upper triangular)
-    - 50.0 # 11
-    - 10.0 # 12
+    - 250.0 # 11
+    - -110.0 # 12
     - 70.0 # 22
-
-Default Transition Estimate Mean:
-  - 1.2
-  - 1.1
 
 # Default PRL cost for transitions
 PRL Default Cost: 
   Mean:
     - 1.0
-    - 0.01
+    - 0.1
   Covariance: # Unique elements (upper triangular)
     - 0.2 # 11
     - 0.0 # 12
-    - 0.001 # 22
+    - 0.01 # 22
 
 # Regions
 Base_1:
@@ -114,10 +107,10 @@ Sample_1: # in the sun
 
 Sample_2: # out of the sun
   Bounds:
-    - 20 
-    - 21 
-    - 9 
-    - 10 
+    - 15 
+    - 16 
+    - 1 
+    - 2 
   Color: coral
   PRL Cost Mean: 
     - 5.0
@@ -183,73 +176,19 @@ Mud_3:
   Fancy: false
   Alpha: 1.0
 
-Ground_1:
-  Bounds:
-    - 15
-    - 15
-    - 1
-    - 10
-  Color: silver
-  PRL Cost Mean: 
-    - -0.5
-    - 0.0
-  PRL Cost Covariance: # Unique elements (upper triangular)
-    - -0.01 # 11
-    - 0.0 # 12
-    - 0.001 # 22
-  Proposition: Ground
-  Fancy: false
-  Alpha: 1.0
-
-Ground_2:
-  Bounds:
-    - 16
-    - 20
-    - 1
-    - 2
-  Color: silver
-  PRL Cost Mean: 
-    - -0.5
-    - 0.0
-  PRL Cost Covariance: # Unique elements (upper triangular)
-    - 0.01 # 11
-    - 0.0 # 12
-    - 0.001 # 22
-  Proposition: Ground
-  Fancy: false
-  Alpha: 1.0
-
-#Ground_3:
-#  Bounds:
-#    - 18
-#    - 20
-#    - 16
-#    - 16
-#  Color: silver
-#  PRL Cost Mean: 
-#    - -1.0
-#    - 0.0
-#  PRL Cost Covariance: # Unique elements (upper triangular)
-#    - 0.01 # 11
-#    - 0.0 # 12
-#    - 0.001 # 22
-#  Proposition: Ground
-#  Fancy: false
-#  Alpha: 1.0
-
 Sun_1:
   Bounds:
     - 9
     - 13
     - 11
-    - 17
+    - 16
   Color: yellow
   PRL Cost Mean: 
     - 0.0
-    - 1.0
+    - 3.0
   PRL Cost Covariance: # Unique elements (upper triangular)
     - 0.0 # 11
-    - 0.3 # 12
+    - 0.8 # 12
     - 0.5 # 22
   Proposition: Sun
   Fancy: false
@@ -263,10 +202,10 @@ Sun_2:
   Color: yellow
   PRL Cost Mean: 
     - 0.0
-    - 1.0
+    - 3.0
   PRL Cost Covariance: # Unique elements (upper triangular)
     - 0.0 # 11
-    - 0.3 # 12
+    - 0.8 # 12
     - 0.5 # 22
   Proposition: Sun
   Fancy: false
@@ -280,10 +219,10 @@ Sun_3:
   Color: yellow
   PRL Cost Mean: 
     - 0.0
-    - 1.0
+    - 3.0
   PRL Cost Covariance: # Unique elements (upper triangular)
     - 0.0 # 11
-    - 0.3 # 12
+    - 0.8 # 12
     - 0.5 # 22
   Proposition: Sun
   Fancy: false
@@ -297,10 +236,10 @@ Sun_4:
   Color: yellow
   PRL Cost Mean: 
     - 0.0
-    - 1.0
+    - 3.0
   PRL Cost Covariance: # Unique elements (upper triangular)
     - 0.0 # 11
-    - 0.3 # 12
+    - 0.8 # 12
     - 0.5 # 22
   Proposition: Sun
   Fancy: false
@@ -311,7 +250,7 @@ Obstacles:
       - 6
       - 8
       - 11
-      - 15
+      - 14
   base_wall_2:
     Bounds:
       - 0
@@ -340,8 +279,8 @@ Obstacles:
     Bounds:
       - 6
       - 8
+      - 16
       - 17
-      - 18
   rock_1:
     Bounds:
       - 9
@@ -352,14 +291,14 @@ Obstacles:
     Bounds:
       - 17
       - 17
-      - 9
+      - 4
       - 16
   rock_3:
     Bounds:
       - 14
       - 14
       - 0
-      - 14
+      - 13
   rock_4:
     Bounds:
       - 15
@@ -368,8 +307,8 @@ Obstacles:
       - 0
   rock_5:
     Bounds:
-      - 17
-      - 19
+      - 18
+      - 20
       - 4
       - 8
   rock_6:
@@ -382,5 +321,11 @@ Obstacles:
     Bounds:
       - 18
       - 20
-      - 15
+      - 17
       - 18
+  rock_8:
+    Bounds:
+      - 18
+      - 19
+      - 3
+      - 3

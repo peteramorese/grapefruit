@@ -39,4 +39,29 @@ TP::Stats::Distributions::FixedMultivariateNormal<N> deserializePreferenceDist(c
     }
 }
 
+template <uint64_t N>
+std::pair<bool, Eigen::Matrix<float, N, 1>> deserializeDefaultMean(const std::string& config_filepath) {
+    YAML::Node data;
+    try {
+        data = YAML::LoadFile(config_filepath);
+
+        if (!data["Default Transition Estimate Mean"]) 
+            return std::make_pair(false, Eigen::Matrix<float, N, 1>());
+
+        YAML::Node pref_node = data["PRL Preference"]; 
+        std::vector<float> mean = data["Default Transition Estimate Mean"].as<std::vector<float>>();
+
+        // Convert to Eigen
+        Eigen::Matrix<float, N, 1> mean_converted;
+        Eigen::Matrix<float, TP::Stats::Distributions::FixedMultivariateNormal<N>::uniqueCovarianceElements(), 1> minimal_cov_converted;
+        for (uint32_t i = 0; i < N; ++i)
+            mean_converted(i) = mean[i];
+
+        return std::make_pair(true, mean_converted);
+    } catch (YAML::ParserException e) {
+        ERROR("Failed to load file" << config_filepath << " ("<< e.what() <<")");
+        return std::make_pair(false, Eigen::Matrix<float, N, 1>());
+    }
+}
+
 }
