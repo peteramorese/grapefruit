@@ -116,8 +116,8 @@ Sample_2: # out of the sun
   Bounds:
     - 20 
     - 21 
-    - 9 
-    - 10 
+    - 7 
+    - 8 
   Color: coral
   PRL Cost Mean: 
     - 5.0
@@ -188,10 +188,10 @@ Ground_1:
     - 15
     - 15
     - 1
-    - 10
+    - 14
   Color: silver
   PRL Cost Mean: 
-    - -0.5
+    - -0.7
     - 0.0
   PRL Cost Covariance: # Unique elements (upper triangular)
     - -0.01 # 11
@@ -209,7 +209,7 @@ Ground_2:
     - 2
   Color: silver
   PRL Cost Mean: 
-    - -0.5
+    - -0.7
     - 0.0
   PRL Cost Covariance: # Unique elements (upper triangular)
     - 0.01 # 11
@@ -368,9 +368,9 @@ Obstacles:
       - 0
   rock_5:
     Bounds:
-      - 17
+      - 16
       - 19
-      - 4
+      - 3
       - 8
   rock_6:
     Bounds:

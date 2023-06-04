@@ -12,7 +12,7 @@ visualize_config = {
     "line_style": "-",
     "show_title": False,
     "grid_on": True,
-    "dot_size": 4,
+    "dot_size": 10,
     "dot_alpha": .7,
     "figure_size": (3.9, 3.9),
     "margin_percent": (.05, .05),

@@ -44,7 +44,7 @@ class PRLAnimator:
         with open(filepath, "r") as f:
             self._data = yaml.safe_load(f)
 
-    def __initialize(self):
+    def initialize(self):
         self._instances = self._data["Instances"]
 
         # Make pf data
@@ -62,43 +62,13 @@ class PRLAnimator:
             ax.axvline(ucb_val[0], ls=":")
             ax.axhline(ucb_val[1], ls=":")
 
-    def animate(self, repeat = True, save_file = None, playback_speed = "rabbit", starting_instance = 0, ending_instance = None, show_full_traj = False):
-        fig, (plan_ax, pf_ax) = plt.subplots(1, 2)
-
-        self.__initialize()
-
-        pref_mean = self._data["PRL Preference Mean"]
-
+    def collect_samples(self, instance):
         samples = {
             "Objective 0": [],
             "Objective 1": [],
         }
-
-        if show_full_traj:
-            for inst in range(starting_instance):
-                instance_key = "Instance " + str(inst + starting_instance)
-                try:
-                    instance_data = self._data[instance_key]
-                except ValueError:
-                    print(instance_key," not found in animation file")
-
-                # Add sample
-                samples["Objective 0"].append(instance_data["Sample"][0])
-                samples["Objective 1"].append(instance_data["Sample"][1])
-
-        def init():
-            self._plan_visualizer.sketch_environment(plan_ax)
-            #samples["Objective 0"].clear()
-            #samples["Objective 1"].clear()
-            return plan_ax, pf_ax
-
-        def update(frame):
-            # Plan
-            plan_ax.clear()
-            pf_ax.clear()
-            self._pf_visualizer.clear_data_sets()
-            self._plan_visualizer.sketch_environment(plan_ax)
-            instance_key = "Instance " + str(frame + starting_instance)
+        for i in range(instance):
+            instance_key = "Instance " + str(i)
             try:
                 instance_data = self._data[instance_key]
             except ValueError:
@@ -107,46 +77,168 @@ class PRLAnimator:
             # Add sample
             samples["Objective 0"].append(instance_data["Sample"][0])
             samples["Objective 1"].append(instance_data["Sample"][1])
-            chosen_plan = instance_data["Chosen Plan"]
+        return samples
 
-            # Add samples to pf
-            self._pf_visualizer.add_data_set(samples.copy())
-            # Plot preference first (base layer)
-            self._pf_visualizer.sketch_preference_distribution(pf_ax)
+    def plot_frame(self, instance, plan_ax = None, pf_ax = None, samples = None, single_frame = True):
+        pref_mean = self._data["PRL Preference Mean"]
+        
+        if plan_ax is None or pf_ax is None:
+            fig, (plan_ax, pf_ax) = plt.subplots(1, 2)
+        if single_frame:
+            self.initialize()
 
-            for k, v in instance_data.items():
-                if k.startswith("Candidate Plan"):
-                    mean = np.array(v["Plan Mean Mean"])
-                    variance = np.array(v["Plan Mean Covariance"])
-                    ucb_val = np.array(v["Plan Pareto UCB"])
-                    self._plan_visualizer.load_from_dict(v.copy())
-                    if k != chosen_plan:
-                        color = visualize_config["candidate_plan_color"] 
-                        title = k
-                        self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, show_directions=False, ls=":")
-                        self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k)
-                        self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"))
-                    else:
-                        chosen_mean = mean
-                        color = visualize_config["chosen_plan_color"]
-                        title = "Chosen Plan"
-                        self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, ls="-", zorder=len(instance_data) + 1)
-                        self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k, cmap="OrRd", marker_color="red", zorder=len(instance_data) + 1)
-                        self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"), color="red")
+        if samples is None:
+            samples = {
+                "Objective 0": [],
+                "Objective 1": [],
+            }
 
-            self._pf_visualizer.sketch_pareto_front(pf_ax, label="Samples", connect_points=visualize_config["connect_points"])
-            selection_line_pts = np.stack((pref_mean, chosen_mean))
-            pf_ax.plot(selection_line_pts[:,0], selection_line_pts[:,1], color=visualize_config["selection_line_color"], ls=":", lw=visualize_config["line_width"])
-            
-            # Add legends
-            if visualize_config["show_legend"]:
-                plan_ax.legend(fontsize=visualize_config["legend_font_size"], loc=visualize_config["plan_legend_location"])
-                pf_ax.legend(fontsize=visualize_config["legend_font_size"], loc=visualize_config["pf_legend_location"])
+        # Plan
+        plan_ax.clear()
+        pf_ax.clear()
+        self._pf_visualizer.clear_data_sets()
+        self._plan_visualizer.sketch_environment(plan_ax)
+        instance_key = "Instance " + str(instance)
+        try:
+            instance_data = self._data[instance_key]
+        except ValueError:
+            print(instance_key," not found in animation file")
 
-            # Update title
-            plan_ax.set_title(instance_key)
-            
+        # Add sample
+        samples["Objective 0"].append(instance_data["Sample"][0])
+        samples["Objective 1"].append(instance_data["Sample"][1])
+        chosen_plan = instance_data["Chosen Plan"]
+
+        # Add samples to pf
+        self._pf_visualizer.add_data_set(samples.copy())
+        # Plot preference first (base layer)
+        self._pf_visualizer.sketch_preference_distribution(pf_ax)
+
+        for k, v in instance_data.items():
+            if k.startswith("Candidate Plan"):
+                mean = np.array(v["Plan Mean Mean"])
+                variance = np.array(v["Plan Mean Covariance"])
+                ucb_val = np.array(v["Plan Pareto UCB"])
+                self._plan_visualizer.load_from_dict(v.copy())
+                if k != chosen_plan:
+                    color = visualize_config["candidate_plan_color"] 
+                    title = k
+                    self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, show_directions=False, ls=":")
+                    self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k)
+                    self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"))
+                else:
+                    chosen_mean = mean
+                    color = visualize_config["chosen_plan_color"]
+                    title = "Chosen Plan"
+                    self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, ls="-", zorder=len(instance_data) + 1)
+                    self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k, cmap="OrRd", marker_color="red", zorder=len(instance_data) + 1)
+                    self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"), color="red")
+
+        self._pf_visualizer.sketch_pareto_front(pf_ax, label="Samples", connect_points=visualize_config["connect_points"])
+        selection_line_pts = np.stack((pref_mean, chosen_mean))
+        pf_ax.plot(selection_line_pts[:,0], selection_line_pts[:,1], color=visualize_config["selection_line_color"], ls=":", lw=visualize_config["line_width"])
+        
+        # Add legends
+        if visualize_config["show_legend"]:
+            plan_ax.legend(fontsize=visualize_config["legend_font_size"], loc=visualize_config["plan_legend_location"])
+            pf_ax.legend(fontsize=visualize_config["legend_font_size"], loc=visualize_config["pf_legend_location"])
+
+        # Update title
+        plan_ax.set_title(instance_key)
+        
+        if single_frame:
+            fig.show()
+            input("Press key to close")
+        return plan_ax, pf_ax
+
+    def animate(self, repeat = True, save_file = None, playback_speed = "rabbit", starting_instance = 0, ending_instance = None, show_full_traj = False):
+        fig, (plan_ax, pf_ax) = plt.subplots(1, 2)
+
+        self.initialize()
+
+
+        if show_full_traj:
+            samples = self.collect_samples(starting_instance)
+        else:
+            samples = {
+                "Objective 0": [],
+                "Objective 1": [],
+            }
+            #for inst in range(starting_instance):
+            #    instance_key = "Instance " + str(inst + starting_instance)
+            #    try:
+            #        instance_data = self._data[instance_key]
+            #    except ValueError:
+            #        print(instance_key," not found in animation file")
+
+            #    # Add sample
+            #    samples["Objective 0"].append(instance_data["Sample"][0])
+            #    samples["Objective 1"].append(instance_data["Sample"][1])
+
+        def init():
+            self._plan_visualizer.sketch_environment(plan_ax)
+            #samples["Objective 0"].clear()
+            #samples["Objective 1"].clear()
             return plan_ax, pf_ax
+
+        def update(frame):
+            return self.plot_frame(frame + starting_instance, plan_ax, pf_ax, samples, single_frame=False)
+
+        #def update(frame):
+        #    # Plan
+        #    plan_ax.clear()
+        #    pf_ax.clear()
+        #    self._pf_visualizer.clear_data_sets()
+        #    self._plan_visualizer.sketch_environment(plan_ax)
+        #    instance_key = "Instance " + str(frame + starting_instance)
+        #    try:
+        #        instance_data = self._data[instance_key]
+        #    except ValueError:
+        #        print(instance_key," not found in animation file")
+
+        #    # Add sample
+        #    samples["Objective 0"].append(instance_data["Sample"][0])
+        #    samples["Objective 1"].append(instance_data["Sample"][1])
+        #    chosen_plan = instance_data["Chosen Plan"]
+
+        #    # Add samples to pf
+        #    self._pf_visualizer.add_data_set(samples.copy())
+        #    # Plot preference first (base layer)
+        #    self._pf_visualizer.sketch_preference_distribution(pf_ax)
+
+        #    for k, v in instance_data.items():
+        #        if k.startswith("Candidate Plan"):
+        #            mean = np.array(v["Plan Mean Mean"])
+        #            variance = np.array(v["Plan Mean Covariance"])
+        #            ucb_val = np.array(v["Plan Pareto UCB"])
+        #            self._plan_visualizer.load_from_dict(v.copy())
+        #            if k != chosen_plan:
+        #                color = visualize_config["candidate_plan_color"] 
+        #                title = k
+        #                self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, show_directions=False, ls=":")
+        #                self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k)
+        #                self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"))
+        #            else:
+        #                chosen_mean = mean
+        #                color = visualize_config["chosen_plan_color"]
+        #                title = "Chosen Plan"
+        #                self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, ls="-", zorder=len(instance_data) + 1)
+        #                self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k, cmap="OrRd", marker_color="red", zorder=len(instance_data) + 1)
+        #                self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"), color="red")
+
+        #    self._pf_visualizer.sketch_pareto_front(pf_ax, label="Samples", connect_points=visualize_config["connect_points"])
+        #    selection_line_pts = np.stack((pref_mean, chosen_mean))
+        #    pf_ax.plot(selection_line_pts[:,0], selection_line_pts[:,1], color=visualize_config["selection_line_color"], ls=":", lw=visualize_config["line_width"])
+        #    
+        #    # Add legends
+        #    if visualize_config["show_legend"]:
+        #        plan_ax.legend(fontsize=visualize_config["legend_font_size"], loc=visualize_config["plan_legend_location"])
+        #        pf_ax.legend(fontsize=visualize_config["legend_font_size"], loc=visualize_config["pf_legend_location"])
+
+        #    # Update title
+        #    plan_ax.set_title(instance_key)
+        #    
+        #    return plan_ax, pf_ax
         
         if ending_instance and ending_instance < self._instances:
             assert ending_instance > starting_instance
@@ -173,15 +265,23 @@ if __name__ == "__main__":
     parser.add_argument("--start-instance", default=0, type=int, help="Animation starting instance")
     parser.add_argument("--full-traj", action="store_true", help="Show the trajectory before the start-instance")
     parser.add_argument("--end-instance", default=None, type=int, help="Animation ending instance")
+    parser.add_argument("--plot-frame", type=int, help="Plot a single frame")
     args = parser.parse_args()
-
-    try:
-        assert args.speed in visualize_config["speed_intervals"].keys()
-    except ValueError:
-        print("Playback speed must be one of the preset values: (turtle, rabbit, cheetah, plane, zoom)")
 
     animator = PRLAnimator(args.config_filepath)
 
-    animator.deserialize(args.filepath)
-    animator.animate(repeat=args.repeat, save_file=args.save_filepath, playback_speed=args.speed, starting_instance=args.start_instance, ending_instance=args.end_instance, show_full_traj=args.full_traj)
+    if args.plot_frame:
+        animator.deserialize(args.filepath)
+        samples = None
+        if args.full_traj:
+            samples = animator.collect_samples(args.plot_frame)
+        animator.plot_frame(args.plot_frame, samples=samples)
+    else:
+        try:
+            assert args.speed in visualize_config["speed_intervals"].keys()
+        except ValueError:
+            print("Playback speed must be one of the preset values: (turtle, rabbit, cheetah, plane, zoom)")
+
+        animator.deserialize(args.filepath)
+        animator.animate(repeat=args.repeat, save_file=args.save_filepath, playback_speed=args.speed, starting_instance=args.start_instance, ending_instance=args.end_instance, show_full_traj=args.full_traj)
     #animator.draw(use_legend=True)
