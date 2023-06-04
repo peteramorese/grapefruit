@@ -145,10 +145,12 @@ class Learner {
                 estimate_traj_distributions.push_back(estimate_traj_distribution);
                 ucb_pareto_points.push_back(pt.path_cost);
             }
+            uint32_t selected_ind = getListIndex(mean_pf, chosen_plan);
+            log("Chosen solution: " + std::to_string(selected_ind), true);
 
             // Add to animator
             if (m_data_collector)
-                m_data_collector->addInstance(mean_pf, getListIndex(mean_pf, chosen_plan), std::move(estimate_traj_distributions), std::move(ucb_pareto_points));
+                m_data_collector->addInstance(mean_pf, selected_ind, std::move(estimate_traj_distributions), std::move(ucb_pareto_points));
             return chosen_plan;
         }
 
@@ -171,9 +173,12 @@ class Learner {
                 ucb_pareto_points.push_back(pt.path_cost);
             }
 
+            uint32_t selected_ind = getListIndex(mean_pf, chosen_plan);
+            log("Chosen solution: " + std::to_string(selected_ind), true);
+
             // Add to animator
             if (m_data_collector)
-                m_data_collector->addInstance(mean_pf, getListIndex(mean_pf, chosen_plan), std::move(estimate_traj_distributions), std::move(ucb_pareto_points));
+                m_data_collector->addInstance(mean_pf, selected_ind, std::move(estimate_traj_distributions), std::move(ucb_pareto_points));
             return chosen_plan;
         }
 
@@ -187,10 +192,6 @@ class Learner {
             }
             ASSERT(max_val > 0.0f, "At least one weight must be greater than zero");
 
-            for (uint64_t d = 0; d < N; ++d) {
-                weights[d] /= max_val;
-                LOG("weights[" << d << "]: " << weights[d]);
-            }
             typename std::list<PathSolution>::const_iterator chosen_plan = TP::ParetoSelector<typename SearchProblem<N>::node_t, typename SearchProblem<N>::edge_t, typename SearchProblem<N>::cost_t>::scalarWeights(mean_pf, weights);
 
             // Hold the trajectory distributions for the animation
@@ -209,10 +210,13 @@ class Learner {
                 ucb_pareto_points.push_back(pt.path_cost);
             }
 
+            uint32_t selected_ind = getListIndex(mean_pf, chosen_plan);
+            log("Chosen solution: " + std::to_string(selected_ind), true);
+
             // Add to animator
-            LOG("selected index: " << getListIndex(mean_pf, chosen_plan));
+            LOG("mean of selected index: " << chosen_plan->path_cost[0] << ", " << chosen_plan->path_cost[1]);
             if (m_data_collector)
-                m_data_collector->addInstance(mean_pf, getListIndex(mean_pf, chosen_plan), std::move(estimate_traj_distributions), std::move(ucb_pareto_points));
+                m_data_collector->addInstance(mean_pf, selected_ind, std::move(estimate_traj_distributions), std::move(ucb_pareto_points));
             return chosen_plan;
         }
 
@@ -265,6 +269,7 @@ class Learner {
                     }
                 }
                 
+                LOG("mean of selected index: " << path_solution->path_cost[0] << ", " << path_solution->path_cost[1]);
                 Plan plan(*path_solution, m_product, true);
                 if (execute(plan, sampler))
                     return m_quantifier;
@@ -293,6 +298,7 @@ class Learner {
                 TrajectoryDistributionUpdaters<N> traj_updaters = getTrajectoryUpdaters(plan);
                 auto mvn = GaussianEFE<N>::getCEQObservationDistribution(traj_updaters);
                 TP::fromColMatrix<float, N>(TP::Stats::E(mvn), mean_pf_it->path_cost);
+                ++mean_pf_it;
             }
             return mean_pf;
         }

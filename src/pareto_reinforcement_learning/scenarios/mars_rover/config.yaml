@@ -29,21 +29,21 @@ Square Covariance: True
 PRL Preference: 
   Mean:
     - 100.0
-    - 15.0
+    - 20.0
   Covariance: # Unique elements (upper triangular)
     - 200.0 # 11
-    - 20.0 # 12
+    - -90.0 # 12
     - 50.0 # 22
 
 # Default PRL cost for transitions
 PRL Default Cost: 
   Mean:
     - 1.0
-    - 0.0
+    - 0.1
   Covariance: # Unique elements (upper triangular)
     - 0.2 # 11
     - 0.0 # 12
-    - 0.0 # 22
+    - 0.01 # 22
 
 # Regions
 Base_1:

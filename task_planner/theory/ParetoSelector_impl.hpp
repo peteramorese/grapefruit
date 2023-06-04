@@ -67,21 +67,37 @@ typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR
 }
 
 template <class NODE_T, class EDGE_STORAGE_T, class COST_VECTOR_T>
-typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator ParetoSelector<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>::scalarWeights(const ParetoFront& pf, const Containers::FixedArray<COST_VECTOR_T::size(), float>& weights) {
-    // Maximize
+typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator ParetoSelector<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>::scalarWeights(const ParetoFront& pf, Containers::FixedArray<COST_VECTOR_T::size(), float> weights) {
+    auto norm = [] (COST_VECTOR_T& cv) {
+        float norm = 0.0f;
+        cv.forEachWithI(
+            [&norm] <typename T, uint32_t I> (T& e) {
+            norm += static_cast<float>(e) * static_cast<float>(e);
+            return true;
+        });
+        norm = std::sqrt(norm);
+        cv.forEachWithI(
+            [&norm] <typename T, uint32_t I> (T& e) {
+            e /= norm;
+            return true;
+        });
+    };
+
+    norm(weights);
+
+    // Minimize the angle between the normalized pareto vector and the normalized weight vector
     float max_weighted_sum = 0.0f;
     typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator max_it = pf.begin();
     for (auto soln_it = pf.begin(); soln_it != pf.end(); ++soln_it) {
+        COST_VECTOR_T normalized_path_cost = soln_it->path_cost; // copy it out to normalize it
+        norm(normalized_path_cost);
         float weighted_sum = 0.0f;
         auto weightSoln = [&weighted_sum, &weights] <typename T, uint32_t I> (const T& e) {
-            LOG("element: " << e);
             weighted_sum += weights.template get<I>() * e;
             return true;
         };
-        soln_it->path_cost.forEachWithI(weightSoln);
-        LOG("weighted sum: " << weighted_sum);
+        normalized_path_cost.forEachWithI(weightSoln);
         if (weighted_sum > max_weighted_sum) {
-            LOG("--selected");
             max_weighted_sum = weighted_sum;
             max_it = soln_it;
         }

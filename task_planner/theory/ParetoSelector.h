@@ -11,7 +11,7 @@ class ParetoSelector {
     public:
         static typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator uniformRandom(const ParetoFront& pf);
         static typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator TOPSIS(const ParetoFront& pf);
-        static typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator scalarWeights(const ParetoFront& pf, const Containers::FixedArray<COST_VECTOR_T::size(), float>& weights);
+        static typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator scalarWeights(const ParetoFront& pf, Containers::FixedArray<COST_VECTOR_T::size(), float> weights);
 };
 
 }
