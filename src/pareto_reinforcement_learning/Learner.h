@@ -2,6 +2,8 @@
 
 #include <functional>
 
+#include "TaskPlanner.h"
+
 #include "EFE.h"
 #include "SearchProblem.h"
 #include "TrueBehavior.h"
@@ -10,6 +12,13 @@
 #include "TrajectoryDistributionEstimator.h"
 
 namespace PRL {
+
+enum class Selector {
+    Aif,        // Active inference preference selector
+    Uniform,    // Uniformly random objective selector
+    Topsis,     // TOPSIS objective selector
+    Weights,    // Scalar weight inner product preference selector
+};
 
 template <uint64_t N>
 class Learner {
@@ -61,7 +70,7 @@ class Learner {
             return result;
         }
 
-        std::list<PathSolution>::const_iterator select(const ParetoFrontResult& search_result, const PreferenceDistribution& p_ev) {
+        std::list<PathSolution>::const_iterator selectAif(const ParetoFrontResult& search_result, const PreferenceDistribution& p_ev) {
             log("Selection Phase (2)");
             typename std::list<PathSolution>::const_iterator min_it = search_result.solution_set.begin();
             uint32_t min_ind = 0;
@@ -136,7 +145,7 @@ class Learner {
         }
 
         template <typename SAMPLER_LAM_T>
-        const Quantifier<N>& run(const PreferenceDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_instances) {
+        const Quantifier<N>& run(const PreferenceDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_instances, Selector selector) {
             ASSERT(m_initialized, "Must initialize before running");
             m_quantifier.max_instances = max_instances;
             while (m_quantifier.instances < max_instances) {
@@ -145,7 +154,32 @@ class Learner {
                     ERROR("Planner did not succeed!");
                     return m_quantifier;
                 }
-                auto path_solution = select(pf, p_ev);
+
+                typename std::list<PathSolution>::const_iterator path_solution;
+                switch (selector) {
+                    case Selector::Aif:
+                        path_solution = selectAif(pf, p_ev);
+                    case Selector::Uniform:
+                        path_solution = TP::ParetoSelector<typename SearchProblem<N>::node_t, typename SearchProblem<N>::edge_t, typename SearchProblem<N>::cost_t>::uniformRandom(pf);
+                    case Selector::Topsis:
+                        path_solution = TP::ParetoSelector<typename SearchProblem<N>::node_t, typename SearchProblem<N>::edge_t, typename SearchProblem<N>::cost_t>::TOPSIS(pf);
+                    case Selector::Weights: {
+                        TP::Containers::FixedArray<N, float> weights;
+                        float max_val = 0.0f;
+                        for (uint64_t d = 0; d < N; ++d) {
+                            weights[d] = p_ev.mu(d);
+                            if (weights[d] > max_val)
+                                max_val = weights[d];
+                        }
+                        ASSERT(max_val > 0.0f, "At least one weight must be greater than zero");
+
+                        for (uint64_t d = 0; d < N; ++d) {
+                            weights[d] /= max_val;
+                        }
+                        path_solution = TP::ParetoSelector<typename SearchProblem<N>::node_t, typename SearchProblem<N>::edge_t, typename SearchProblem<N>::cost_t>::scalarWeights(pf, weights);
+                    }
+                }
+                
                 Plan plan(*path_solution, m_product, true);
                 if (execute(plan, sampler))
                     return m_quantifier;

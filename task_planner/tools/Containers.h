@@ -158,67 +158,91 @@ namespace Containers {
             friend SizedArray operator+<T>(const SizedArray& lhs, const SizedArray& rhs);
     };
 
-
-
     enum class ArrayComparison {
         Dominates,
         DoesNotDominate,
         Equal
     };
 
-    // Method signature is made to match TypeGenericArray (except compare)
+    /* 
+    Compile-time sized array wrapper around std::array.
+
+    Method signature is made to match TypeGenericArray (except compare)
+    */
     template<std::size_t M, class T>
     struct FixedArray {
         public:
             FixedArray() {
-                for (T& v : values) 
+                for (T& v : m_values) 
                     v = T{};
             }
-            FixedArray(const std::array<T, M>& values_) : values(values_) {}
+            FixedArray(const std::array<T, M>& values_) : m_values(values_) {}
             FixedArray(const FixedArray& other) = default;
 
             static constexpr std::size_t size() {return M;}
 
-            T& operator[](std::size_t i) {return values[i];}
+            T& operator[](std::size_t i) {return m_values[i];}
 
-            const T& operator[](std::size_t i) const {return values[i];}
+            const T& operator[](std::size_t i) const {return m_values[i];}
             
             template <uint32_t I>
-            T& get() {return values[I];}
+            T& get() {return m_values[I];}
 
             template <uint32_t I>
-            const T& get() const {return values[I];}
+            const T& get() const {return m_values[I];}
+
+            // Elementwise access. Uses type-generic templated lambda ([]<typename T>(T& element))
+            // Return true to continue, false to exit early
+            template <typename LAMBDA_T>
+            void forEach(LAMBDA_T onElement) {
+                for (std::size_t i=0; i < M; ++i) if (!onElement(m_values[i])) {return;};
+            }
 
             // Elementwise access. Uses type-generic templated lambda ([]<typename T>(const T& element))
+            // Return true to continue, false to exit early
             template <typename LAMBDA_T>
             void forEach(LAMBDA_T onElement) const {
-                for (std::size_t i=0; i < M; ++i) if (!onElement(values[i])) {return;};
+                for (std::size_t i=0; i < M; ++i) if (!onElement(m_values[i])) {return;};
+            }
+
+            // Elementwise access. Uses type-generic templated lambda ([]<typename T, uint32_t I>(T& element))
+            // Return true to continue, false to exit early
+            template <typename LAMBDA_T>
+            void forEachWithI(LAMBDA_T onElement) {
+                _forEachWithI<0, LAMBDA_T>(onElement);
+            }
+
+            // Elementwise access. Uses type-generic templated lambda ([]<typename T, uint32_t I>(const T& element))
+            // Return true to continue, false to exit early
+            template <typename LAMBDA_T>
+            void forEachWithI(LAMBDA_T onElement) const {
+                _forEachWithI_c<0, LAMBDA_T>(onElement);
             }
 
             bool operator==(const FixedArray& other) const {
                 for (std::size_t i=0; i < M; ++i) {
-                    if (values[i] != other.values[i]) return false;
+                    if (m_values[i] != other.m_values[i]) return false;
                 }
                 return true;
             }
 
             bool operator<(const FixedArray& other) const {
-                for (std::size_t i=0; i < M; ++i) if (!(values[i] < other.values[i])) {return false;};
+                for (std::size_t i=0; i < M; ++i) if (!(m_values[i] < other.m_values[i])) {return false;};
                 return true;
             }
 
             bool operator>(const FixedArray& other) const {
-                for (std::size_t i=0; i < M; ++i) if (!(values[i] > other.values[i])) {return false;};
+                for (std::size_t i=0; i < M; ++i) if (!(m_values[i] > other.m_values[i])) {return false;};
                 return true;
             }
 
             bool operator<=(const FixedArray& other) const {
-                for (std::size_t i=0; i < M; ++i) if (!(values[i] <= other.values[i])) {return false;};
+                for (std::size_t i=0; i < M; ++i) if (!(m_values[i] <= other.m_values[i])) {return false;};
                 return true;
             }
 
             bool operator>=(const FixedArray& other) const {
-                for (std::size_t i=0; i < M; ++i) if (!(values[i] >= other.values[i])) {return false;};
+                for (std::size_t i=0; i < M; ++i) if (!(m_values[i] >= other.m_values[i])) {return false;};
                 return true;
             }
 
@@ -226,10 +250,10 @@ namespace Containers {
             ArrayComparison dominates(const FixedArray& other) const {
                 bool equal = true;
                 for (std::size_t i=0; i < M; ++i) {
-                    if (values[i] > other.values[i]) {
+                    if (m_values[i] > other.m_values[i]) {
                         return ArrayComparison::DoesNotDominate;
                     } else {
-                        if (equal && values[i] < other.values[i]) equal = false;
+                        if (equal && m_values[i] < other.m_values[i]) equal = false;
                     }
                 }
                 if (equal) return ArrayComparison::Equal;
@@ -239,9 +263,9 @@ namespace Containers {
             // Lexicographic less than
             bool lexicographicLess(const FixedArray& other) const {
                 for (std::size_t i=0; i < M; ++i) {
-                    if (values[i] < other.values[i]) {
+                    if (m_values[i] < other.m_values[i]) {
                         return true;
-                    } else if (values[i] > other.values[i]) {
+                    } else if (m_values[i] > other.m_values[i]) {
                         return false;
                     }
                 }
@@ -251,9 +275,9 @@ namespace Containers {
             // Lexicographic less than
             bool lexicographicGreater(const FixedArray& other) const {
                 for (std::size_t i=0; i < M; ++i) {
-                    if (values[i] < other.values[i]) {
+                    if (m_values[i] < other.m_values[i]) {
                         return false;
-                    } else if (values[i] > other.values[i]) {
+                    } else if (m_values[i] > other.m_values[i]) {
                         return true;
                     }
                 }
@@ -261,22 +285,53 @@ namespace Containers {
             }
 
             // Element-wise addition
-            void operator+=(const FixedArray& other) {for (std::size_t i=0; i < M; ++i) values[i] += other.values[i];}
+            void operator+=(const FixedArray& other) {for (std::size_t i=0; i < M; ++i) m_values[i] += other.m_values[i];}
 
-            void operator=(const FixedArray& other) {for (std::size_t i=0; i < M; ++i) values[i] = other.values[i];}
+            void operator=(const FixedArray& other) {for (std::size_t i=0; i < M; ++i) m_values[i] = other.m_values[i];}
 
-            std::array<T, M>::iterator begin() {return values.begin();}
-            std::array<T, M>::iterator end() {return values.end();}
-            std::array<T, M>::const_iterator begin() const {return values.begin();}
-            std::array<T, M>::const_iterator end() const {return values.end();}
+            std::array<T, M>::iterator begin() {return m_values.begin();}
+            std::array<T, M>::iterator end() {return m_values.end();}
+            std::array<T, M>::const_iterator begin() const {return m_values.begin();}
+            std::array<T, M>::const_iterator end() const {return m_values.end();}
         private:
-            std::array<T, M> values = std::array<T, M>();
+
+            template<uint32_t I, typename LAMBDA_T>
+            bool _forEachWithI(LAMBDA_T compareElement) {
+                if (compareElement.template operator()<T, I>(std::get<I>(m_values))) {
+                    if constexpr (I != (M - 1)) {
+                        return _forEachWithI<I + 1, LAMBDA_T>(compareElement);
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return false;
+                }
+            }
+
+            template<uint32_t I, typename LAMBDA_T>
+            bool _forEachWithI_c(LAMBDA_T compareElement) const {
+                if (compareElement.template operator()<T, I>(std::get<I>(m_values))) {
+                    if constexpr (I != (M - 1)) {
+                        return _forEachWithI_c<I + 1, LAMBDA_T>(compareElement);
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return false;
+                }
+            }
+
+        private:
+            std::array<T, M> m_values = std::array<T, M>();
             friend FixedArray operator+<M, T>(const FixedArray& lhs, const FixedArray& rhs);
     };
 
 
+    /* 
+    Complile-time sized type-generic array wrapper around std::tuple.
 
-    // Method signature is made to match FixedArray (except compare)
+    Method signature is made to match FixedArray (except compare)
+    */
     template <class... T_ARGS>
     class TypeGenericArray {
         protected:
@@ -297,32 +352,39 @@ namespace Containers {
             template <uint32_t I>
             inline const std::tuple_element<I, tuple_t>::type& get() const {return std::get<I>(m_elements);}
 
-            // Elementwise access. Uses type-generic templated lambda ([]<typename T>(const T& element))
-            template <typename LAMBDA_T>
-            void forEach(LAMBDA_T onElement) const {
-                _forEach_c<0, LAMBDA_T>(onElement);
-            }
-
+            // Elementwise access. Uses type-generic templated lambda ([]<typename T>(T& element))
+            // Return true to continue, false to exit early
             template <typename LAMBDA_T>
             void forEach(LAMBDA_T onElement) {
                 _forEach<0, LAMBDA_T>(onElement);
             }
 
-            // Elementwise access. Uses type-generic templated lambda ([]<typename T, uint32_t I>(const T& element))
+            // Elementwise access. Uses type-generic templated lambda ([]<typename T>(const T& element))
+            // Return true to continue, false to exit early
             template <typename LAMBDA_T>
-            void forEachWithI(LAMBDA_T onElement) const {
-                _forEachWithI_c<0, LAMBDA_T>(onElement);
+            void forEach(LAMBDA_T onElement) const {
+                _forEach_c<0, LAMBDA_T>(onElement);
             }
 
+            // Elementwise access. Uses type-generic templated lambda ([]<typename T, uint32_t I>(T& element))
+            // Return true to continue, false to exit early
             template <typename LAMBDA_T>
             void forEachWithI(LAMBDA_T onElement) {
                 _forEachWithI<0, LAMBDA_T>(onElement);
             }
 
+            // Elementwise access. Uses type-generic templated lambda ([]<typename T, uint32_t I>(const T& element))
+            // Return true to continue, false to exit early
+            template <typename LAMBDA_T>
+            void forEachWithI(LAMBDA_T onElement) const {
+                _forEachWithI_c<0, LAMBDA_T>(onElement);
+            }
+
             // Element-wise conjunctive comparison. Uses type-generic templated lambda ([]<typename T, uint32_t I>(const T& element))
+            // Return true to continue, false to exit early
             template <typename LAMBDA_T>
             bool compare(const TypeGenericArray& other, LAMBDA_T compareElement) const {
-                return _forEachWithI_c<0>(compareElement);
+                return _forEachWithI<0>(compareElement);
             }
 
             // Implemented comparison operators
@@ -433,10 +495,23 @@ namespace Containers {
         protected:
 
             template<uint32_t I, typename LAMBDA_T>
-            bool _forEachWithI_c(LAMBDA_T compareElement) const {
-                if (compareElement.template operator()<typename std::tuple_element<I, tuple_t>::type, I>(std::get<I>(m_elements))) {
+            bool _forEach(LAMBDA_T onElement) {
+                if (onElement.template operator()<typename std::tuple_element<I, tuple_t>::type>(std::get<I>(m_elements))) {
                     if constexpr (I != (sizeof...(T_ARGS) - 1)) {
-                        return _forEachWithI_c<I + 1, LAMBDA_T>(compareElement);
+                        return _forEach<I + 1, LAMBDA_T>(onElement);
+                    }  else {
+                        return true;
+                    }
+                } else {
+                    return false;
+                }
+            }
+
+            template<uint32_t I, typename LAMBDA_T>
+            bool _forEach_c(LAMBDA_T onElement) const {
+                if (onElement.template operator()<typename std::tuple_element<I, tuple_t>::type>(std::get<I>(m_elements))) {
+                    if constexpr (I != (sizeof...(T_ARGS) - 1)) {
+                        return _forEach_c<I + 1, LAMBDA_T>(onElement);
                     } else {
                         return true;
                     }
@@ -459,11 +534,11 @@ namespace Containers {
             }
 
             template<uint32_t I, typename LAMBDA_T>
-            bool _forEach_c(LAMBDA_T onElement) const {
-                if (onElement.template operator()<typename std::tuple_element<I, tuple_t>::type>(std::get<I>(m_elements))) {
+            bool _forEachWithI_c(LAMBDA_T compareElement) const {
+                if (compareElement.template operator()<typename std::tuple_element<I, tuple_t>::type, I>(std::get<I>(m_elements))) {
                     if constexpr (I != (sizeof...(T_ARGS) - 1)) {
-                        return _forEach_c<I + 1, LAMBDA_T>(onElement);
-                    }  else {
+                        return _forEachWithI_c<I + 1, LAMBDA_T>(compareElement);
+                    } else {
                         return true;
                     }
                 } else {
@@ -471,22 +546,8 @@ namespace Containers {
                 }
             }
 
-            template<uint32_t I, typename LAMBDA_T>
-            bool _forEach(LAMBDA_T onElement) {
-                if (onElement.template operator()<typename std::tuple_element<I, tuple_t>::type>(std::get<I>(m_elements))) {
-                    if constexpr (I != (sizeof...(T_ARGS) - 1)) {
-                        return _forEach<I + 1, LAMBDA_T>(onElement);
-                    }  else {
-                        return true;
-                    }
-                } else {
-                    return false;
-                }
-            }
-
+        protected:
             std::tuple<T_ARGS...> m_elements;
-
-        private:
             friend TypeGenericArray operator+<T_ARGS...>(const TypeGenericArray& lhs, const TypeGenericArray& rhs);
             
     };
@@ -510,7 +571,7 @@ static TP::Containers::SizedArray<T> operator+(const TP::Containers::SizedArray<
 template<std::size_t M, class T>
 static TP::Containers::FixedArray<M, T> operator+(const TP::Containers::FixedArray<M, T>& lhs, const TP::Containers::FixedArray<M, T>& rhs) {
     TP::Containers::FixedArray<M, T> ret_fa;
-    for (std::size_t i=0; i < M; ++i) ret_fa.values[i] = lhs.values[i] + rhs.values[i];
+    for (std::size_t i=0; i < M; ++i) ret_fa.m_values[i] = lhs.m_values[i] + rhs.m_values[i];
     return ret_fa;
 }
 

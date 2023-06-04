@@ -4,6 +4,7 @@
 #include<queue>
 
 #include "core/Graph.h"
+#include "statistics/Random.h"
 
 namespace TP {
 

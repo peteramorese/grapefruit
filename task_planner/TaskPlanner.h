@@ -42,6 +42,7 @@
 #include "planners/MOPreferencePlanner.h"
 
 // Theory
+#include "theory/ParetoSelector.h"
 #include "theory/PartialSatisfactionAutomatonEdgeInheritor.h"
 #include "theory/PartialSatisfactionAutomaton.h"
 

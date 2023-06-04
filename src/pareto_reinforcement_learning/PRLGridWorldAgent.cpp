@@ -10,6 +10,19 @@
 
 using namespace PRL;
 
+Selector getSelector(const std::string& label) {
+	if (label == "aif" || label == "Aif") {
+		return Selector::Aif;
+	} else if (label == "uniform" || label == "Uniform") {
+		return Selector::Uniform;
+	} else if (label == "topsis" || label == "TOPSIS") {
+		return Selector::Topsis;
+	} else if (label == "weights" || label == "Weights") {
+		return Selector::Weights;
+	} 
+	ASSERT(false, "Unrecognized selector '" << label <<"'");
+}
+
 int main(int argc, char* argv[]) {
  
 	TP::ArgParser parser(argc, argv);
@@ -23,6 +36,7 @@ int main(int argc, char* argv[]) {
 	std::string config_filepath = parser.parse<std::string>("config-filepath", "", "Filepath to grid world config");
 	std::string benchmark_filepath = parser.parse<std::string>("bm-filepath", "prl_grid_world_bm.yaml", "File that benchmark data will be written to");
 	std::string animation_filepath = parser.parse<std::string>("animation-filepath", "prl_animation.yaml", "File that contains data necessary for animation");
+	std::string selector_label = parser.parse<std::string>("selector", "aif", "Pareto point selector (aif (active inference), uniform, topsis, weights)");
 
 	uint32_t max_planning_instances = parser.parse<uint32_t>("instances", 10, "Max number of planning instances");
 	uint32_t n_trials = parser.parse<uint32_t>("trials", 1, "Number of trials to run");
@@ -32,6 +46,8 @@ int main(int argc, char* argv[]) {
 
 	if (parser.enableHelp()) return 0;
 
+	Selector selector = getSelector(selector_label);
+	
 	/////////////////   Transition System   /////////////////
 	
 	TP::DiscreteModel::GridWorldAgentProperties ts_props;
@@ -102,7 +118,7 @@ int main(int argc, char* argv[]) {
 		};
 
 		// Run the PRL
-		auto quantifier = prl.run(p_ev, samplerFunction, max_planning_instances);
+		auto quantifier = prl.run(p_ev, samplerFunction, max_planning_instances, selector);
 		if (verbose) {
 			LOG("Finished!");
 			std::string total_cost_str{};
