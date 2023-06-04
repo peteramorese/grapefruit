@@ -152,7 +152,6 @@ class PRLAnimator:
             assert ending_instance > starting_instance
             n_instances = ending_instance - starting_instance
         else:
-            print("starting instance: ", starting_instance)
             n_instances = self._instances - starting_instance
         print("Animation starting from instance: ", starting_instance, " until instance: ", starting_instance + n_instances)
         animator = FuncAnimation(fig, update, frames=n_instances, init_func=init, interval=visualize_config["speed_intervals"][playback_speed], blit=False, repeat=repeat)

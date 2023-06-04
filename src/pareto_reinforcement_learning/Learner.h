@@ -214,7 +214,6 @@ class Learner {
             log("Chosen solution: " + std::to_string(selected_ind), true);
 
             // Add to animator
-            LOG("mean of selected index: " << chosen_plan->path_cost[0] << ", " << chosen_plan->path_cost[1]);
             if (m_data_collector)
                 m_data_collector->addInstance(mean_pf, selected_ind, std::move(estimate_traj_distributions), std::move(ucb_pareto_points));
             return chosen_plan;
@@ -269,7 +268,6 @@ class Learner {
                     }
                 }
                 
-                LOG("mean of selected index: " << path_solution->path_cost[0] << ", " << path_solution->path_cost[1]);
                 Plan plan(*path_solution, m_product, true);
                 if (execute(plan, sampler))
                     return m_quantifier;

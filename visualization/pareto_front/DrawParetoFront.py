@@ -14,13 +14,14 @@ visualize_config = {
     "grid_on": True,
     "dot_size": 8,
     "figure_size": (3.9, 3.9),
-    "margin_percent": (.2, .2),
+    "margin_percent": (.05, .05),
     "default_color": "seagreen",
     "default_prl_pref_color": "firebrick",
     "default_axis_labels": ["Objective 0", "Objective 1"],
     "discretization_N": 1000,
     "arrow_thickness": 0.003,
     "line_width": 1.00,
+    "legend_fontsize": 10
 }
 
 class ParetoFrontVisualizer2D:
@@ -31,6 +32,17 @@ class ParetoFrontVisualizer2D:
         self.x_bounds = (0.0, 0.0)
         self.y_bounds = (0.0, 0.0)
         
+    def deserialize_minimal_data_file(self, filepath):
+        self._reset()
+
+        with open(filepath, "r") as f:
+            data = yaml.safe_load(f)
+        self._data = data["Data"]
+        self._data_sets = data["Data Sets"]
+        for data_set in self._data_sets:
+            self._push_upper_axis_bounds(max(data_set["Objective 0"]), max(data_set["Objective 1"]))
+        self._organize_data_sets()
+
     def deserialize(self, filepath):
         self._reset()
 
@@ -43,48 +55,49 @@ class ParetoFrontVisualizer2D:
         self._data = data
         self._organize_data_sets()
 
-    def add_data_set(self, data_set, label = ""):
+    def add_data_set(self, data_set, label = None, color = None):
         self._push_upper_axis_bounds(max(data_set["Objective 0"]), max(data_set["Objective 1"]))
+        if label:
+            data_set["Label"] = label
+        if color:
+            data_set["Color"] = color
         self._data_sets.append(data_set)
-        self._data_labels.append(label)
+
+    def write_data_to_minimal_file(self, filepath):
+        data = dict()
+        data["Data"] = self._data
+        data["Data Sets"] = self._data_sets
+        with open(filepath, "w") as f:
+            yaml.dump(data, f, default_flow_style=False)
 
     def clear_data_sets(self):
         self._data_sets.clear()
-        self._data_labels.clear()
     
-    def sketch_pareto_front(self, ax = None, connect_points = None, label = None, marker = "."):
+    def sketch_pareto_front(self, ax = None, connect_points = None, label = None, marker = ".", start_index = None):
         if not ax:
             ax = plt.gca()
+        if not start_index:
+            start_index = 0
         ax.grid()
         axis_labels = self._data["Axis Labels"] if "Axis Labels" in self._data.keys() else visualize_config["default_axis_labels"]
         ax.set_xlabel(axis_labels[0])
         ax.set_ylabel(axis_labels[1])
         ax.set_xlim(self.x_bounds)
         ax.set_ylim(self.y_bounds)
-
         
-        label_i = 0
         for set in self._data_sets:
-            pt_color = set["Color"] if "Color" in set.keys() else visualize_config["default_color"]
-
-            if label:
-                set_label = label
-            elif self._data_labels[label_i] != "":
-                set_label = self._data_labels[label_i]
-            else:
-                set_label = None
-                
-            label_i += 1
-
+            set_color = set["Color"] if "Color" in set.keys() else visualize_config["default_color"]
+            set_label = set["Label"] if "Label" in set.keys() else label
             if connect_points is None:
-                ax.scatter(set["Objective 0"], set["Objective 1"], color=pt_color, s=visualize_config["dot_size"], label=set_label, marker=marker)
+                set["Objective 0"][start_index:]
+                ax.scatter(set["Objective 0"][start_index:], set["Objective 1"][start_index:], color=set_color, s=visualize_config["dot_size"], label=set_label, marker=marker)
             elif connect_points == "line":
-                #ax.scatter(set["Objective 0"], set["Objective 1"], color=pt_color, s=visualize_config["dot_size"], label=label)
-                ax.plot(set["Objective 0"], set["Objective 1"], color=pt_color, lw=visualize_config["line_width"], ls=visualize_config["line_style"])
+                #ax.scatter(set["Objective 0"], set["Objective 1"], color=set_color, s=visualize_config["dot_size"], label=label)
+                ax.plot(set["Objective 0"][start_index:], set["Objective 1"][start_index:], color=set_color, lw=visualize_config["line_width"], ls=visualize_config["line_style"])
             elif connect_points == "arrows":
-                x = np.array(set["Objective 0"])
-                y = np.array(set["Objective 1"])
-                ax.quiver(x[:-1], y[:-1], x[1:]-x[:-1], y[1:]-y[:-1], scale_units='xy', angles='xy', scale=1, color=pt_color, width=visualize_config["arrow_thickness"], label=set_label)
+                x = np.array(set["Objective 0"][start_index:])
+                y = np.array(set["Objective 1"][start_index:])
+                ax.quiver(x[:-1], y[:-1], x[1:]-x[:-1], y[1:]-y[:-1], scale_units='xy', angles='xy', scale=1, color=set_color, width=visualize_config["arrow_thickness"], label=set_label)
             else:
                 print("Unrecognized point connection type: ", visualize_config["connect_points"])
         return ax
