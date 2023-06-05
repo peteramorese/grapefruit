@@ -20,5 +20,18 @@ static void toRowMatrix(const Containers::FixedArray<N, T>& in, Eigen::Matrix<T,
     }
 }
 
+template <typename T, std::size_t N>
+static void fromColMatrix(const Eigen::Matrix<T, N, 1>& in, Containers::FixedArray<N, T>& out) {
+    for (uint32_t i = 0; i < N; ++i) {
+        out[i] = in(i);
+    }
+}
+
+template <typename T, std::size_t N>
+static void fromRowMatrix(const Eigen::Matrix<T, 1, N>& in, Containers::FixedArray<N, T>& out) {
+    for (uint32_t i = 0; i < N; ++i) {
+        out[i] = in(i);
+    }
+}
 
 }

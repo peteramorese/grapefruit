@@ -93,7 +93,6 @@ class PRLAnimator:
             return plan_ax, pf_ax
 
         def update(frame):
-            print("udpate...")
             # Plan
             plan_ax.clear()
             pf_ax.clear()

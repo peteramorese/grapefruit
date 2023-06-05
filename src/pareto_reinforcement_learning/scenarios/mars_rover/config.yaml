@@ -10,6 +10,7 @@ Region Labels:
   - Sun_1
   - Sun_2
   - Sun_3
+  - Sun_4
   - Wash
   - Sample_1
   - Sample_2
@@ -27,11 +28,11 @@ Square Covariance: True
 # Preference distribution
 PRL Preference: 
   Mean:
-    - 80.0
-    - 10.0
+    - 100.0
+    - 15.0
   Covariance: # Unique elements (upper triangular)
     - 200.0 # 11
-    - -20.0 # 12
+    - 20.0 # 12
     - 50.0 # 22
 
 # Default PRL cost for transitions
@@ -108,8 +109,8 @@ Sample_2: # out of the sun
   Bounds:
     - 15 
     - 16 
-    - 4 
-    - 6 
+    - 1 
+    - 2 
   Color: coral
   PRL Cost Mean: 
     - 5.0
@@ -124,7 +125,7 @@ Sample_2: # out of the sun
 Mud_1:
   Bounds:
     - 0
-    - 8
+    - 7
     - 7
     - 8
   Color: peru
@@ -178,7 +179,7 @@ Mud_3:
 Sun_1:
   Bounds:
     - 9
-    - 16
+    - 13
     - 11
     - 16
   Color: yellow
@@ -226,13 +227,30 @@ Sun_3:
   Proposition: Sun
   Fancy: false
 
+Sun_4:
+  Bounds:
+    - 0
+    - 13
+    - 0
+    - 10
+  Color: yellow
+  PRL Cost Mean: 
+    - 0.0
+    - 3.0
+  PRL Cost Covariance: # Unique elements (upper triangular)
+    - 0.0 # 11
+    - 0.8 # 12
+    - 0.5 # 22
+  Proposition: Sun
+  Fancy: false
+
 Obstacles:
   base_wall_1:
     Bounds:
       - 6
       - 8
       - 11
-      - 13
+      - 14
   base_wall_2:
     Bounds:
       - 0
@@ -280,7 +298,7 @@ Obstacles:
       - 14
       - 14
       - 0
-      - 10
+      - 13
   rock_4:
     Bounds:
       - 15
@@ -305,3 +323,9 @@ Obstacles:
       - 20
       - 17
       - 18
+  rock_8:
+    Bounds:
+      - 18
+      - 19
+      - 3
+      - 3

@@ -32,7 +32,8 @@ class RNG {
 
         inline static int randi(int lower, int upper) {
             ASSERT(lower <= upper, "Upper bound must be geq to lower bound");
-            return (randiUnbounded() % (upper - lower)) + lower;
+            int diff = (upper - lower);
+            return ((randiUnbounded() % diff) + diff) % diff + lower;
         }
 
         inline static float randf(float lower, float upper) {
@@ -42,7 +43,8 @@ class RNG {
 
         inline static int srandi(uint32_t lower, uint32_t upper) {
             ASSERT(lower <= upper, "Upper bound must be geq to lower bound");
-            return (srandiUnbounded() % (upper - lower)) + lower;
+            int diff = (upper - lower);
+            return ((srandiUnbounded() % diff) + diff) % diff + lower;
         }
 
         inline static float srandf(float lower, float upper) {

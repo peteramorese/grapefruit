@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
@@ -9,14 +10,33 @@ import yaml
 import argparse
 from scipy.stats import multivariate_normal
 
-from .DrawParetoFront import visualize_config, ParetoFrontVisualizer2D
+sys.path.append("..")
+from pareto_front.DrawParetoFront import visualize_config, ParetoFrontVisualizer2D
 
 class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
     def __init__(self):
         super().__init__()
 
-    def deserialize(self, filepath):
-        super().deserialize(filepath)
+    def deserialize_data_set(self, filepath, start_instance = 0, label = ""):
+        with open(filepath, "r") as f:
+            data = yaml.safe_load(f)
+        samples = {
+            "Objective 0": [],
+            "Objective 1": [],
+        }
+        for inst in range(start_instance, data["Instances"]):
+            instance_key = "Instance " + str(inst)
+            try:
+                instance_data = data[instance_key]
+            except ValueError:
+                print(instance_key," not found in animation file")
+            samples["Objective 0"].append(instance_data["Sample"][0])
+            samples["Objective 1"].append(instance_data["Sample"][1])
+        self.add_data_set(samples, label)
+        self._data["PRL Preference Mean"] = data["PRL Preference Mean"]
+        self._data["PRL Preference Covariance"] = data["PRL Preference Covariance"]
+        self._organize_data_sets()
+        #super().deserialize(filepath)
         #mu = self._data["PRL Preference Mean"]
         #self._push_upper_axis_bounds((1.0 + visualize_config["margin_percent"][0]) * mu[0], (1.0 + visualize_config["margin_percent"][0]) * mu[1])
 
@@ -67,9 +87,7 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
         return ax
 
     def sketch_preference_distribution(self, ax = None, fill_contour = True, levels = 20, label = "Preference"):
-        print("sketching pref dist")
         mean = self._data["PRL Preference Mean"]
-        print("MEAN READ in:", mean)
         covariance = self._data["PRL Preference Covariance"]
         ax = self.sketch_distribution(mean, covariance, ax, fill_contour=True, label=label, levels = 20, marker = "D")
 
@@ -94,10 +112,21 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
 
 if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
-    parser.add_argument("-f", "--filepath",default="../../build/bin/pareto_fronts/pf.yaml", help="Specify a filepath to the pareto-front file")
+    parser.add_argument("-f", "--filepath", help="Specify a filepath to the pareto-front file", required=True)
+    parser.add_argument("--filepaths", nargs='+', help="Specify multiple filepaths to the each data file")
+    parser.add_argument("--hide-preference", default=False, action="store_true", help="Hide the preference distribution")
+    parser.add_argument("-l","--label", default=None, help="Label the data set")
+    parser.add_argument("--labels", nargs='+', help="Label each data set in '--filepaths'")
     args = parser.parse_args()
 
     visualizer = PRLParetoFrontVisualizer()
 
-    visualizer.deserialize(args.filepath)
+    if args.filepaths:
+        for filepath in args.filepaths:
+            visualizer.deserialize_data_set(filepath)
+    else:
+        if args.label:
+            visualizer.deserialize_data_set(args.filepath, label = args.label)
+        else:
+            visualizer.deserialize_data_set(args.filepath)
     visualizer.draw(use_legend=True)

@@ -100,14 +100,14 @@ int main(int argc, char* argv[]) {
 
 
 	QuantifierSet<N> quantifier_set(p_ev);
-	std::shared_ptr<Animator<N>> animator;
+	std::shared_ptr<DataCollector<N>> data_collector;
 	if (animate)
-		animator = std::make_shared<Animator<N>>(product, p_ev);
+		data_collector = std::make_shared<DataCollector<N>>(product, p_ev);
 
 	for (uint32_t trial = 0; trial < n_trials; ++trial) {
 
 		std::shared_ptr<BehaviorHandlerType> behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, confidence);
-		Learner<N> prl(behavior_handler, n_efe_samples, animator, verbose);
+		Learner<N> prl(behavior_handler, n_efe_samples, data_collector, verbose);
 
 		// Initialize the agent's state
 		TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
@@ -141,7 +141,7 @@ int main(int argc, char* argv[]) {
 
 		if (animate) {
 			TP::Serializer szr(animation_filepath);
-			animator->serialize(szr, quantifier_set.back());
+			data_collector->serialize(szr, quantifier_set.back());
 			szr.done();
 		}
 
