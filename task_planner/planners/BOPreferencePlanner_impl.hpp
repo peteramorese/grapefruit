@@ -33,7 +33,10 @@ namespace Planner {
         PlanSet<Problem> plan_set;
         plan_set.reserve(mo_result.solution_set.size());
 
-        for (auto& sol : mo_result.solution_set) plan_set.emplace_back(sol, m_sym_graph, mo_result.success);
+        auto pf_it = mo_result.pf.begin();
+        for (auto& sol : mo_result.solution_set) {
+            plan_set.emplace_back(sol, *pf_it++, m_sym_graph, mo_result.success);
+        }
 
         return plan_set;
     }

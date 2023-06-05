@@ -237,9 +237,10 @@ namespace GraphSearch {
             if (problem.goal(curr_node)) {
                 for (auto sol_it = solution_set_copy.begin(); sol_it != solution_set_copy.end();) {
                     if (curr_cost == sol_it->second->cv) {
-                        result.solution_set.push_back(PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>());
+                        result.solution_set.push_back(PathSolution<GraphNode, EDGE_STORAGE_T>());
+                        result.pf.push_back(std::move(curr_cost));
+
                         auto& path_solution = result.solution_set.back();
-                        path_solution.path_cost = std::move(curr_cost);
                         extractPath(curr_enum_node, path_solution, tree);
 
                         solution_set_copy.erase(sol_it);
@@ -292,7 +293,7 @@ namespace GraphSearch {
     }
 
     template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    void NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>>& node_map) {
+    void NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>>& node_map) {
         EnumeratedNode curr_enum_node = goal_node;
         path_solution.node_path.emplace_back(node_map.getNode(curr_enum_node));
 

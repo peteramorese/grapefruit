@@ -150,18 +150,22 @@ namespace GraphSearch {
         EDGE_STORAGE_T edge;
     };
 
-    template <class NODE_T, class EDGE_STORAGE_T, class COST_T>
+    template <class NODE_T, class EDGE_STORAGE_T>
     struct PathSolution {
         PathSolution() = default;
         PathSolution(const PathSolution&) = default;
-        PathSolution(PathSolution&& other) 
-            : node_path(std::move(other.node_path)), edge_path(std::move(other.edge_path)), path_cost(std::move(other.path_cost)) {}
-        PathSolution(std::vector<NODE_T>&& node_path_, std::vector<EDGE_STORAGE_T>&& edge_path_, const COST_T& path_cost_) 
-            : node_path(std::move(node_path_)), edge_path(std::move(edge_path_)), path_cost(path_cost_) {}
+        PathSolution(PathSolution&&) = default;
+        PathSolution(std::vector<NODE_T>&& node_path_, std::vector<EDGE_STORAGE_T>&& edge_path_) 
+            : node_path(std::move(node_path_)), edge_path(std::move(edge_path_)) {}
         std::vector<NODE_T> node_path;
         std::vector<EDGE_STORAGE_T> edge_path;
-        COST_T path_cost = COST_T{};
+        friend void swap(PathSolution<NODE_T, EDGE_STORAGE_T>& lhs, PathSolution<NODE_T, EDGE_STORAGE_T>& rhs) {
+            std::swap(lhs.node_path, rhs.node_path);
+            std::swap(lhs.edge_path, rhs.edge_path);
+        }
     };
+
+
 
     template <class NODE_T, class EDGE_STORAGE_T>
     using SearchTree = std::map<NODE_T, Connection<NODE_T, EDGE_STORAGE_T>>;
@@ -180,7 +184,9 @@ namespace GraphSearch {
                 {}
 
             bool success = false;
-            PathSolution<NODE_T, EDGE_STORAGE_T, COST_T> solution;
+            PathSolution<NODE_T, EDGE_STORAGE_T> solution;
+            COST_T cost = COST_T{};
+
             std::shared_ptr<SearchTree<NODE_T, EDGE_STORAGE_T>> search_tree;
             std::shared_ptr<MinCostMap<NODE_T, COST_T>> min_cost_map;
 

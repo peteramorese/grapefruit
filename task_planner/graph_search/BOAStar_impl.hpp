@@ -86,10 +86,10 @@ namespace GraphSearch {
             // If current node satisfies goal condition, extract path and terminate
             if (problem.goal(curr_node)) {
                 result.success = true;
-                PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T> sol;
-                sol.path_cost = inserted_g_score;
+                PathSolution<GraphNode, EDGE_STORAGE_T> sol;
                 extractPath(curr_enum_node, sol, path_enum_node_map);
                 result.solution_set.push_back(std::move(sol));
+                result.pf.push_back(inserted_g_score);
 
                 // Update the g_2_min across all goal nodes
                 if (!g_2_min_goal_set || inserted_g_score.template get<1>() < g_2_min_goal) {
@@ -140,7 +140,7 @@ namespace GraphSearch {
     };
 
     template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    void BOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<typename SEARCH_PROBLEM_T::node_t, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, EDGE_STORAGE_T>& node_map) {
+    void BOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<typename SEARCH_PROBLEM_T::node_t, EDGE_STORAGE_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, EDGE_STORAGE_T>& node_map) {
         EnumeratedNode curr_enum_node = goal_node;
         path_solution.node_path.emplace_back(node_map.getNode(curr_enum_node));
 

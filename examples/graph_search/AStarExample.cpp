@@ -75,7 +75,7 @@ int main() {
     LOG("Finished!");
     LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));
     if (result.success) {
-        LOG("Path length: " << result.solution.path_cost);
+        LOG("Path length: " << result.cost);
 
         std::string path_str = std::to_string(result.solution.node_path.front());
         auto edge_path_it = result.solution.edge_path.begin();

@@ -18,8 +18,7 @@ class DataCollector {
 
         using PathSolution = TP::GraphSearch::PathSolution<
             typename SearchProblem<N>::node_t, 
-            typename SearchProblem<N>::edge_t, 
-            typename SearchProblem<N>::cost_t>;
+            typename SearchProblem<N>::edge_t>;
 
         //using ParetoFrontResult = TP::GraphSearch::MultiObjectiveSearchResult<
         //    typename SearchProblem<N>::node_t, 
@@ -31,20 +30,20 @@ class DataCollector {
         using Plan = TP::Planner::Plan<SearchProblem<N>>;
 
         struct Instance {
-            Instance(const std::list<PathSolution>& pf_, 
-                    uint32_t chosen_plan_index_, 
-                    std::vector<TrajectoryDistribution>&& plan_distributions_, 
-                    std::vector<typename BehaviorHandlerType::CostVector>&& ucb_pareto_points_)
-                : pf(pf_)
-                , chosen_plan_index(chosen_plan_index_)
+            Instance(const std::vector<PathSolution>& paths_, 
+                    const TP::ParetoFront<typename SearchProblem<N>::cost_t>& ucb_pf_,
+                    std::vector<TrajectoryDistribution>&& plan_distributions_,
+                    uint32_t chosen_plan_index_)
+                : paths(paths_)
+                , ucb_pf(ucb_pf_)
                 , plan_distributions(std::move(plan_distributions_))
-                , ucb_pareto_points(std::move(ucb_pareto_points_))
+                , chosen_plan_index(chosen_plan_index_)
             {}
 
-            std::list<PathSolution> pf;
-            uint32_t chosen_plan_index;
+            std::vector<PathSolution> paths;
+            TP::ParetoFront<typename SearchProblem<N>::cost_t> ucb_pf;
             std::vector<TrajectoryDistribution> plan_distributions;
-            std::vector<typename BehaviorHandlerType::CostVector> ucb_pareto_points;
+            uint32_t chosen_plan_index;
         };
 
     public:
@@ -53,11 +52,11 @@ class DataCollector {
             , m_preference(preference)
         {}
 
-        void addInstance(const std::list<PathSolution>& search_result, 
-                uint32_t chosen_plan_index, 
-                std::vector<TrajectoryDistribution>&& plan_distribution,
-                std::vector<typename BehaviorHandlerType::CostVector>&& ucb_pareto_points) {
-            m_instances.emplace_back(search_result, chosen_plan_index, std::move(plan_distribution), std::move(ucb_pareto_points));
+        void addInstance(const std::vector<PathSolution>& paths_, 
+                    const TP::ParetoFront<typename SearchProblem<N>::cost_t>& ucb_pf_,
+                    std::vector<TrajectoryDistribution>&& plan_distributions_,
+                    uint32_t chosen_plan_index_) {
+            m_instances.emplace_back(paths_, ucb_pf_, std::move(plan_distributions_), chosen_plan_index_);
         }
 
         void serialize(TP::Serializer& szr, const Quantifier<N>& quantifier) {
@@ -93,29 +92,26 @@ class DataCollector {
                 //plan.serialize(szr, "Chosen Plan");
                 //out << YAML::EndMap;
 
-                uint32_t plan_i = 0;
-                for (auto it = instance.pf.begin(); it != instance.pf.end(); ++it) {
-                    std::string title = "Candidate Plan " + std::to_string(plan_i);
+                for (uint32_t i = 0; i < instance.paths.size(); ++i) {
+                    std::string title = "Candidate Plan " + std::to_string(i);
                     out << YAML::Key << title << YAML::Value << YAML::BeginMap;
-                    Plan plan(*it, m_product, true);
+                    Plan plan(instance.paths[i], instance.ucb_pf[i], m_product, true);
                     plan.serialize(szr, title);
                     //out << YAML::EndMap;
 
                     out << YAML::Key << "Plan Mean Mean" << YAML::Value << YAML::BeginSeq;
-                    out << instance.plan_distributions[plan_i].mu(0) << instance.plan_distributions[plan_i].mu(1);
+                    out << instance.plan_distributions[i].mu(0) << instance.plan_distributions[i].mu(1);
                     out << YAML::EndSeq;
 
                     out << YAML::Key << "Plan Mean Covariance" << YAML::Value << YAML::BeginSeq;
-                    out << instance.plan_distributions[plan_i].Sigma(0, 0) << instance.plan_distributions[plan_i].Sigma(0, 1) << instance.plan_distributions[plan_i].Sigma(1, 1);
+                    out << instance.plan_distributions[i].Sigma(0, 0) << instance.plan_distributions[i].Sigma(0, 1) << instance.plan_distributions[i].Sigma(1, 1);
                     out << YAML::EndSeq;
 
                     out << YAML::Key << "Plan Pareto UCB" << YAML::Value << YAML::BeginSeq;
-                    out << instance.ucb_pareto_points[plan_i][0] << instance.ucb_pareto_points[plan_i][1];
+                    out << instance.ucb_pf[i][0] << instance.ucb_pf[i][1];
                     out << YAML::EndSeq;
 
                     out << YAML::EndMap;
-
-                    ++plan_i;
                 }
 
                 out << YAML::Key << "Sample" << YAML::Value << YAML::BeginSeq;

@@ -116,7 +116,7 @@ namespace GraphSearch {
     void AStar<NODE_T, EDGE_T, COST_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const NODE_T& goal_node, SingleObjectiveSearchResult<NODE_T, EDGE_STORAGE_T, COST_T>& result) {
 
         result.success = true;
-        result.solution.path_cost = (*result.min_cost_map)[goal_node];
+        result.cost = (*result.min_cost_map)[goal_node];
 
         NODE_T curr_node = goal_node;
         result.solution.node_path.push_back(curr_node);

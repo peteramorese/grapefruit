@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
     if (parser.hasKey("seed")) {
         seed = parser.parse<uint32_t>("seed", 0, "Specify a certain seed for generating graph");
     } else {
-        seed = RNG::randi(0, UINT32_MAX);
+        seed = RNG::randi(0, INT32_MAX);
     }
 
 	if (parser.enableHelp()) return 0;
@@ -65,6 +65,7 @@ int main(int argc, char* argv[]) {
     RandomGraphGenerator random_graph_generator(size, max_edges_per_node);
 
     auto createRandomEdge = [](uint32_t min, uint32_t max) {
+        LOG("min: " << min << " max: " << max);
         return Edge(RNG::srandi(min, max), RNG::srandi(min, max));
     };
 
@@ -89,10 +90,9 @@ int main(int argc, char* argv[]) {
         if (verbose) LOG("Done.");
         if (boa_only) {
             if (verbose) {
-                uint32_t pt = 0;
-                for (const auto& sol : boa_result.solution_set) {
-                    LOG("Pareto point " << pt++);
-                    LOG("   BOA* Path cost: " << Edge::cvToStr(sol.path_cost));
+                for (uint32_t pt = 0; pt < boa_result.pf.size(); ++pt) {
+                    LOG("Pareto point " << pt);
+                    LOG("   BOA* Path cost: " << Edge::cvToStr(boa_result.pf[pt]));
                 }
             }
             continue;
@@ -103,9 +103,9 @@ int main(int argc, char* argv[]) {
         if (namoa_only) {
             if (verbose) {
                 uint32_t pt = 0;
-                for (const auto& sol : namoa_result.solution_set) {
-                    LOG("Pareto point " << pt++);
-                    LOG("   NAMOA* Path cost: " << Edge::cvToStr(sol.path_cost));
+                for (uint32_t pt = 0; pt < namoa_result.pf.size(); ++pt) {
+                    LOG("Pareto point " << pt);
+                    LOG("   NAMOA* Path cost: " << Edge::cvToStr(namoa_result.pf[pt]));
                 }
             }
             continue;
@@ -133,8 +133,8 @@ int main(int argc, char* argv[]) {
             auto namoa_it = namoa_result.solution_set.begin();
             uint32_t pt = 0;
             for (; boa_it != boa_result.solution_set.end();) {
-                const auto& boa_path_cost = boa_it->path_cost;
-                const auto& namoa_path_cost = boa_it->path_cost;
+                const auto& boa_path_cost = boa_result.pf[pt];
+                const auto& namoa_path_cost = namoa_result.pf[pt];
 
                 if (verbose) {
                     LOG("Pareto point " << pt++);
@@ -144,8 +144,6 @@ int main(int argc, char* argv[]) {
 
                 TEST_ASSERT(boa_path_cost == namoa_path_cost, "Path costs are not equal BOA*: " << Edge::cvToStr(boa_path_cost) << " NAMOA*: " << Edge::cvToStr(namoa_path_cost));
 
-                ++boa_it;
-                ++namoa_it;
             }
         }
     }

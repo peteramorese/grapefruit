@@ -60,9 +60,10 @@ int main() {
     LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));
     if (result.success) {
         uint32_t pt = 0;
+        auto pf_it = result.pf.begin();
         for (const auto& solution : result.solution_set) {
             LOG("Pareto point " << pt++);
-            LOG("   Path length: " << Edge::cvToStr(solution.path_cost));
+            LOG("   Path length: " << Edge::cvToStr(*pf_it++));
 
             std::string path_str = std::to_string(solution.node_path.front());
             auto edge_path_it = solution.edge_path.begin();

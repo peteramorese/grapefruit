@@ -62,7 +62,7 @@ namespace GraphSearch {
             
 
         private:
-            static void extractPath(const EnumeratedNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, EDGE_STORAGE_T>& node_map);
+            static void extractPath(const EnumeratedNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, EDGE_STORAGE_T>& node_map);
 
             //template <typename RETURN_T, typename... ARGS_T>
             //RETURN_T returnVal(RETURN_T(ARGS_T...));

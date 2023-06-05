@@ -160,7 +160,7 @@ namespace GraphSearch {
 
         private:
             static void extractPaths(std::vector<std::pair<GraphNode, const CostMapItem*>>& goal_set, NAMOASearchResult& result, const SEARCH_PROBLEM_T& problem);
-            static void extractPath(const EnumeratedNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T, COST_VECTOR_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>>& node_map);
+            static void extractPath(const EnumeratedNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>>& node_map);
     };
 
 }

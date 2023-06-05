@@ -1,17 +1,15 @@
 #pragma once
 
-#include "graph_search/MultiObjectiveSearchProblem.h"
+#include "graph_search/ParetoFront.h"
 
 namespace TP {
 
-template <class NODE_T, class EDGE_STORAGE_T, class COST_VECTOR_T>
+template <class COST_VECTOR_T>
 class ParetoSelector {
     public:
-        using ParetoFront = std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>;
-    public:
-        static typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator uniformRandom(const ParetoFront& pf);
-        static typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator TOPSIS(const ParetoFront& pf);
-        static typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator scalarWeights(const ParetoFront& pf, Containers::FixedArray<COST_VECTOR_T::size(), float> weights);
+        static typename std::size_t uniformRandom(const ParetoFront<COST_VECTOR_T>& pf);
+        static typename std::size_t TOPSIS(const ParetoFront<COST_VECTOR_T>& pf);
+        static typename std::size_t scalarWeights(const ParetoFront<COST_VECTOR_T>& pf, Containers::FixedArray<COST_VECTOR_T::size(), float> weights);
 };
 
 }

@@ -8,6 +8,7 @@
 
 #include "core/DirectedAcyclicGraph.h"
 #include "graph_search/SearchProblem.h"
+#include "graph_search/ParetoFront.h"
 
 #define TP_COST_VECTOR_EQUIVALENCE_TOLERANCE 0.0000000001
 
@@ -235,7 +236,9 @@ namespace GraphSearch {
             }
 
             bool success = false;
-            std::list<PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>> solution_set;
+            std::vector<PathSolution<NODE_T, EDGE_STORAGE_T>> solution_set;
+            ParetoFront<COST_VECTOR_T> pf;
+
             std::shared_ptr<SearchGraph<SearchGraphEdge<const COST_VECTOR_T*, EDGE_STORAGE_T>, NODE_T>> search_graph;
             std::shared_ptr<NonDominatedCostMap<COST_VECTOR_T>> non_dominated_cost_map;
 
@@ -243,10 +246,13 @@ namespace GraphSearch {
                 if (!m_retain_search_graph) search_graph.reset();
                 if (!m_retain_non_dominated_cost_map) non_dominated_cost_map.reset();
 
-                auto lexComparison = [](const PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>& lhs, const PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>& rhs) -> bool {
-                    return lhs.path_cost.lexicographicLess(rhs.path_cost);
-                };
-                solution_set.sort(lexComparison);
+                typename Algorithms::Sorting::Permutation perm = pf.sort();
+                Algorithms::Sorting::applyPermutation(solution_set, perm);
+
+                //auto lexComparison = [](const PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>& lhs, const PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>& rhs) -> bool {
+                //    return lhs.path_cost.lexicographicLess(rhs.path_cost);
+                //};
+                //solution_set.sort(lexComparison);
             }
         private:
             bool m_retain_search_graph, m_retain_non_dominated_cost_map;

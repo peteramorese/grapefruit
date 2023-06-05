@@ -26,6 +26,7 @@
 #include "graph_search/AStar.h"
 #include "graph_search/BOAStar.h"
 #include "graph_search/NAMOAStar.h"
+#include "graph_search/ParetoFront.h"
 
 // Models
 #include "models/GridWorldAgent.h"

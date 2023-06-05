@@ -71,7 +71,7 @@ namespace Planner {
 
             typedef SEARCH_PROBLEM_T::graph_t::model_t::edge_t model_edge_t;
         public:
-            Plan(const GraphSearch::PathSolution<typename SEARCH_PROBLEM_T::node_t, typename SEARCH_PROBLEM_T::edge_t, typename SEARCH_PROBLEM_T::cost_t>& path, const std::shared_ptr<typename SEARCH_PROBLEM_T::graph_t> sym_graph, bool success) 
+            Plan(const GraphSearch::PathSolution<typename SEARCH_PROBLEM_T::node_t, typename SEARCH_PROBLEM_T::edge_t>& path, const typename SEARCH_PROBLEM_T::cost_t& cost_, const std::shared_ptr<typename SEARCH_PROBLEM_T::graph_t> sym_graph, bool success) 
                 : product_node_sequence(path.node_path)
             {
                 if (success) {
@@ -86,7 +86,7 @@ namespace Planner {
                     action_sequence.reserve(path.edge_path.size());
                     for (auto edge : path.edge_path) action_sequence.push_back(static_cast<const SEARCH_PROBLEM_T::action_t&>(edge));
 
-                    cost = path.path_cost;
+                    cost = cost_;
                 } else {
                     product_node_sequence.clear();
                 }

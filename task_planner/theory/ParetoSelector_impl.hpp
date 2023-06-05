@@ -8,14 +8,13 @@
 
 namespace TP {
 
-template <class NODE_T, class EDGE_STORAGE_T, class COST_VECTOR_T>
-typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator ParetoSelector<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>::uniformRandom(const ParetoFront& pf) {
-    int rand_ind = RNG::randi(0, pf.size());
-    return std::next(pf.begin(), rand_ind);
+template <class COST_VECTOR_T>
+typename std::size_t ParetoSelector<COST_VECTOR_T>::uniformRandom(const ParetoFront<COST_VECTOR_T>& pf) {
+    return RNG::randi(0, pf.size());
 }
 
-template <class NODE_T, class EDGE_STORAGE_T, class COST_VECTOR_T>
-typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator ParetoSelector<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>::TOPSIS(const ParetoFront& pf) {
+template <class COST_VECTOR_T>
+typename std::size_t ParetoSelector<COST_VECTOR_T>::TOPSIS(const ParetoFront<COST_VECTOR_T>& pf) {
     constexpr std::size_t dim = COST_VECTOR_T::size(); 
     COST_VECTOR_T worst_soln;
 
@@ -25,16 +24,15 @@ typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR
     //    LOG(" [0]: " << cv[0] << " [1]: " << cv[1]);
     //};
 
-    for (const auto& soln : pf) {
-        const COST_VECTOR_T& path_cost = soln.path_cost;
+    for (const auto& pt : pf) {
 
         //LOG("path cost: ");
         //printcv(path_cost);
 
         worst_soln.forEachWithI(
-            [&path_cost] <typename T, uint32_t I> (T& e) {
-            if (path_cost.template get<I>() > e)
-                e =  path_cost.template get<I>();
+            [&pt] <typename T, uint32_t I> (T& e) {
+            if (pt.template get<I>() > e)
+                e = pt.template get<I>();
             return true;
         });
     }
@@ -43,12 +41,13 @@ typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR
     //printcv(worst_soln);
 
     float min_similarity = 0.0f;
-    typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator min_it = pf.begin();
-    for (auto soln_it = pf.begin(); soln_it != pf.end(); ++soln_it) {
+    //typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator min_it = pf.begin();
+    std::size_t min_ind = 0;
+    for (std::size_t i = 0; i < pf.size(); ++i) {
         float d_worst, d_best;
         auto findDistances = [&] <typename T, uint32_t I> (T& e) {
-            d_best += std::pow(soln_it->path_cost.template get<I>(), 2);
-            d_worst += std::pow((worst_soln.template get<I>() - soln_it->path_cost.template get<I>()), 2);
+            d_best += std::pow(pf[i].template get<I>(), 2);
+            d_worst += std::pow((worst_soln.template get<I>() - pf[i].template get<I>()), 2);
             return true;
         };
             
@@ -59,15 +58,15 @@ typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR
         float similarity = -d_worst / (d_worst + d_best);
         if (similarity < min_similarity) {
             min_similarity = similarity;
-            min_it = soln_it;
+            min_ind = i;
         }
     }
     //PAUSE;
-    return min_it;
+    return min_ind;
 }
 
-template <class NODE_T, class EDGE_STORAGE_T, class COST_VECTOR_T>
-typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator ParetoSelector<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>::scalarWeights(const ParetoFront& pf, Containers::FixedArray<COST_VECTOR_T::size(), float> weights) {
+template <class COST_VECTOR_T>
+typename std::size_t ParetoSelector<COST_VECTOR_T>::scalarWeights(const ParetoFront<COST_VECTOR_T>& pf, Containers::FixedArray<COST_VECTOR_T::size(), float> weights) {
     auto norm = [] (COST_VECTOR_T& cv) {
         float norm = 0.0f;
         cv.forEachWithI(
@@ -87,9 +86,9 @@ typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR
 
     // Minimize the angle between the normalized pareto vector and the normalized weight vector
     float max_weighted_sum = 0.0f;
-    typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR_T>>::const_iterator max_it = pf.begin();
-    for (auto soln_it = pf.begin(); soln_it != pf.end(); ++soln_it) {
-        COST_VECTOR_T normalized_path_cost = soln_it->path_cost; // copy it out to normalize it
+    std::size_t max_ind = 0;
+    for (std::size_t i = 0; i < pf.size(); ++i) {
+        COST_VECTOR_T normalized_path_cost = pf[i]; // copy it out to normalize it
         norm(normalized_path_cost);
         float weighted_sum = 0.0f;
         auto weightSoln = [&weighted_sum, &weights] <typename T, uint32_t I> (const T& e) {
@@ -99,10 +98,10 @@ typename std::list<GraphSearch::PathSolution<NODE_T, EDGE_STORAGE_T, COST_VECTOR
         normalized_path_cost.forEachWithI(weightSoln);
         if (weighted_sum > max_weighted_sum) {
             max_weighted_sum = weighted_sum;
-            max_it = soln_it;
+            max_ind = i;
         }
     }
-    return max_it;
+    return max_ind;
 }
 
 }
