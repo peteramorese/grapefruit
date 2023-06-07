@@ -12,7 +12,8 @@ visualize_config = {
     "line_style": "-",
     "show_title": False,
     "grid_on": True,
-    "dot_size": 8,
+    "dot_size": 4,
+    "dot_alpha": .7,
     "figure_size": (3.9, 3.9),
     "margin_percent": (.05, .05),
     "default_color": "seagreen",
@@ -73,7 +74,7 @@ class ParetoFrontVisualizer2D:
     def clear_data_sets(self):
         self._data_sets.clear()
     
-    def sketch_pareto_front(self, ax = None, connect_points = None, label = None, marker = ".", start_index = None):
+    def sketch_pareto_front(self, ax = None, connect_points = None, label = None, marker = ".", start_index = None, xmax = None, ymax = None):
         if not ax:
             ax = plt.gca()
         if not start_index:
@@ -82,15 +83,15 @@ class ParetoFrontVisualizer2D:
         axis_labels = self._data["Axis Labels"] if "Axis Labels" in self._data.keys() else visualize_config["default_axis_labels"]
         ax.set_xlabel(axis_labels[0])
         ax.set_ylabel(axis_labels[1])
-        ax.set_xlim(self.x_bounds)
-        ax.set_ylim(self.y_bounds)
+        ax.set_xlim(self.x_bounds if not xmax else (self.x_bounds[0], xmax))
+        ax.set_ylim(self.y_bounds if not ymax else (self.y_bounds[0], ymax))
         
         for set in self._data_sets:
             set_color = set["Color"] if "Color" in set.keys() else visualize_config["default_color"]
             set_label = set["Label"] if "Label" in set.keys() else label
             if connect_points is None:
                 set["Objective 0"][start_index:]
-                ax.scatter(set["Objective 0"][start_index:], set["Objective 1"][start_index:], color=set_color, s=visualize_config["dot_size"], label=set_label, marker=marker)
+                ax.scatter(set["Objective 0"][start_index:], set["Objective 1"][start_index:], color=set_color, s=visualize_config["dot_size"], label=set_label, marker=marker, alpha=visualize_config["dot_alpha"])
             elif connect_points == "line":
                 #ax.scatter(set["Objective 0"], set["Objective 1"], color=set_color, s=visualize_config["dot_size"], label=label)
                 ax.plot(set["Objective 0"][start_index:], set["Objective 1"][start_index:], color=set_color, lw=visualize_config["line_width"], ls=visualize_config["line_style"])

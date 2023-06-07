@@ -92,13 +92,13 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
         covariance = self._data["PRL Preference Covariance"]
         ax = self.sketch_distribution(mean, covariance, ax, fill_contour=True, label=label, levels = 20, marker = "D")
 
-    def draw(self, block = True, use_legend = False, start_instance = None):
+    def draw(self, block = True, use_legend = False, start_instance = None, xmax = None, ymax = None):
         if not start_instance:
             start_instance = 0
         plt.figure()
         ax = plt.gca()
         self.sketch_preference_distribution(ax)
-        self.sketch_pareto_front(ax, start_index=start_instance)
+        self.sketch_pareto_front(ax, start_index=start_instance, xmax=xmax, ymax=ymax)
         plt.show(block=False)
         plt.gcf().set_size_inches(visualize_config["figure_size"][0], visualize_config["figure_size"][1])
         if use_legend:
@@ -124,6 +124,8 @@ if __name__ == "__main__":
     parser.add_argument("--colors", nargs='+', help="Specify the color of each data set in '--filepaths'")
     parser.add_argument("--start-instance", type=int,help="Prune instance data before start-instance")
     parser.add_argument("-w", "--write-filepath", help="Write the minimal collected data to a file")
+    parser.add_argument("--xmax", default=None, type=float, help="Max X value in plot")
+    parser.add_argument("--ymax", default=None, type=float, help="Max Y value in plot")
     args = parser.parse_args()
 
     visualizer = PRLParetoFrontVisualizer()
@@ -146,7 +148,7 @@ if __name__ == "__main__":
     else:
         print("Must provide a file")
     
-    visualizer.draw(use_legend=True, start_instance=start_instance)
+    visualizer.draw(use_legend=True, start_instance=start_instance, xmax=args.xmax, ymax=args.ymax)
     if args.write_filepath:
         print("Writing minimal data file to: ", args.write_filepath)
         visualizer.write_data_to_minimal_file(args.write_filepath)

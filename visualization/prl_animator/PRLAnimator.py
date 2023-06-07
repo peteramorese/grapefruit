@@ -123,14 +123,14 @@ class PRLAnimator:
                     if k != chosen_plan:
                         color = visualize_config["candidate_plan_color"] 
                         title = k
-                        self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, ls=":")
+                        self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, show_directions=False, ls=":")
                         self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k)
                         self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"))
                     else:
                         chosen_mean = mean
                         color = visualize_config["chosen_plan_color"]
                         title = "Chosen Plan"
-                        self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, ls="-")
+                        self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, ls="-", zorder=0)
                         self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k, cmap="OrRd", marker_color="red")
                         self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"), color="red")
 

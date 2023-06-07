@@ -17,7 +17,7 @@ struct SearchProblem {
 
         typedef SymbolicProductGraph graph_t;
         typedef TaskHistoryNode<SymbolicProductGraph::node_t> node_t;
-        typedef BehaviorHandler<SymbolicProductGraph, N>::CostVector cost_t;
+        typedef TP::Containers::FixedArray<N, float> cost_t;
         typedef SymbolicProductGraph::edge_t edge_t;
         typedef TP::DiscreteModel::Action action_t;
 

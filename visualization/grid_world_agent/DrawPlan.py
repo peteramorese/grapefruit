@@ -90,7 +90,7 @@ class GridWorldAgentVisualizer:
         self.reset()
         self._data = data
 
-    def sketch_plan(self, ax = None, color = visualize_config["path_line_color"], arrow_color = visualize_config["arrow_color"], label="title", ls=visualize_config["path_line_style"]):
+    def sketch_plan(self, ax = None, show_directions = visualize_config["show_directions"], color = visualize_config["path_line_color"], arrow_color = visualize_config["arrow_color"], label="title", ls=visualize_config["path_line_style"], zorder=None):
         if not ax:
             ax = self.sketch_environment()
         x_seq = list()
@@ -127,12 +127,12 @@ class GridWorldAgentVisualizer:
         if label:
             if label == "title":
                 label = self._data["Title"]
-            ax.plot(x_seq, y_seq, lw=visualize_config["path_line_width"], color=color, label=label, ls=ls)
+            ax.plot(x_seq, y_seq, lw=visualize_config["path_line_width"], color=color, label=label, ls=ls, zorder=zorder)
         else:
-            ax.plot(x_seq, y_seq, lw=visualize_config["path_line_width"], color=color, ls=ls)
+            ax.plot(x_seq, y_seq, lw=visualize_config["path_line_width"], color=color, ls=ls, zorder=zorder)
             
 
-        if visualize_config["show_directions"]:
+        if show_directions:
             cells_per_arrow = visualize_config["cells_per_arrow"]
             if arrow_color == "path_line_color":
                 ax.quiver(x_seq[0:-1:cells_per_arrow], y_seq[0:-1:cells_per_arrow], u_seq[0::cells_per_arrow], v_seq[0::cells_per_arrow], color=color, scale=visualize_config["arrow_scale"], headwidth = visualize_config["arrow_head_width"], ls=ls)

@@ -31,9 +31,9 @@ PRL Preference:
     - 100.0
     - 20.0
   Covariance: # Unique elements (upper triangular)
-    - 200.0 # 11
-    - -90.0 # 12
-    - 50.0 # 22
+    - 250.0 # 11
+    - -110.0 # 12
+    - 70.0 # 22
 
 # Default PRL cost for transitions
 PRL Default Cost: 
