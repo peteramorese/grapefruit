@@ -46,7 +46,7 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
         #mu = self._data["PRL Preference Mean"]
         #self._push_upper_axis_bounds((1.0 + visualize_config["margin_percent"][0]) * mu[0], (1.0 + visualize_config["margin_percent"][0]) * mu[1])
 
-    def sketch_distribution(self, mean, covariance, ax = None, fill_contour = True, levels = 2, label = None, marker = "o", cmap = "GnBu", marker_color = "teal"):
+    def sketch_distribution(self, mean, covariance, ax = None, fill_contour = True, levels = 2, label = None, marker = "o", cmap = "GnBu", marker_color = "teal", zorder = None):
         if not ax:
             ax = plt.gca()
 
@@ -77,14 +77,14 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
             for i in range(levels):
                 w, h = 2 * (i + 1) * np.sqrt(vals)
                 color = cmap_object(cmap_vals[i])
-                ellipse = Ellipse(xy = mu, width=w, height=h, angle=theta, lw=visualize_config["line_width"], fill=False, color=color)
+                ellipse = Ellipse(xy = mu, width=w, height=h, angle=theta, lw=visualize_config["line_width"], fill=False, color=color, zorder=zorder)
                 ax.add_artist(ellipse)
         
 
         if label:
-            ax.scatter(x=mean[0], y=mean[1], s=30, c=marker_color, marker=marker, label=label)
+            ax.scatter(x=mean[0], y=mean[1], s=1, c=marker_color, marker=marker, label=label)
         else:
-            ax.scatter(x=mean[0], y=mean[1], s=30, c=marker_color, marker=marker)
+            ax.scatter(x=mean[0], y=mean[1], s=1, c=marker_color, marker=marker)
         return ax
 
     def sketch_preference_distribution(self, ax = None, fill_contour = True, levels = 20, label = "Preference"):
@@ -102,7 +102,7 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
         plt.show(block=False)
         plt.gcf().set_size_inches(visualize_config["figure_size"][0], visualize_config["figure_size"][1])
         if use_legend:
-            plt.legend(fontsize=visualize_config["legend_fontsize"], loc="upper left")
+            legend_ax = plt.legend(fontsize=visualize_config["legend_fontsize"], loc="upper left", markerscale=6)
         if block:
             self._block_for_input()
 

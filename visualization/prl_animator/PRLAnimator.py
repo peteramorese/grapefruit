@@ -130,8 +130,8 @@ class PRLAnimator:
                         chosen_mean = mean
                         color = visualize_config["chosen_plan_color"]
                         title = "Chosen Plan"
-                        self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, ls="-", zorder=0)
-                        self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k, cmap="OrRd", marker_color="red")
+                        self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, ls="-", zorder=len(instance_data) + 1)
+                        self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k, cmap="OrRd", marker_color="red", zorder=len(instance_data) + 1)
                         self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"), color="red")
 
             self._pf_visualizer.sketch_pareto_front(pf_ax, label="Samples", connect_points=visualize_config["connect_points"])
