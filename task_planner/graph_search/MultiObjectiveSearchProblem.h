@@ -8,7 +8,7 @@
 
 #include "core/DirectedAcyclicGraph.h"
 #include "graph_search/SearchProblem.h"
-#include "graph_search/ParetoFront.h"
+#include "theory/ParetoFront.h"
 
 #define TP_COST_VECTOR_EQUIVALENCE_TOLERANCE 0.0000000001
 

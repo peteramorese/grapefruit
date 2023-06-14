@@ -9,48 +9,29 @@ using namespace TP;
 
 int main() {
 
-    Eigen::IOFormat OctaveFmt(3, 0, ", ", ";\n", "", "", "[", "]");
+    ParetoFront<Containers::FixedArray<2, float>> pf;
+    Containers::FixedArray<2, float> pt0;
+    pt0[0] = 1.0f;
+    pt0[1] = 5.0f;
+    Containers::FixedArray<2, float> pt1;
+    pt1[0] = 2.0f;
+    pt1[1] = 3.0f;
+    Containers::FixedArray<2, float> pt2;
+    pt2[0] = 4.0f;
+    pt2[1] = 2.5f;
+    Containers::FixedArray<2, float> pt3;
+    pt3[0] = 5.0f;
+    pt3[1] = 0.5f;
 
-    //Stats::Distributions::FixedInverseWishart<2> iwish;
+    pf.push_back(pt0);
+    pf.push_back(pt1);
+    pf.push_back(pt2);
+    pf.push_back(pt3);
 
-    //iwish.nu = 4.0f;
-
-    //iwish.Psi(0, 0) = 0.3f;
-    //iwish.Psi(1, 1) = 0.4f;
-    ////iwish.Psi(2, 2) = 0.5f;
-    //iwish.Psi(0, 1) = 0.11f;
-    //iwish.Psi(1, 0) = 0.11f;
-    ////iwish.Psi(0, 2) = 0.22f;
-    ////iwish.Psi(2, 0) = 0.22f;
-    ////iwish.Psi(1, 2) = 0.12f;
-    ////iwish.Psi(2, 1) = 0.12f;
-
-    //std::cout << iwish.Psi.format(OctaveFmt) << std::endl;
-    //std::cout << TP::Stats::var(iwish).format(OctaveFmt) << std::endl;
-
-    //Stats::Distributions::MinimalFixedInverseWishart<2> iwish_minimal = Stats::wishartToMinimalWishart(iwish);
-
-    ////std::cout << iwish_minimal.Psi_minimal.format(OctaveFmt) << std::endl;
-    //std::cout << TP::Stats::var(iwish_minimal).format(OctaveFmt) << std::endl;
-
+    Containers::FixedArray<2, float> sample;
+    sample[0] = 4.0f;
+    sample[1] = 4.0f;
+    LOG("Regret: " << pf.regret(sample));
     
-    //Stats::Distributions::FixedInverseWishart<2> iwish_back = Stats::minimalWishartToWishart(iwish_minimal);
-    //LOG("back to b4");
-    //std::cout << iwish_back.Psi.format(OctaveFmt) << std::endl;
-
-    Stats::Distributions::FixedNormalInverseWishart<2> niw;
-    niw.nu = 4.0f;
-    niw.mu(0) = 5.0f;
-    niw.mu(1) = 3.0f;
-    niw.Lambda(0, 0) = 0.3f;
-    niw.Lambda(1, 1) = 0.4f;
-    niw.Lambda(0, 1) = 0.11f;
-    niw.Lambda(1, 0) = 0.11f;
-    niw.kappa = 2.0f;
-    auto mvn = Stats::MomentMatch::niw2mvn(niw);
-    std::cout<< mvn.mu << std::endl;
-    std::cout<< mvn.Sigma << std::endl;
-
-
     return 0;
 }

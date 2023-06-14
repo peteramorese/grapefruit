@@ -26,7 +26,6 @@
 #include "graph_search/AStar.h"
 #include "graph_search/BOAStar.h"
 #include "graph_search/NAMOAStar.h"
-#include "graph_search/ParetoFront.h"
 
 // Models
 #include "models/GridWorldAgent.h"
@@ -46,6 +45,7 @@
 #include "theory/ParetoSelector.h"
 #include "theory/PartialSatisfactionAutomatonEdgeInheritor.h"
 #include "theory/PartialSatisfactionAutomaton.h"
+#include "theory/ParetoFront.h"
 
 // Learning
 #include "learning/UCB.h"

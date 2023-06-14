@@ -1,6 +1,6 @@
 #pragma once
 
-#include "graph_search/ParetoFront.h"
+#include "theory/ParetoFront.h"
 
 namespace TP {
 
