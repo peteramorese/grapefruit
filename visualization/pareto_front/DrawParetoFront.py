@@ -8,7 +8,6 @@ import yaml
 import argparse
 
 visualize_config = {
-    "line_width": 0.4,
     "line_style": "-",
     "show_title": False,
     "grid_on": True,

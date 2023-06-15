@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 
 	auto max_planning_instances = parser.parse<uint32_t>("instances", 'i', 10, "Max number of planning instances");
 	auto n_trials = parser.parse<uint32_t>("trials", 't', 1, "Number of trials to run");
-	auto n_efe_samples = parser.parse<uint32_t>("efe-samples", 1000u, "Number of samples used for approximating the expected posterior entropy");
+	auto n_efe_samples = parser.parse<uint32_t>("efe-samples", 300u, "Number of samples used for approximating the expected posterior entropy");
 
 	auto confidence = parser.parse<float>("confidence", 1.0f, "UCB confidence for planner (exploration/expoitation)");
 
@@ -113,7 +113,7 @@ int main(int argc, char* argv[]) {
 		else 
 			behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, confidence);
 
-		Learner<N> prl(behavior_handler, data_collector, n_efe_samples, verbose);
+		Learner<N> prl(behavior_handler, data_collector, n_efe_samples.get(), verbose);
 
 		// Initialize the agent's state
 		TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
