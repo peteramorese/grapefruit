@@ -29,8 +29,8 @@ int main() {
     pf.push_back(pt3);
 
     Containers::FixedArray<2, float> sample;
-    sample[0] = 4.0f;
-    sample[1] = 4.0f;
+    sample[0] = 5.0f;
+    sample[1] = 4.1f;
     LOG("Regret: " << pf.regret(sample));
     
     return 0;

@@ -36,6 +36,14 @@ class ParetoFront {
 
         // Pareto regret (min epsilon such that the point is non dominated by any point on the Pareto front)
         float regret(const COST_VECTOR_T& point) const {
+
+            auto printcv = [](const COST_VECTOR_T& cv) {
+                LOG("cv(" << cv[0] << ", " << cv[1] << ")");
+            };
+
+            LOG("point");
+            printcv(point);
+
             float epsilon = 0.0f;
             COST_VECTOR_T p_best = point;
             for (const auto& cv : m_pf) {
@@ -43,7 +51,7 @@ class ParetoFront {
                 float epsilon_i_min = 0.0f;
 
                 auto getEpsilon = [&]<typename T, uint32_t I>(const T& e){
-                    float epsilon_i = e - point.template get<I>();
+                    float epsilon_i = point.template get<I>() - e;
                     dominates = epsilon_i < 0.0f;
                     if (epsilon_i < epsilon_i_min || I == 0) {
                         epsilon_i_min = epsilon_i;
@@ -61,6 +69,9 @@ class ParetoFront {
                 // to check if it is dominated 
                 COST_VECTOR_T p_test = point;
                 p_test.forEach([&]<typename T>(T& e){e -= epsilon_i_min; return true;});
+
+                LOG("p_test");
+                printcv(p_test);
 
                 if (p_test.dominates(p_best) == TP::Containers::ArrayComparison::Dominates) {
                     p_best = p_test;
