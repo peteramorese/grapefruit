@@ -121,6 +121,7 @@ class Learner {
         void run(const PreferenceDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_instances, Selector selector) {
             ASSERT(m_initialized, "Must initialize before running");
             m_num_instances = 0;
+            LOG("running " << max_instances << " instances");
             while (m_num_instances < max_instances) {
                 SearchResult result = plan(m_behavior_handler->getCompletedTasksHorizon());
                 if (!result.success) {

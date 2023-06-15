@@ -26,7 +26,9 @@ class DataCollector {
 
         struct Instance {
             public:
-                Instance(DataCollector* super) {
+                Instance(DataCollector* super)
+                    : m_super(super)
+                {
                     for (uint32_t i = 0; i < N; ++i) {
                         cost_sample[i] = 0.0f;
                     }
@@ -39,7 +41,7 @@ class DataCollector {
                 TP::Containers::FixedArray<N, float> cost_sample;
 
                 float getRegret() const {
-                    ASSERT(m_super->m_regret_handler, "No regret handler was given");
+                    ASSERT(static_cast<bool>(m_super->m_regret_handler), "No regret handler was given");
                     ASSERT(m_regret.second, "Cannot access regret data for unfinished instance");
                     return m_regret.first;
                 }

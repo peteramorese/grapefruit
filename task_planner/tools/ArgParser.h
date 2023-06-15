@@ -123,7 +123,7 @@ namespace TP {
                     }
 
                     std::string help_key_and_flag = "--help or -h";
-                    help_key_and_flag += std::string(max_length - help_key_and_flag.size() + 2, ' ');
+                    help_key_and_flag += std::string(max_length - help_key_and_flag.size() + 1, ' ');
                     PRINT_NAMED(help_key_and_flag, "Display this message");
 
                     std::size_t ind = 0;
@@ -132,7 +132,7 @@ namespace TP {
 
                         if (!def.empty()) description += " [Default value: " + def + "]";
                         std::string key_and_flag_str_adj = key_and_flag_strs[ind++];
-                        key_and_flag_str_adj += std::string(max_length - key_and_flag_str_adj.size() + 2, ' ');
+                        key_and_flag_str_adj += std::string(max_length - key_and_flag_str_adj.size() + 1, ' ');
                         PRINT_NAMED(key_and_flag_str_adj, description);
                     }
 

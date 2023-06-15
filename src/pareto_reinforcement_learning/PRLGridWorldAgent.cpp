@@ -124,7 +124,7 @@ int main(int argc, char* argv[]) {
 		};
 
 		// Run the PRL
-		prl.run(p_ev, samplerFunction, max_planning_instances, selector);
+		prl.run(p_ev, samplerFunction, max_planning_instances.get(), selector);
 		if (verbose) {
 			LOG("Finished!");
 			std::string total_cost_str{};
