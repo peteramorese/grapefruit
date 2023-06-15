@@ -7,7 +7,6 @@
 #include "EFE.h"
 #include "SearchProblem.h"
 #include "TrueBehavior.h"
-#include "Quantifier.h"
 #include "DataCollector.h"
 #include "TrajectoryDistributionEstimator.h"
 
@@ -23,49 +22,49 @@ enum class Selector {
 template <uint64_t N>
 class Learner {
     public:
+        // Dependent types
         using SymbolicProductGraph = TP::DiscreteModel::SymbolicProductAutomaton<
             TP::DiscreteModel::TransitionSystem, 
             TP::FormalMethods::DFA, 
             TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>>;
-
         using BehaviorHandlerType = BehaviorHandler<SymbolicProductGraph, N>;
-
         using PathSolution = TP::GraphSearch::PathSolution<
-            typename SearchProblem<N>::node_t, 
-            typename SearchProblem<N>::edge_t>;
-
+            typename SearchProblem<N, BehaviorHandlerType>::node_t, 
+            typename SearchProblem<N, BehaviorHandlerType>::edge_t>;
         using SearchResult = TP::GraphSearch::MultiObjectiveSearchResult<
-            typename SearchProblem<N>::node_t, 
-            typename SearchProblem<N>::edge_t, 
-            typename SearchProblem<N>::cost_t>;
-
+            typename SearchProblem<N, BehaviorHandlerType>::node_t, 
+            typename SearchProblem<N, BehaviorHandlerType>::edge_t, 
+            typename SearchProblem<N, BehaviorHandlerType>::cost_t>;
         using PreferenceDistribution = TP::Stats::Distributions::FixedMultivariateNormal<N>;
-
-        using Plan = TP::Planner::Plan<SearchProblem<N>>;
-
-        using ParetoFront = TP::ParetoFront<typename SearchProblem<N>::cost_t>;
+        using Plan = TP::Planner::Plan<SearchProblem<N, BehaviorHandlerType>>;
+        using CostVector = SearchProblem<N, BehaviorHandlerType>::cost_t;
+        using ParetoFront = TP::ParetoFront<CostVector>;
 
     public:
-        Learner(const std::shared_ptr<BehaviorHandlerType>& behavior_handler, uint32_t n_samples = 1000, const std::shared_ptr<DataCollector<N>>& animator = nullptr, bool verbose = false)
+        Learner() = delete;
+        Learner(const std::shared_ptr<BehaviorHandlerType>& behavior_handler, 
+            const std::shared_ptr<DataCollector<N>>& data_collector, 
+            uint32_t n_efe_samples = 1000, 
+            bool verbose = false)
             : m_product(behavior_handler->getProduct())
             , m_behavior_handler(behavior_handler)
-            , m_n_samples(n_samples)
-            , m_data_collector(animator)
+            , m_data_collector(data_collector)
+            , m_n_efe_samples(n_efe_samples)
             , m_verbose(verbose)
         {}
 
         virtual SearchResult plan(uint8_t completed_tasks_horizon) {
             log("Planning Phase (1)");
-            SearchProblem<N> problem(m_product, m_current_product_node, completed_tasks_horizon, m_behavior_handler);
+            SearchProblem<N, BehaviorHandlerType> problem(m_product, m_current_product_node, completed_tasks_horizon, m_behavior_handler);
             log("Planning...", true);
 
             SearchResult result = [&] {
                 if constexpr (N == 2)
                     // Use BOA
-                    return TP::GraphSearch::BOAStar<typename SearchProblem<N>::cost_t, decltype(problem)>::search(problem);
+                    return TP::GraphSearch::BOAStar<CostVector, decltype(problem)>::search(problem);
                 else
                     // Use NAMOA
-                    return TP::GraphSearch::NAMOAStar<typename SearchProblem<N>::cost_t, decltype(problem)>::search(problem);
+                    return TP::GraphSearch::NAMOAStar<CostVector, decltype(problem)>::search(problem);
             }();
             log("Done!", true);
             return result;
@@ -87,7 +86,7 @@ class Learner {
                 }
 
                 float info_gain;
-                float efe = GaussianEFE<N>::calculate(traj_updaters, p_ev, m_n_samples, &info_gain);
+                float efe = GaussianEFE<N>::calculate(traj_updaters, p_ev, m_n_efe_samples, &info_gain);
                 LOG("-> efe: " << efe << " (info gain: " << info_gain << ")");
                 if (i > 0) {
                     if (efe < min_efe) {
@@ -110,24 +109,23 @@ class Learner {
                 const auto& src_node = *node_it;
                 const auto& dst_node = *(++node_it);
                 TP::Containers::FixedArray<N, float> sample = sampler(src_node.base_node, dst_node.base_node, action);
-                m_quantifier.addSample(sample);
+                m_data_collector->getCurrentInstance().cost_sample += sample;
                 m_behavior_handler->visit(src_node, action, sample);
             }
-            m_quantifier.finishInstance();
 
             // Do not terminate
-            return false;
+            return true;
         }
 
         template <typename SAMPLER_LAM_T>
-        const Quantifier<N>& run(const PreferenceDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_instances, Selector selector) {
+        void run(const PreferenceDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_instances, Selector selector) {
             ASSERT(m_initialized, "Must initialize before running");
-            m_quantifier.max_instances = max_instances;
-            while (m_quantifier.instances < max_instances) {
+            m_num_instances = 0;
+            while (m_num_instances < max_instances) {
                 SearchResult result = plan(m_behavior_handler->getCompletedTasksHorizon());
                 if (!result.success) {
                     ERROR("Planner did not succeed!");
-                    return m_quantifier;
+                    return;
                 }
                 log("Selection Phase (2)");
 
@@ -140,11 +138,11 @@ class Learner {
                         selected_ind = selectAif(result, p_ev);
                         break;
                     case Selector::Uniform: {
-                        selected_ind = TP::ParetoSelector<typename SearchProblem<N>::cost_t>::uniformRandom(mean_pf);
+                        selected_ind = TP::ParetoSelector<CostVector>::uniformRandom(mean_pf);
                         break;
                     }
                     case Selector::Topsis: {
-                        selected_ind = TP::ParetoSelector<typename SearchProblem<N>::cost_t>::TOPSIS(mean_pf);
+                        selected_ind = TP::ParetoSelector<CostVector>::TOPSIS(mean_pf);
                         break;
                     }
                     case Selector::Weights: {
@@ -157,7 +155,7 @@ class Learner {
                                 max_val = weights[d];
                         }
                         ASSERT(max_val > 0.0f, "At least one weight must be greater than zero");
-                        selected_ind = TP::ParetoSelector<typename SearchProblem<N>::cost_t>::scalarWeights(mean_pf, weights);
+                        selected_ind = TP::ParetoSelector<CostVector>::scalarWeights(mean_pf, weights);
                         break;
                     }
                     default:
@@ -169,7 +167,8 @@ class Learner {
                 log("Chosen solution: " + std::to_string(selected_ind), true);
 
                 // Hold the trajectory distributions for the animation
-                std::vector<TP::Stats::Distributions::FixedMultivariateNormal<N>> estimate_traj_distributions;
+                typename DataCollector<N>::Instance& data = m_data_collector->getCurrentInstance();
+                auto& estimate_traj_distributions = data.trajectory_distributions;
                 estimate_traj_distributions.reserve(result.solution_set.size());
 
                 auto pf_it = result.pf.begin();
@@ -181,17 +180,21 @@ class Learner {
                 }
                 log("Selected solution: " + std::to_string(selected_ind), true);
 
-                // Add to animator
-                if (m_data_collector)
-                    m_data_collector->addInstance(result.solution_set, ucb_pf, std::move(estimate_traj_distributions), selected_ind);
-                
                 Plan plan(result.solution_set[selected_ind], result.pf[selected_ind], m_product, true);
-                if (execute(plan, sampler))
-                    return m_quantifier;
+                if (!execute(plan, sampler))
+                    return;
                 log("Update Phase (4)");
                 m_current_product_node = plan.product_node_sequence.back();
+
+                // Add remaining data to the collector
+                data.paths = std::move(result.solution_set);
+                data.ucb_pf = std::move(ucb_pf);
+                data.selected_plan_index = selected_ind;
+
+                m_data_collector->finishInstance();
+                
+                ++m_num_instances;
             }
-            return m_quantifier;
         }
 
         TrajectoryDistributionUpdaters<N> getTrajectoryUpdaters(const Plan& plan) {
@@ -228,7 +231,7 @@ class Learner {
         void log(const std::string& msg, bool sub_msg = false) {
             if (m_verbose) {
                 std::string spc = sub_msg ? "   " : "";
-                LOG("[Instance: " << m_quantifier.instances << "] " << spc << msg);
+                LOG("[Instance: " << m_num_instances << "] " << spc << msg);
             }
         }
 
@@ -247,10 +250,10 @@ class Learner {
         std::shared_ptr<SymbolicProductGraph> m_product;
         std::shared_ptr<BehaviorHandlerType> m_behavior_handler;
         SymbolicProductGraph::node_t m_current_product_node;
-        bool m_initialized = false;
-        uint32_t m_n_samples;
+        uint32_t m_n_efe_samples;
 
-        Quantifier<N> m_quantifier;
+        bool m_initialized = false;
+        uint32_t m_num_instances = 0;
 
         std::shared_ptr<DataCollector<N>> m_data_collector;
 

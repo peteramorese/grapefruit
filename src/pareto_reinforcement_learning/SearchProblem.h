@@ -7,7 +7,7 @@
 
 namespace PRL {
 
-template <uint64_t N>
+template <uint64_t N, class BEHAVIOR_HANDLER_T>
 struct SearchProblem {
     public: // Dependent types required by any search problem
         using SymbolicProductGraph = TP::DiscreteModel::SymbolicProductAutomaton<
@@ -29,7 +29,6 @@ struct SearchProblem {
             std::vector<node_t> history_nodes;
             history_nodes.reserve(children.size());
             for (uint32_t i=0; i<children.size(); ++i) {
-                //if (children[i] > 1000) ERROR("error child from parent: " << node);
                 uint8_t n_tasks_completed = 0;
                 for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
                     if (!m_product->acc(node.base_node, automaton_i) && m_product->acc(children[i], automaton_i)) {
@@ -58,10 +57,9 @@ struct SearchProblem {
 
         // Member variables
         std::set<node_t> initial_node_set;
-        //HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
 
     public:
-        SearchProblem(const std::shared_ptr<SymbolicProductGraph>& product, SymbolicProductGraph::node_t init_node, uint8_t completed_tasks_horizon, const std::shared_ptr<BehaviorHandler<SymbolicProductGraph, N>>& behavior_handler)
+        SearchProblem(const std::shared_ptr<SymbolicProductGraph>& product, SymbolicProductGraph::node_t init_node, uint8_t completed_tasks_horizon, const std::shared_ptr<BEHAVIOR_HANDLER_T>& behavior_handler)
             : m_product(product)
             , m_behavior_handler(behavior_handler)
             , m_completed_tasks_horizon(completed_tasks_horizon)
@@ -72,7 +70,7 @@ struct SearchProblem {
 
     private:
         std::shared_ptr<SymbolicProductGraph> m_product;
-        std::shared_ptr<BehaviorHandler<SymbolicProductGraph, N>> m_behavior_handler;
+        std::shared_ptr<BEHAVIOR_HANDLER_T> m_behavior_handler;
         const uint8_t m_completed_tasks_horizon;
 };
 }

@@ -10,6 +10,7 @@ class TrueBehavior : public Storage<TP::Stats::Distributions::FixedMultivariateN
     public:
         using Distribution = TP::Stats::Distributions::FixedMultivariateNormal<N>;
         using DistributionSampler = TP::Stats::Distributions::FixedMultivariateNormalSampler<N>;
+        using CostVector = TP::Containers::FixedArray<N, float>;
     public:
         TrueBehavior(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, const Distribution& default_cost_distribution)
             : Storage<DistributionSampler>(TP::Stats::Distributions::FixedMultivariateNormalSampler<N>(default_cost_distribution))
@@ -25,6 +26,13 @@ class TrueBehavior : public Storage<TP::Stats::Distributions::FixedMultivariateN
             }
             return rectified_sample;
         }
+
+        CostVector getCostVector(const TaskHistoryNode<TP::WideNode>& src_node, const TaskHistoryNode<TP::WideNode>& dst_node, const TP::DiscreteModel::Action& action) {
+            TP::Node src_model_node = m_product->getUnwrappedNode(src_node).ts_node;
+            const TP::Stats::Distributions::FixedMultivariateNormalSampler<N>& sampler = this->getElement(src_model_node, action);
+            return TP::fromColMatrix(sampler.dist().mu);
+        }
+
 
     protected:
         std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;

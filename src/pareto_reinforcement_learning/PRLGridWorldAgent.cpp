@@ -5,7 +5,7 @@
 #include "BehaviorHandler.h"
 #include "Learner.h"
 #include "TrueBehavior.h"
-#include "Benchmark.h"
+//#include "Benchmark.h"
 #include "Misc.h"
 
 using namespace PRL;
@@ -28,14 +28,12 @@ int main(int argc, char* argv[]) {
 	TP::ArgParser parser(argc, argv);
 
 	bool verbose = parser.hasFlag('v', "Run in verbose mode");
-	bool benchmark = parser.hasFlag('b', "Benchmark run");
-	bool animate = parser.hasFlag('a', "Animate run");
-	bool compare = parser.hasKey("compare", "Compare the learned estimates to the true estimates");
+	bool calc_regret = parser.hasKey("regret", "Calculate Pareto regret");
+	//bool compare = parser.hasKey("compare", "Compare the learned estimates to the true estimates");
 
 	std::string formula_filepath = parser.parse<std::string>("formula-filepath", "formulas.yaml", "File that contains all formulas");
 	std::string config_filepath = parser.parse<std::string>("config-filepath", "", "Filepath to grid world config");
-	std::string benchmark_filepath = parser.parse<std::string>("bm-filepath", "prl_grid_world_bm.yaml", "File that benchmark data will be written to");
-	std::string animation_filepath = parser.parse<std::string>("animation-filepath", "prl_animation.yaml", "File that contains data necessary for animation");
+	std::string data_filepath = parser.parse<std::string>("data-filepath", "", "Specify a filepath to write the collected data to");
 	std::string selector_label = parser.parse<std::string>("selector", "aif", "Pareto point selector (aif (active inference), uniform, topsis, weights)");
 
 	uint32_t max_planning_instances = parser.parse<uint32_t>("instances", 10, "Max number of planning instances");
@@ -101,10 +99,11 @@ int main(int argc, char* argv[]) {
 	// Get the default transition mean if the file contains it
 	std::pair<bool, Eigen::Matrix<float, N, 1>> default_mean = deserializeDefaultMean<N>(config_filepath);
 
-	QuantifierSet<N> quantifier_set(p_ev);
-	std::shared_ptr<DataCollector<N>> data_collector;
-	if (animate)
-		data_collector = std::make_shared<DataCollector<N>>(product, p_ev);
+	std::shared_ptr<Regret<SymbolicGraph, N>> regret_handler;
+	if (calc_regret)
+ 		regret_handler = std::make_shared<Regret<SymbolicGraph, N>>(product, true_behavior);
+
+	std::shared_ptr<DataCollector<N>> data_collector = std::make_shared<DataCollector<N>>(product, p_ev, regret_handler);
 
 	for (uint32_t trial = 0; trial < n_trials; ++trial) {
 
@@ -114,7 +113,7 @@ int main(int argc, char* argv[]) {
 		else 
 			behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, confidence);
 
-		Learner<N> prl(behavior_handler, n_efe_samples, data_collector, verbose);
+		Learner<N> prl(behavior_handler, data_collector, n_efe_samples, verbose);
 
 		// Initialize the agent's state
 		TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(ts_props, ts);
@@ -125,17 +124,17 @@ int main(int argc, char* argv[]) {
 		};
 
 		// Run the PRL
-		auto quantifier = prl.run(p_ev, samplerFunction, max_planning_instances, selector);
+		prl.run(p_ev, samplerFunction, max_planning_instances, selector);
 		if (verbose) {
 			LOG("Finished!");
 			std::string total_cost_str{};
 			for (uint32_t i = 0; i < N; ++i) 
-				total_cost_str += std::to_string(quantifier.cumulative_cost[i]) + ((i < N) ? ", " : "");
+				total_cost_str += std::to_string(data_collector->cumulativeCost()[i]) + ((i < N) ? ", " : "");
 			PRINT_NAMED("Total Cost...............................", total_cost_str);
-			PRINT_NAMED("Steps....................................", quantifier.steps);
-			PRINT_NAMED("Instances................................", quantifier.instances);
+			PRINT_NAMED("Steps....................................", data_collector->steps());
+			PRINT_NAMED("Instances................................", data_collector->numInstances());
 			std::string avg_cost_str{};
-			auto avg_cost_per_instance = quantifier.avgCostPerInstance();
+			auto avg_cost_per_instance = data_collector->avgCostPerInstance();
 			for (uint32_t i = 0; i < N; ++i) 
 				avg_cost_str += std::to_string(avg_cost_per_instance[i]) + ((i < N) ? ", " : "");
 			PRINT_NAMED("Average cost per per instance............", avg_cost_str);
@@ -144,21 +143,14 @@ int main(int argc, char* argv[]) {
 		//if (compare) 
 		//	true_behavior->compare(*behavior_handler);
 
-		quantifier_set.push_back(std::move(quantifier));
 
-		if (animate) {
-			TP::Serializer szr(animation_filepath);
-			data_collector->serialize(szr, quantifier_set.back());
+		if (!data_filepath.empty()) {
+			TP::Serializer szr(data_filepath);
+			data_collector->serialize(szr);
 			szr.done();
 		}
 
 	}
-
-	//if (benchmark) {
-	//	TP::Serializer szr(benchmark_filepath);
-	//	quantifier_set.serializeInstances(szr, "Cumulative Cost", "Cumulative Reward");
-	//	szr.done();
-	//}
 
 	return 0;
 }
