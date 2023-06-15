@@ -60,6 +60,7 @@ class DataCollector {
             : m_product(product)
             , m_preference(preference)
             , m_regret_handler(regret_handler)
+            , m_buffer_instance(this)
         {
             //for (uint32_t i = 0; i < N; ++i) {
             //    m_cumulative_cost[i] = 0.0f;

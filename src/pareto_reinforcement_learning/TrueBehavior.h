@@ -30,7 +30,9 @@ class TrueBehavior : public Storage<TP::Stats::Distributions::FixedMultivariateN
         CostVector getCostVector(const TaskHistoryNode<TP::WideNode>& src_node, const TaskHistoryNode<TP::WideNode>& dst_node, const TP::DiscreteModel::Action& action) {
             TP::Node src_model_node = m_product->getUnwrappedNode(src_node).ts_node;
             const TP::Stats::Distributions::FixedMultivariateNormalSampler<N>& sampler = this->getElement(src_model_node, action);
-            return TP::fromColMatrix(sampler.dist().mu);
+            CostVector ret;
+            TP::fromColMatrix<float, N>(sampler.dist().mu, ret);
+            return ret;
         }
 
 
