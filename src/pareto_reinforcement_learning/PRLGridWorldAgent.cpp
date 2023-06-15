@@ -27,35 +27,35 @@ int main(int argc, char* argv[]) {
  
 	TP::ArgParser parser(argc, argv);
 
-	bool verbose = parser.hasFlag('v', "Run in verbose mode");
-	bool calc_regret = parser.hasKey("regret", "Calculate Pareto regret");
+	bool verbose = parser.parse<void>('v', "Run in verbose mode");
+	bool calc_regret = parser.parse<void>("regret", 'r', "Calculate Pareto regret");
 	//bool compare = parser.hasKey("compare", "Compare the learned estimates to the true estimates");
 
-	std::string formula_filepath = parser.parse<std::string>("formula-filepath", "formulas.yaml", "File that contains all formulas");
-	std::string config_filepath = parser.parse<std::string>("config-filepath", "", "Filepath to grid world config");
-	std::string data_filepath = parser.parse<std::string>("data-filepath", "", "Specify a filepath to write the collected data to");
-	std::string selector_label = parser.parse<std::string>("selector", "aif", "Pareto point selector (aif (active inference), uniform, topsis, weights)");
+	auto formula_filepath = parser.parse<std::string>("formula-filepath", 'f', "formulas.yaml", "File that contains all formulas");
+	auto config_filepath = parser.parse<std::string>("config-filepath", 'c', "Filepath to grid world config");
+	auto data_filepath = parser.parse<std::string>("data-filepath", 'd', "Specify a filepath to write the collected data to");
+	auto selector_label = parser.parse<std::string>("selector", "aif", "Pareto point selector (aif (active inference), uniform, topsis, weights)");
 
-	uint32_t max_planning_instances = parser.parse<uint32_t>("instances", 10, "Max number of planning instances");
-	uint32_t n_trials = parser.parse<uint32_t>("trials", 1, "Number of trials to run");
-	uint32_t n_efe_samples = parser.parse<uint32_t>("efe-samples", 1000, "Number of samples used for approximating the expected posterior entropy");
+	auto max_planning_instances = parser.parse<uint32_t>("instances", 'i', 10, "Max number of planning instances");
+	auto n_trials = parser.parse<uint32_t>("trials", 't', 1, "Number of trials to run");
+	auto n_efe_samples = parser.parse<uint32_t>("efe-samples", 1000u, "Number of samples used for approximating the expected posterior entropy");
 
-	float confidence = parser.parse<float>("confidence", 1.0f, "UCB confidence for planner (exploration/expoitation)");
+	auto confidence = parser.parse<float>("confidence", 1.0f, "UCB confidence for planner (exploration/expoitation)");
 
-	if (parser.enableHelp()) return 0;
+	parser.enableHelp();
 
-	Selector selector = getSelector(selector_label);
+	Selector selector = getSelector(selector_label.get());
 	
 	/////////////////   Transition System   /////////////////
 	
 	TP::DiscreteModel::GridWorldAgentProperties ts_props;
-	if (config_filepath.empty()) {
+	if (!config_filepath) {
 		ts_props.n_x = 10;
 		ts_props.n_y = 10;
 		ts_props.init_coordinate_x = 0;
 		ts_props.init_coordinate_y = 0;
 	} else {
-		ts_props = TP::DiscreteModel::GridWorldAgent::deserializeConfig(config_filepath);
+		ts_props = TP::DiscreteModel::GridWorldAgent::deserializeConfig(config_filepath.get());
 	}
 
 	std::shared_ptr<TP::DiscreteModel::TransitionSystem> ts = TP::DiscreteModel::GridWorldAgent::generate(ts_props);
@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
 
 	/////////////////   DFAs   /////////////////
 
-	auto dfas = TP::FormalMethods::createDFAsFromFile(formula_filepath);
+	auto dfas = TP::FormalMethods::createDFAsFromFile(formula_filepath.get());
 
 	TP::FormalMethods::Alphabet combined_alphbet;
 	for (const auto& dfa : dfas) {
@@ -88,16 +88,16 @@ int main(int argc, char* argv[]) {
 
 	/////////////////   True Behavior   /////////////////
 
-	std::shared_ptr<GridWorldTrueBehavior<N>> true_behavior = std::make_shared<GridWorldTrueBehavior<N>>(product, config_filepath);
+	std::shared_ptr<GridWorldTrueBehavior<N>> true_behavior = std::make_shared<GridWorldTrueBehavior<N>>(product, config_filepath.get());
 
 	//if (verbose)
 	//	true_behavior->print();
 
 	// Make the preference behavior distribution
-	PreferenceDistributionType p_ev = deserializePreferenceDist<N>(config_filepath);
+	PreferenceDistributionType p_ev = deserializePreferenceDist<N>(config_filepath.get());
 
 	// Get the default transition mean if the file contains it
-	std::pair<bool, Eigen::Matrix<float, N, 1>> default_mean = deserializeDefaultMean<N>(config_filepath);
+	std::pair<bool, Eigen::Matrix<float, N, 1>> default_mean = deserializeDefaultMean<N>(config_filepath.get());
 
 	std::shared_ptr<Regret<SymbolicGraph, N>> regret_handler;
 	if (calc_regret)
@@ -144,8 +144,8 @@ int main(int argc, char* argv[]) {
 		//	true_behavior->compare(*behavior_handler);
 
 
-		if (!data_filepath.empty()) {
-			TP::Serializer szr(data_filepath);
+		if (data_filepath) {
+			TP::Serializer szr(data_filepath.get());
 			data_collector->serialize(szr);
 			szr.done();
 		}

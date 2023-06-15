@@ -6,11 +6,10 @@ int main(int argc, char** argv) {
 
     TP::ArgParser parser(argc, argv);
 
-    uint32_t n_samples = parser.parse<uint32_t>("n-samples", 30, "Number of samples");
-    uint32_t print_interval = parser.parse<uint32_t>("print-interval", 1, "Print after an interval");
-	std::string sample_filepath = parser.parse<std::string>("sample-filepath", "", "Filepath to write samples to for visualization");
-    bool mv = parser.hasKey("mv", "Multivariate test");
-    bool write = parser.hasFlag('w', "Write samples to file");
+    TP::Argument<uint32_t> n_samples = parser.parse<uint32_t>("n-samples", 30, "Number of samples");
+    TP::Argument<uint32_t> print_interval = parser.parse<uint32_t>("print-interval", 1, "Print after an interval");
+	TP::Argument<std::string> sample_filepath = parser.parse<std::string>("sample-filepath", "Filepath to write samples to for visualization");
+    bool mv = parser.parse<void>("mv", "Multivariate test");
 
     if (parser.enableHelp()) return 0;
 
@@ -57,9 +56,9 @@ int main(int argc, char** argv) {
             }
         }
 
-        if (write) {
+        if (sample_filepath) {
             LOG("writing...");
-            TP::Serializer szr(sample_filepath);
+            TP::Serializer szr(sample_filepath.get());
             YAML::Emitter& out = szr.get();
             for (uint32_t s = 0; s < n_samples; ++s) {
                 out << YAML::Key << "Sample " + std::to_string(s) << YAML::Value << YAML::BeginSeq;

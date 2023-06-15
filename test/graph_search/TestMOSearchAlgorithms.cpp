@@ -36,40 +36,36 @@ int main(int argc, char* argv[]) {
 
 	ArgParser parser(argc, argv);
 
-	bool verbose = parser.hasFlag('v', "Run in verbose mode");
+	bool verbose = parser.parse<void>('v', "Run in verbose mode");
 
-    bool boa_only = parser.hasKey("boa-only", "Analyze BOA* only");
-    bool namoa_only = parser.hasKey("namoa-only", "Analyze NAMOA* only");
+    bool boa_only = parser.parse<void>("boa-only", "Analyze BOA* only");
+    bool namoa_only = parser.parse<void>("namoa-only", "Analyze NAMOA* only");
     ASSERT(!boa_only || !namoa_only, "Cannot specify boa only and namoa only");
     
-	uint32_t size = parser.parse<uint32_t>("size", 100, "Random graph size");
-	uint32_t max_edges_per_node = parser.parse<uint32_t>("max-edges-per-node", 5, "Max number of edges to extend from");
-	uint32_t trials = parser.parse<uint32_t>("trials", 1, "Number of randomized trials to run");
+	auto size = parser.parse<uint32_t>("size", 's', 100, "Random graph size");
+	auto max_edges_per_node = parser.parse<uint32_t>("max-edges-per-node", 5, "Max number of edges to extend from");
+	auto trials = parser.parse<uint32_t>("trials", 't', 1, "Number of randomized trials to run");
+    auto seed_arg = parser.parse<uint32_t>("seed", 0, "Specify a certain seed for generating graph");
 
-	uint32_t seed;
-    if (parser.hasKey("seed")) {
-        seed = parser.parse<uint32_t>("seed", 0, "Specify a certain seed for generating graph");
-    } else {
-        seed = RNG::randi(0, INT32_MAX);
-    }
+	uint32_t seed = (seed_arg) ? seed_arg.get() : RNG::randi(0, INT32_MAX);
 
-	if (parser.enableHelp()) return 0;
+	parser.enableHelp();
 
-    ASSERT(size, "Size must be greater than zero");
-    ASSERT(max_edges_per_node, "Max number of edges per node must be greater than zero");
+    ASSERT(size.get() > 0, "Size must be greater than zero");
+    ASSERT(max_edges_per_node.get() > 0, "Max number of edges per node must be greater than zero");
 
     RNG::seed(seed);
 
     if (verbose) LOG("Generating random graph...");
 
-    RandomGraphGenerator random_graph_generator(size, max_edges_per_node);
+    RandomGraphGenerator random_graph_generator(size.get(), max_edges_per_node.get());
 
     auto createRandomEdge = [](uint32_t min, uint32_t max) {
         LOG("min: " << min << " max: " << max);
         return Edge(RNG::srandi(min, max), RNG::srandi(min, max));
     };
 
-    for (uint32_t trial=0; trial<trials; ++trial) {
+    for (uint32_t trial=0; trial<trials.get(); ++trial) {
 
         std::shared_ptr<Graph<Edge>> graph = random_graph_generator.generate<Edge>(createRandomEdge);
 

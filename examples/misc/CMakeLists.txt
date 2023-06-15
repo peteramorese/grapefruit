@@ -23,3 +23,10 @@ target_include_directories(GridWorldConfigExample PUBLIC
 	${TP_LIBRARY_DIR}
 	${TP_DEPENDENCY_INCLUDE_DIRS}
 )
+
+add_executable(ArgParserExample ArgParserExample.cpp)
+target_link_libraries(ArgParserExample PUBLIC
+)
+target_include_directories(ArgParserExample PUBLIC
+	${TP_LIBRARY_DIR}
+)

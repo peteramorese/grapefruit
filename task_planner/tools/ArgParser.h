@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <exception>
+#include <set>
 
 #include "tools/Logging.h"
 
@@ -18,12 +19,12 @@ namespace TP {
             }
         private:
             T m_arg;
-    }
+    };
 
     class IndicatorArgument {};
 
     template <typename T, typename BASE = std::conditional<!std::is_same<T, void>::value, DataArgument<T>, IndicatorArgument>::type>
-    class Argument : BASE {
+    class Argument : public BASE {
         public:
             Argument(bool valid) : m_valid(valid) {}
             operator bool() const {return m_valid;}
@@ -44,67 +45,66 @@ namespace TP {
 
     class ArgParser {
         public:
-            ArgParser(int argc, char** argv) : m_argc(argc), m_argv(argv), m_checked(argc, false) {
-            }
-
-            bool hasFlag(char flag, const std::string& description = std::string()) {
-                std::string flag_str = getFlag(flag);
-                m_descriptions.emplace_back(flag_str, std::string(), description);
-                for (uint32_t i=1; i<m_argc; ++i) {
-                    if (m_checked[i]) continue;
-
-                    std::string arg = m_argv[i];
-                    if (arg == flag_str) {
-                        m_checked[i] = true;
-                        return true;
-                    }
+            ArgParser(int argc, char** argv) 
+                : m_argc(argc)
+                , m_argv(argv)
+                , m_checked(argc, false) 
+            {
+                for (int i = 1; i < argc; ++i) {
+                    std::string arg = argv[i];
+                    if (arg == "--help" || arg == "-h") 
+                        m_help = true;
                 }
-                return false;
+                m_unique_keys.insert("help");
+                m_unique_flags.insert('h');
             }
 
-
+            // Parse the argument given a key, flag, default value, and description. Note that using type T = char
+            // may not use a character flag without default value
             template <typename T>
             Argument<T> parse(const std::string& key, char flag, const T& default_value, const std::string& description) {
                 static_assert(!std::is_same<T, void>::value, "Do not specify default value with indicator");
-                return _parse(&flag, &key, &default_value, &description);
+                return _parse<T>(&flag, &key, &default_value, description);
             }
 
             template <typename T>
             Argument<T> parse(const std::string& key, const T& default_value, const std::string& description) {
                 static_assert(!std::is_same<T, void>::value, "Do not specify default value with indicator");
-                return _parse(nullptr, &key, &default_value, &description);
+                return _parse<T>(nullptr, &key, &default_value, description);
             }
 
             template <typename T>
+            Argument<T> parse(char flag, const T& default_value, const std::string& description) {
+                static_assert(!std::is_same<T, void>::value, "Do not specify default value with indicator");
+                return _parse<T>(&flag, nullptr, &default_value, description);
+            }
+
+            template <typename T = void, typename _ENABLE = std::enable_if<!std::is_same<T, char>::value>::type>
+            Argument<T> parse(const std::string& key, char flag, const std::string& description) {
+                //static_assert(!std::is_same)
+                return _parse<T>(&flag, &key, nullptr, description);
+            }
+
+            template <typename T = void>
             Argument<T> parse(const std::string& key, const std::string& description) {
-                return _parse(nullptr, &key, &default_value, &description);
+                return _parse<T>(nullptr, &key, nullptr, description);
             }
 
-            template <typename T>
-            Argument<T> parse(const std::string& key, const T& default_value = T{}, const std::string& description = std::string()) {
+            template <typename T = void>
+            Argument<T> parse(char flag, const std::string& description) {
+                return _parse<T>(&flag, nullptr, nullptr, description);
             }
-
-            template <typename T>
-            Argument<T> parse(char flag, const T& default_value = T{}, const std::string& description = std::string()) {
-            }
-
-            Argument<void> parse(const std::string& key, const std::string& description = std::string()) {
-            }
-
-            Argument<void> parse(const std::string& key, char flag, const std::string& description = std::string()) {
-            }
-
-            Argument<void> parse(char flag, const std::string& description = std::string()) {
-            }
-
 
             // Include this to enable the help function and check for unrecognized arguments
             bool enableHelp() {
-                bool has_help = parse<>('h') || parse<>("help");
-                if (has_help) {
-                    for (auto&[flag, key, def, desc] : m_descriptions) {
-                        std::string description = desc + " ";
+                if (m_help) {
+                    PRINT("\n   [Help]\n");
 
+                    std::vector<std::string> key_and_flag_strs;
+                    key_and_flag_strs.reserve(m_descriptions.size());
+
+                    std::size_t max_length = 0;
+                    for (auto&[flag, key, _, __] : m_descriptions) {
                         std::string key_and_flag;
                         if (!flag.empty() && !key.empty()) {
                             key_and_flag = key + " or " + flag;
@@ -115,17 +115,36 @@ namespace TP {
                         } else {
                             ASSERT(false, "Empty key and flag");
                         }
-                        
-                        if (!def.empty()) description += " [Default value: " + def + "]";
-                        PRINT_NAMED(key_and_flag, description);
+
+                        if (key_and_flag.size() > max_length)
+                            max_length = key_and_flag.size();
+
+                        key_and_flag_strs.push_back(std::move(key_and_flag));
                     }
+
+                    std::string help_key_and_flag = "--help or -h";
+                    help_key_and_flag += std::string(max_length - help_key_and_flag.size() + 2, ' ');
+                    PRINT_NAMED(help_key_and_flag, "Display this message");
+
+                    std::size_t ind = 0;
+                    for (auto&[flag, key, def, desc] : m_descriptions) {
+                        std::string description = desc + " ";
+
+                        if (!def.empty()) description += " [Default value: " + def + "]";
+                        std::string key_and_flag_str_adj = key_and_flag_strs[ind++];
+                        key_and_flag_str_adj += std::string(max_length - key_and_flag_str_adj.size() + 2, ' ');
+                        PRINT_NAMED(key_and_flag_str_adj, description);
+                    }
+
+                    NEW_LINE;
+
                     std::exit(0);
                     return false;
                 }
 
                 for (uint32_t i=1; i<m_argc; ++i) {
                     if (!m_checked[i]) {
-                        ERROR("Unrecognized arg '" << m_argv[i]);
+                        ERROR("Unrecognized arg '" << m_argv[i] << "'");
                         std::exit(1);
                         return false;
                     }
@@ -164,12 +183,24 @@ namespace TP {
             }
         
             template <typename T>
-            Argument<T> _parse(const char* flag, const std::string* key, const T* default_value, const std::string* description) {
+            Argument<T> _parse(const char* flag, const std::string* key, const T* default_value, const std::string& description) {
                 // Determines if the argument is just an indicator, or holding a value in the next slot
                 constexpr bool indicator = std::is_same<T, void>::value;
 
                 if (!key && !flag) {
                     throw std::invalid_argument("Both key and flag cannot be unspecified");
+                }
+
+                if (key && m_unique_keys.contains(*key)) {
+                    ASSERT(false, "Duplicate key: " << *key);
+                } else if (key) {
+                    m_unique_keys.insert(*key);
+                }
+
+                if (flag && m_unique_flags.contains(*flag)) {
+                    ASSERT(false, "Duplicate flag: " << *flag);
+                } else if (flag) {
+                    m_unique_flags.insert(*flag);
                 }
 
                 // Flag
@@ -192,13 +223,11 @@ namespace TP {
                         default_str = from<T>(*default_value);
                 }
 
-                // Description
-                std::string desc_str = std::string();
-                if (description)
-                    desc_str = *description;
-
                 // Add the necessary descriptions
-                m_descriptions.emplace_back(flag_str, key_str, default_str, desc_str);
+                m_descriptions.emplace_back(flag_str, key_str, default_str, description);
+
+                if (m_help)
+                    return Argument<T>(true);
 
                 for (uint32_t i=1; i<m_argc; ++i) {
                     if (m_checked[i]) continue;
@@ -207,7 +236,7 @@ namespace TP {
                     if ((flag && arg == flag_str) || (key && arg == key_str)) {
                         m_checked[i] = true;
                         if constexpr (indicator) {
-                            ASSERT(i < m_argc - 1, "Parse key: '" << key << "' expected a value (use type T = void for indicator arguments)");
+                            ASSERT(i < m_argc - 1, "Parse key: '" << key_str << "' expected a value (use type T = void for indicator arguments)");
                             return Argument<T>(true);
                         } else {
                             m_checked[i + 1] = true;
@@ -232,17 +261,25 @@ namespace TP {
             }
 
         private:
+            std::set<std::string> m_unique_keys;
+            std::set<char> m_unique_flags;
 
             std::vector<bool> m_checked;
             int m_argc;
             char** m_argv;
             std::vector<Documentation> m_descriptions;
+            bool m_help = false;
     };
 
     template <>
     std::string ArgParser::to<std::string>(const std::string& str) {return str;}
     template <>
     std::string ArgParser::from<std::string>(const std::string& v) {return v;}
+
+    template <>
+    char ArgParser::to<char>(const std::string& str) { return str[0]; }
+    template <>
+    std::string ArgParser::from<char>(const char& v) {return std::to_string(v);}
 
     template <>
     int ArgParser::to<int>(const std::string& str) {return std::stoi(str, std::string::size_type());}
