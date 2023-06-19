@@ -36,10 +36,10 @@ int main(int argc, char* argv[]) {
 
 	ArgParser parser(argc, argv);
 
-	bool verbose = parser.parse<void>('v', "Run in verbose mode");
+	bool verbose = parser.parse<void>('v', "Run in verbose mode").has();
 
-    bool boa_only = parser.parse<void>("boa-only", "Analyze BOA* only");
-    bool namoa_only = parser.parse<void>("namoa-only", "Analyze NAMOA* only");
+    bool boa_only = parser.parse<void>("boa-only", "Analyze BOA* only").has();
+    bool namoa_only = parser.parse<void>("namoa-only", "Analyze NAMOA* only").has();
     ASSERT(!boa_only || !namoa_only, "Cannot specify boa only and namoa only");
     
 	auto size = parser.parse<uint32_t>("size", 's', 100, "Random graph size");
@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 	auto trials = parser.parse<uint32_t>("trials", 't', 1, "Number of randomized trials to run");
     auto seed_arg = parser.parse<uint32_t>("seed", 0, "Specify a certain seed for generating graph");
 
-	uint32_t seed = (seed_arg) ? seed_arg.get() : RNG::randi(0, INT32_MAX);
+	uint32_t seed = (seed_arg.has()) ? seed_arg.get() : RNG::randi(0, INT32_MAX);
 
 	parser.enableHelp();
 

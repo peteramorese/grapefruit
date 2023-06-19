@@ -35,7 +35,8 @@ class PRLRegret:
         data_set = {
             "data": [],
             "label": label,
-            "color": color
+            "color": color,
+            "cumulative": cumulative_regret
         }
         regret_values = list()
         for inst in range(0, data["Instances"]):
@@ -61,11 +62,14 @@ class PRLRegret:
         assert "data" in data_set.keys()
         assert "label" in data_set.keys()
         assert "color" in data_set.keys()
+        assert "cumulative" in data_set.keys()
 
         if visualize_config["grid_on"]:
             ax.grid()
 
         ax.plot(data_set["data"][start_instance:end_instance], color=data_set["color"], label=data_set["label"])
+        ax.set_xlabel("Instance")
+        ax.set_ylabel("Cumulative Regret" if data_set["cumulative"] else "Regret")
         return ax
 
     def draw(self, block = True, use_legend = visualize_config["show_legend"], start_instance = None, end_instance = None):
@@ -89,7 +93,7 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--filepath",default="animation.yaml", help="Data file")
     parser.add_argument("--filepaths", nargs='+', help="Specify multiple filepaths to the each data file")
     parser.add_argument("-l","--label", default=None, help="Label the data set")
-    parser.add_argument("--cumulative", default=True, action="store_false", help="Specify if cumulative regret should be plotted")
+    parser.add_argument("--cumulative", default=False, action="store_true", help="Specify if cumulative regret should be plotted")
     parser.add_argument("--labels", nargs='+', help="Label each data set in '--filepaths'")
     parser.add_argument("--config-filepath", default="../../build/bin/configs/grid_world_config.yaml", help="Specify a grid world config file")
     parser.add_argument("--start-instance", default=0, type=int, help="Animation starting instance")

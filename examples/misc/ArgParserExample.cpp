@@ -11,12 +11,12 @@ int main(int argc, char* argv[]) {
     auto indicator = parser.parse<void>('i', "Indicator");
     parser.enableHelp();
 
-    LOG("has int? " << (bool)int_test);
-    if (int_test)
+    LOG("has int? " << int_test.has());
+    if (int_test.has())
         LOG("int: " << int_test.get());
     
-    LOG("has char? " << (bool)char_test);
-    if (char_test)
+    LOG("has char? " << char_test.has());
+    if (char_test.has())
         LOG("char: " << char_test.get());
     
     LOG("str: " << str_test.get());

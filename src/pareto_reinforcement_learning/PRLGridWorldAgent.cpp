@@ -27,8 +27,9 @@ int main(int argc, char* argv[]) {
  
 	TP::ArgParser parser(argc, argv);
 
-	bool verbose = parser.parse<void>('v', "Run in verbose mode");
-	bool calc_regret = parser.parse<void>("regret", 'r', "Calculate Pareto regret");
+	bool verbose = parser.parse<void>('v', "Run in verbose mode").has();
+	bool calc_regret = parser.parse<void>("regret", 'r', "Calculate Pareto regret").has();
+	bool serialize_regret_only = parser.parse<void>("regret-data", "Serialize regret data only for smaller data file").has();
 	//bool compare = parser.hasKey("compare", "Compare the learned estimates to the true estimates");
 
 	auto formula_filepath = parser.parse<std::string>("formula-filepath", 'f', "formulas.yaml", "File that contains all formulas");
@@ -49,7 +50,7 @@ int main(int argc, char* argv[]) {
 	/////////////////   Transition System   /////////////////
 	
 	TP::DiscreteModel::GridWorldAgentProperties ts_props;
-	if (!config_filepath) {
+	if (!config_filepath.has()) {
 		ts_props.n_x = 10;
 		ts_props.n_y = 10;
 		ts_props.init_coordinate_x = 0;
@@ -105,13 +106,13 @@ int main(int argc, char* argv[]) {
 
 	std::shared_ptr<DataCollector<N>> data_collector = std::make_shared<DataCollector<N>>(product, p_ev, regret_handler);
 
-	for (uint32_t trial = 0; trial < n_trials; ++trial) {
+	for (uint32_t trial = 0; trial < n_trials.get(); ++trial) {
 
 		std::shared_ptr<BehaviorHandlerType> behavior_handler;
 		if (default_mean.first)
-			behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, confidence, default_mean.second);
+			behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, confidence.get(), default_mean.second);
 		else 
-			behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, confidence);
+			behavior_handler = std::make_shared<BehaviorHandlerType>(product, 1, confidence.get());
 
 		Learner<N> prl(behavior_handler, data_collector, n_efe_samples.get(), verbose);
 
@@ -144,9 +145,9 @@ int main(int argc, char* argv[]) {
 		//	true_behavior->compare(*behavior_handler);
 
 
-		if (data_filepath) {
+		if (data_filepath.has()) {
 			TP::Serializer szr(data_filepath.get());
-			data_collector->serialize(szr);
+			data_collector->serialize(szr, serialize_regret_only);
 			szr.done();
 		}
 

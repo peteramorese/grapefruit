@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
  
 	ArgParser parser(argc, argv);
 
-	bool verbose = parser.parse<void>('v', "Run in verbose mode");
+	bool verbose = parser.parse<void>('v', "Run in verbose mode").has();
 
 	auto dfa_directory = parser.parse<std::string>("dfa-directory", 'd', "./dfas", "Directory that contains dfa files");
 	auto dfa_file_template = parser.parse<std::string>("dfa-file-template", "dfa_#.yaml", "Naming convention for dfa file");
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 	parser.enableHelp();
 
 	DiscreteModel::GridWorldAgentProperties ts_props;
-	if (!config_filepath) {
+	if (!config_filepath.has()) {
 		ts_props.n_x = 10;
 		ts_props.n_y = 10;
 		ts_props.init_coordinate_x = 0;
@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
 				" Weighted Sum PS Cost: " + std::to_string(plan.cost.template get<2>().preferenceFunction());
 			LOG(title);
 			if (verbose) plan.print();	
-			if (plan_directory) {
+			if (plan_directory.has()) {
 				std::string plan_filepath = plan_directory.get() + "/" + templateToLabel(plan_file_template.get(), i);
 				Serializer szr(plan_filepath);
 				plan.serialize(szr, title);

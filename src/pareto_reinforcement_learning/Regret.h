@@ -36,6 +36,12 @@ class Regret {
                         return TP::GraphSearch::NAMOAStar<CostVector, decltype(problem)>::search(problem);
                 }();
 
+                //LOG("sample: (x: " << sample[0] << " y: " << sample[1] << ")");
+                //for (const auto& pt : result.pf) {
+                //    LOG("x: " << pt[0] << " y: " << pt[1]);
+                //}
+                //LOG("regret: " << result.pf.regret(sample));
+                //PAUSE;
                 it = m_pareto_front_cache.insert(std::make_pair(starting_node, result.pf)).first;
             }
             return it->second.regret(sample);

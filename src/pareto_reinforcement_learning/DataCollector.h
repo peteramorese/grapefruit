@@ -109,7 +109,7 @@ class DataCollector {
             return avg;
         }
 
-        void serialize(TP::Serializer& szr) {
+        void serialize(TP::Serializer& szr, bool regret_only = false) {
             static_assert(N == 2, "Does not support serialization of more than two cost objectives");
 
             YAML::Emitter& out = szr.get();
@@ -137,34 +137,36 @@ class DataCollector {
                 out << YAML::Key << "Instance " + std::to_string(i); 
                 out << YAML::Value << YAML::BeginMap;
 
-                // Chosen plan index
-                out << YAML::Key << "Chosen Plan" << YAML::Value << "Candidate Plan " + std::to_string(instance.selected_plan_index);
+                if (!regret_only) {
+                    // Chosen plan index
+                    out << YAML::Key << "Chosen Plan" << YAML::Value << "Candidate Plan " + std::to_string(instance.selected_plan_index);
 
-                // Serialize each plan and associated data
-                for (uint32_t i = 0; i < instance.paths.size(); ++i) {
-                    std::string title = "Candidate Plan " + std::to_string(i);
-                    out << YAML::Key << title << YAML::Value << YAML::BeginMap;
-                    Plan plan(instance.paths[i], instance.ucb_pf[i], m_product, true);
-                    plan.serialize(szr, title);
+                    // Serialize each plan and associated data
+                    for (uint32_t i = 0; i < instance.paths.size(); ++i) {
+                        std::string title = "Candidate Plan " + std::to_string(i);
+                        out << YAML::Key << title << YAML::Value << YAML::BeginMap;
+                        Plan plan(instance.paths[i], instance.ucb_pf[i], m_product, true);
+                        plan.serialize(szr, title);
 
-                    out << YAML::Key << "Plan Mean Mean" << YAML::Value << YAML::BeginSeq;
-                    out << instance.trajectory_distributions[i].mu(0) << instance.trajectory_distributions[i].mu(1);
-                    out << YAML::EndSeq;
+                        out << YAML::Key << "Plan Mean Mean" << YAML::Value << YAML::BeginSeq;
+                        out << instance.trajectory_distributions[i].mu(0) << instance.trajectory_distributions[i].mu(1);
+                        out << YAML::EndSeq;
 
-                    out << YAML::Key << "Plan Mean Covariance" << YAML::Value << YAML::BeginSeq;
-                    out << instance.trajectory_distributions[i].Sigma(0, 0) << instance.trajectory_distributions[i].Sigma(0, 1) << instance.trajectory_distributions[i].Sigma(1, 1);
-                    out << YAML::EndSeq;
+                        out << YAML::Key << "Plan Mean Covariance" << YAML::Value << YAML::BeginSeq;
+                        out << instance.trajectory_distributions[i].Sigma(0, 0) << instance.trajectory_distributions[i].Sigma(0, 1) << instance.trajectory_distributions[i].Sigma(1, 1);
+                        out << YAML::EndSeq;
 
-                    out << YAML::Key << "Plan Pareto UCB" << YAML::Value << YAML::BeginSeq;
-                    out << instance.ucb_pf[i][0] << instance.ucb_pf[i][1];
-                    out << YAML::EndSeq;
+                        out << YAML::Key << "Plan Pareto UCB" << YAML::Value << YAML::BeginSeq;
+                        out << instance.ucb_pf[i][0] << instance.ucb_pf[i][1];
+                        out << YAML::EndSeq;
 
-                    out << YAML::EndMap;
+                        out << YAML::EndMap;
+                    }
+
+                    // Cumulative cost sample for the chosen plan
+                    out << YAML::Key << "Sample" << YAML::Value << YAML::BeginSeq;
+                    out << instance.cost_sample[0] << instance.cost_sample[1] << YAML::EndSeq;
                 }
-
-                // Cumulative cost sample for the chosen plan
-                out << YAML::Key << "Sample" << YAML::Value << YAML::BeginSeq;
-                out << instance.cost_sample[0] << instance.cost_sample[1] << YAML::EndSeq;
 
                 // Regret
                 float instance_regret = instance.getRegret();

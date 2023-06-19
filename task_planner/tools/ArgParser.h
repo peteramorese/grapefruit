@@ -27,7 +27,8 @@ namespace TP {
     class Argument : public BASE {
         public:
             Argument(bool valid) : m_valid(valid) {}
-            operator bool() const {return m_valid;}
+            //operator bool() const {return m_valid;} // this makes it easy to forget to use get()
+            inline bool has() const {return m_valid;}
         private:
             bool m_valid;
     };

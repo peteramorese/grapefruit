@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
     TP::Argument<uint32_t> n_samples = parser.parse<uint32_t>("n-samples", 30, "Number of samples");
     TP::Argument<uint32_t> print_interval = parser.parse<uint32_t>("print-interval", 1, "Print after an interval");
 	TP::Argument<std::string> sample_filepath = parser.parse<std::string>("sample-filepath", "Filepath to write samples to for visualization");
-    bool mv = parser.parse<void>("mv", "Multivariate test");
+    bool mv = parser.parse<void>("mv", "Multivariate test").has();
 
     if (parser.enableHelp()) return 0;
 
@@ -19,10 +19,10 @@ int main(int argc, char** argv) {
         Distributions::Normal true_dist(15.0f, 4.0f);
 
 
-        for (uint32_t i = 0; i < n_samples; ++i) {
+        for (uint32_t i = 0; i < n_samples.get(); ++i) {
             float sample = TP::RNG::nrand(true_dist);
             upd.update(sample);
-            if (i % print_interval == 0) {
+            if (i % print_interval.get() == 0) {
                 Distributions::Normal estimate = upd.getEstimateNormal();
                 LOG("Estimated normal distribution: (mean: " << E(estimate) << " variance: " << var(estimate) << ")");
             }
@@ -44,23 +44,23 @@ int main(int argc, char** argv) {
         mv_true_dist.mu = mu;
         mv_true_dist.setSigmaFromUniqueElementVector(Sigma_minimal);
 
-        std::vector<Eigen::Matrix<float, 3, 1>> sample_set(n_samples);
+        std::vector<Eigen::Matrix<float, 3, 1>> sample_set(n_samples.get());
         Distributions::FixedMultivariateNormalSampler sampler(mv_true_dist);
-        for (uint32_t i = 0; i < n_samples; ++i) {
+        for (uint32_t i = 0; i < n_samples.get(); ++i) {
             auto sample = TP::RNG::mvnrand(sampler);
             sample_set[i] = sample;
             mvupd.update(sample);
-            if (i % print_interval == 0) {
+            if (i % print_interval.get() == 0) {
                 auto estimate = mvupd.getEstimateNormal();
                 LOG("Estimated normal distribution: \n-mean: \n" << E(estimate) << "\n-variance: \n" << var(estimate) << "\n");
             }
         }
 
-        if (sample_filepath) {
+        if (sample_filepath.has()) {
             LOG("writing...");
             TP::Serializer szr(sample_filepath.get());
             YAML::Emitter& out = szr.get();
-            for (uint32_t s = 0; s < n_samples; ++s) {
+            for (uint32_t s = 0; s < n_samples.get(); ++s) {
                 out << YAML::Key << "Sample " + std::to_string(s) << YAML::Value << YAML::BeginSeq;
                 for (uint32_t i = 0; i < 3; ++i) {
                     out << sample_set[s](i);
