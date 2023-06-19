@@ -1,19 +1,36 @@
 clear; close all; clc;
 
+% Number of objectives
 dim = 2;
+
+% Number of steps in the plan
 m = 10;
+
+% Number of Monte Carlo samples 
 mc_samples = 10000;
 
+% Each true underlying distribution for each state-action pair
+% is randomly generated. The mean is a random number 
+% between mu_low and mu_hi. To generate the covariance, samples
+% are randomly generated between sig_low and sig_hi, then 
+% the covariance function is used to generate a reasonable 
+% positive semi-definite covariance matrix
 mu_low = 3.0;
 mu_hi = 10.0;
 sig_low = 0.5;
 sig_hi = 1.5;
+
+% Each NIW state-action distribution is updated a random number
+% of times between samp_low and samp_hi with a sample drawn from
+% the corresponding true underlying distribution.
 samp_low = 4;
 samp_hi = 6;
 
 % True distributions
 mu_true = zeros(dim, 1, m);
 Sigma_true = zeros(dim, dim, m);
+
+% Number of times to update the NIW
 samples = zeros(dim, 1);
 for k = 1:m
     for r = 1:dim
@@ -31,14 +48,23 @@ mu_0 = zeros(dim, 1);
 nu_0 = 3;
 Lambda_0 = eye(dim);
 
+% Samples drawn for each (s,a)
 x = cell(m);
+
+% Posterior parameters for each (s,a)
 kappa_n = zeros(1, m);
 mu_n = zeros(dim, 1, m);
 nu_n = zeros(1, m);
 Lambda_n = zeros(dim, dim, m);
+
+% For each (s,a):
 for k = 1:m
+    % Generate a posterior from n samples
     n = samples(k);
+    % Each sample is sampled from the true MVN
     x{k} = mvnrnd(mu_true(:,:,k), Sigma_true(:,:,k), n)';
+
+    % Posterior parameters
     x_bar = mean(x{k}, 2);
     mu_n(:, :, k) = kappa_0 / (kappa_0 + n) * mu_0 + n / (kappa_0 + n) * x_bar;
     nu_n(k) = nu_0 + n;
@@ -51,20 +77,24 @@ for k = 1:m
     Lambda_n(:, :, k) = Lambda_0 + Sum + n * kappa_0 / (n + kappa_0) * (x_bar - mu_0) * (x_bar - mu_0)';
 end
 
-% Sample
-mu = zeros(dim, mc_samples);
-Sigma = zeros(dim, dim, mc_samples);
+% Monte-Carlo generated samples for the convolution approximation. Each
+% mc sample represents m convoluted samples 
+mu = zeros(dim, mc_samples); % dim x mc_samples array (2D)
+Sigma = zeros(dim, dim, mc_samples); % dim x dim x mc_samples array (3D where each page is a matrix)
 for s = 1:mc_samples
     mu(:,s) = zeros(dim, 1);
     Sigma(:, :, s) = zeros(dim, dim);
     for k = 1:m
+        % Generate a mean and covariance from the NIW
         [mu_nw, Sigma_nw] = sampleNormalIWishart(kappa_n(:,k), mu_n(:,:,k), nu_n(:,k), Lambda_n(:,:,k));
+        % Add the mean to the convoluted sample
         mu(:,s) = mu(:, s) + mu_nw;
+        % Add the covariance to the convoluted sample
         Sigma(:, :, s) = Sigma(:, :, s) + Sigma_nw;
     end
 end
 
-% Visualize
+% Visualize to see if the histograms look like normal distributions
 figure()
 n_figures = dim + uniqueCovParams(dim);
 for d = 1:dim
@@ -83,12 +113,14 @@ for r = 1:dim
     end
 end
 
-% Compare
+% Compare to the moment matched distribution
 mu_mvn = zeros(dim + dim^2, 1);
 Sigma_mvn = zeros(dim + dim^2, dim + dim^2);
 for k = 1:m
+    % Get the MVN with the same mean and variance
     [mu_mvn_k, Sigma_mvn_k] = normalIWishartToMVN(kappa_n(:,k), mu_n(:,:,k), nu_n(:,k), Lambda_n(:,:,k));
     disp(mu_mvn_k);
+    % Convolute each MVN
     mu_mvn = mu_mvn + mu_mvn_k;
     Sigma_mvn = Sigma_mvn + Sigma_mvn_k;
 end
