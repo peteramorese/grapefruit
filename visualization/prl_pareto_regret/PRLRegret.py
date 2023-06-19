@@ -32,6 +32,15 @@ class PRLRegret:
     def deserialize_data_set(self, filepath, label = None, color = visualize_config["default_color"], cumulative_regret = True):
         with open(filepath, "r") as f:
             data = yaml.safe_load(f)
+        if "Trials" in data.keys():
+            data_set_trials = list()
+            for trial in range(data["Trials"]):
+                data_set_trials.append(self._create_data_set(data["Trial " + str(trial)], label, color, cumulative_regret))
+            self._data_sets.append(self._average_data_across_trials(data_set_trials))
+        else:
+            self._data_sets.append(self._create_data_set(data, label, color, cumulative_regret))
+
+    def _create_data_set(self, raw_data, label, color, cumulative_regret):
         data_set = {
             "data": [],
             "label": label,
@@ -39,15 +48,31 @@ class PRLRegret:
             "cumulative": cumulative_regret
         }
         regret_values = list()
-        for inst in range(0, data["Instances"]):
+        for inst in range(0, raw_data["Instances"]):
             instance_key = "Instance " + str(inst)
             try:
-                instance_data = data[instance_key]
+                instance_data = raw_data[instance_key]
             except ValueError:
                 print(instance_key," not found in animation file")
             regret_values.append(instance_data["Cumulative Regret" if cumulative_regret else "Regret"])
         data_set["data"] = regret_values
-        self._data_sets.append(data_set)
+        return data_set
+
+    def _average_data_across_trials(self, data_set_trials : list):
+        n_instances = len(data_set_trials[0]["data"])
+        sum_regrets = [0.0 for _ in data_set_trials[0]["data"]]
+        for data_set in data_set_trials:
+            data = data_set["data"]
+            assert len(data) == n_instances 
+            for i in range(n_instances):
+                sum_regrets[i] += data[i]
+        return {
+            "data": [sum_regret / len(data_set_trials) for sum_regret in sum_regrets],
+            "label": data_set_trials[0]["label"],
+            "color": data_set_trials[0]["color"],
+            "cumulative": data_set_trials[0]["cumulative"]
+        }
+            
 
     def sketch_data_set(self, data_set : dict, ax = None, start_instance = None, end_instance = None):
         if not ax:

@@ -100,13 +100,23 @@ int main(int argc, char* argv[]) {
 	// Get the default transition mean if the file contains it
 	std::pair<bool, Eigen::Matrix<float, N, 1>> default_mean = deserializeDefaultMean<N>(config_filepath.get());
 
-	std::shared_ptr<Regret<SymbolicGraph, N>> regret_handler;
-	if (calc_regret)
- 		regret_handler = std::make_shared<Regret<SymbolicGraph, N>>(product, true_behavior);
-
-	std::shared_ptr<DataCollector<N>> data_collector = std::make_shared<DataCollector<N>>(product, p_ev, regret_handler);
+	std::unique_ptr<TP::Serializer> szr_ptr;
+	if (data_filepath.has()) {
+		szr_ptr.reset(new TP::Serializer(data_filepath.get()));
+		if (n_trials.get() > 1) {
+			YAML::Emitter& out = szr_ptr->get();
+			out << YAML::Key << "Trials" << YAML::Value << n_trials.get();
+		}
+	}
 
 	for (uint32_t trial = 0; trial < n_trials.get(); ++trial) {
+
+		
+		std::shared_ptr<Regret<SymbolicGraph, N>> regret_handler;
+		if (calc_regret)
+			regret_handler = std::make_shared<Regret<SymbolicGraph, N>>(product, true_behavior);
+
+		std::shared_ptr<DataCollector<N>> data_collector = std::make_shared<DataCollector<N>>(product, p_ev, regret_handler);
 
 		std::shared_ptr<BehaviorHandlerType> behavior_handler;
 		if (default_mean.first)
@@ -146,12 +156,20 @@ int main(int argc, char* argv[]) {
 
 
 		if (data_filepath.has()) {
-			TP::Serializer szr(data_filepath.get());
-			data_collector->serialize(szr, serialize_regret_only);
-			szr.done();
+			if (n_trials.get() > 1) {
+				YAML::Emitter& out = szr_ptr->get();
+				out << YAML::Key << "Trial " + std::to_string(trial) << YAML::Value << YAML::BeginMap;
+				data_collector->serialize(*szr_ptr, serialize_regret_only);
+				out << YAML::EndMap;
+			} else {
+				data_collector->serialize(*szr_ptr, serialize_regret_only);
+			}
 		}
 
 	}
+	
+	if (szr_ptr)
+		szr_ptr->done();
 
 	return 0;
 }
