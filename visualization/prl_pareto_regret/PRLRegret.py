@@ -17,7 +17,7 @@ visualize_config = {
     "line_width": 0.4,
     "line_style": "-",
     "show_title": False,
-    "show_legend": False,
+    "show_legend": True,
     "grid_on": True,
     "figure_size": (3.9, 3.9),
     "default_color": "rebeccapurple",
@@ -72,14 +72,19 @@ class PRLRegret:
         ax.set_ylabel("Cumulative Regret" if data_set["cumulative"] else "Regret")
         return ax
 
-    def draw(self, block = True, use_legend = visualize_config["show_legend"], start_instance = None, end_instance = None):
+    def draw(self, block = True, one_plot = True, use_legend = visualize_config["show_legend"], start_instance = None, end_instance = None):
 
-        fig, axes = plt.subplots(len(self._data_sets), 1)
-        if len(self._data_sets) > 1:
-            for i in range(len(axes)):
-                self.sketch_data_set(self._data_sets[i], axes[i])
+        if one_plot:
+            ax = plt.gca()
+            for data_set in self._data_sets:
+                self.sketch_data_set(data_set, ax)
         else:
-            self.sketch_data_set(self._data_sets[0], axes)
+            fig, axes = plt.subplots(len(self._data_sets), 1)
+            if len(self._data_sets) > 1:
+                for i in range(len(axes)):
+                    self.sketch_data_set(self._data_sets[i], axes[i])
+            else:
+                self.sketch_data_set(self._data_sets[0], axes)
 
         plt.show(block=False)
         if use_legend:
@@ -90,11 +95,13 @@ class PRLRegret:
 
 if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
-    parser.add_argument("-f", "--filepath",default="animation.yaml", help="Data file")
+    parser.add_argument("-f", "--filepath",default=None, help="Data file")
     parser.add_argument("--filepaths", nargs='+', help="Specify multiple filepaths to the each data file")
     parser.add_argument("-l","--label", default=None, help="Label the data set")
     parser.add_argument("--cumulative", default=False, action="store_true", help="Specify if cumulative regret should be plotted")
+    parser.add_argument("--subplots", default=False, action="store_true", help="Draw a subplot for each file")
     parser.add_argument("--labels", nargs='+', help="Label each data set in '--filepaths'")
+    parser.add_argument("--colors", nargs='+', help="Specify the color of each data set in '--filepaths'")
     parser.add_argument("--config-filepath", default="../../build/bin/configs/grid_world_config.yaml", help="Specify a grid world config file")
     parser.add_argument("--start-instance", default=0, type=int, help="Animation starting instance")
     parser.add_argument("--end-instance", default=None, type=int, help="Animation ending instance")
@@ -113,4 +120,4 @@ if __name__ == "__main__":
             ind += 1
     else:
         assert False
-    regret_visualizer.draw()
+    regret_visualizer.draw(one_plot=not args.subplots)

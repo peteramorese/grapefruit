@@ -237,9 +237,9 @@ namespace TP {
                     if ((flag && arg == flag_str) || (key && arg == key_str)) {
                         m_checked[i] = true;
                         if constexpr (indicator) {
-                            ASSERT(i < m_argc - 1, "Parse key: '" << key_str << "' expected a value (use type T = void for indicator arguments)");
                             return Argument<T>(true);
                         } else {
+                            ASSERT(i < m_argc - 1 && isValue(m_argv[i + 1]), "Parse key: '" << key_str << "' expected a value (use type T = void for indicator arguments)");
                             m_checked[i + 1] = true;
                             T val = to<T>(m_argv[i + 1]);
                             Argument<T> ret(true);
