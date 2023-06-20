@@ -35,6 +35,16 @@ class TrueBehavior : public Storage<TP::Stats::Distributions::FixedMultivariateN
             return ret;
         }
 
+        void print() const {
+            LOG("True distributions:");
+            Eigen::IOFormat fmt(4, 0, ", ", "\n", "     [", "]");
+            for (const auto&[nap, sampler] : this->m_node_action_pair_elements) {
+                TP::DiscreteModel::State s = this->m_product->getModel().getGenericNodeContainer()[this->m_product->getUnwrappedNode(nap.node).ts_node];
+                PRINT_NAMED("State: " << s.to_str() << " action: " << nap.action, "");
+                PRINT("   Mean:\n" << sampler.mean().format(fmt));
+                PRINT("   Covariance:\n"  << sampler.dist().Sigma.format(fmt));
+            }
+        }
 
     protected:
         std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;
@@ -62,17 +72,6 @@ class GridWorldTrueBehavior : public TrueBehavior<
             : TrueBehavior<SymbolicProductGraph, N>(product, TP::Stats::Distributions::FixedMultivariateNormal<N>())
         {
             deserializeConfig(filepath);
-        }
-
-        void print() const {
-            LOG("True distributions:");
-            Eigen::IOFormat fmt(4, 0, ", ", "\n", "     [", "]");
-            for (const auto&[nap, sampler] : this->m_node_action_pair_elements) {
-                TP::DiscreteModel::State s = this->m_product->getModel().getGenericNodeContainer()[this->m_product->getUnwrappedNode(nap.node).ts_node];
-                PRINT_NAMED("State: " << s.to_str() << " action: " << nap.action, "");
-                PRINT("   Mean:\n" << sampler.mean().format(fmt));
-                PRINT("   Covariance:\n"  << sampler.dist().Sigma.format(fmt));
-            }
         }
 
 

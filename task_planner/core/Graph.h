@@ -69,7 +69,8 @@ class Graph {
 			std::vector<NATIVE_NODE_T> nodes;
 			nodes.reserve(m_graph.size());
 			for (Node n=0; n<m_graph.size(); ++n) {
-				if (!m_graph[n].forward.empty() || !m_graph[n].backward.empty()) nodes.push_back(n);
+				if (!m_graph[n].forward.empty() || !m_graph[n].backward.empty()) 
+					nodes.push_back(n);
 			}
 			return nodes;
 		}

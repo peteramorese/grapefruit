@@ -87,6 +87,9 @@ class MultivariateGaussianUpdater {
 
         Distributions::FixedNormalInverseWishart<N> dist() const {return m_niw.posterior(m_sample_set);}
 
+        const Distributions::FixedNormalInverseWishart<N>& priorDist() const {return m_niw;}
+        Distributions::FixedNormalInverseWishart<N>& priorDist() {return m_niw;}
+
         Distributions::FixedNormalInverseWishart<N> tempPosterior(const Eigen::Matrix<float, N, 1>& sample) const {
             /* Get the posterior as if the sample was added, but sample is not kept */
             PosteriorSampleSet<Eigen::Matrix<float, N, 1>> posterior_sample_set(&m_sample_set, sample);
