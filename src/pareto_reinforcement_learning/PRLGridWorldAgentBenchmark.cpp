@@ -46,10 +46,6 @@ int main(int argc, char* argv[]) {
 
 	constexpr uint64_t N = 2;
 
-	Selector selector = getSelector(selector_label.get());
-	auto dfas = TP::FormalMethods::createDFAsFromFile(formula_filepath.get());
-	RandomGridWorldProperties props = RandomGridWorldGenerator<N>::deserializeConfig(random_config_filepath.get());
-	auto targets = RandomGridWorldGenerator<N>::generate(props, dfas, confidence.get());
 
 	/////////////////   Planner   /////////////////
 
@@ -70,8 +66,13 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	for (uint32_t trial = 0; trial < n_trials.get(); ++trial) {
+	uint32_t trial = 0;
+	while (trial < n_trials.get()) {
 
+		Selector selector = getSelector(selector_label.get());
+		auto dfas = TP::FormalMethods::createDFAsFromFile(formula_filepath.get());
+		RandomGridWorldProperties props = RandomGridWorldGenerator<N>::deserializeConfig(random_config_filepath.get());
+		auto targets = RandomGridWorldGenerator<N>::generate(props, dfas, confidence.get());
 		
 		std::shared_ptr<Regret<SymbolicGraph, N>> regret_handler = std::make_shared<Regret<SymbolicGraph, N>>(targets.product, targets.true_behavior);
 		std::shared_ptr<DataCollector<N>> data_collector = std::make_shared<DataCollector<N>>(targets.product, p_ev, regret_handler);
@@ -87,7 +88,11 @@ int main(int argc, char* argv[]) {
 		};
 
 		// Run the PRL
-		prl.run(p_ev, samplerFunction, max_planning_instances.get(), selector);
+		bool success = prl.run(p_ev, samplerFunction, max_planning_instances.get(), selector);
+
+		if (!success)
+			continue;
+
 		if (verbose) {
 			LOG("Finished!");
 			std::string total_cost_str{};
@@ -118,6 +123,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
+		++trial;
 	}
 	
 	if (szr_ptr)

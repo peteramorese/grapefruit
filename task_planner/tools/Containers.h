@@ -104,7 +104,7 @@ namespace Containers {
                 m_array = (m_size) ? new T[m_size] : nullptr;
                 std::size_t i = 0;
                 for (auto it = list.begin(); it != list.end(); ++it) {
-                    m_array[i] = *it;
+                    m_array[i++] = *it;
                 }
             }
             SizedArray(const SizedArray& other) : m_size(other.m_size) {

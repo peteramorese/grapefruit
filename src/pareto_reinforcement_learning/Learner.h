@@ -118,7 +118,7 @@ class Learner {
         }
 
         template <typename SAMPLER_LAM_T>
-        void run(const PreferenceDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_instances, Selector selector) {
+        bool run(const PreferenceDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_instances, Selector selector) {
             ASSERT(m_initialized, "Must initialize before running");
             m_num_instances = 0;
             LOG("running " << max_instances << " instances");
@@ -126,7 +126,7 @@ class Learner {
                 SearchResult result = plan(m_behavior_handler->getCompletedTasksHorizon());
                 if (!result.success) {
                     ERROR("Planner did not succeed!");
-                    return;
+                    return false;
                 }
                 log("Selection Phase (2)");
 
@@ -183,7 +183,7 @@ class Learner {
 
                 Plan plan(result.solution_set[selected_ind], result.pf[selected_ind], m_product, true);
                 if (!execute(plan, sampler))
-                    return;
+                    return false;
                 log("Update Phase (4)");
                 m_current_product_node = plan.product_node_sequence.back();
 
@@ -196,6 +196,7 @@ class Learner {
                 
                 ++m_num_instances;
             }
+            return true;
         }
 
         TrajectoryDistributionUpdaters<N> getTrajectoryUpdaters(const Plan& plan) {

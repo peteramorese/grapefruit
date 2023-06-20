@@ -13,15 +13,16 @@ struct RandomRegionSpec {
     uint32_t n_cells;
 };
 
+template <uint64_t N>
 struct RandomGridWorldProperties {
     uint32_t n_x;
     uint32_t n_y;
     uint32_t n_obstacle_cells = 0;
     std::vector<RandomRegionSpec> region_specs;
-    float true_mean_lower_bound = 0.0f;
-    float true_mean_upper_bound = 0.0f;
-    float estimate_mean_lower_bound = 0.0f;
-    float estimate_mean_upper_bound = 0.0f;
+    TP::Containers::FixedArray<N, float> true_mean_lower_bound;
+    TP::Containers::FixedArray<N, float> true_mean_upper_bound;
+    TP::Containers::FixedArray<N, float> estimate_mean_lower_bound;
+    TP::Containers::FixedArray<N, float> estimate_mean_upper_bound;
 };
 
 template <uint64_t N>
@@ -40,8 +41,8 @@ class RandomGridWorldGenerator {
         };
 
     public:
-        static RandomGridWorldProperties deserializeConfig(const std::string& filepath) {
-            RandomGridWorldProperties props;
+        static RandomGridWorldProperties<N> deserializeConfig(const std::string& filepath) {
+            RandomGridWorldProperties<N> props;
 
             YAML::Node data;
             try {
@@ -59,14 +60,20 @@ class RandomGridWorldGenerator {
                     props.region_specs.push_back(std::move(spec));
                 }
 
-                props.true_mean_lower_bound = data["True Mean Lower Bound"].as<float>();
-                ASSERT(props.true_mean_lower_bound > 0.0f, "Invalid lower bound");
-                props.true_mean_upper_bound = data["True Mean Upper Bound"].as<float>();
-                ASSERT(props.true_mean_upper_bound > 0.0f && props.true_mean_upper_bound > props.true_mean_lower_bound, "Invalid upper bound");
-                props.estimate_mean_lower_bound = data["Estimate Mean Lower Bound"].as<float>();
-                ASSERT(props.estimate_mean_lower_bound > 0.0f, "Invalid lower bound");
-                props.estimate_mean_upper_bound = data["Estimate Mean Upper Bound"].as<float>();
-                ASSERT(props.estimate_mean_upper_bound > 0.0f && props.estimate_mean_upper_bound > props.estimate_mean_lower_bound, "Invalid upper bound");
+                auto getMeanVec = [&data](const std::string& key, TP::Containers::FixedArray<N, float>& array) {
+                    std::vector<float> vec = data[key].as<std::vector<float>>();
+                    ASSERT(vec.size() == N, "Number elements does not match dimension for key " << key);
+                    for (uint32_t i = 0; i < N; ++i) {
+                        ASSERT(vec[i] > 0.0f, "Bound must be positive");
+                        array[i] = vec[i];
+                    }
+
+                };
+
+                getMeanVec("True Mean Lower Bound", props.true_mean_lower_bound);
+                getMeanVec("True Mean Upper Bound", props.true_mean_upper_bound);
+                getMeanVec("Estimate Mean Lower Bound", props.estimate_mean_lower_bound);
+                getMeanVec("Estimate Mean Upper Bound", props.estimate_mean_upper_bound);
 
             } catch (YAML::ParserException e) {
                 ERROR("Failed to load file" << filepath << " ("<< e.what() <<")");
@@ -74,7 +81,7 @@ class RandomGridWorldGenerator {
             return props;
         }
 
-        static Targets generate(const RandomGridWorldProperties& random_model_props, const std::vector<TP::FormalMethods::DFAptr>& dfas, float confidence) {
+        static Targets generate(const RandomGridWorldProperties<N>& random_model_props, const std::vector<TP::FormalMethods::DFAptr>& dfas, float confidence) {
             Targets targets;
             
             // Generate the grid world properties
@@ -109,6 +116,7 @@ class RandomGridWorldGenerator {
                         TP::DiscreteModel::Obstacle obs{std::string(), unwrapped_cell[0], unwrapped_cell[0], unwrapped_cell[1], unwrapped_cell[1]};
                         targets.props.environment.obstacles.push_back(std::move(obs));
                         --n_cells;
+                        break;
                     }
                 }
             }
@@ -131,6 +139,7 @@ class RandomGridWorldGenerator {
                             region.upper_right_y = unwrapped_cell[1];
                             targets.props.environment.regions.push_back(std::move(region));
                             --n_cells;
+                            break;
                         }
                     }
                 }
@@ -154,9 +163,9 @@ class RandomGridWorldGenerator {
                     TP::Stats::Distributions::FixedMultivariateNormal<N> true_distribution;
                     Eigen::Matrix<float, N, 1>& niw_mu = targets.behavior_handler->getElement(node, action).getUpdater().priorDist().mu;
                     for (uint32_t i = 0; i < N; ++i) {
-                        true_distribution.mu(i) = TP::RNG::randf(random_model_props.true_mean_lower_bound, random_model_props.true_mean_upper_bound);
+                        true_distribution.mu(i) = TP::RNG::randf(random_model_props.true_mean_lower_bound[i], random_model_props.true_mean_upper_bound[i]);
                         true_distribution.Sigma(i,i) = 0.1f * true_distribution.mu(i);
-                        niw_mu(i) = TP::RNG::randf(random_model_props.estimate_mean_lower_bound, random_model_props.estimate_mean_upper_bound);
+                        niw_mu(i) = TP::RNG::randf(random_model_props.estimate_mean_lower_bound[i], random_model_props.estimate_mean_upper_bound[i]);
                     }
                     targets.true_behavior->getElement(node, action) = TP::Stats::Distributions::FixedMultivariateNormalSampler<N>(true_distribution);
                 }

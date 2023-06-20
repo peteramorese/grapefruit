@@ -1,0 +1,991 @@
+Trials: 10
+Trial 0:
+  PRL Preference Mean:
+    - 76
+    - 10
+  PRL Preference Covariance:
+    - 50
+    - 10
+    - 70
+  Instances: 30
+  Instance 0:
+    Regret: 0.858341217
+    Cumulative Regret: 0.858341217
+  Instance 1:
+    Regret: 0
+    Cumulative Regret: 0.858341217
+  Instance 2:
+    Regret: 0.512077332
+    Cumulative Regret: 1.37041855
+  Instance 3:
+    Regret: 0.268028259
+    Cumulative Regret: 1.63844681
+  Instance 4:
+    Regret: 0
+    Cumulative Regret: 1.63844681
+  Instance 5:
+    Regret: 0
+    Cumulative Regret: 1.63844681
+  Instance 6:
+    Regret: 0
+    Cumulative Regret: 1.63844681
+  Instance 7:
+    Regret: 0
+    Cumulative Regret: 1.63844681
+  Instance 8:
+    Regret: 0.069234848
+    Cumulative Regret: 1.70768166
+  Instance 9:
+    Regret: 0
+    Cumulative Regret: 1.70768166
+  Instance 10:
+    Regret: 0.734176636
+    Cumulative Regret: 2.44185829
+  Instance 11:
+    Regret: 1.44960785
+    Cumulative Regret: 3.89146614
+  Instance 12:
+    Regret: 0
+    Cumulative Regret: 3.89146614
+  Instance 13:
+    Regret: 0
+    Cumulative Regret: 3.89146614
+  Instance 14:
+    Regret: 0
+    Cumulative Regret: 3.89146614
+  Instance 15:
+    Regret: 0
+    Cumulative Regret: 3.89146614
+  Instance 16:
+    Regret: 0
+    Cumulative Regret: 3.89146614
+  Instance 17:
+    Regret: 0.269117355
+    Cumulative Regret: 4.1605835
+  Instance 18:
+    Regret: 0
+    Cumulative Regret: 4.1605835
+  Instance 19:
+    Regret: 0
+    Cumulative Regret: 4.1605835
+  Instance 20:
+    Regret: 0.422721863
+    Cumulative Regret: 4.58330536
+  Instance 21:
+    Regret: 0.729535103
+    Cumulative Regret: 5.31284046
+  Instance 22:
+    Regret: 0.768521309
+    Cumulative Regret: 6.08136177
+  Instance 23:
+    Regret: 1.00873947
+    Cumulative Regret: 7.09010124
+  Instance 24:
+    Regret: 0
+    Cumulative Regret: 7.09010124
+  Instance 25:
+    Regret: 0
+    Cumulative Regret: 7.09010124
+  Instance 26:
+    Regret: 0
+    Cumulative Regret: 7.09010124
+  Instance 27:
+    Regret: 0
+    Cumulative Regret: 7.09010124
+  Instance 28:
+    Regret: 0
+    Cumulative Regret: 7.09010124
+  Instance 29:
+    Regret: 0
+    Cumulative Regret: 7.09010124
+Trial 1:
+  PRL Preference Mean:
+    - 76
+    - 10
+  PRL Preference Covariance:
+    - 50
+    - 10
+    - 70
+  Instances: 30
+  Instance 0:
+    Regret: 0.982276917
+    Cumulative Regret: 0.982276917
+  Instance 1:
+    Regret: 4.71847439
+    Cumulative Regret: 5.7007513
+  Instance 2:
+    Regret: 5.06862831
+    Cumulative Regret: 10.7693796
+  Instance 3:
+    Regret: 5.25016212
+    Cumulative Regret: 16.0195427
+  Instance 4:
+    Regret: 3.94586563
+    Cumulative Regret: 19.9654083
+  Instance 5:
+    Regret: 4.26067448
+    Cumulative Regret: 24.2260818
+  Instance 6:
+    Regret: 4.67327023
+    Cumulative Regret: 28.899353
+  Instance 7:
+    Regret: 4.46761227
+    Cumulative Regret: 33.3669662
+  Instance 8:
+    Regret: 3.38352394
+    Cumulative Regret: 36.7504883
+  Instance 9:
+    Regret: 5.93900776
+    Cumulative Regret: 42.6894951
+  Instance 10:
+    Regret: 3.51515293
+    Cumulative Regret: 46.2046471
+  Instance 11:
+    Regret: 4.3043251
+    Cumulative Regret: 50.5089722
+  Instance 12:
+    Regret: 3.3805151
+    Cumulative Regret: 53.8894882
+  Instance 13:
+    Regret: 3.89438057
+    Cumulative Regret: 57.7838669
+  Instance 14:
+    Regret: 5.32400322
+    Cumulative Regret: 63.107872
+  Instance 15:
+    Regret: 4.15812016
+    Cumulative Regret: 67.2659912
+  Instance 16:
+    Regret: 2.59704685
+    Cumulative Regret: 69.8630371
+  Instance 17:
+    Regret: 3.97086048
+    Cumulative Regret: 73.8339005
+  Instance 18:
+    Regret: 1.47882557
+    Cumulative Regret: 75.3127289
+  Instance 19:
+    Regret: 5.00803661
+    Cumulative Regret: 80.3207626
+  Instance 20:
+    Regret: 2.21946144
+    Cumulative Regret: 82.5402222
+  Instance 21:
+    Regret: 3.36470509
+    Cumulative Regret: 85.9049301
+  Instance 22:
+    Regret: 3.39247799
+    Cumulative Regret: 89.2974091
+  Instance 23:
+    Regret: 4.16095066
+    Cumulative Regret: 93.4583588
+  Instance 24:
+    Regret: 3.63593292
+    Cumulative Regret: 97.0942917
+  Instance 25:
+    Regret: 2.33687496
+    Cumulative Regret: 99.4311676
+  Instance 26:
+    Regret: 5.02207375
+    Cumulative Regret: 104.453239
+  Instance 27:
+    Regret: 3.15705299
+    Cumulative Regret: 107.610291
+  Instance 28:
+    Regret: 4.22850323
+    Cumulative Regret: 111.838791
+  Instance 29:
+    Regret: 4.63346767
+    Cumulative Regret: 116.47226
+Trial 2:
+  PRL Preference Mean:
+    - 76
+    - 10
+  PRL Preference Covariance:
+    - 50
+    - 10
+    - 70
+  Instances: 30
+  Instance 0:
+    Regret: 0
+    Cumulative Regret: 0
+  Instance 1:
+    Regret: 1.38385749
+    Cumulative Regret: 1.38385749
+  Instance 2:
+    Regret: 0.93789506
+    Cumulative Regret: 2.32175255
+  Instance 3:
+    Regret: 0.515127897
+    Cumulative Regret: 2.83688045
+  Instance 4:
+    Regret: 1.43480873
+    Cumulative Regret: 4.27168941
+  Instance 5:
+    Regret: 1.1161871
+    Cumulative Regret: 5.38787651
+  Instance 6:
+    Regret: 1.83983016
+    Cumulative Regret: 7.22770691
+  Instance 7:
+    Regret: 0.61098671
+    Cumulative Regret: 7.83869362
+  Instance 8:
+    Regret: 0.706521988
+    Cumulative Regret: 8.54521561
+  Instance 9:
+    Regret: 0.841250658
+    Cumulative Regret: 9.38646603
+  Instance 10:
+    Regret: 0.772069216
+    Cumulative Regret: 10.158535
+  Instance 11:
+    Regret: 0.987374544
+    Cumulative Regret: 11.1459093
+  Instance 12:
+    Regret: 0.977359533
+    Cumulative Regret: 12.1232691
+  Instance 13:
+    Regret: 1.34563327
+    Cumulative Regret: 13.4689026
+  Instance 14:
+    Regret: 0.452539206
+    Cumulative Regret: 13.921442
+  Instance 15:
+    Regret: 0.0250382423
+    Cumulative Regret: 13.9464798
+  Instance 16:
+    Regret: 0.903953314
+    Cumulative Regret: 14.8504333
+  Instance 17:
+    Regret: 1.49281931
+    Cumulative Regret: 16.3432522
+  Instance 18:
+    Regret: 1.5891912
+    Cumulative Regret: 17.9324436
+  Instance 19:
+    Regret: 0.534158468
+    Cumulative Regret: 18.4666023
+  Instance 20:
+    Regret: 1.69169617
+    Cumulative Regret: 20.1582985
+  Instance 21:
+    Regret: 1.25653172
+    Cumulative Regret: 21.4148293
+  Instance 22:
+    Regret: 0.992592335
+    Cumulative Regret: 22.4074211
+  Instance 23:
+    Regret: 0.0127506256
+    Cumulative Regret: 22.4201717
+  Instance 24:
+    Regret: 1.46179366
+    Cumulative Regret: 23.8819656
+  Instance 25:
+    Regret: 0.930869341
+    Cumulative Regret: 24.8128357
+  Instance 26:
+    Regret: 1.01179576
+    Cumulative Regret: 25.8246307
+  Instance 27:
+    Regret: 0
+    Cumulative Regret: 25.8246307
+  Instance 28:
+    Regret: 0
+    Cumulative Regret: 25.8246307
+  Instance 29:
+    Regret: 1.11515093
+    Cumulative Regret: 26.9397812
+Trial 3:
+  PRL Preference Mean:
+    - 76
+    - 10
+  PRL Preference Covariance:
+    - 50
+    - 10
+    - 70
+  Instances: 30
+  Instance 0:
+    Regret: 0
+    Cumulative Regret: 0
+  Instance 1:
+    Regret: 2.1358304
+    Cumulative Regret: 2.1358304
+  Instance 2:
+    Regret: 1.99502087
+    Cumulative Regret: 4.13085127
+  Instance 3:
+    Regret: 2.78484869
+    Cumulative Regret: 6.91569996
+  Instance 4:
+    Regret: 0.478533268
+    Cumulative Regret: 7.39423323
+  Instance 5:
+    Regret: 0
+    Cumulative Regret: 7.39423323
+  Instance 6:
+    Regret: 0.427656651
+    Cumulative Regret: 7.82188988
+  Instance 7:
+    Regret: 0.70213747
+    Cumulative Regret: 8.52402687
+  Instance 8:
+    Regret: 2.11334085
+    Cumulative Regret: 10.6373672
+  Instance 9:
+    Regret: 0.359107971
+    Cumulative Regret: 10.9964752
+  Instance 10:
+    Regret: 0.121893406
+    Cumulative Regret: 11.1183681
+  Instance 11:
+    Regret: 1.90454006
+    Cumulative Regret: 13.0229082
+  Instance 12:
+    Regret: 1.82968235
+    Cumulative Regret: 14.8525906
+  Instance 13:
+    Regret: 0
+    Cumulative Regret: 14.8525906
+  Instance 14:
+    Regret: 0.994493484
+    Cumulative Regret: 15.847084
+  Instance 15:
+    Regret: 1.18010807
+    Cumulative Regret: 17.0271912
+  Instance 16:
+    Regret: 1.54966354
+    Cumulative Regret: 18.5768547
+  Instance 17:
+    Regret: 1.21930265
+    Cumulative Regret: 19.7961578
+  Instance 18:
+    Regret: 2.20105457
+    Cumulative Regret: 21.9972115
+  Instance 19:
+    Regret: 0.980126858
+    Cumulative Regret: 22.9773388
+  Instance 20:
+    Regret: 1.25103521
+    Cumulative Regret: 24.2283745
+  Instance 21:
+    Regret: 0
+    Cumulative Regret: 24.2283745
+  Instance 22:
+    Regret: 1.56949806
+    Cumulative Regret: 25.7978725
+  Instance 23:
+    Regret: 1.0272646
+    Cumulative Regret: 26.8251381
+  Instance 24:
+    Regret: 0.803948402
+    Cumulative Regret: 27.6290855
+  Instance 25:
+    Regret: 2.12637997
+    Cumulative Regret: 29.7554665
+  Instance 26:
+    Regret: 1.41752243
+    Cumulative Regret: 31.1729889
+  Instance 27:
+    Regret: 2.35538721
+    Cumulative Regret: 33.5283775
+  Instance 28:
+    Regret: 1.92395639
+    Cumulative Regret: 35.4523354
+  Instance 29:
+    Regret: 1.17082167
+    Cumulative Regret: 36.6231575
+Trial 4:
+  PRL Preference Mean:
+    - 76
+    - 10
+  PRL Preference Covariance:
+    - 50
+    - 10
+    - 70
+  Instances: 30
+  Instance 0:
+    Regret: 0
+    Cumulative Regret: 0
+  Instance 1:
+    Regret: 0.07213974
+    Cumulative Regret: 0.07213974
+  Instance 2:
+    Regret: 0
+    Cumulative Regret: 0.07213974
+  Instance 3:
+    Regret: 0
+    Cumulative Regret: 0.07213974
+  Instance 4:
+    Regret: 0
+    Cumulative Regret: 0.07213974
+  Instance 5:
+    Regret: 0
+    Cumulative Regret: 0.07213974
+  Instance 6:
+    Regret: 0
+    Cumulative Regret: 0.07213974
+  Instance 7:
+    Regret: 0.0961257219
+    Cumulative Regret: 0.168265462
+  Instance 8:
+    Regret: 0
+    Cumulative Regret: 0.168265462
+  Instance 9:
+    Regret: 0
+    Cumulative Regret: 0.168265462
+  Instance 10:
+    Regret: 0
+    Cumulative Regret: 0.168265462
+  Instance 11:
+    Regret: 0
+    Cumulative Regret: 0.168265462
+  Instance 12:
+    Regret: 0.209282041
+    Cumulative Regret: 0.377547503
+  Instance 13:
+    Regret: 0
+    Cumulative Regret: 0.377547503
+  Instance 14:
+    Regret: 0
+    Cumulative Regret: 0.377547503
+  Instance 15:
+    Regret: 0.0489673615
+    Cumulative Regret: 0.426514864
+  Instance 16:
+    Regret: 0
+    Cumulative Regret: 0.426514864
+  Instance 17:
+    Regret: 0
+    Cumulative Regret: 0.426514864
+  Instance 18:
+    Regret: 0
+    Cumulative Regret: 0.426514864
+  Instance 19:
+    Regret: 0
+    Cumulative Regret: 0.426514864
+  Instance 20:
+    Regret: 0
+    Cumulative Regret: 0.426514864
+  Instance 21:
+    Regret: 0
+    Cumulative Regret: 0.426514864
+  Instance 22:
+    Regret: 0
+    Cumulative Regret: 0.426514864
+  Instance 23:
+    Regret: 0
+    Cumulative Regret: 0.426514864
+  Instance 24:
+    Regret: 0.057554841
+    Cumulative Regret: 0.484069705
+  Instance 25:
+    Regret: 0
+    Cumulative Regret: 0.484069705
+  Instance 26:
+    Regret: 0
+    Cumulative Regret: 0.484069705
+  Instance 27:
+    Regret: 0
+    Cumulative Regret: 0.484069705
+  Instance 28:
+    Regret: 0
+    Cumulative Regret: 0.484069705
+  Instance 29:
+    Regret: 0.019539237
+    Cumulative Regret: 0.503608942
+Trial 5:
+  PRL Preference Mean:
+    - 76
+    - 10
+  PRL Preference Covariance:
+    - 50
+    - 10
+    - 70
+  Instances: 30
+  Instance 0:
+    Regret: 0.00680732727
+    Cumulative Regret: 0.00680732727
+  Instance 1:
+    Regret: 1.33206749
+    Cumulative Regret: 1.33887482
+  Instance 2:
+    Regret: 0
+    Cumulative Regret: 1.33887482
+  Instance 3:
+    Regret: 0
+    Cumulative Regret: 1.33887482
+  Instance 4:
+    Regret: 0
+    Cumulative Regret: 1.33887482
+  Instance 5:
+    Regret: 0.16387713
+    Cumulative Regret: 1.50275195
+  Instance 6:
+    Regret: 0
+    Cumulative Regret: 1.50275195
+  Instance 7:
+    Regret: 0
+    Cumulative Regret: 1.50275195
+  Instance 8:
+    Regret: 0.426800847
+    Cumulative Regret: 1.92955279
+  Instance 9:
+    Regret: 0
+    Cumulative Regret: 1.92955279
+  Instance 10:
+    Regret: 0.0263557434
+    Cumulative Regret: 1.95590854
+  Instance 11:
+    Regret: 0
+    Cumulative Regret: 1.95590854
+  Instance 12:
+    Regret: 0
+    Cumulative Regret: 1.95590854
+  Instance 13:
+    Regret: 0.0686182976
+    Cumulative Regret: 2.02452683
+  Instance 14:
+    Regret: 0
+    Cumulative Regret: 2.02452683
+  Instance 15:
+    Regret: 0
+    Cumulative Regret: 2.02452683
+  Instance 16:
+    Regret: 0
+    Cumulative Regret: 2.02452683
+  Instance 17:
+    Regret: 0
+    Cumulative Regret: 2.02452683
+  Instance 18:
+    Regret: 0
+    Cumulative Regret: 2.02452683
+  Instance 19:
+    Regret: 0.0970737338
+    Cumulative Regret: 2.12160063
+  Instance 20:
+    Regret: 0
+    Cumulative Regret: 2.12160063
+  Instance 21:
+    Regret: 0.103046238
+    Cumulative Regret: 2.22464681
+  Instance 22:
+    Regret: 0
+    Cumulative Regret: 2.22464681
+  Instance 23:
+    Regret: 0
+    Cumulative Regret: 2.22464681
+  Instance 24:
+    Regret: 0
+    Cumulative Regret: 2.22464681
+  Instance 25:
+    Regret: 0
+    Cumulative Regret: 2.22464681
+  Instance 26:
+    Regret: 0
+    Cumulative Regret: 2.22464681
+  Instance 27:
+    Regret: 0.537336826
+    Cumulative Regret: 2.76198363
+  Instance 28:
+    Regret: 0
+    Cumulative Regret: 2.76198363
+  Instance 29:
+    Regret: 0
+    Cumulative Regret: 2.76198363
+Trial 6:
+  PRL Preference Mean:
+    - 76
+    - 10
+  PRL Preference Covariance:
+    - 50
+    - 10
+    - 70
+  Instances: 30
+  Instance 0:
+    Regret: 0.624684095
+    Cumulative Regret: 0.624684095
+  Instance 1:
+    Regret: 0
+    Cumulative Regret: 0.624684095
+  Instance 2:
+    Regret: 2.48378921
+    Cumulative Regret: 3.1084733
+  Instance 3:
+    Regret: 2.0189712
+    Cumulative Regret: 5.12744427
+  Instance 4:
+    Regret: 1.74005628
+    Cumulative Regret: 6.86750031
+  Instance 5:
+    Regret: 0.733747721
+    Cumulative Regret: 7.60124779
+  Instance 6:
+    Regret: 1.92417645
+    Cumulative Regret: 9.525424
+  Instance 7:
+    Regret: 2.34910846
+    Cumulative Regret: 11.8745327
+  Instance 8:
+    Regret: 1.08390546
+    Cumulative Regret: 12.9584379
+  Instance 9:
+    Regret: 0.570896864
+    Cumulative Regret: 13.529335
+  Instance 10:
+    Regret: 2.16670775
+    Cumulative Regret: 15.696043
+  Instance 11:
+    Regret: 1.96625209
+    Cumulative Regret: 17.6622944
+  Instance 12:
+    Regret: 1.39273143
+    Cumulative Regret: 19.0550251
+  Instance 13:
+    Regret: 1.19205737
+    Cumulative Regret: 20.2470818
+  Instance 14:
+    Regret: 1.28596854
+    Cumulative Regret: 21.5330505
+  Instance 15:
+    Regret: 1.79395366
+    Cumulative Regret: 23.3270035
+  Instance 16:
+    Regret: 1.06476665
+    Cumulative Regret: 24.3917694
+  Instance 17:
+    Regret: 2.18455815
+    Cumulative Regret: 26.5763283
+  Instance 18:
+    Regret: 1.53228164
+    Cumulative Regret: 28.1086102
+  Instance 19:
+    Regret: 1.08115602
+    Cumulative Regret: 29.1897659
+  Instance 20:
+    Regret: 1.29895854
+    Cumulative Regret: 30.4887238
+  Instance 21:
+    Regret: 2.88666463
+    Cumulative Regret: 33.3753891
+  Instance 22:
+    Regret: 1.52024245
+    Cumulative Regret: 34.8956299
+  Instance 23:
+    Regret: 2.51544571
+    Cumulative Regret: 37.4110756
+  Instance 24:
+    Regret: 1.73123956
+    Cumulative Regret: 39.1423149
+  Instance 25:
+    Regret: 2.52535033
+    Cumulative Regret: 41.6676636
+  Instance 26:
+    Regret: 1.88364673
+    Cumulative Regret: 43.5513115
+  Instance 27:
+    Regret: 2.21890712
+    Cumulative Regret: 45.7702179
+  Instance 28:
+    Regret: 1.30186582
+    Cumulative Regret: 47.0720825
+  Instance 29:
+    Regret: 1.20117402
+    Cumulative Regret: 48.2732582
+Trial 7:
+  PRL Preference Mean:
+    - 76
+    - 10
+  PRL Preference Covariance:
+    - 50
+    - 10
+    - 70
+  Instances: 30
+  Instance 0:
+    Regret: 0
+    Cumulative Regret: 0
+  Instance 1:
+    Regret: 0
+    Cumulative Regret: 0
+  Instance 2:
+    Regret: 0
+    Cumulative Regret: 0
+  Instance 3:
+    Regret: 0
+    Cumulative Regret: 0
+  Instance 4:
+    Regret: 0
+    Cumulative Regret: 0
+  Instance 5:
+    Regret: 0.85133791
+    Cumulative Regret: 0.85133791
+  Instance 6:
+    Regret: 0.770318031
+    Cumulative Regret: 1.62165594
+  Instance 7:
+    Regret: 0.418586016
+    Cumulative Regret: 2.04024196
+  Instance 8:
+    Regret: 0
+    Cumulative Regret: 2.04024196
+  Instance 9:
+    Regret: 0
+    Cumulative Regret: 2.04024196
+  Instance 10:
+    Regret: 0
+    Cumulative Regret: 2.04024196
+  Instance 11:
+    Regret: 0.140990257
+    Cumulative Regret: 2.18123221
+  Instance 12:
+    Regret: 0.131221771
+    Cumulative Regret: 2.31245399
+  Instance 13:
+    Regret: 0
+    Cumulative Regret: 2.31245399
+  Instance 14:
+    Regret: 0
+    Cumulative Regret: 2.31245399
+  Instance 15:
+    Regret: 0
+    Cumulative Regret: 2.31245399
+  Instance 16:
+    Regret: 0.210159063
+    Cumulative Regret: 2.52261305
+  Instance 17:
+    Regret: 0
+    Cumulative Regret: 2.52261305
+  Instance 18:
+    Regret: 0
+    Cumulative Regret: 2.52261305
+  Instance 19:
+    Regret: 0.997671366
+    Cumulative Regret: 3.52028441
+  Instance 20:
+    Regret: 0.0562143326
+    Cumulative Regret: 3.57649875
+  Instance 21:
+    Regret: 0
+    Cumulative Regret: 3.57649875
+  Instance 22:
+    Regret: 0.249806881
+    Cumulative Regret: 3.82630563
+  Instance 23:
+    Regret: 0
+    Cumulative Regret: 3.82630563
+  Instance 24:
+    Regret: 0.442655563
+    Cumulative Regret: 4.26896095
+  Instance 25:
+    Regret: 0
+    Cumulative Regret: 4.26896095
+  Instance 26:
+    Regret: 0
+    Cumulative Regret: 4.26896095
+  Instance 27:
+    Regret: 0
+    Cumulative Regret: 4.26896095
+  Instance 28:
+    Regret: 0.160448551
+    Cumulative Regret: 4.4294095
+  Instance 29:
+    Regret: 0
+    Cumulative Regret: 4.4294095
+Trial 8:
+  PRL Preference Mean:
+    - 76
+    - 10
+  PRL Preference Covariance:
+    - 50
+    - 10
+    - 70
+  Instances: 30
+  Instance 0:
+    Regret: 0
+    Cumulative Regret: 0
+  Instance 1:
+    Regret: 0.390635967
+    Cumulative Regret: 0.390635967
+  Instance 2:
+    Regret: 0
+    Cumulative Regret: 0.390635967
+  Instance 3:
+    Regret: 0
+    Cumulative Regret: 0.390635967
+  Instance 4:
+    Regret: 0.446225166
+    Cumulative Regret: 0.836861134
+  Instance 5:
+    Regret: 0
+    Cumulative Regret: 0.836861134
+  Instance 6:
+    Regret: 0
+    Cumulative Regret: 0.836861134
+  Instance 7:
+    Regret: 0
+    Cumulative Regret: 0.836861134
+  Instance 8:
+    Regret: 0
+    Cumulative Regret: 0.836861134
+  Instance 9:
+    Regret: 0
+    Cumulative Regret: 0.836861134
+  Instance 10:
+    Regret: 1.02265501
+    Cumulative Regret: 1.85951614
+  Instance 11:
+    Regret: 0
+    Cumulative Regret: 1.85951614
+  Instance 12:
+    Regret: 0.165987015
+    Cumulative Regret: 2.02550316
+  Instance 13:
+    Regret: 0
+    Cumulative Regret: 2.02550316
+  Instance 14:
+    Regret: 0
+    Cumulative Regret: 2.02550316
+  Instance 15:
+    Regret: 0.133897781
+    Cumulative Regret: 2.15940094
+  Instance 16:
+    Regret: 0.584664822
+    Cumulative Regret: 2.74406576
+  Instance 17:
+    Regret: 0
+    Cumulative Regret: 2.74406576
+  Instance 18:
+    Regret: 0
+    Cumulative Regret: 2.74406576
+  Instance 19:
+    Regret: 0
+    Cumulative Regret: 2.74406576
+  Instance 20:
+    Regret: 0
+    Cumulative Regret: 2.74406576
+  Instance 21:
+    Regret: 0
+    Cumulative Regret: 2.74406576
+  Instance 22:
+    Regret: 0.529877186
+    Cumulative Regret: 3.27394295
+  Instance 23:
+    Regret: 0.950826645
+    Cumulative Regret: 4.22476959
+  Instance 24:
+    Regret: 0
+    Cumulative Regret: 4.22476959
+  Instance 25:
+    Regret: 0.332870483
+    Cumulative Regret: 4.55764008
+  Instance 26:
+    Regret: 0
+    Cumulative Regret: 4.55764008
+  Instance 27:
+    Regret: 0
+    Cumulative Regret: 4.55764008
+  Instance 28:
+    Regret: 0
+    Cumulative Regret: 4.55764008
+  Instance 29:
+    Regret: 0
+    Cumulative Regret: 4.55764008
+Trial 9:
+  PRL Preference Mean:
+    - 76
+    - 10
+  PRL Preference Covariance:
+    - 50
+    - 10
+    - 70
+  Instances: 30
+  Instance 0:
+    Regret: 0
+    Cumulative Regret: 0
+  Instance 1:
+    Regret: 0
+    Cumulative Regret: 0
+  Instance 2:
+    Regret: 1.25651979
+    Cumulative Regret: 1.25651979
+  Instance 3:
+    Regret: 0.563510895
+    Cumulative Regret: 1.82003069
+  Instance 4:
+    Regret: 0
+    Cumulative Regret: 1.82003069
+  Instance 5:
+    Regret: 0
+    Cumulative Regret: 1.82003069
+  Instance 6:
+    Regret: 0.892379761
+    Cumulative Regret: 2.71241045
+  Instance 7:
+    Regret: 0.920011759
+    Cumulative Regret: 3.63242221
+  Instance 8:
+    Regret: 1.18825388
+    Cumulative Regret: 4.82067585
+  Instance 9:
+    Regret: 0.237580538
+    Cumulative Regret: 5.05825615
+  Instance 10:
+    Regret: 1.28375769
+    Cumulative Regret: 6.34201384
+  Instance 11:
+    Regret: 0.717724085
+    Cumulative Regret: 7.05973816
+  Instance 12:
+    Regret: 0
+    Cumulative Regret: 7.05973816
+  Instance 13:
+    Regret: 1.07470775
+    Cumulative Regret: 8.13444614
+  Instance 14:
+    Regret: 0
+    Cumulative Regret: 8.13444614
+  Instance 15:
+    Regret: 0
+    Cumulative Regret: 8.13444614
+  Instance 16:
+    Regret: 0.87728548
+    Cumulative Regret: 9.0117321
+  Instance 17:
+    Regret: 0.999994278
+    Cumulative Regret: 10.0117264
+  Instance 18:
+    Regret: 1.2326498
+    Cumulative Regret: 11.2443762
+  Instance 19:
+    Regret: 0
+    Cumulative Regret: 11.2443762
+  Instance 20:
+    Regret: 1.47911072
+    Cumulative Regret: 12.7234869
+  Instance 21:
+    Regret: 1.66589069
+    Cumulative Regret: 14.3893776
+  Instance 22:
+    Regret: 0.958376884
+    Cumulative Regret: 15.3477545
+  Instance 23:
+    Regret: 0.173427582
+    Cumulative Regret: 15.5211821
+  Instance 24:
+    Regret: 0.917453051
+    Cumulative Regret: 16.4386349
+  Instance 25:
+    Regret: 0.202169657
+    Cumulative Regret: 16.6408043
+  Instance 26:
+    Regret: 0.547758579
+    Cumulative Regret: 17.1885624
+  Instance 27:
+    Regret: 0.406680107
+    Cumulative Regret: 17.5952415
+  Instance 28:
+    Regret: 1.52775145
+    Cumulative Regret: 19.1229935
+  Instance 29:
+    Regret: 0.587871552
+    Cumulative Regret: 19.710865
