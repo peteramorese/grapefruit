@@ -64,7 +64,7 @@ class RandomGridWorldGenerator {
                     std::vector<float> vec = data[key].as<std::vector<float>>();
                     ASSERT(vec.size() == N, "Number elements does not match dimension for key " << key);
                     for (uint32_t i = 0; i < N; ++i) {
-                        ASSERT(vec[i] > 0.0f, "Bound must be positive");
+                        ASSERT(vec[i] >= 0.0f, "Bound must be positive");
                         array[i] = vec[i];
                     }
 

@@ -43,10 +43,9 @@ namespace FormalMethods {
                 return true;
             }
 
-            bool deserialize(const std::string& dfa_filepath, const std::string& sub_map_filepath = std::string()) {
-                YAML::Node data;
-                try {
-                    data = YAML::LoadFile(dfa_filepath);
+            bool deserialize(Deserializer& dfa_dszr, Deserializer& sub_map_dszr) {
+                {
+                    YAML::Node& data = dfa_dszr.get();
 
                     this->m_atomic_propositions = data["Atomic Propositions"].as<Alphabet>();
                     this->m_init_states = data["Initial States"].as<std::vector<NATIVE_NODE_T>>();
@@ -62,20 +61,16 @@ namespace FormalMethods {
                             connect(src, dst, PartialSatisfactionEdge(label));
                         }
                     }
-                } catch (YAML::ParserException e) {
-                    ERROR("Failed to load file" << dfa_filepath << " ("<< e.what() <<")");
                 }
 
-                if (sub_map_filepath.empty()) return true;
+                if (!sub_map_dszr) return true;
 
-                try {
-                    data = YAML::LoadFile(sub_map_filepath);
+                {
+                    YAML::Node& data = sub_map_dszr.get();
 
-                    LOG("b4");
                     if (!data["From Observations"]) return true;
                     if (!data["To Observations"]) LOG("no to observations");
                     if (!data["From Observations"]) LOG("no from observations");
-                    LOG("af");
 
                     std::vector<std::string> from_observations = data["From Observations"].as<std::vector<std::string>>();
                     std::vector<std::string> to_observations = data["To Observations"].as<std::vector<std::string>>();
@@ -98,9 +93,6 @@ namespace FormalMethods {
                             }
                         }
                     }
-
-                } catch (YAML::ParserException e) {
-                    ERROR("Failed to load file" << sub_map_filepath << " ("<< e.what() <<")");
                 }
 
                 return true;

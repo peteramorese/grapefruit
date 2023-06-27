@@ -63,7 +63,8 @@ int main(int argc, char* argv[]) {
 		dfas[i] = std::make_shared<FormalMethods::DFA>();
 		std::string dfa_filepath = dfa_directory.get() + "/" + templateToLabel(dfa_file_template.get(), i);
 		if (verbose) LOG("Reading in dfa file: " << dfa_filepath);
-		dfas[i]->deserialize(dfa_filepath);
+		Deserializer dszr(dfa_filepath);
+		dfas[i]->deserialize(dszr);
 		combined_alphbet = combined_alphbet + dfas[i]->getAlphabet();
 		dfas[i]->print();
 	}

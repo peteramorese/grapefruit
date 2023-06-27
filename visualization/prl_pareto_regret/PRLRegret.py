@@ -66,6 +66,8 @@ class PRLRegret:
             assert len(data) == n_instances 
             for i in range(n_instances):
                 instance_data[i].append(data[i])
+        print("instance data:", instance_data[-1], " mean: ", np.mean(instance_data[-1]))
+        input("ptc")
         return {
             "data": [np.mean(data) for data in instance_data],
             "std": [np.std(data) for data in instance_data],
@@ -94,8 +96,10 @@ class PRLRegret:
             ax.grid()
 
         ax.plot(data_set["data"][start_instance:end_instance], color=data_set["color"], label=data_set["label"])
+        print("data? ", data_set["data"][start_instance:end_instance])
         if "std" in data_set.keys():
             ax.plot([mean + 2.0 * std for mean, std in zip(data_set["data"][start_instance:end_instance], data_set["std"][start_instance:end_instance])], color = data_set["color"], ls=':')
+            ax.plot([mean - 2.0 * std for mean, std in zip(data_set["data"][start_instance:end_instance], data_set["std"][start_instance:end_instance])], color = data_set["color"], ls=':')
         ax.set_xlabel("Instance")
         ax.set_ylabel("Cumulative Regret" if data_set["cumulative"] else "Regret")
         return ax

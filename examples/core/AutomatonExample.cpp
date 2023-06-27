@@ -24,7 +24,8 @@ int main() {
     dfa_2.generateFromFormula("F(a & GFb)");
     dfa_2.print();
 
-    auto dfas = createDFAsFromFile("formulas.yaml");
+    Deserializer dszr("formulas.yaml");
+    auto dfas = createDFAsFromFile(dszr);
     for (auto & dfa : dfas) dfa->print();
 	return 0;
 }

@@ -13,6 +13,7 @@
 #include <spot/twa/bddprint.hh>
 
 #include "core/Graph.h"
+#include "tools/Serializer.h"
 
 namespace TP {
 namespace FormalMethods {
@@ -103,27 +104,22 @@ namespace FormalMethods {
                 return true;
             }
 
-            bool deserialize(const std::string& filepath) {
-                YAML::Node data;
-                try {
-                    data = YAML::LoadFile(filepath);
+            bool deserialize(Deserializer& dszr) {
+                YAML::Node& data = dszr.get();
 
-                    this->m_atomic_propositions = data["Atomic Propositions"].as<Alphabet>();
-                    this->m_init_states = data["Initial States"].as<std::vector<NATIVE_NODE_T>>();
-                    this->m_accepting_states = data["Accepting States"].as<std::set<NATIVE_NODE_T>>();
+                this->m_atomic_propositions = data["Atomic Propositions"].as<Alphabet>();
+                this->m_init_states = data["Initial States"].as<std::vector<NATIVE_NODE_T>>();
+                this->m_accepting_states = data["Accepting States"].as<std::set<NATIVE_NODE_T>>();
 
-                    std::map<NATIVE_NODE_T, std::vector<NATIVE_NODE_T>> connections = data["Connections"].as<std::map<NATIVE_NODE_T, std::vector<NATIVE_NODE_T>>>();
-                    std::map<NATIVE_NODE_T, std::vector<Observation>> observations = data["Labels"].as<std::map<NATIVE_NODE_T, std::vector<Observation>>>();
-                    for (auto[src, destinations] : connections) {
-                        for (uint32_t i = 0; i <destinations.size(); ++i) {
-                            const Observation& observation = observations[src][i];
-                            NATIVE_NODE_T dst = destinations[i];
-                            this->m_alphabet.insert(observation);
-                            connect(src, dst, observation);
-                        }
+                std::map<NATIVE_NODE_T, std::vector<NATIVE_NODE_T>> connections = data["Connections"].as<std::map<NATIVE_NODE_T, std::vector<NATIVE_NODE_T>>>();
+                std::map<NATIVE_NODE_T, std::vector<Observation>> observations = data["Labels"].as<std::map<NATIVE_NODE_T, std::vector<Observation>>>();
+                for (auto[src, destinations] : connections) {
+                    for (uint32_t i = 0; i <destinations.size(); ++i) {
+                        const Observation& observation = observations[src][i];
+                        NATIVE_NODE_T dst = destinations[i];
+                        this->m_alphabet.insert(observation);
+                        connect(src, dst, observation);
                     }
-                } catch (YAML::ParserException e) {
-                    ERROR("Failed to load file" << filepath << " ("<< e.what() <<")");
                 }
                 return true;
             }
@@ -157,7 +153,7 @@ namespace FormalMethods {
     using DFA = GenericDFA<>;
     using DFAptr = std::shared_ptr<DFA>;
 
-    std::vector<DFAptr> createDFAsFromFile(const std::string& filepath);
+    std::vector<DFAptr> createDFAsFromFile(Deserializer& dszr);
 
     
 } // namespace FormalMethods

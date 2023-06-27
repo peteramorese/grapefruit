@@ -38,11 +38,19 @@ class SampleSet {
             m_avg = (m_sample_set.size() > 1) ? (n * m_avg - m_sample_set.back()) / (n - 1.0f) : m_preset_avg;
             m_sample_set.pop_back();
         }
-    private:
+    protected:
         T m_preset_avg = T{};
         std::vector<T> m_sample_set;
         T m_avg = T{};
 };
+
+//template <uint32_t N, typename T>
+//class VectorSampleSet : public SampleSet<Containers::FixedArray<N, T> {
+//    public:
+//
+//    private:
+//
+//};
 
 // Immutable wrapper for including a posterior sample
 template <typename T>

@@ -109,7 +109,7 @@ class DataCollector {
             return avg;
         }
 
-        void serialize(TP::Serializer& szr, bool regret_only = false) {
+        void serialize(TP::Serializer& szr, bool exclude_plans = false) {
             static_assert(N == 2, "Does not support serialization of more than two cost objectives");
 
             YAML::Emitter& out = szr.get();
@@ -137,7 +137,7 @@ class DataCollector {
                 out << YAML::Key << "Instance " + std::to_string(i); 
                 out << YAML::Value << YAML::BeginMap;
 
-                if (!regret_only) {
+                if (!exclude_plans) {
                     // Chosen plan index
                     out << YAML::Key << "Chosen Plan" << YAML::Value << "Candidate Plan " + std::to_string(instance.selected_plan_index);
 
@@ -163,10 +163,11 @@ class DataCollector {
                         out << YAML::EndMap;
                     }
 
-                    // Cumulative cost sample for the chosen plan
-                    out << YAML::Key << "Sample" << YAML::Value << YAML::BeginSeq;
-                    out << instance.cost_sample[0] << instance.cost_sample[1] << YAML::EndSeq;
                 }
+
+                // Cumulative cost sample for the chosen plan
+                out << YAML::Key << "Sample" << YAML::Value << YAML::BeginSeq;
+                out << instance.cost_sample[0] << instance.cost_sample[1] << YAML::EndSeq;
 
                 // Regret
                 float instance_regret = instance.getRegret();

@@ -50,7 +50,9 @@ int main(int argc, char* argv[]) {
 		std::string dfa_filepath = dfa_directory.get() + "/" + templateToLabel(dfa_file_template.get(), i);
 		std::string sub_map_filepath = dfa_directory.get() + "/" + templateToLabel(sub_map_file_template.get(), i);
 		if (verbose) LOG("Reading in dfa file: " << dfa_filepath << " with sub map: " << sub_map_filepath);
-		dfas[i]->deserialize(dfa_filepath, sub_map_filepath);
+		Deserializer dszr(dfa_filepath);
+		Deserializer dszr_sub_map(sub_map_filepath);
+		dfas[i]->deserialize(dszr, dszr_sub_map);
 		combined_alphbet = combined_alphbet + dfas[i]->getAlphabet();
 		if (verbose) dfas[i]->print();
 	}

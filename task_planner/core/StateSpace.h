@@ -6,6 +6,7 @@
 
 #include "tools/Containers.h"
 #include "tools/Logging.h"
+#include "tools/Serializer.h"
 
 // Limit the rank of the statespace such that bitfield operations can be used
 #define TP_MAX_RANK_64
@@ -93,17 +94,16 @@ namespace DiscreteModel {
 			inline const std::string& interpretIndex(dimension_t dim, uint32_t var_index) const {return m_data.getVariables(dim)[var_index];}
 			std::pair<uint32_t, bool> variableIndex(dimension_t index, const std::string& variable) const;
 
-
-			// Read from file
-			bool deserialize(const std::string& filepath);
-
 		private:
 			friend class State;
 			friend class VariableReference;
 
 		public:
 			StateSpace(dimension_t rank) : m_data(rank) {}
-			StateSpace(const std::string& filepath) : m_data(0) {deserialize(filepath);}
+			StateSpace(const std::string& filepath) : m_data(0) {
+				Deserializer dszr(filepath);
+				deserialize(dszr);
+			}
 
 			inline dimension_t rank() const {return m_data.rank();}
 
@@ -127,7 +127,8 @@ namespace DiscreteModel {
 			// Generate a set of all possible unique states:
 			void generateAllStates(std::vector<State>& all_states) const;
 
-			void serialize(const std::string& filepath) const;
+			void serialize(Serializer& szr) const;
+			void deserialize(Deserializer& dszr);
 
 			void print() const;
 	};

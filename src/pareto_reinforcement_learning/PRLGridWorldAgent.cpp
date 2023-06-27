@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
 
 	bool verbose = parser.parse<void>('v', "Run in verbose mode").has();
 	bool calc_regret = parser.parse<void>("regret", 'r', "Calculate Pareto regret").has();
-	bool serialize_regret_only = parser.parse<void>("regret-data", "Serialize regret data only (smaller data file)").has();
+	bool exclude_plans = parser.parse<void>("no-plan-data", "Exclude the plans from the data file (smaller file)").has();
 	//bool compare = parser.hasKey("compare", "Compare the learned estimates to the true estimates");
 
 	auto formula_filepath = parser.parse<std::string>("formula-filepath", 'f', "formulas.yaml", "File that contains all formulas");
@@ -65,7 +65,8 @@ int main(int argc, char* argv[]) {
 
 	/////////////////   DFAs   /////////////////
 
-	auto dfas = TP::FormalMethods::createDFAsFromFile(formula_filepath.get());
+	TP::Deserializer dszr(formula_filepath.get());
+	auto dfas = TP::FormalMethods::createDFAsFromFile(dszr);
 
 	TP::FormalMethods::Alphabet combined_alphbet;
 	for (const auto& dfa : dfas) {
@@ -159,10 +160,10 @@ int main(int argc, char* argv[]) {
 			if (n_trials.get() > 1) {
 				YAML::Emitter& out = szr_ptr->get();
 				out << YAML::Key << "Trial " + std::to_string(trial) << YAML::Value << YAML::BeginMap;
-				data_collector->serialize(*szr_ptr, serialize_regret_only);
+				data_collector->serialize(*szr_ptr, exclude_plans);
 				out << YAML::EndMap;
 			} else {
-				data_collector->serialize(*szr_ptr, serialize_regret_only);
+				data_collector->serialize(*szr_ptr, exclude_plans);
 			}
 		}
 

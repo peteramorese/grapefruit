@@ -58,9 +58,8 @@ namespace DiscreteModel {
 
 	}
 
-	void StateSpace::serialize(const std::string& filepath) const {
-		YAML::Emitter out;
-		out << YAML::BeginMap;
+	void StateSpace::serialize(Serializer& szr) const {
+		YAML::Emitter& out = szr.get();
 
 		out << YAML::Key << "Rank" << YAML::Value << (uint32_t)rank();
 
@@ -101,20 +100,12 @@ namespace DiscreteModel {
 			out << YAML::Value << m_data.getVariables(i);
 		}
 		out << YAML::EndMap;
-
-		out << YAML::EndMap;
-		std::ofstream fout(filepath);
-		fout << out.c_str();
 	}
 
-	bool StateSpace::deserialize(const std::string& filepath) {
-		YAML::Node data;
-		try {
-			data = YAML::LoadFile(filepath);
-
+	void StateSpace::deserialize(Deserializer& dszr) {
+		YAML::Node& data = dszr.get();
 			if (data["Rank"].as<uint32_t>() == 0 || !data["State Space"]) {
-				WARN("Attempted to deserialize empty state space (" << filepath <<")");
-				return false;
+				WARN("Attempted to deserialize empty state space");
 			}
 
 			m_data.reset(data["Rank"].as<uint32_t>());
@@ -143,13 +134,6 @@ namespace DiscreteModel {
 				}
 
 			}
-
-
-		} catch (YAML::ParserException e) {
-			ERROR("Failed to load file" << filepath << " ("<< e.what() <<")");
-			return false;
-		}
-		return true;
 	}
 
 	void StateSpace::print() const {

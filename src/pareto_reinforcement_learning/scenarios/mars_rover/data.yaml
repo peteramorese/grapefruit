@@ -1,158 +1,68 @@
 PRL Preference Mean:
-  - 76
+  - 100
   - 10
 PRL Preference Covariance:
-  - 50
+  - 100
   - 10
-  - 70
-Instances: 50
+  - 30
+Instances: 10
 Instance 0:
-  Regret: 20.02528
-  Cumulative Regret: 20.02528
+  Sample:
+    - 146.286072
+    - 12.7782402
+  Regret: 0
+  Cumulative Regret: 0
 Instance 1:
-  Regret: 26.354248
-  Cumulative Regret: 46.379528
+  Sample:
+    - 304.008209
+    - 22.4183121
+  Regret: 7.54328251
+  Cumulative Regret: 7.54328251
 Instance 2:
-  Regret: 37.0955582
-  Cumulative Regret: 83.4750824
+  Sample:
+    - 152.590149
+    - 12.7374439
+  Regret: 6.55013943
+  Cumulative Regret: 14.0934219
 Instance 3:
-  Regret: 0
-  Cumulative Regret: 83.4750824
+  Sample:
+    - 427.587311
+    - 31.8531189
+  Regret: 16.9780884
+  Cumulative Regret: 31.0715103
 Instance 4:
-  Regret: 13.0883408
-  Cumulative Regret: 96.5634232
+  Sample:
+    - 182.915924
+    - 13.3388567
+  Regret: 7.1515522
+  Cumulative Regret: 38.2230606
 Instance 5:
-  Regret: 26.3991394
-  Cumulative Regret: 122.962563
+  Sample:
+    - 127.781708
+    - 10.6614265
+  Regret: 4.47412205
+  Cumulative Regret: 42.6971817
 Instance 6:
-  Regret: 27.5880432
-  Cumulative Regret: 150.550598
+  Sample:
+    - 317.641144
+    - 29.4250088
+  Regret: 14.5499792
+  Cumulative Regret: 57.2471619
 Instance 7:
-  Regret: 46.3079605
-  Cumulative Regret: 196.858551
+  Sample:
+    - 132.498047
+    - 7.10493422
+  Regret: 0.917629719
+  Cumulative Regret: 58.1647911
 Instance 8:
-  Regret: 0.528678894
-  Cumulative Regret: 197.387238
+  Sample:
+    - 374.634155
+    - 29.0714188
+  Regret: 22.8841133
+  Cumulative Regret: 81.0489044
 Instance 9:
-  Regret: 31.3314438
-  Cumulative Regret: 228.718689
-Instance 10:
-  Regret: 0
-  Cumulative Regret: 228.718689
-Instance 11:
-  Regret: 5.4707489
-  Cumulative Regret: 234.189438
-Instance 12:
-  Regret: 7.04506683
-  Cumulative Regret: 241.234497
-Instance 13:
-  Regret: 6.05325699
-  Cumulative Regret: 247.28775
-Instance 14:
-  Regret: 3.23793411
-  Cumulative Regret: 250.525681
-Instance 15:
-  Regret: 0
-  Cumulative Regret: 250.525681
-Instance 16:
-  Regret: 3.39528656
-  Cumulative Regret: 253.920959
-Instance 17:
-  Regret: 1.12265778
-  Cumulative Regret: 255.04361
-Instance 18:
-  Regret: 0.0474586487
-  Cumulative Regret: 255.091064
-Instance 19:
-  Regret: 7.96820831
-  Cumulative Regret: 263.059265
-Instance 20:
-  Regret: 6.35328674
-  Cumulative Regret: 269.412537
-Instance 21:
-  Regret: 5.51060486
-  Cumulative Regret: 274.923157
-Instance 22:
-  Regret: 7.88369751
-  Cumulative Regret: 282.806854
-Instance 23:
-  Regret: 10.8980484
-  Cumulative Regret: 293.704895
-Instance 24:
-  Regret: 6.37874603
-  Cumulative Regret: 300.083649
-Instance 25:
-  Regret: 10.6003876
-  Cumulative Regret: 310.684021
-Instance 26:
-  Regret: 7.17684937
-  Cumulative Regret: 317.86087
-Instance 27:
-  Regret: 4.30096817
-  Cumulative Regret: 322.161835
-Instance 28:
-  Regret: 8.41200256
-  Cumulative Regret: 330.573853
-Instance 29:
-  Regret: 7.54927826
-  Cumulative Regret: 338.123138
-Instance 30:
-  Regret: 10.4455929
-  Cumulative Regret: 348.568726
-Instance 31:
-  Regret: 7.67195129
-  Cumulative Regret: 356.240662
-Instance 32:
-  Regret: 5.15722656
-  Cumulative Regret: 361.397888
-Instance 33:
-  Regret: 4.76721096
-  Cumulative Regret: 366.1651
-Instance 34:
-  Regret: 4.96835375
-  Cumulative Regret: 371.133453
-Instance 35:
-  Regret: 4.45864725
-  Cumulative Regret: 375.592102
-Instance 36:
-  Regret: 8.01014423
-  Cumulative Regret: 383.602234
-Instance 37:
-  Regret: 5.48479939
-  Cumulative Regret: 389.087036
-Instance 38:
-  Regret: 4.58851242
-  Cumulative Regret: 393.675537
-Instance 39:
-  Regret: 5.41740179
-  Cumulative Regret: 399.092926
-Instance 40:
-  Regret: 4.48870564
-  Cumulative Regret: 403.581635
-Instance 41:
-  Regret: 6.13905668
-  Cumulative Regret: 409.720703
-Instance 42:
-  Regret: 3.95742822
-  Cumulative Regret: 413.678131
-Instance 43:
-  Regret: 5.17732573
-  Cumulative Regret: 418.855469
-Instance 44:
-  Regret: 5.30639935
-  Cumulative Regret: 424.161865
-Instance 45:
-  Regret: 5.40171766
-  Cumulative Regret: 429.563568
-Instance 46:
-  Regret: 5.719028
-  Cumulative Regret: 435.282593
-Instance 47:
-  Regret: 8.14540482
-  Cumulative Regret: 443.428009
-Instance 48:
-  Regret: 6.25144529
-  Cumulative Regret: 449.679443
-Instance 49:
-  Regret: 4.97893667
-  Cumulative Regret: 454.658386
+  Sample:
+    - 347.942047
+    - 28.9170341
+  Regret: 14.0420046
+  Cumulative Regret: 95.0909119

@@ -42,7 +42,23 @@ namespace PRL {
                 ++m_state_visits;
                 this->getElement(src_model_node, action).pull(sample);
             }
+
+            void serialize(TP::Serializer& szr) {
+                YAML::Emitter& out = szr.get();
+                out << YAML::BeginSeq;
+                for (auto&[nap, joint_cost_array] : this->m_node_action_pair_elements) {
+                    out << YAML::BeginMap;
+                    out << YAML::Key << "Node" << YAML::Value << nap.node;
+                    out << YAML::Key << "Action" << YAML::Value << nap.action;
+                    //out << YAML::Key << ""
+                }
+                out << YAML::EndSeq;
+            }
             
+            void deserialize(TP::Deserializer& dszr) {
+
+            }
+
         private:
             std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;
             uint8_t m_completed_tasks_horizon = 1;

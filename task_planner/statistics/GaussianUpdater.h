@@ -1,10 +1,13 @@
 #pragma once
 
 #include "tools/Containers.h"
+#include "tools/Serializer.h"
+
 #include "statistics/Normal.h"
 #include "statistics/NormalGamma.h"
 #include "statistics/NormalInverseWishart.h"
 #include "statistics/StatTools.h"
+
 
 namespace TP {
 namespace Stats {
@@ -98,6 +101,32 @@ class MultivariateGaussianUpdater {
         }
 
         inline uint32_t nSamples() const {return m_sample_set.size();}
+
+        void serialize(Serializer& szr) {
+            YAML::Emitter& out = szr.get();
+
+            std::size_t sample_i = 0;
+            for (auto& sample : m_sample_set.getSamples()) {
+                out << YAML::Key << sample_i++ << YAML::Value << YAML::BeginSeq;
+                for (auto sample_value : sample) {
+                    out << sample_value;
+                }
+                out << YAML::EndSeq;
+            }
+        }
+
+        void deserialize(Deserializer& dszr) {
+            YAML::Node& data = dszr.get();
+            std::map<uint32_t, std::vector<float>> sample_set = data.as<std::map<uint32_t, std::vector<float>>>();
+            for (auto&[_, sample_vec] : sample_set) {
+                ASSERT(sample_vec.size() == N, "Sample dimension does not match");
+                Containers::FixedArray<N, float> sample;
+                for (std::size_t d = 0; d < N; ++d) {
+                    sample[d] = sample_vec[d];
+                }
+                m_sample_set.add(sample);
+            }
+        }
 
     private:
         Distributions::FixedNormalInverseWishart<N> m_niw;

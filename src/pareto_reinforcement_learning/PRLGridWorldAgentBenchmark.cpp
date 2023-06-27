@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 	TP::ArgParser parser(argc, argv);
 
 	bool verbose = parser.parse<void>('v', "Run in verbose mode").has();
-	bool serialize_regret_only = parser.parse<void>("regret-data", "Serialize regret data only (smaller data file)").has();
+	bool exclude_plans = parser.parse<void>("no-plan-data", "Exclude the plans from the data file (smaller file)").has();
 	//bool compare = parser.hasKey("compare", "Compare the learned estimates to the true estimates");
 
 	auto formula_filepath = parser.parse<std::string>("formula-filepath", 'f', "formulas.yaml", "File that contains all formulas");
@@ -65,13 +65,15 @@ int main(int argc, char* argv[]) {
 			out << YAML::Key << "Trials" << YAML::Value << n_trials.get();
 		}
 	}
+	
+	TP::Deserializer dszr(formula_filepath.get());
+	Selector selector = getSelector(selector_label.get());
+	RandomGridWorldProperties props = RandomGridWorldGenerator<N>::deserializeConfig(random_config_filepath.get());
+	auto dfas = TP::FormalMethods::createDFAsFromFile(dszr);
 
 	uint32_t trial = 0;
 	while (trial < n_trials.get()) {
 
-		Selector selector = getSelector(selector_label.get());
-		auto dfas = TP::FormalMethods::createDFAsFromFile(formula_filepath.get());
-		RandomGridWorldProperties props = RandomGridWorldGenerator<N>::deserializeConfig(random_config_filepath.get());
 		auto targets = RandomGridWorldGenerator<N>::generate(props, dfas, confidence.get());
 		
 		std::shared_ptr<Regret<SymbolicGraph, N>> regret_handler = std::make_shared<Regret<SymbolicGraph, N>>(targets.product, targets.true_behavior);
@@ -116,10 +118,10 @@ int main(int argc, char* argv[]) {
 			if (n_trials.get() > 1) {
 				YAML::Emitter& out = szr_ptr->get();
 				out << YAML::Key << "Trial " + std::to_string(trial) << YAML::Value << YAML::BeginMap;
-				data_collector->serialize(*szr_ptr, serialize_regret_only);
+				data_collector->serialize(*szr_ptr, exclude_plans);
 				out << YAML::EndMap;
 			} else {
-				data_collector->serialize(*szr_ptr, serialize_regret_only);
+				data_collector->serialize(*szr_ptr, exclude_plans);
 			}
 		}
 

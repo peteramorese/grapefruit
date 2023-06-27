@@ -21,4 +21,23 @@ class Serializer {
         YAML::Emitter m_emitter;
 };
 
+class Deserializer {
+    public:
+        Deserializer() : m_valid(false) {}
+        Deserializer(const std::string& filepath) : m_valid(true) {
+            try {
+                m_node = YAML::LoadFile(filepath);
+            } catch (YAML::ParserException e) {
+                ERROR("Failed to load file" << filepath << " ("<< e.what() <<")");
+            }
+        }
+        Deserializer(const YAML::Node& node) : m_valid(true), m_node(node) {}
+        YAML::Node& get() {return m_node;}
+
+        operator bool() const {return m_valid;}
+    private:
+        bool m_valid = false;
+        YAML::Node m_node;
+};
+
 }
