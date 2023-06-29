@@ -22,7 +22,7 @@ class UCB {
         inline float explorationBonus(uint32_t k) const {
             return m_confidence * std::sqrt(std::log(k + 1) / static_cast<float>(m_n + 1));
         }
-    private:
+    protected:
         float m_confidence;
         uint32_t m_n;
 

@@ -47,6 +47,22 @@ namespace PRL {
             const TP::Stats::MultivariateGaussianUpdater<M>& getUpdater() const {return m_updater;}
             TP::Stats::MultivariateGaussianUpdater<M>& getUpdater() {return m_updater;}
 
+            void serialize(TP::Serializer& szr) {
+                YAML::Emitter& out = szr.get();
+                out << YAML::Key << "UCB" << YAML::Value << YAML::BeginMap;
+                out << YAML::Key << "Confidence" << YAML::Value << m_confidence;
+                out << YAML::Key << "N" << YAML::Value << m_n;
+                out << YAML::EndMap;
+
+                out << YAML::Key << "Updater" << YAML::Value << YAML::BeginMap;
+                m_updater.serialize(szr);
+                out << YAML::EndMap;
+            }
+
+            void deserialize(TP::Deserializer& dszr) {
+                YAML::Node& node = dszr.get();
+            }
+
         private:
             TP::Stats::MultivariateGaussianUpdater<M> m_updater;
     };
@@ -82,6 +98,7 @@ namespace PRL {
             }
 
             inline uint32_t nSamples() const {return m_updaters[0].nSamples();}
+
 
         private:
             TP::Containers::FixedArray<M, TP::Stats::GaussianUpdater> m_updaters;
