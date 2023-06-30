@@ -101,8 +101,7 @@ namespace DiscreteModel {
 		public:
 			StateSpace(dimension_t rank) : m_data(rank) {}
 			StateSpace(const std::string& filepath) : m_data(0) {
-				Deserializer dszr(filepath);
-				deserialize(dszr);
+				deserialize(Deserializer(filepath));
 			}
 
 			inline dimension_t rank() const {return m_data.rank();}
@@ -128,7 +127,7 @@ namespace DiscreteModel {
 			void generateAllStates(std::vector<State>& all_states) const;
 
 			void serialize(Serializer& szr) const;
-			void deserialize(Deserializer& dszr);
+			void deserialize(const Deserializer& dszr);
 
 			void print() const;
 	};

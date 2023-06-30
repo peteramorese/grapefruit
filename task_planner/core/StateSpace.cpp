@@ -102,8 +102,8 @@ namespace DiscreteModel {
 		out << YAML::EndMap;
 	}
 
-	void StateSpace::deserialize(Deserializer& dszr) {
-		YAML::Node& data = dszr.get();
+	void StateSpace::deserialize(const Deserializer& dszr) {
+		const YAML::Node& data = dszr.get();
 			if (data["Rank"].as<uint32_t>() == 0 || !data["State Space"]) {
 				WARN("Attempted to deserialize empty state space");
 			}

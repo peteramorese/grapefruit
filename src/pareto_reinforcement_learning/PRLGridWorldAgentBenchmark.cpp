@@ -79,6 +79,7 @@ int main(int argc, char* argv[]) {
 		std::shared_ptr<Regret<SymbolicGraph, N>> regret_handler = std::make_shared<Regret<SymbolicGraph, N>>(targets.product, targets.true_behavior);
 		std::shared_ptr<DataCollector<N>> data_collector = std::make_shared<DataCollector<N>>(targets.product, p_ev, regret_handler);
 
+
 		Learner<N> prl(targets.behavior_handler, data_collector, n_efe_samples.get(), verbose);
 
 		// Initialize the agent's state

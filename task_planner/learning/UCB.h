@@ -9,7 +9,7 @@ namespace ML {
 
 class UCB {
     public:
-        UCB() = delete;
+        UCB() = default;
         UCB(float confidence) 
             : m_confidence(confidence)
             , m_n(0u)
@@ -23,8 +23,8 @@ class UCB {
             return m_confidence * std::sqrt(std::log(k + 1) / static_cast<float>(m_n + 1));
         }
     protected:
-        float m_confidence;
-        uint32_t m_n;
+        float m_confidence = 1.0f;
+        uint32_t m_n = 0;
 
 };
 

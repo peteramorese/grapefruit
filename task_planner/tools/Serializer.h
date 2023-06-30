@@ -3,6 +3,8 @@
 #include <yaml-cpp/yaml.h>
 #include <fstream>
 
+#include "tools/Logging.h"
+
 namespace TP {
 
 class Serializer {
@@ -32,7 +34,7 @@ class Deserializer {
             }
         }
         Deserializer(const YAML::Node& node) : m_valid(true), m_node(node) {}
-        YAML::Node& get() {return m_node;}
+        const YAML::Node& get() const {return m_node;}
 
         operator bool() const {return m_valid;}
     private:

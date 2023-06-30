@@ -104,8 +104,8 @@ namespace FormalMethods {
                 return true;
             }
 
-            bool deserialize(Deserializer& dszr) {
-                YAML::Node& data = dszr.get();
+            bool deserialize(const Deserializer& dszr) {
+                const YAML::Node& data = dszr.get();
 
                 this->m_atomic_propositions = data["Atomic Propositions"].as<Alphabet>();
                 this->m_init_states = data["Initial States"].as<std::vector<NATIVE_NODE_T>>();
@@ -153,7 +153,7 @@ namespace FormalMethods {
     using DFA = GenericDFA<>;
     using DFAptr = std::shared_ptr<DFA>;
 
-    std::vector<DFAptr> createDFAsFromFile(Deserializer& dszr);
+    std::vector<DFAptr> createDFAsFromFile(const Deserializer& dszr);
 
     
 } // namespace FormalMethods

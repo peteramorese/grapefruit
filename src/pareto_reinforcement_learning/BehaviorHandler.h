@@ -45,25 +45,37 @@ namespace PRL {
 
             void serialize(TP::Serializer& szr) {
                 YAML::Emitter& out = szr.get();
+                out << YAML::Key << "Behavior Handler" << YAML::Value;
                 out << YAML::BeginSeq;
                 for (auto&[nap, joint_cost_array] : this->m_node_action_pair_elements) {
                     out << YAML::BeginMap;
                     out << YAML::Key << "Node" << YAML::Value << nap.node;
                     out << YAML::Key << "Action" << YAML::Value << nap.action;
-                    //out << YAML::Key << ""
+                    out << YAML::Key << "Updater" << YAML::Value << YAML::BeginMap;
+                    joint_cost_array.serialize(szr);
+                    out << YAML::EndMap << YAML::EndMap;
                 }
                 out << YAML::EndSeq;
             }
             
-            void deserialize(TP::Deserializer& dszr) {
+            void deserialize(const TP::Deserializer& dszr) {
 
+                const YAML::Node& node = dszr.get();
+                YAML::Node behavior_handler_node = node["Behavior Handler"];
+                for (YAML::iterator it = behavior_handler_node.begin(); it != behavior_handler_node.end(); ++it) {
+                    const YAML::Node& nap_node = *it;
+                    JointCostArray<N> joint_cost_array;
+                    TP::Deserializer updater_dszr(nap_node["Updater"]);
+                    joint_cost_array.deserialize(updater_dszr);
+                    typename Storage<JointCostArray<N>>::NodeActionPair nap(nap_node["Node"].as<TP::Node>(), nap_node["Action"].as<TP::DiscreteModel::Action>());
+                    this->m_node_action_pair_elements.insert(std::make_pair(nap, joint_cost_array));
+                }
             }
 
         private:
             std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;
             uint8_t m_completed_tasks_horizon = 1;
             uint32_t m_state_visits = 0;
-
     };
 
 }

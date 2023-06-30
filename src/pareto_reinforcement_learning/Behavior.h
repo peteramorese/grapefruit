@@ -15,6 +15,8 @@ namespace PRL {
     template <uint64_t M>
     class JointCostArray : public MultivariateCost<M>, public TP::ML::UCB {
         public:
+            JointCostArray() = default;
+
             JointCostArray(float confidence) 
                 : TP::ML::UCB(confidence)
             {}
@@ -59,8 +61,16 @@ namespace PRL {
                 out << YAML::EndMap;
             }
 
-            void deserialize(TP::Deserializer& dszr) {
-                YAML::Node& node = dszr.get();
+            void deserialize(const TP::Deserializer& dszr) {
+                const YAML::Node& node = dszr.get();
+                
+                // Get the UCB data
+                YAML::Node ucb_node = node["UCB"];
+                this->m_confidence = ucb_node["Confidence"].as<float>();
+                this->m_n = ucb_node["N"].as<uint32_t>();
+
+                // Deserialize the guassian updater
+                m_updater.deserialize(TP::Deserializer(node["Updater"]));
             }
 
         private:

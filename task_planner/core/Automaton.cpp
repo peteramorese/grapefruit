@@ -4,8 +4,8 @@
 namespace TP {
 namespace FormalMethods {
 
-std::vector<DFAptr> createDFAsFromFile(Deserializer& dszr) {
-    YAML::Node& data = dszr.get();
+std::vector<DFAptr> createDFAsFromFile(const Deserializer& dszr) {
+    const YAML::Node& data = dszr.get();
 
     std::vector<DFAptr> dfas;
     std::vector<std::string> formulae = data["DFAs"].as<std::vector<std::string>>();

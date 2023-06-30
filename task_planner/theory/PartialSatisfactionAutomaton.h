@@ -43,9 +43,9 @@ namespace FormalMethods {
                 return true;
             }
 
-            bool deserialize(Deserializer& dfa_dszr, Deserializer& sub_map_dszr) {
+            bool deserialize(const Deserializer& dfa_dszr, const Deserializer& sub_map_dszr = Deserializer()) {
                 {
-                    YAML::Node& data = dfa_dszr.get();
+                    const YAML::Node& data = dfa_dszr.get();
 
                     this->m_atomic_propositions = data["Atomic Propositions"].as<Alphabet>();
                     this->m_init_states = data["Initial States"].as<std::vector<NATIVE_NODE_T>>();
@@ -66,7 +66,7 @@ namespace FormalMethods {
                 if (!sub_map_dszr) return true;
 
                 {
-                    YAML::Node& data = sub_map_dszr.get();
+                    const YAML::Node& data = sub_map_dszr.get();
 
                     if (!data["From Observations"]) return true;
                     if (!data["To Observations"]) LOG("no to observations");

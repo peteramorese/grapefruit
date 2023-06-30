@@ -14,9 +14,9 @@ PRL Preference:
     - 100.0
     - 10.0
   Covariance: # Unique elements (upper triangular)
-    - 0.01 # 11
-    - 0.01 # 12
-    - 0.01 # 22
+    - 0.1 # 11
+    - 0.0 # 12
+    - 0.1 # 22
 
 Base:
   N Cells: 15

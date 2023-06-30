@@ -115,14 +115,14 @@ class MultivariateGaussianUpdater {
             }
         }
 
-        void deserialize(Deserializer& dszr) {
-            YAML::Node& data = dszr.get();
+        void deserialize(const Deserializer& dszr) {
+            const YAML::Node& data = dszr.get();
             std::map<uint32_t, std::vector<float>> sample_set = data.as<std::map<uint32_t, std::vector<float>>>();
             for (auto&[_, sample_vec] : sample_set) {
                 ASSERT(sample_vec.size() == N, "Sample dimension does not match");
-                Containers::FixedArray<N, float> sample;
+                Eigen::Matrix<float, N, 1> sample;
                 for (std::size_t d = 0; d < N; ++d) {
-                    sample[d] = sample_vec[d];
+                    sample(d) = sample_vec[d];
                 }
                 m_sample_set.add(sample);
             }
