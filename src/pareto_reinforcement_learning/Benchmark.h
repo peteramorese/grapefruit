@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 #include "Learner.h"
 
 namespace PRL {
@@ -8,7 +8,7 @@ namespace PRL {
 template <uint64_t M>
 class QuantifierSet {
     public:
-        using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<M>;
+        using TrajectoryDistribution = GF::Stats::Distributions::FixedMultivariateNormal<M>;
     public:
         QuantifierSet(const TrajectoryDistribution& preference) : m_preference(preference) {}
 
@@ -23,7 +23,7 @@ class QuantifierSet {
         const Quantifier<M>& operator[](uint32_t i) const {return m_data[i];}
         const Quantifier<M>& back() const {return m_data.back();}
 
-        void serializeAverageBehavior(TP::Serializer& szr, const std::string& obj_0_label, const std::string& obj_1_label) {
+        void serializeAverageBehavior(GF::Serializer& szr, const std::string& obj_0_label, const std::string& obj_1_label) {
             static_assert(M == 2, "Only supports serialization of Bi-objective problems");
             
             YAML::Emitter& out = szr.get();
@@ -44,11 +44,11 @@ class QuantifierSet {
                 pareto_points.push_back(std::make_pair(m_data[i].avgCostPerInstance(), m_data[i].avgRewardPerInstance()));
             }
             std::array<std::string, 2> axis_labels = {{obj_0_label, obj_1_label}};
-            TP::Planner::ParetoFrontSerializer::serialize2DAxes(szr, axis_labels);
-            TP::Planner::ParetoFrontSerializer::serialize2D(szr, pareto_points, "test_set");
+            GF::Planner::ParetoFrontSerializer::serialize2DAxes(szr, axis_labels);
+            GF::Planner::ParetoFrontSerializer::serialize2D(szr, pareto_points, "test_set");
         }
 
-        void serializeInstances(TP::Serializer& szr, const std::string& obj_0_label, const std::string& obj_1_label) {
+        void serializeInstances(GF::Serializer& szr, const std::string& obj_0_label, const std::string& obj_1_label) {
             static_assert(M == 1, "Only supports serialization of Bi-objective problems");
             
             YAML::Emitter& out = szr.get();
@@ -73,10 +73,10 @@ class QuantifierSet {
                 for (uint32_t i = 0; i < instance_costs.size(); ++i) {
                     pareto_points.push_back(std::make_pair(instance_costs[i][0], instance_rewards[i]));
                 }
-                TP::Planner::ParetoFrontSerializer::serialize2D(szr, pareto_points, "trial_" + std::to_string(trial_i++));
+                GF::Planner::ParetoFrontSerializer::serialize2D(szr, pareto_points, "trial_" + std::to_string(trial_i++));
             }
             std::array<std::string, 2> axis_labels = {{obj_0_label, obj_1_label}};
-            TP::Planner::ParetoFrontSerializer::serialize2DAxes(szr, axis_labels);
+            GF::Planner::ParetoFrontSerializer::serialize2DAxes(szr, axis_labels);
         }
     private:
         std::vector<Quantifier<M>> m_data;

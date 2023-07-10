@@ -3,8 +3,8 @@
 #include "core/Automaton.h"
 #include "theory/PartialSatisfactionAutomaton.h"
 
-using namespace TP;
-using namespace TP::FormalMethods;
+using namespace GF;
+using namespace GF::FormalMethods;
 
 int main() {
     //PartialSatisfactionDFA psdfa_0;

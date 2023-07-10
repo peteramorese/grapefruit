@@ -14,8 +14,8 @@
 #include "models/Manipulator.h"
 
 
-using namespace TP;
-using namespace TP::Planner;
+using namespace GF;
+using namespace GF::Planner;
 
 int main() {
  

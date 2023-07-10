@@ -1,14 +1,14 @@
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 
-using namespace TP::Stats;
+using namespace GF::Stats;
 
 int main(int argc, char** argv) {
 
-    TP::ArgParser parser(argc, argv);
+    GF::ArgParser parser(argc, argv);
 
-    TP::Argument<uint32_t> n_samples = parser.parse<uint32_t>("n-samples", 30, "Number of samples");
-    TP::Argument<uint32_t> print_interval = parser.parse<uint32_t>("print-interval", 1, "Print after an interval");
-	TP::Argument<std::string> sample_filepath = parser.parse<std::string>("sample-filepath", "Filepath to write samples to for visualization");
+    GF::Argument<uint32_t> n_samples = parser.parse<uint32_t>("n-samples", 30, "Number of samples");
+    GF::Argument<uint32_t> print_interval = parser.parse<uint32_t>("print-interval", 1, "Print after an interval");
+	GF::Argument<std::string> sample_filepath = parser.parse<std::string>("sample-filepath", "Filepath to write samples to for visualization");
     bool mv = parser.parse<void>("mv", "Multivariate test").has();
 
     if (parser.enableHelp()) return 0;
@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 
 
         for (uint32_t i = 0; i < n_samples.get(); ++i) {
-            float sample = TP::RNG::nrand(true_dist);
+            float sample = GF::RNG::nrand(true_dist);
             upd.update(sample);
             if (i % print_interval.get() == 0) {
                 Distributions::Normal estimate = upd.getEstimateNormal();
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
         std::vector<Eigen::Matrix<float, 3, 1>> sample_set(n_samples.get());
         Distributions::FixedMultivariateNormalSampler sampler(mv_true_dist);
         for (uint32_t i = 0; i < n_samples.get(); ++i) {
-            auto sample = TP::RNG::mvnrand(sampler);
+            auto sample = GF::RNG::mvnrand(sampler);
             sample_set[i] = sample;
             mvupd.update(sample);
             if (i % print_interval.get() == 0) {
@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
 
         if (sample_filepath.has()) {
             LOG("writing...");
-            TP::Serializer szr(sample_filepath.get());
+            GF::Serializer szr(sample_filepath.get());
             YAML::Emitter& out = szr.get();
             for (uint32_t s = 0; s < n_samples.get(); ++s) {
                 out << YAML::Key << "Sample " + std::to_string(s) << YAML::Value << YAML::BeginSeq;

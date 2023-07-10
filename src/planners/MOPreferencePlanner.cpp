@@ -1,26 +1,9 @@
 #include<iostream>
 
-#include "tools/Logging.h"
+#include "Grapefruit.h"
 
-#include "core/Condition.h"
-#include "core/StateSpace.h"
-#include "core/State.h"
-#include "core/TransitionSystem.h"
-#include "core/Automaton.h"
-#include "core/SymbolicProductAutomaton.h"
-
-#include "planners/MOPreferencePlanner.h"
-#include "planners/PreferenceCostObjectivePlugins.h"
-
-#include "theory/PartialSatisfactionAutomaton.h"
-#include "theory/PartialSatisfactionAutomatonEdgeInheritor.h"
-
-#include "models/GridWorldAgent.h"
-
-#include "tools/ArgParser.h"
-
-using namespace TP;
-using namespace TP::Planner;
+using namespace GF;
+using namespace GF::Planner;
 
 int main(int argc, char* argv[]) {
  

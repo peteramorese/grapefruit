@@ -3,7 +3,7 @@
 
 #include "core/Graph.h"
 
-using namespace TP;
+using namespace GF;
 
 struct Edge {
     Edge(float c, const std::string& l) : cost(c), label(l) {}

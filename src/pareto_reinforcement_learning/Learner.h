@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 
 #include "EFE.h"
 #include "SearchProblem.h"
@@ -23,22 +23,22 @@ template <uint64_t N>
 class Learner {
     public:
         // Dependent types
-        using SymbolicProductGraph = TP::DiscreteModel::SymbolicProductAutomaton<
-            TP::DiscreteModel::TransitionSystem, 
-            TP::FormalMethods::DFA, 
-            TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>>;
+        using SymbolicProductGraph = GF::DiscreteModel::SymbolicProductAutomaton<
+            GF::DiscreteModel::TransitionSystem, 
+            GF::FormalMethods::DFA, 
+            GF::DiscreteModel::ModelEdgeInheritor<GF::DiscreteModel::TransitionSystem, GF::FormalMethods::DFA>>;
         using BehaviorHandlerType = BehaviorHandler<SymbolicProductGraph, N>;
-        using PathSolution = TP::GraphSearch::PathSolution<
+        using PathSolution = GF::GraphSearch::PathSolution<
             typename SearchProblem<N, BehaviorHandlerType>::node_t, 
             typename SearchProblem<N, BehaviorHandlerType>::edge_t>;
-        using SearchResult = TP::GraphSearch::MultiObjectiveSearchResult<
+        using SearchResult = GF::GraphSearch::MultiObjectiveSearchResult<
             typename SearchProblem<N, BehaviorHandlerType>::node_t, 
             typename SearchProblem<N, BehaviorHandlerType>::edge_t, 
             typename SearchProblem<N, BehaviorHandlerType>::cost_t>;
-        using PreferenceDistribution = TP::Stats::Distributions::FixedMultivariateNormal<N>;
-        using Plan = TP::Planner::Plan<SearchProblem<N, BehaviorHandlerType>>;
+        using PreferenceDistribution = GF::Stats::Distributions::FixedMultivariateNormal<N>;
+        using Plan = GF::Planner::Plan<SearchProblem<N, BehaviorHandlerType>>;
         using CostVector = SearchProblem<N, BehaviorHandlerType>::cost_t;
-        using ParetoFront = TP::ParetoFront<CostVector>;
+        using ParetoFront = GF::ParetoFront<CostVector>;
 
     public:
         Learner() = delete;
@@ -61,10 +61,10 @@ class Learner {
             SearchResult result = [&] {
                 if constexpr (N == 2)
                     // Use BOA
-                    return TP::GraphSearch::BOAStar<CostVector, decltype(problem)>::search(problem);
+                    return GF::GraphSearch::BOAStar<CostVector, decltype(problem)>::search(problem);
                 else
                     // Use NAMOA
-                    return TP::GraphSearch::NAMOAStar<CostVector, decltype(problem)>::search(problem);
+                    return GF::GraphSearch::NAMOAStar<CostVector, decltype(problem)>::search(problem);
             }();
             log("Done!", true);
             return result;
@@ -108,7 +108,7 @@ class Learner {
             for (const auto& action : plan.action_sequence) {
                 const auto& src_node = *node_it;
                 const auto& dst_node = *(++node_it);
-                TP::Containers::FixedArray<N, float> sample = sampler(src_node.base_node, dst_node.base_node, action);
+                GF::Containers::FixedArray<N, float> sample = sampler(src_node.base_node, dst_node.base_node, action);
                 m_data_collector->getCurrentInstance().cost_sample += sample;
                 m_behavior_handler->visit(src_node, action, sample);
             }
@@ -139,16 +139,16 @@ class Learner {
                         selected_ind = selectAif(result, p_ev);
                         break;
                     case Selector::Uniform: {
-                        selected_ind = TP::ParetoSelector<CostVector>::uniformRandom(mean_pf);
+                        selected_ind = GF::ParetoSelector<CostVector>::uniformRandom(mean_pf);
                         break;
                     }
                     case Selector::Topsis: {
-                        selected_ind = TP::ParetoSelector<CostVector>::TOPSIS(mean_pf);
+                        selected_ind = GF::ParetoSelector<CostVector>::TOPSIS(mean_pf);
                         break;
                     }
                     case Selector::Weights: {
 
-                        TP::Containers::FixedArray<N, float> weights;
+                        GF::Containers::FixedArray<N, float> weights;
                         float max_val = 0.0f;
                         for (uint64_t d = 0; d < N; ++d) {
                             weights[d] = p_ev.mu(d);
@@ -156,7 +156,7 @@ class Learner {
                                 max_val = weights[d];
                         }
                         ASSERT(max_val > 0.0f, "At least one weight must be greater than zero");
-                        selected_ind = TP::ParetoSelector<CostVector>::scalarWeights(mean_pf, weights);
+                        selected_ind = GF::ParetoSelector<CostVector>::scalarWeights(mean_pf, weights);
                         break;
                     }
                     default:
@@ -216,13 +216,13 @@ class Learner {
                 Plan plan(search_result.solution_set[i], search_result.pf[i], m_product, true);
                 TrajectoryDistributionUpdaters<N> traj_updaters = getTrajectoryUpdaters(plan);
                 auto mvn = GaussianEFE<N>::getCEQObservationDistribution(traj_updaters);
-                TP::fromColMatrix<float, N>(TP::Stats::E(mvn), mean_pf[i]);
+                GF::fromColMatrix<float, N>(GF::Stats::E(mvn), mean_pf[i]);
             }
             return mean_pf;
         }
 
-        void initialize(const TP::DiscreteModel::State& init_state) {
-            TP::Containers::SizedArray<TP::Node> init_aut_nodes(m_product->rank() - 1);
+        void initialize(const GF::DiscreteModel::State& init_state) {
+            GF::Containers::SizedArray<GF::Node> init_aut_nodes(m_product->rank() - 1);
             for (uint32_t i=0; i<init_aut_nodes.size(); ++i) init_aut_nodes[i] = *(m_product->getAutomaton(i).getInitStates().begin());
             LOG("Init model state: " <<  m_product->getModel().getGenericNodeContainer()[init_state]);
             m_current_product_node = m_product->getWrappedNode(m_product->getModel().getGenericNodeContainer()[init_state], init_aut_nodes);

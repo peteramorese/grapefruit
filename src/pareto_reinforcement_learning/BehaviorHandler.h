@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 
 #include "HistoryNode.h"
 #include "Storage.h"
@@ -13,7 +13,7 @@ namespace PRL {
     template <class SYMBOLIC_GRAPH_T, uint64_t N>
     class BehaviorHandler : public Storage<JointCostArray<N>> {
         public:
-            using CostVector = TP::Containers::FixedArray<N, float>;
+            using CostVector = GF::Containers::FixedArray<N, float>;
         public:
             BehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, uint8_t completed_tasks_horizon, float ucb_confidence)
                 : Storage<JointCostArray<N>>(JointCostArray<N>(ucb_confidence))
@@ -30,20 +30,20 @@ namespace PRL {
             static constexpr std::size_t size() noexcept {return N;}
             uint8_t getCompletedTasksHorizon() const {return m_completed_tasks_horizon;}
 
-            CostVector getCostVector(const TaskHistoryNode<TP::WideNode>& src_node, const TaskHistoryNode<TP::WideNode>& dst_node, const TP::DiscreteModel::Action& action) {
-                TP::Node src_model_node = m_product->getUnwrappedNode(src_node.base_node).ts_node;
+            CostVector getCostVector(const TaskHistoryNode<GF::WideNode>& src_node, const TaskHistoryNode<GF::WideNode>& dst_node, const GF::DiscreteModel::Action& action) {
+                GF::Node src_model_node = m_product->getUnwrappedNode(src_node.base_node).ts_node;
                 return this->getElement(src_model_node, action).getRectifiedUCBVector(m_state_visits);
             }
 
             inline const std::shared_ptr<SYMBOLIC_GRAPH_T>& getProduct() const {return m_product;}
 
-            void visit(const TaskHistoryNode<TP::WideNode>& node, const TP::DiscreteModel::Action& action, const CostVector& sample) {
-                TP::Node src_model_node = m_product->getUnwrappedNode(node.base_node).ts_node;
+            void visit(const TaskHistoryNode<GF::WideNode>& node, const GF::DiscreteModel::Action& action, const CostVector& sample) {
+                GF::Node src_model_node = m_product->getUnwrappedNode(node.base_node).ts_node;
                 ++m_state_visits;
                 this->getElement(src_model_node, action).pull(sample);
             }
 
-            void serialize(TP::Serializer& szr) {
+            void serialize(GF::Serializer& szr) {
                 YAML::Emitter& out = szr.get();
                 out << YAML::Key << "Behavior Handler" << YAML::Value;
                 out << YAML::BeginSeq;
@@ -58,16 +58,16 @@ namespace PRL {
                 out << YAML::EndSeq;
             }
             
-            void deserialize(const TP::Deserializer& dszr) {
+            void deserialize(const GF::Deserializer& dszr) {
 
                 const YAML::Node& node = dszr.get();
                 YAML::Node behavior_handler_node = node["Behavior Handler"];
                 for (YAML::iterator it = behavior_handler_node.begin(); it != behavior_handler_node.end(); ++it) {
                     const YAML::Node& nap_node = *it;
                     JointCostArray<N> joint_cost_array;
-                    TP::Deserializer updater_dszr(nap_node["Updater"]);
+                    GF::Deserializer updater_dszr(nap_node["Updater"]);
                     joint_cost_array.deserialize(updater_dszr);
-                    typename Storage<JointCostArray<N>>::NodeActionPair nap(nap_node["Node"].as<TP::Node>(), nap_node["Action"].as<TP::DiscreteModel::Action>());
+                    typename Storage<JointCostArray<N>>::NodeActionPair nap(nap_node["Node"].as<GF::Node>(), nap_node["Action"].as<GF::DiscreteModel::Action>());
                     this->m_node_action_pair_elements.insert(std::make_pair(nap, joint_cost_array));
                 }
             }

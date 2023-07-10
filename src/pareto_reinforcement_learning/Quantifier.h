@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 
 #include "Regret.h"
 
@@ -9,7 +9,7 @@ namespace PRL {
 template <uint64_t N>
 struct Quantifier {
     public:
-        TP::Containers::FixedArray<N, float> cumulative_cost;
+        GF::Containers::FixedArray<N, float> cumulative_cost;
         uint32_t steps = 0u;
         uint32_t instances = 0u;
         uint32_t max_instances = 0u;
@@ -22,7 +22,7 @@ struct Quantifier {
             }
         }
 
-        void addSample(const TP::Containers::FixedArray<N, float>& sample) {
+        void addSample(const GF::Containers::FixedArray<N, float>& sample) {
             cumulative_cost += sample;
             m_cost_sample_buffer += sample;
             ++steps;
@@ -41,20 +41,20 @@ struct Quantifier {
             }
         }
 
-        TP::Containers::FixedArray<N, float> avgCostPerInstance() const {
-            TP::Containers::FixedArray<N, float> avg;
+        GF::Containers::FixedArray<N, float> avgCostPerInstance() const {
+            GF::Containers::FixedArray<N, float> avg;
             for (uint32_t i = 0; i < N; ++i)
                 avg[i] = cumulative_cost[i] / static_cast<float>(instances);
             return avg;
         }
 
-        const std::vector<TP::Containers::FixedArray<N, float>>& getInstanceCosts() const {return m_instance_costs;}
+        const std::vector<GF::Containers::FixedArray<N, float>>& getInstanceCosts() const {return m_instance_costs;}
         //const std::vector<float>& getInstanceRegrets() const {return m_instance_regrets;}
 
     private:
-        std::vector<TP::Containers::FixedArray<N, float>> m_instance_costs;
+        std::vector<GF::Containers::FixedArray<N, float>> m_instance_costs;
         std::vector<float> m_instance_regrets;
-        TP::Containers::FixedArray<N, float> m_cost_sample_buffer;
+        GF::Containers::FixedArray<N, float> m_cost_sample_buffer;
         std::shared_ptr<Regret<SymbolicProductGraph, N>> m_regret;
 };
 

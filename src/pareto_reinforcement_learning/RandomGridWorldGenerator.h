@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 
 #include "models/GridWorldAgent.h"
 
@@ -19,22 +19,22 @@ struct RandomGridWorldProperties {
     uint32_t n_y;
     uint32_t n_obstacle_cells = 0;
     std::vector<RandomRegionSpec> region_specs;
-    TP::Containers::FixedArray<N, float> true_mean_lower_bound;
-    TP::Containers::FixedArray<N, float> true_mean_upper_bound;
-    TP::Containers::FixedArray<N, float> estimate_mean_lower_bound;
-    TP::Containers::FixedArray<N, float> estimate_mean_upper_bound;
+    GF::Containers::FixedArray<N, float> true_mean_lower_bound;
+    GF::Containers::FixedArray<N, float> true_mean_upper_bound;
+    GF::Containers::FixedArray<N, float> estimate_mean_lower_bound;
+    GF::Containers::FixedArray<N, float> estimate_mean_upper_bound;
 };
 
 template <uint64_t N>
 class RandomGridWorldGenerator {
     public:
-        using EdgeInheritor = TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>;
-        using SymbolicGraph = TP::DiscreteModel::SymbolicProductAutomaton<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA, EdgeInheritor>;
+        using EdgeInheritor = GF::DiscreteModel::ModelEdgeInheritor<GF::DiscreteModel::TransitionSystem, GF::FormalMethods::DFA>;
+        using SymbolicGraph = GF::DiscreteModel::SymbolicProductAutomaton<GF::DiscreteModel::TransitionSystem, GF::FormalMethods::DFA, EdgeInheritor>;
         using BehaviorHandlerType = BehaviorHandler<SymbolicGraph, N>;
 
         struct Targets {
-            TP::DiscreteModel::GridWorldAgentProperties props;
-            std::shared_ptr<TP::DiscreteModel::TransitionSystem> ts;
+            GF::DiscreteModel::GridWorldAgentProperties props;
+            std::shared_ptr<GF::DiscreteModel::TransitionSystem> ts;
             std::shared_ptr<SymbolicGraph> product;
             std::shared_ptr<TrueBehavior<SymbolicGraph, N>> true_behavior;
             std::shared_ptr<BehaviorHandlerType> behavior_handler;
@@ -60,7 +60,7 @@ class RandomGridWorldGenerator {
                     props.region_specs.push_back(std::move(spec));
                 }
 
-                auto getMeanVec = [&data](const std::string& key, TP::Containers::FixedArray<N, float>& array) {
+                auto getMeanVec = [&data](const std::string& key, GF::Containers::FixedArray<N, float>& array) {
                     std::vector<float> vec = data[key].as<std::vector<float>>();
                     ASSERT(vec.size() == N, "Number elements does not match dimension for key " << key);
                     for (uint32_t i = 0; i < N; ++i) {
@@ -81,7 +81,7 @@ class RandomGridWorldGenerator {
             return props;
         }
 
-        static Targets generate(const RandomGridWorldProperties<N>& random_model_props, const std::vector<TP::FormalMethods::DFAptr>& dfas, float confidence) {
+        static Targets generate(const RandomGridWorldProperties<N>& random_model_props, const std::vector<GF::FormalMethods::DFAptr>& dfas, float confidence) {
             Targets targets;
             
             // Generate the grid world properties
@@ -101,19 +101,19 @@ class RandomGridWorldGenerator {
             }
             ASSERT(non_default_cells < n_cells, "Number of obstacle and region cells exceeds total number of cells in grid");
 
-            TP::Containers::SizedArray<std::size_t> graph_sizes = {random_model_props.n_x, random_model_props.n_y};
+            GF::Containers::SizedArray<std::size_t> graph_sizes = {random_model_props.n_x, random_model_props.n_y};
 
             // Keep track of which cells are occupied
             std::vector<bool> occupied(n_cells, false);
 
             // Randomly make obstacles
             for (uint32_t i = 0; i < random_model_props.n_obstacle_cells; ++i) {
-                uint32_t wrapped_cell = TP::RNG::randi(1, n_cells);
+                uint32_t wrapped_cell = GF::RNG::randi(1, n_cells);
                 for (uint32_t i = wrapped_cell; i < n_cells; ++i) {
                     if (!occupied[i]) {
                         occupied[i] = true;
-                        TP::Containers::SizedArray<uint32_t> unwrapped_cell = TP::AugmentedNodeIndex::unwrap(i, graph_sizes);
-                        TP::DiscreteModel::Obstacle obs{std::string(), unwrapped_cell[0], unwrapped_cell[0], unwrapped_cell[1], unwrapped_cell[1]};
+                        GF::Containers::SizedArray<uint32_t> unwrapped_cell = GF::AugmentedNodeIndex::unwrap(i, graph_sizes);
+                        GF::DiscreteModel::Obstacle obs{std::string(), unwrapped_cell[0], unwrapped_cell[0], unwrapped_cell[1], unwrapped_cell[1]};
                         targets.props.environment.obstacles.push_back(std::move(obs));
                         --n_cells;
                         break;
@@ -124,12 +124,12 @@ class RandomGridWorldGenerator {
             // Randomly make proposition regions
             for (const auto& region_spec : random_model_props.region_specs) {
                 for (uint32_t i = 0; i < region_spec.n_cells; ++i) {
-                    uint32_t wrapped_cell = TP::RNG::randi(1, n_cells);
+                    uint32_t wrapped_cell = GF::RNG::randi(1, n_cells);
                     for (uint32_t i = wrapped_cell; i < n_cells; ++i) {
                         if (!occupied[i]) {
                             occupied[i] = true;
-                            TP::Containers::SizedArray<uint32_t> unwrapped_cell = TP::AugmentedNodeIndex::unwrap(i, graph_sizes);
-                            TP::DiscreteModel::RectangleGridWorldRegion region;
+                            GF::Containers::SizedArray<uint32_t> unwrapped_cell = GF::AugmentedNodeIndex::unwrap(i, graph_sizes);
+                            GF::DiscreteModel::RectangleGridWorldRegion region;
                             region.label = region_spec.label;
                             region.proposition = region_spec.proposition;
                             region.color = region_spec.color;
@@ -146,28 +146,28 @@ class RandomGridWorldGenerator {
             }
 
             // Generate the transition system
-            targets.ts = TP::DiscreteModel::GridWorldAgent::generate(targets.props);
-            TP::FormalMethods::Alphabet combined_alphbet;
+            targets.ts = GF::DiscreteModel::GridWorldAgent::generate(targets.props);
+            GF::FormalMethods::Alphabet combined_alphbet;
             for (const auto& dfa : dfas) {
                 combined_alphbet = combined_alphbet + dfa->getAlphabet();
             }
             targets.ts->addAlphabet(combined_alphbet);
 
             targets.product = std::make_shared<SymbolicGraph>(targets.ts, dfas);
-            targets.true_behavior = std::make_shared<TrueBehavior<SymbolicGraph, N>>(targets.product, TP::Stats::Distributions::FixedMultivariateNormal<N>());
+            targets.true_behavior = std::make_shared<TrueBehavior<SymbolicGraph, N>>(targets.product, GF::Stats::Distributions::FixedMultivariateNormal<N>());
             targets.behavior_handler = std::make_shared<BehaviorHandlerType>(targets.product, 1, confidence);
 
             // For each node and action, make a distribution for the true behavior as well as the estimated behavior
             for (auto node : targets.ts->nodes()) {
                 for (const auto& action : {"left", "right", "up", "down", "stay"}) {
-                    TP::Stats::Distributions::FixedMultivariateNormal<N> true_distribution;
+                    GF::Stats::Distributions::FixedMultivariateNormal<N> true_distribution;
                     Eigen::Matrix<float, N, 1>& niw_mu = targets.behavior_handler->getElement(node, action).getUpdater().priorDist().mu;
                     for (uint32_t i = 0; i < N; ++i) {
-                        true_distribution.mu(i) = TP::RNG::randf(random_model_props.true_mean_lower_bound[i], random_model_props.true_mean_upper_bound[i]);
+                        true_distribution.mu(i) = GF::RNG::randf(random_model_props.true_mean_lower_bound[i], random_model_props.true_mean_upper_bound[i]);
                         true_distribution.Sigma(i,i) = 0.1f * true_distribution.mu(i);
-                        niw_mu(i) = TP::RNG::randf(random_model_props.estimate_mean_lower_bound[i], random_model_props.estimate_mean_upper_bound[i]);
+                        niw_mu(i) = GF::RNG::randf(random_model_props.estimate_mean_lower_bound[i], random_model_props.estimate_mean_upper_bound[i]);
                     }
-                    targets.true_behavior->getElement(node, action) = TP::Stats::Distributions::FixedMultivariateNormalSampler<N>(true_distribution);
+                    targets.true_behavior->getElement(node, action) = GF::Stats::Distributions::FixedMultivariateNormalSampler<N>(true_distribution);
                 }
             }
 

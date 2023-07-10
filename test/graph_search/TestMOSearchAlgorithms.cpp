@@ -15,8 +15,8 @@
 
 #include "tools/ArgParser.h"
 
-using namespace TP;
-using namespace TP::GraphSearch;
+using namespace GF;
+using namespace GF::GraphSearch;
 
 struct Edge {
 

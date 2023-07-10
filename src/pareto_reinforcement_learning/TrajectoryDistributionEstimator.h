@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 
 namespace PRL {
 
@@ -13,33 +13,33 @@ class TrajectoryDistributionConvolver {
             m_individual_distributions.reserve(capacity);
         }
 
-        void add(const TP::Stats::Distributions::FixedNormalInverseWishart<N>& niw) {
+        void add(const GF::Stats::Distributions::FixedNormalInverseWishart<N>& niw) {
             /* NIW's must be persistent */
-            m_mvn.convolveWith(TP::Stats::MomentMatch::niw2mvn(niw));
-            //LOG("mm mvn mean \n" << TP::Stats::MomentMatch::niw2mvn(niw).mu);
+            m_mvn.convolveWith(GF::Stats::MomentMatch::niw2mvn(niw));
+            //LOG("mm mvn mean \n" << GF::Stats::MomentMatch::niw2mvn(niw).mu);
             m_individual_distributions.push_back(niw);
         }
 
-        inline const TP::Stats::Distributions::FixedMultivariateNormal<TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements()>& getConvolutedEstimateMVN() const {return m_mvn;}
+        inline const GF::Stats::Distributions::FixedMultivariateNormal<GF::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements()>& getConvolutedEstimateMVN() const {return m_mvn;}
 
-        const std::vector<TP::Stats::Distributions::FixedNormalInverseWishart<N>>& getIndividualDistributions() const {return m_individual_distributions;}
+        const std::vector<GF::Stats::Distributions::FixedNormalInverseWishart<N>>& getIndividualDistributions() const {return m_individual_distributions;}
 
-        std::vector<TP::Stats::Distributions::FixedMultivariateNormal<N>> getIndividualEstimateDistributions() const {
-            std::vector<TP::Stats::Distributions::FixedMultivariateNormal<N>> individual_est_dists;
+        std::vector<GF::Stats::Distributions::FixedMultivariateNormal<N>> getIndividualEstimateDistributions() const {
+            std::vector<GF::Stats::Distributions::FixedMultivariateNormal<N>> individual_est_dists;
             individual_est_dists.reserve(m_individual_distributions.size());
             for (auto niw : m_individual_distributions) {
-                TP::Stats::Distributions::FixedMultivariateT<N> mean_marginal = niw.meanMarginal();
-                TP::Stats::Distributions::FixedInverseWishart<N> covariance_marginal = TP::Stats::minimalWishartToWishart(niw.covarianceMarginal());
+                GF::Stats::Distributions::FixedMultivariateT<N> mean_marginal = niw.meanMarginal();
+                GF::Stats::Distributions::FixedInverseWishart<N> covariance_marginal = GF::Stats::minimalWishartToWishart(niw.covarianceMarginal());
 
                 // Certainty equivalence estimate:
-                individual_est_dists.emplace_back(TP::Stats::E(mean_marginal), TP::Stats::E(covariance_marginal));
+                individual_est_dists.emplace_back(GF::Stats::E(mean_marginal), GF::Stats::E(covariance_marginal));
             }
             return individual_est_dists;
         }
 
     protected:
-        TP::Stats::Distributions::FixedMultivariateNormal<TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements()> m_mvn;
-        std::vector<TP::Stats::Distributions::FixedNormalInverseWishart<N>> m_individual_distributions;
+        GF::Stats::Distributions::FixedMultivariateNormal<GF::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements()> m_mvn;
+        std::vector<GF::Stats::Distributions::FixedNormalInverseWishart<N>> m_individual_distributions;
 };
 
 
@@ -53,7 +53,7 @@ class TrajectoryDistributionUpdaters : public TrajectoryDistributionConvolver<N>
             m_individual_updaters.reserve(capacity);
         }
 
-        void add(const TP::Stats::MultivariateGaussianUpdater<N>& updater) {
+        void add(const GF::Stats::MultivariateGaussianUpdater<N>& updater) {
             /* Updaters must be persistent */
             //LOG("mm niw mean: \n" << updater.dist().mu);
             TrajectoryDistributionConvolver<N>::add(updater.dist());
@@ -61,10 +61,10 @@ class TrajectoryDistributionUpdaters : public TrajectoryDistributionConvolver<N>
             m_individual_updaters.push_back(&updater);
         }
 
-        inline const std::vector<const TP::Stats::MultivariateGaussianUpdater<N>*>& getIndividualUpdaters() const {return m_individual_updaters;}
+        inline const std::vector<const GF::Stats::MultivariateGaussianUpdater<N>*>& getIndividualUpdaters() const {return m_individual_updaters;}
 
     private:
-        std::vector<const TP::Stats::MultivariateGaussianUpdater<N>*> m_individual_updaters;
+        std::vector<const GF::Stats::MultivariateGaussianUpdater<N>*> m_individual_updaters;
 };
 
 }

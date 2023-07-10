@@ -1,6 +1,6 @@
 #include<iostream>
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 
 #include "BehaviorHandler.h"
 #include "Learner.h"
@@ -25,7 +25,7 @@ Selector getSelector(const std::string& label) {
 
 int main(int argc, char* argv[]) {
  
-	TP::ArgParser parser(argc, argv);
+	GF::ArgParser parser(argc, argv);
 
 	bool verbose = parser.parse<void>('v', "Run in verbose mode").has();
 	bool exclude_plans = parser.parse<void>("no-plan-data", "Exclude the plans from the data file (smaller file)").has();
@@ -49,27 +49,27 @@ int main(int argc, char* argv[]) {
 
 	/////////////////   Planner   /////////////////
 
-	using EdgeInheritor = TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>;
-	using SymbolicGraph = TP::DiscreteModel::SymbolicProductAutomaton<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA, EdgeInheritor>;
+	using EdgeInheritor = GF::DiscreteModel::ModelEdgeInheritor<GF::DiscreteModel::TransitionSystem, GF::FormalMethods::DFA>;
+	using SymbolicGraph = GF::DiscreteModel::SymbolicProductAutomaton<GF::DiscreteModel::TransitionSystem, GF::FormalMethods::DFA, EdgeInheritor>;
 	using BehaviorHandlerType = BehaviorHandler<SymbolicGraph, N>;
-	using PreferenceDistributionType = TP::Stats::Distributions::FixedMultivariateNormal<N>;
+	using PreferenceDistributionType = GF::Stats::Distributions::FixedMultivariateNormal<N>;
 
 	// Make the preference behavior distribution
 	PreferenceDistributionType p_ev = deserializePreferenceDist<N>(random_config_filepath.get());
 
-	std::unique_ptr<TP::Serializer> szr_ptr;
+	std::unique_ptr<GF::Serializer> szr_ptr;
 	if (data_filepath.has()) {
-		szr_ptr.reset(new TP::Serializer(data_filepath.get()));
+		szr_ptr.reset(new GF::Serializer(data_filepath.get()));
 		if (n_trials.get() > 1) {
 			YAML::Emitter& out = szr_ptr->get();
 			out << YAML::Key << "Trials" << YAML::Value << n_trials.get();
 		}
 	}
 	
-	TP::Deserializer dszr(formula_filepath.get());
+	GF::Deserializer dszr(formula_filepath.get());
 	Selector selector = getSelector(selector_label.get());
 	RandomGridWorldProperties props = RandomGridWorldGenerator<N>::deserializeConfig(random_config_filepath.get());
-	auto dfas = TP::FormalMethods::createDFAsFromFile(dszr);
+	auto dfas = GF::FormalMethods::createDFAsFromFile(dszr);
 
 	uint32_t trial = 0;
 	while (trial < n_trials.get()) {
@@ -83,10 +83,10 @@ int main(int argc, char* argv[]) {
 		Learner<N> prl(targets.behavior_handler, data_collector, n_efe_samples.get(), verbose);
 
 		// Initialize the agent's state
-		TP::DiscreteModel::State init_state = TP::DiscreteModel::GridWorldAgent::makeInitState(targets.props, targets.ts);
+		GF::DiscreteModel::State init_state = GF::DiscreteModel::GridWorldAgent::makeInitState(targets.props, targets.ts);
 		prl.initialize(init_state);
 
-		auto samplerFunction = [&](TP::WideNode src_node, TP::WideNode dst_node, const TP::DiscreteModel::Action& action) {
+		auto samplerFunction = [&](GF::WideNode src_node, GF::WideNode dst_node, const GF::DiscreteModel::Action& action) {
 			return targets.true_behavior->sample(src_node, dst_node, action);
 		};
 

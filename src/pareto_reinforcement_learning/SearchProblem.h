@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 
 #include "BehaviorHandler.h"
 #include "HistoryNode.h"
@@ -10,16 +10,16 @@ namespace PRL {
 template <uint64_t N, class BEHAVIOR_HANDLER_T>
 struct SearchProblem {
     public: // Dependent types required by any search problem
-        using SymbolicProductGraph = TP::DiscreteModel::SymbolicProductAutomaton<
-            TP::DiscreteModel::TransitionSystem, 
-            TP::FormalMethods::DFA, 
-            TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>>;
+        using SymbolicProductGraph = GF::DiscreteModel::SymbolicProductAutomaton<
+            GF::DiscreteModel::TransitionSystem, 
+            GF::FormalMethods::DFA, 
+            GF::DiscreteModel::ModelEdgeInheritor<GF::DiscreteModel::TransitionSystem, GF::FormalMethods::DFA>>;
 
         typedef SymbolicProductGraph graph_t;
         typedef TaskHistoryNode<SymbolicProductGraph::node_t> node_t;
-        typedef TP::Containers::FixedArray<N, float> cost_t;
+        typedef GF::Containers::FixedArray<N, float> cost_t;
         typedef SymbolicProductGraph::edge_t edge_t;
-        typedef TP::DiscreteModel::Action action_t;
+        typedef GF::DiscreteModel::Action action_t;
 
     public: // Methods & members required by any search problem
         
@@ -30,7 +30,7 @@ struct SearchProblem {
             history_nodes.reserve(children.size());
             for (uint32_t i=0; i<children.size(); ++i) {
                 uint8_t n_tasks_completed = 0;
-                for (TP::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
+                for (GF::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
                     if (!m_product->acc(node.base_node, automaton_i) && m_product->acc(children[i], automaton_i)) {
                         ++n_tasks_completed;
                     }

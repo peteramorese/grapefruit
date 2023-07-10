@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.12.1)
+cmake_minimum_required(VERSION 3.20)
 
-project(task_planner)
+project(grapefruit)
 
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(Threads REQUIRED)
@@ -18,21 +18,14 @@ message("CMAKE_LIBRARY_OUTPUT_DIRECTORY: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 
 # Dependencies
 add_subdirectory(${CMAKE_SOURCE_DIR}/dependencies/yaml-cpp)
-#ExternalProject_Add(yaml
-#    PREFIX yaml
-#    SOURCE_DIR ${CMAKE_SOURCE_DIR}/dependencies/yaml-cpp
-#    BINARY_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-#    CMAKE_ARGS
-#        -DCMAKE_INSTALL_PREFIX=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/yaml
-#)
 
 set(TP_DEPENDENCY_INCLUDE_DIRS 
     ${CMAKE_SOURCE_DIR}/dependencies/yaml-cpp/include
     ${EIGEN3_INCLUDE_DIRS}
 )
-set(TP_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/task_planner)
+set(TP_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/grapefruit)
 
-add_subdirectory(task_planner)
+add_subdirectory(grapefruit)
 
 add_subdirectory(examples)
 add_subdirectory(src)

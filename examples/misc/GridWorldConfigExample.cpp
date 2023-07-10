@@ -1,10 +1,10 @@
 #include<iostream>
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 
 
-using namespace TP;
-using namespace TP::Planner;
+using namespace GF;
+using namespace GF::Planner;
 
 int main(int argc, char* argv[]) {
 	ArgParser parser(argc, argv);

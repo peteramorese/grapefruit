@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 
 #include "Regret.h"
 
@@ -9,20 +9,20 @@ namespace PRL {
 template <uint64_t N>
 class DataCollector {
     public:
-        using SymbolicProductGraph = TP::DiscreteModel::SymbolicProductAutomaton<
-            TP::DiscreteModel::TransitionSystem, 
-            TP::FormalMethods::DFA, 
-            TP::DiscreteModel::ModelEdgeInheritor<TP::DiscreteModel::TransitionSystem, TP::FormalMethods::DFA>>;
+        using SymbolicProductGraph = GF::DiscreteModel::SymbolicProductAutomaton<
+            GF::DiscreteModel::TransitionSystem, 
+            GF::FormalMethods::DFA, 
+            GF::DiscreteModel::ModelEdgeInheritor<GF::DiscreteModel::TransitionSystem, GF::FormalMethods::DFA>>;
 
         using BehaviorHandlerType = BehaviorHandler<SymbolicProductGraph, N>;
 
-        using PathSolution = TP::GraphSearch::PathSolution<
+        using PathSolution = GF::GraphSearch::PathSolution<
             typename SearchProblem<N, BehaviorHandlerType>::node_t, 
             typename SearchProblem<N, BehaviorHandlerType>::edge_t>;
 
-        using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<N>;
+        using TrajectoryDistribution = GF::Stats::Distributions::FixedMultivariateNormal<N>;
 
-        using Plan = TP::Planner::Plan<SearchProblem<N, BehaviorHandlerType>>;
+        using Plan = GF::Planner::Plan<SearchProblem<N, BehaviorHandlerType>>;
 
         struct Instance {
             public:
@@ -35,10 +35,10 @@ class DataCollector {
                 }
 
                 std::vector<PathSolution> paths;
-                TP::ParetoFront<typename SearchProblem<N, BehaviorHandlerType>::cost_t> ucb_pf;
+                GF::ParetoFront<typename SearchProblem<N, BehaviorHandlerType>::cost_t> ucb_pf;
                 std::vector<TrajectoryDistribution> trajectory_distributions;
                 uint32_t selected_plan_index = 0;
-                TP::Containers::FixedArray<N, float> cost_sample;
+                GF::Containers::FixedArray<N, float> cost_sample;
 
                 float getRegret() const {
                     ASSERT(static_cast<bool>(m_super->m_regret_handler), "No regret handler was given");
@@ -98,18 +98,18 @@ class DataCollector {
         }
 
         // Observe cross-instance quantities
-        const TP::Containers::FixedArray<N, float>& cumulativeCost() const {return m_cumulative_cost;}
+        const GF::Containers::FixedArray<N, float>& cumulativeCost() const {return m_cumulative_cost;}
         uint32_t steps() const {return m_steps;}
         uint32_t numInstances() const {return m_instances.size();}
         float cumulativeRegret() const {ASSERT(m_regret_handler, "No regret handler was given"); return m_cumulative_regret;}
-        TP::Containers::FixedArray<N, float> avgCostPerInstance() const {
-            TP::Containers::FixedArray<N, float> avg;
+        GF::Containers::FixedArray<N, float> avgCostPerInstance() const {
+            GF::Containers::FixedArray<N, float> avg;
             for (uint32_t i = 0; i < N; ++i)
                 avg[i] = m_cumulative_cost[i] / static_cast<float>(m_instances.size());
             return avg;
         }
 
-        void serialize(TP::Serializer& szr, bool exclude_plans = false) {
+        void serialize(GF::Serializer& szr, bool exclude_plans = false) {
             static_assert(N == 2, "Does not support serialization of more than two cost objectives");
 
             YAML::Emitter& out = szr.get();
@@ -189,7 +189,7 @@ class DataCollector {
 
         Instance m_buffer_instance;
 
-        TP::Containers::FixedArray<N, float> m_cumulative_cost;
+        GF::Containers::FixedArray<N, float> m_cumulative_cost;
         uint32_t m_steps = 0u;
         float m_cumulative_regret = 0.0f;
 };

@@ -5,7 +5,7 @@
 
 #include <Eigen/Core>
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 
 #include "TrajectoryDistributionEstimator.h"
 
@@ -14,8 +14,8 @@ namespace PRL {
 template <std::size_t N, uint8_t THREAD_COUNT = 20>
 class GaussianEFE {
     public:
-        using ModelDistribution = TP::Stats::Distributions::FixedMultivariateNormal<N>;
-        //using TrajectoryDistribution = TP::Stats::Distributions::FixedMultivariateNormal<TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements()>;
+        using ModelDistribution = GF::Stats::Distributions::FixedMultivariateNormal<N>;
+        //using TrajectoryDistribution = GF::Stats::Distributions::FixedMultivariateNormal<GF::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements()>;
 
     public:
         static float calculate(const TrajectoryDistributionUpdaters<N>& traj_updaters, const ModelDistribution& pref_dist, uint32_t n_samples, float* information_gain = nullptr) {
@@ -35,11 +35,11 @@ class GaussianEFE {
 
         static ModelDistribution getCEQObservationDistribution(const TrajectoryDistributionUpdaters<N>& prior_updaters) {
             const auto& parameters_mvn = prior_updaters.getConvolutedEstimateMVN();
-            Eigen::Matrix<float, TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements(), 1> parameters_mean = TP::Stats::E(parameters_mvn);
+            Eigen::Matrix<float, GF::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements(), 1> parameters_mean = GF::Stats::E(parameters_mvn);
             //LOG("parameters dist mean: \n" << parameters_mean << "\n");
             Eigen::Matrix<float, N, 1> mean_of_mean;
             Eigen::Matrix<float, ModelDistribution::uniqueCovarianceElements(), 1> mean_of_covariance;
-            for (std::size_t i = 0; i < TP::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements(); ++i) {
+            for (std::size_t i = 0; i < GF::Stats::Distributions::FixedNormalInverseWishart<N>::uniqueElements(); ++i) {
                 if (i < N) 
                     mean_of_mean(i) = parameters_mean(i);
                 else
@@ -69,11 +69,11 @@ class GaussianEFE {
         }
 
         static float expectedPosteriorEntropy(const TrajectoryDistributionUpdaters<N>& prior_updaters, uint32_t n_samples) {
-            const std::vector<TP::Stats::Distributions::FixedMultivariateNormal<N>>& estimate_dists = prior_updaters.getIndividualEstimateDistributions();
-            const std::vector<const TP::Stats::MultivariateGaussianUpdater<N>*>& updaters = prior_updaters.getIndividualUpdaters();
+            const std::vector<GF::Stats::Distributions::FixedMultivariateNormal<N>>& estimate_dists = prior_updaters.getIndividualEstimateDistributions();
+            const std::vector<const GF::Stats::MultivariateGaussianUpdater<N>*>& updaters = prior_updaters.getIndividualUpdaters();
             
             // Make sampler for each individual dist, since we need to sample each (s,a)
-            std::vector<TP::Stats::Distributions::FixedMultivariateNormalSampler<N>> samplers;
+            std::vector<GF::Stats::Distributions::FixedMultivariateNormalSampler<N>> samplers;
             samplers.reserve(estimate_dists.size());
             for (const auto& dist : estimate_dists) {
                 samplers.emplace_back(dist);
@@ -101,7 +101,7 @@ class GaussianEFE {
             return -unnormalized_entropy / static_cast<float>(n_samples);
         }
 
-        static float workerPosteriorEntropySampler(const std::vector<TP::Stats::Distributions::FixedMultivariateNormalSampler<N>>* samplers, const std::vector<const TP::Stats::MultivariateGaussianUpdater<N>*>* updaters, uint32_t thread_samples) {
+        static float workerPosteriorEntropySampler(const std::vector<GF::Stats::Distributions::FixedMultivariateNormalSampler<N>>* samplers, const std::vector<const GF::Stats::MultivariateGaussianUpdater<N>*>* updaters, uint32_t thread_samples) {
             float unnormalized_entropy = 0.0f;
             // Sample the expected entropy
             for (uint32_t s = 0; s < thread_samples; ++s) {
@@ -109,9 +109,9 @@ class GaussianEFE {
                 TrajectoryDistributionConvolver<N> posterior_convolver(updaters->size());
                 auto sampler_it = samplers->begin();
                 for (const auto& updater : *updaters) {
-                    Eigen::Matrix<float, N, 1> obs = TP::RNG::mvnrand(*sampler_it++);
+                    Eigen::Matrix<float, N, 1> obs = GF::RNG::mvnrand(*sampler_it++);
                     //LOG(" sampled observation: " << obs.transpose());
-                    TP::Stats::Distributions::FixedNormalInverseWishart<N> posterior = updater->tempPosterior(obs);
+                    GF::Stats::Distributions::FixedNormalInverseWishart<N> posterior = updater->tempPosterior(obs);
                     posterior_convolver.add(posterior);
                 }
                 
@@ -124,7 +124,7 @@ class GaussianEFE {
 template <std::size_t N>
 class CertaintyEquivalenceGaussianEFE {
     public:
-        using Distribution = TP::Stats::Distributions::FixedMultivariateNormal<N>;
+        using Distribution = GF::Stats::Distributions::FixedMultivariateNormal<N>;
 
     public:
         static float calculate(const Distribution& input_dist, const Distribution& p_ev_dist) {

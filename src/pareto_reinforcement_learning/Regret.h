@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 #include "TrueBehavior.h"
 #include "SearchProblem.h"
 
@@ -9,7 +9,7 @@ namespace PRL {
 template <class SYMBOLIC_GRAPH_T, uint64_t N>
 class Regret {
     public:
-        using SearchResult = TP::GraphSearch::MultiObjectiveSearchResult<
+        using SearchResult = GF::GraphSearch::MultiObjectiveSearchResult<
             typename SearchProblem<N, TrueBehavior<SYMBOLIC_GRAPH_T, N>>::node_t, 
             typename SearchProblem<N, TrueBehavior<SYMBOLIC_GRAPH_T, N>>::edge_t, 
             typename SearchProblem<N, TrueBehavior<SYMBOLIC_GRAPH_T, N>>::cost_t>;
@@ -30,10 +30,10 @@ class Regret {
                 SearchResult result = [&] {
                     if constexpr (N == 2)
                         // Use BOA
-                        return TP::GraphSearch::BOAStar<CostVector, decltype(problem)>::search(problem);
+                        return GF::GraphSearch::BOAStar<CostVector, decltype(problem)>::search(problem);
                     else
                         // Use NAMOA
-                        return TP::GraphSearch::NAMOAStar<CostVector, decltype(problem)>::search(problem);
+                        return GF::GraphSearch::NAMOAStar<CostVector, decltype(problem)>::search(problem);
                 }();
 
                 //LOG("sample: (x: " << sample[0] << " y: " << sample[1] << ")");
@@ -50,7 +50,7 @@ class Regret {
     private:
         std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;
         std::shared_ptr<TrueBehavior<SYMBOLIC_GRAPH_T, N>> m_true_behavior;
-        std::map<typename SYMBOLIC_GRAPH_T::node_t, TP::ParetoFront<CostVector>> m_pareto_front_cache;
+        std::map<typename SYMBOLIC_GRAPH_T::node_t, GF::ParetoFront<CostVector>> m_pareto_front_cache;
 };
 
 }

@@ -2,7 +2,7 @@
 
 #include "core/DirectedAcyclicGraph.h"
 
-using namespace TP;
+using namespace GF;
 
 static std::string intToStr(const int& i) {return std::to_string(i);}
 

@@ -12,8 +12,8 @@
 
 #include "tools/Logging.h"
 
-using namespace TP;
-using namespace TP::DiscreteModel;
+using namespace GF;
+using namespace GF::DiscreteModel;
 
 int main() {
  

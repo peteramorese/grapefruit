@@ -9,8 +9,8 @@
 #include "graph_search/SearchProblem.h"
 #include "graph_search/AStar.h"
 
-using namespace TP;
-using namespace TP::GraphSearch;
+using namespace GF;
+using namespace GF::GraphSearch;
 
 struct Edge {
     // Edge does not need to be default constructable

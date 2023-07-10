@@ -8,8 +8,8 @@
 #include "graph_search/MultiObjectiveSearchProblem.h"
 #include "graph_search/NAMOAStar.h"
 
-using namespace TP;
-using namespace TP::GraphSearch;
+using namespace GF;
+using namespace GF::GraphSearch;
 
 struct Edge {
     // Edge does not need to be default constructable

@@ -6,8 +6,8 @@
 
 #include "tools/Logging.h"
 
-using namespace TP;
-using namespace TP::DiscreteModel;
+using namespace GF;
+using namespace GF::DiscreteModel;
 
 void printConditionEvaluation(const std::string& condition_name, Condition& cond, const State& state) {
 	LOG("Input state for condition '" << condition_name << "':");

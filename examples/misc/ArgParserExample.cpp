@@ -1,7 +1,7 @@
 #include "tools/ArgParser.h"
 
 
-using namespace TP;
+using namespace GF;
 
 int main(int argc, char* argv[]) {
 	ArgParser parser(argc, argv);

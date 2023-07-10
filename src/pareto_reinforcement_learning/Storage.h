@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
 
 namespace PRL {
 
@@ -10,9 +10,9 @@ namespace PRL {
     class Storage {
         protected:
             struct NodeActionPair {
-                NodeActionPair(TP::Node node_, const TP::DiscreteModel::Action& action_) : node(node_), action(action_) {}
-                TP::Node node;
-                TP::DiscreteModel::Action action;
+                NodeActionPair(GF::Node node_, const GF::DiscreteModel::Action& action_) : node(node_), action(action_) {}
+                GF::Node node;
+                GF::DiscreteModel::Action action;
 
                 bool operator==(const NodeActionPair& other) const {
                     return node == other.node && action == other.action;
@@ -21,7 +21,7 @@ namespace PRL {
             struct NodeActionPairHash {
 
                 std::size_t operator()(const NodeActionPair& node_action_pair) const {
-                    return std::hash<TP::Node>{}(node_action_pair.node) ^ (std::hash<TP::DiscreteModel::Action>{}(node_action_pair.action) << 1);
+                    return std::hash<GF::Node>{}(node_action_pair.node) ^ (std::hash<GF::DiscreteModel::Action>{}(node_action_pair.action) << 1);
                 }
             };
 
@@ -30,7 +30,7 @@ namespace PRL {
                 : m_default_na_element(default_element)
             {}
 
-            inline ELEMENT_T& getElement(TP::Node node, const TP::DiscreteModel::Action& action) {
+            inline ELEMENT_T& getElement(GF::Node node, const GF::DiscreteModel::Action& action) {
                 auto it = this->m_node_action_pair_elements.find(NodeActionPair(node, action));
                 if (it != this->m_node_action_pair_elements.end()) {
                     return it->second;
@@ -40,7 +40,7 @@ namespace PRL {
                 }
             }
 
-            inline const ELEMENT_T& lookupElement(TP::Node node, const TP::DiscreteModel::Action& action) const {
+            inline const ELEMENT_T& lookupElement(GF::Node node, const GF::DiscreteModel::Action& action) const {
                 return this->m_node_action_pair_elements.at(NodeActionPair(node, action));
             }
 
