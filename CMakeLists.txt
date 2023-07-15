@@ -7,6 +7,10 @@ find_package(Threads REQUIRED)
 
 include(ExternalProject)
 
+if(NOT DEFINED BUILD_EXECUTABLES)
+    option(BUILD_EXECUTABLES "Build executables (set to OFF for building just the library target)" ON)
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
@@ -27,6 +31,8 @@ set(TP_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/grapefruit)
 
 add_subdirectory(grapefruit)
 
-add_subdirectory(examples)
-add_subdirectory(src)
-add_subdirectory(test)
+if(BUILD_EXECUTABLES)
+    add_subdirectory(examples)
+    add_subdirectory(src)
+    add_subdirectory(test)
+endif()
