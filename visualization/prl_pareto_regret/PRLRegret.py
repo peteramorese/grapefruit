@@ -18,7 +18,7 @@ visualize_config = {
     "line_style": "-",
     "show_title": False,
     "show_legend": True,
-    "grid_on": True,
+    "grid_on": False,
     "figure_size": (3.9, 3.9),
     "default_color": "rebeccapurple",
     "default_axis_labels": ["Instance", "Regret"],
@@ -77,7 +77,7 @@ class PRLRegret:
                 instance_data[i].append(data[i])
         return {
             "mean": [np.mean(data) for data in instance_data],
-            "var": [np.var(data) for data in instance_data],
+            "std": [np.std(data) for data in instance_data],
             "label": data_set_trials[0]["label"],
             "color": data_set_trials[0]["color"],
             "cumulative": data_set_trials[0]["cumulative"]
@@ -94,7 +94,7 @@ class PRLRegret:
         if end_instance:
             assert end_instance > start_instance
 
-        assert "data" in data_set.keys()
+        assert "mean" in data_set.keys()
         assert "label" in data_set.keys()
         assert "color" in data_set.keys()
         assert "cumulative" in data_set.keys()
@@ -103,9 +103,12 @@ class PRLRegret:
             ax.grid()
 
         ax.plot(data_set["mean"][start_instance:end_instance], color=data_set["color"], label=data_set["label"])
-        if "var" in data_set.keys():
-            ax.plot([mean + 1.0 * var for mean, var in zip(data_set["mean"][start_instance:end_instance], data_set["var"][start_instance:end_instance])], color = data_set["color"], ls=':')
-            ax.plot([mean - 1.0 * var for mean, var in zip(data_set["mean"][start_instance:end_instance], data_set["var"][start_instance:end_instance])], color = data_set["color"], ls=':')
+        if "std" in data_set.keys():
+            upper = [mean + 1.0 * var for mean, var in zip(data_set["mean"][start_instance:end_instance], data_set["std"][start_instance:end_instance])]
+            lower = [mean - 1.0 * var for mean, var in zip(data_set["mean"][start_instance:end_instance], data_set["std"][start_instance:end_instance])]
+            ax.fill_between(range(len(upper)), upper, lower, color = data_set["color"], alpha=0.2)
+            #ax.plot([mean + 1.0 * var for mean, var in zip(data_set["mean"][start_instance:end_instance], data_set["var"][start_instance:end_instance])], color = data_set["color"], ls=':')
+            #ax.plot([mean - 1.0 * var for mean, var in zip(data_set["mean"][start_instance:end_instance], data_set["var"][start_instance:end_instance])], color = data_set["color"], ls=':')
         ax.set_xlabel("Instance")
         ax.set_ylabel("Cumulative Regret" if data_set["cumulative"] else "Regret")
         return ax
