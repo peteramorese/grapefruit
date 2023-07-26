@@ -28,17 +28,26 @@ visualize_config = {
 class PRLRegret:
     def __init__(self):
         self._data_sets = list()
+        self._data_sets_avg = list()
+        self._n_trials = None
 
     def deserialize_data_set(self, filepath, label = None, color = visualize_config["default_color"], cumulative_regret = True):
         with open(filepath, "r") as f:
             data = yaml.safe_load(f)
+        self._data_sets.append({
+            "data": data,
+            "label": label,
+            "color": color,
+            "cumulative": cumulative_regret
+            })
         if "Trials" in data.keys():
             data_set_trials = list()
-            for trial in range(data["Trials"]):
+            self._n_trials = data["Trials"]
+            for trial in range(self._n_trials):
                 data_set_trials.append(self._create_data_set(data["Trial " + str(trial)], label, color, cumulative_regret))
-            self._data_sets.append(self._average_data_across_trials(data_set_trials))
+            self._data_sets_avg.append(self._average_data_across_trials(data_set_trials))
         else:
-            self._data_sets.append(self._create_data_set(data, label, color, cumulative_regret))
+            self._data_sets_avg.append(self._create_data_set(data, label, color, cumulative_regret))
 
     def _create_data_set(self, raw_data, label, color, cumulative_regret):
         data_set = {
@@ -67,8 +76,8 @@ class PRLRegret:
             for i in range(n_instances):
                 instance_data[i].append(data[i])
         return {
-            "data": [np.mean(data) for data in instance_data],
-            "std": [np.std(data) for data in instance_data],
+            "mean": [np.mean(data) for data in instance_data],
+            "var": [np.var(data) for data in instance_data],
             "label": data_set_trials[0]["label"],
             "color": data_set_trials[0]["color"],
             "cumulative": data_set_trials[0]["cumulative"]
@@ -93,31 +102,59 @@ class PRLRegret:
         if visualize_config["grid_on"]:
             ax.grid()
 
-        ax.plot(data_set["data"][start_instance:end_instance], color=data_set["color"], label=data_set["label"])
-        if "std" in data_set.keys():
-            ax.plot([mean + 1.0 * std for mean, std in zip(data_set["data"][start_instance:end_instance], data_set["std"][start_instance:end_instance])], color = data_set["color"], ls=':')
-            ax.plot([mean - 1.0 * std for mean, std in zip(data_set["data"][start_instance:end_instance], data_set["std"][start_instance:end_instance])], color = data_set["color"], ls=':')
+        ax.plot(data_set["mean"][start_instance:end_instance], color=data_set["color"], label=data_set["label"])
+        if "var" in data_set.keys():
+            ax.plot([mean + 1.0 * var for mean, var in zip(data_set["mean"][start_instance:end_instance], data_set["var"][start_instance:end_instance])], color = data_set["color"], ls=':')
+            ax.plot([mean - 1.0 * var for mean, var in zip(data_set["mean"][start_instance:end_instance], data_set["var"][start_instance:end_instance])], color = data_set["color"], ls=':')
         ax.set_xlabel("Instance")
         ax.set_ylabel("Cumulative Regret" if data_set["cumulative"] else "Regret")
         return ax
+    
+    def sketch_data_histograms(self, instance = None, n_bins = 20):
+        fig, axs = plt.subplots(len(self._data_sets), 1)
+        x_max = 0
+        for data_set, ax in zip(self._data_sets, axs):
+            data = data_set["data"]
+            assert "Trials" in data.keys()
+            assert self._n_trials
+            if instance is None:
+                instance = data["Trial 0"]["Instances"] - 1
+            instance_cumulative_regrets = list()
+            for trial in range(self._n_trials):
+                instance_data = data["Trial " + str(trial)]["Instance " + str(instance)]
+                regret = instance_data["Cumulative Regret" if data_set["cumulative"] else "Regret"]
+                if regret > x_max:
+                    x_max = regret
+                instance_cumulative_regrets.append(regret)
+                #data_set_trials.append(self._create_data_set(data["Trial " + str(trial)], label, color, cumulative_regret))
+            ax.hist(instance_cumulative_regrets, bins=n_bins, color=data_set["color"])
+            ax.set_title(data_set["label"])
+        for ax in axs:
+            ax.set_xlim(0.0, x_max)
 
     def draw(self, block = True, one_plot = True, use_legend = visualize_config["show_legend"], start_instance = None, end_instance = None):
 
         if one_plot:
             ax = plt.gca()
-            for data_set in self._data_sets:
+            for data_set in self._data_sets_avg:
                 self.sketch_data_set(data_set, ax)
         else:
-            fig, axes = plt.subplots(len(self._data_sets), 1)
-            if len(self._data_sets) > 1:
+            fig, axes = plt.subplots(len(self._data_sets_avg), 1)
+            if len(self._data_sets_avg) > 1:
                 for i in range(len(axes)):
-                    self.sketch_data_set(self._data_sets[i], axes[i])
+                    self.sketch_data_set(self._data_sets_avg[i], axes[i])
             else:
-                self.sketch_data_set(self._data_sets[0], axes)
+                self.sketch_data_set(self._data_sets_avg[0], axes)
 
         plt.show(block=False)
         if use_legend:
             legend_ax = plt.legend(fontsize=visualize_config["legend_fontsize"], loc="upper left", markerscale=6)
+        if block:
+            input("Press key to close")
+
+    def draw_histograms(self, block = True, use_legend = visualize_config["show_legend"], instance = None, n_bins = 20):
+        self.sketch_data_histograms(instance, n_bins)
+        plt.show(block=False)
         if block:
             input("Press key to close")
 
@@ -134,6 +171,7 @@ if __name__ == "__main__":
     parser.add_argument("--config-filepath", default="../../build/bin/configs/grid_world_config.yaml", help="Specify a grid world config file")
     parser.add_argument("--start-instance", default=0, type=int, help="Animation starting instance")
     parser.add_argument("--end-instance", default=None, type=int, help="Animation ending instance")
+    parser.add_argument("--hist", default=False, action="store_true", help="Display a histogram of the cumulative regret")
     args = parser.parse_args()
 
     regret_visualizer = PRLRegret()
@@ -149,4 +187,8 @@ if __name__ == "__main__":
             ind += 1
     else:
         assert False
-    regret_visualizer.draw(one_plot=not args.subplots)
+
+    if args.hist:
+        regret_visualizer.draw_histograms()
+    else:
+        regret_visualizer.draw(one_plot=not args.subplots)
