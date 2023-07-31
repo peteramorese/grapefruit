@@ -151,5 +151,15 @@ namespace DiscreteModel {
         }
     }
 
+
+    void serialize(GF::Serializer& szr) {
+        YAML::Emitter& out = szr.get();
+
+    }
+
+    void deserialize(const GF::Deserializer& dszr) {
+
+    }
+
 } // namespace DiscreteModel
 } // namespace GF

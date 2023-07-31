@@ -109,8 +109,10 @@ namespace DiscreteModel {
 
 			void addProposition(const Condition& prop) {m_propositions[prop.getName()].push_back(prop);}
 
+            void serialize(GF::Serializer& szr);
+            void deserialize(const GF::Deserializer& dszr);
+
 		private:
-			void deserialize(const std::string& filepath);
 			void addObservationsToNode(Node node, const FormalMethods::Alphabet& alphabet);
 
 		protected:
