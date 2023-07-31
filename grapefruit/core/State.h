@@ -7,6 +7,7 @@
 #include "tools/Containers.h"
 #include "core/StateSpace.h"
 
+#define GF_MAX_RANK_64
 
 namespace GF {
 namespace DiscreteModel {
@@ -34,8 +35,9 @@ namespace DiscreteModel {
 			const StateSpace* m_ss;
 	};
 
-#ifdef GF_MAX_RANK_64
 	class State;
+
+#ifdef GF_MAX_RANK_64
 
 	class StateAccessCapture {
 		public:
@@ -96,6 +98,21 @@ namespace DiscreteModel {
 			std::string to_str() const;
 			static inline std::string to_str(const State& state) {return state.to_str();}
 
+
+			void serialize(GF::Serializer& szr) {
+				YAML::Emitter& out = szr.get();
+				out << YAML::BeginSeq;
+				for (dimension_t dim = 0; dim < m_ss->rank(); ++dim) {
+					out << operator[](dim);
+				}
+				out << YAML::EndSeq;
+			}
+
+			void deserialize(const GF::Deserializer& dszr) {
+                const YAML::Node& node = dszr.get();
+				std::vector<std::string> vars = node.as<std::vector<std::string>>();
+				operator=(vars);
+			}
 
 		protected:
 		 	inline const std::string& operator[](dimension_t dim) const {

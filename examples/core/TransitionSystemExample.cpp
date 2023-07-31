@@ -148,5 +148,9 @@ int main() {
 	LOG("Observation: " << observation << ", State: " << test_state.to_str() << " Result: " << ts->parseAndObserve(test_state, observation));
 	}
 
+	Serializer szr("test_ts.yaml");
+	ts->serialize(szr);
+	szr.done();
+
 	return 0;
 }

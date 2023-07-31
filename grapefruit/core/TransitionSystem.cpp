@@ -152,12 +152,36 @@ namespace DiscreteModel {
     }
 
 
-    void serialize(GF::Serializer& szr) {
+    void TransitionSystem::serialize(GF::Serializer& szr) {
         YAML::Emitter& out = szr.get();
 
+        out << YAML::Key << "Graph" << YAML::Value << YAML::BeginMap;
+
+        uint32_t node_ind = 0;
+        for (const auto& list : m_graph) {
+            out << YAML::Key << "State " + std::to_string(node_ind) << YAML::Value << YAML::BeginMap;
+            out << YAML::Key << "Vars" << YAML::Value;
+            m_node_container[node_ind].serialize(szr);
+            out << YAML::Key << "Neighbors" << YAML::Value << YAML::BeginMap;
+            ++node_ind;
+            for (uint32_t i=0; i < list.forward.size(); ++i) {
+                out << YAML::Key << "State " + std::to_string(list.forward.nodes[i]) << YAML::Value << YAML::BeginMap;
+                out << YAML::Key << "Vars" << YAML::Value;
+                m_node_container[list.forward.nodes[i]].serialize(szr);
+                out << YAML::Key << "Action" << YAML::Value << list.forward.edges[i].action;
+                out << YAML::Key << "Cost" << YAML::Value << list.forward.edges[i].cost;
+                out << YAML::EndMap;
+                //PRINT_NAMED("    - child State " << list.forward.nodes[i], m_node_container[list.forward.nodes[i]].to_str() << " with edge (action: " << list.forward.edges[i].action << ", cost: " << list.forward.edges[i].cost << ")");
+            }
+            out << YAML::EndMap; // Neighbors
+            out << YAML::EndMap;
+        }
+        out << YAML::EndMap; // Graph
+
+        out << YAML::EndMap;
     }
 
-    void deserialize(const GF::Deserializer& dszr) {
+    void TransitionSystem::deserialize(const GF::Deserializer& dszr) {
 
     }
 

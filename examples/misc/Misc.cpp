@@ -9,29 +9,37 @@ using namespace GF;
 
 int main() {
 
-    ParetoFront<Containers::FixedArray<2, float>> pf;
-    Containers::FixedArray<2, float> pt0;
-    pt0[0] = 1.0f;
-    pt0[1] = 5.0f;
-    Containers::FixedArray<2, float> pt1;
-    pt1[0] = 2.0f;
-    pt1[1] = 3.0f;
-    Containers::FixedArray<2, float> pt2;
-    pt2[0] = 4.0f;
-    pt2[1] = 2.5f;
-    Containers::FixedArray<2, float> pt3;
-    pt3[0] = 5.0f;
-    pt3[1] = 0.5f;
+    std::string filepath = "test_state_space.yaml";
 
-    pf.push_back(pt0);
-    pf.push_back(pt1);
-    pf.push_back(pt2);
-    pf.push_back(pt3);
+	DiscreteModel::StateSpace ss_camera(3);
 
-    Containers::FixedArray<2, float> sample;
-    sample[0] = 5.0f;
-    sample[1] = 4.1f;
-    LOG("Regret: " << pf.regret(sample));
+	// Create state space:
+	ss_camera.setDimension(0, "pan", {"left","center","right"}); //pan
+	ss_camera.setDimension(1, "tilt", {"up","center","down"}); // tilt
+	ss_camera.setDimension(2, "power", {"on","off"}); // power
+
+	ss_camera.addGroup("pointing locations", {"pan", "tilt"});
+	   
+	// Write to file
+    //ss_camera.serialize(filepath);
+
+	// Read from file
+	//DiscreteModel::StateSpace ss_camera_deserialize(filepath);
+	//ss_camera_deserialize.print();
+
+    DiscreteModel::State state_1(&ss_camera);
+    state_1 = {"left", "down", "on"};
+    Serializer szr("test.yaml");
+    YAML::Emitter& out = szr.get();
+    out << YAML::Key << "test_state" << YAML::Value;
+    state_1.serialize(szr);
+
+    DiscreteModel::State state_2(&ss_camera);
+    state_2 = {"right", "down", "on"};
+    out << YAML::Key << "test_state_2" << YAML::Value;
+    state_2.serialize(szr);
+
+    szr.done();
     
     return 0;
 }
