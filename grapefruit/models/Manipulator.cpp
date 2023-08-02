@@ -3,81 +3,80 @@
 namespace GF {
 namespace DiscreteModel {
 
-    Manipulator::ConvertedProperties Manipulator::convertProperties(const ManipulatorModelProperties& model_props) {
-        ConvertedProperties converted_props;
+    //Manipulator::ConvertedProperties Manipulator::convertProperties(const ManipulatorModelProperties& model_props) {
+    //    ConvertedProperties converted_props;
 
-        // Set up
-        ASSERT(model_props.n_locations > model_props.n_objects, "Number of locations must be greater than number of objects");
-        ASSERT(model_props.init_obj_locations.size() == model_props.n_objects, "Number of init obj locations must match the number of objects");
+    //    // Set up
+    //    ASSERT(model_props.n_locations > model_props.n_objects, "Number of locations must be greater than number of objects");
+    //    ASSERT(model_props.init_obj_locations.size() == model_props.n_objects, "Number of init obj locations must match the number of objects");
 
-        converted_props.locations.resize(model_props.n_locations);
-        auto& locations = converted_props.locations;
-        for (uint32_t i=0; i<model_props.n_locations; ++i) locations[i] = templateToLabel(model_props.location_label_template, i);
+    //    converted_props.locations.resize(model_props.n_locations);
+    //    auto& locations = converted_props.locations;
+    //    for (uint32_t i=0; i<model_props.n_locations; ++i) locations[i] = templateToLabel(model_props.location_label_template, i);
 
-        converted_props.objects.resize(model_props.n_objects);
-        auto& objects = converted_props.objects;
-        for (uint32_t i=0; i<model_props.n_objects; ++i) objects[i] = templateToLabel(model_props.object_location_label_template, i);
+    //    converted_props.objects.resize(model_props.n_objects);
+    //    auto& objects = converted_props.objects;
+    //    for (uint32_t i=0; i<model_props.n_objects; ++i) objects[i] = templateToLabel(model_props.object_location_label_template, i);
 
-        // Init state
-        converted_props.init_state_vars.resize(model_props.n_objects + 2);
-        auto& init_state_vars = converted_props.init_state_vars;
+    //    // Init state
+    //    converted_props.init_state_vars.resize(model_props.n_objects + 2);
+    //    auto& init_state_vars = converted_props.init_state_vars;
 
-        if (model_props.init_ee_location >= 0) {
-            init_state_vars[0] = locations[model_props.init_ee_location];
-        } else if (model_props.init_ee_location == ManipulatorModelProperties::s_stow) {
-            init_state_vars[0] = "stow";
-        } else {
-            ASSERT(false, "Unrecognized init ee location");
-        }
+    //    if (model_props.init_ee_location >= 0) {
+    //        init_state_vars[0] = locations[model_props.init_ee_location];
+    //    } else if (model_props.init_ee_location == ManipulatorModelProperties::s_stow) {
+    //        init_state_vars[0] = "stow";
+    //    } else {
+    //        ASSERT(false, "Unrecognized init ee location");
+    //    }
 
-        bool holding = false;
-        for (uint32_t i=0; i<model_props.n_objects; ++i) {
-            if (model_props.init_obj_locations[i] >= 0) {
-                init_state_vars[i + 1] = locations[model_props.init_obj_locations[i]];
-            } else if (model_props.init_obj_locations[i] == ManipulatorModelProperties::s_ee_obj_location) {
-                if (holding) ASSERT(false, "More than one init obj location is 'ee'");
-                init_state_vars[i + 1] = "ee";
-                holding = true;
-            } else {
-                ASSERT(false, "Unrecognized init obj location");
-            }
-        }
-        init_state_vars.back() = (holding) ? "T" : "F";
+    //    bool holding = false;
+    //    for (uint32_t i=0; i<model_props.n_objects; ++i) {
+    //        if (model_props.init_obj_locations[i] >= 0) {
+    //            init_state_vars[i + 1] = locations[model_props.init_obj_locations[i]];
+    //        } else if (model_props.init_obj_locations[i] == ManipulatorModelProperties::s_ee_obj_location) {
+    //            if (holding) ASSERT(false, "More than one init obj location is 'ee'");
+    //            init_state_vars[i + 1] = "ee";
+    //            holding = true;
+    //        } else {
+    //            ASSERT(false, "Unrecognized init obj location");
+    //        }
+    //    }
+    //    init_state_vars.back() = (holding) ? "T" : "F";
 
-        return converted_props;
-    }
+    //    return converted_props;
+    //}
 
     State Manipulator::makeInitState(const ManipulatorModelProperties& model_props, const std::shared_ptr<TransitionSystem>& ts) {
-        return State(ts->getStateSpace().lock().get(), Manipulator::convertProperties(model_props).init_state_vars);
+        return State(ts->getStateSpace().lock().get(), model_props.getInitStateVars());
     }
 
     std::shared_ptr<TransitionSystem> Manipulator::generate(const ManipulatorModelProperties& model_props) {
 
 
-        auto[locations, objects, init_state_vars] = Manipulator::convertProperties(model_props);
-
+        std::vector<std::string> init_state_vars = model_props.getInitStateVars();
 
         /////////////////   State Space   /////////////////
 
-        std::shared_ptr<StateSpace> ss_manipulator = std::make_shared<StateSpace>(objects.size() + 2);
+        std::shared_ptr<StateSpace> ss_manipulator = std::make_shared<StateSpace>(init_state_vars.size());
 
-        std::vector<std::string> ee_locations = locations;
+        std::vector<std::string> ee_locations = model_props.locations;
         if (model_props.include_stow) ee_locations.push_back("stow");
 
-        std::vector<std::string> obj_locations = locations;
+        std::vector<std::string> obj_locations = model_props.locations;
         obj_locations.push_back("ee");
         
         // Create state space:
         ss_manipulator->setDimension(0, "ee_loc", ee_locations); // end effector locations
         uint32_t i = 1;
-        for (const auto& obj : objects) ss_manipulator->setDimension(i++, obj, obj_locations); 
+        for (const auto& obj : model_props.objects) ss_manipulator->setDimension(i++, obj, obj_locations); 
         ss_manipulator->setDimension(i, "holding", {"T", "F"}); // end effector is holding an object
 
         // Add a label group denoting the obj locations
-        ss_manipulator->addGroup("obj_locations", objects);
+        ss_manipulator->addGroup("obj_locations", model_props.objects);
 
         // Add a domain capturing only the locations that an object can be dropped in ('locations')
-        ss_manipulator->addDomain("drop_locs", locations);
+        ss_manipulator->addDomain("drop_locs", model_props.locations);
 
         TransitionSystemProperties props(ss_manipulator);
 

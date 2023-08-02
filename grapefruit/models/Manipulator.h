@@ -10,37 +10,48 @@ namespace GF {
 namespace DiscreteModel {
 
     struct ManipulatorModelProperties {
-        uint32_t n_locations;
-        uint32_t n_objects;
+        std::vector<std::string> locations;
+        std::vector<std::string> objects;
         
-        int32_t init_ee_location = s_stow;
-        std::vector<int32_t> init_obj_locations;
+        std::string init_ee_location = s_stow;
+        std::map<std::string, std::string> init_obj_locations;
 
-        std::string location_label_template = "L#";
-        std::string object_location_label_template = "obj_#_loc";
         bool include_stow = true;
         
-        // Template delimeter
-        inline static const char s_delimeter = '#';
-        
         // If an init_obj_locations[i] equals this, its location is set to 'ee' and holding is set to 'T'
-        inline static const int32_t s_ee_obj_location = -1;
-        inline static const int32_t s_stow = -2;
+        inline static const std::string s_ee_obj_location = "ee";
+        inline static const std::string s_stow = "stow";
+
+        std::vector<std::string> getInitStateVars() const {
+            bool holding = false;
+            std::vector<std::string> vars;
+            vars.reserve(objects.size() + 2);
+            ASSERT(include_stow || init_ee_location != s_stow, "Init ee location is 'stow', but the stow location is not included");
+            vars.push_back(init_ee_location);
+            for (const auto& obj : objects) {
+                const std::string& loc = init_obj_locations.at(obj);
+                vars.push_back(loc);
+
+                if (loc == s_ee_obj_location) {
+                    if (holding) {
+                        ASSERT(false, "Duplicate 'ee' object location in initial state");
+                    } else {
+                        holding = true;
+                    }
+                }
+            }
+            vars.push_back(holding ? "T" : "F");
+            return vars;
+        }
     };
 
     class Manipulator {
-        private:
-            struct ConvertedProperties {
-                std::vector<std::string> locations;
-                std::vector<std::string> objects;
-                std::vector<std::string> init_state_vars;
-            };
         public:
             static std::shared_ptr<TransitionSystem> generate(const ManipulatorModelProperties& model_props);
             static State makeInitState(const ManipulatorModelProperties& model_props, const std::shared_ptr<TransitionSystem>& ts);
 
         private:
-            static ConvertedProperties convertProperties(const ManipulatorModelProperties& model_props);
+            //static ConvertedProperties convertProperties(const ManipulatorModelProperties& model_props);
             static std::string templateToLabel(std::string label_template, uint32_t num);
 
     };
