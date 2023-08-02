@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  ros_ws:
+  ws:
     build:
       context: ./
       dockerfile: Dockerfile

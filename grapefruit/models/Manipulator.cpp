@@ -148,14 +148,14 @@ namespace DiscreteModel {
 
         /////////////////   Propositions   /////////////////
 
-        uint32_t num_propositions = locations.size() * objects.size();
+        uint32_t num_propositions = model_props.locations.size() * model_props.objects.size();
         props.propositions.reserve(num_propositions);
-        for (uint32_t i = 0; i < locations.size(); ++i) {
-            for (uint32_t j = 0; j < objects.size(); ++j) {
+        for (uint32_t i = 0; i < model_props.locations.size(); ++i) {
+            for (uint32_t j = 0; j < model_props.objects.size(); ++j) {
                 Condition prop;
-                prop.addCondition(ConditionArg::Label, objects[j], ConditionOperator::Equals, ConditionArg::Variable, locations[i]);
+                prop.addCondition(ConditionArg::Label, model_props.objects[j], ConditionOperator::Equals, ConditionArg::Variable, model_props.locations[i]);
                 prop.addCondition(ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "F");
-                prop.setName(objects[j] + "_" + locations[i]);
+                prop.setName(model_props.objects[j] + "_" + model_props.locations[i]);
                 props.propositions.push_back(prop);
             }
         }
@@ -164,16 +164,16 @@ namespace DiscreteModel {
         return TransitionSystemGenerator::generate(props);
     }
     
-    std::string Manipulator::templateToLabel(std::string label_template, uint32_t num) {
-        uint32_t i = 0;
-        while (i < label_template.size()) {
-            if (label_template[i] == ManipulatorModelProperties::s_delimeter) {
-                label_template.replace(i, 1, std::to_string(num));
-            }
-            ++i;
-        }
-        return label_template;
-    }
+    //std::string Manipulator::templateToLabel(std::string label_template, uint32_t num) {
+    //    uint32_t i = 0;
+    //    while (i < label_template.size()) {
+    //        if (label_template[i] == ManipulatorModelProperties::s_delimeter) {
+    //            label_template.replace(i, 1, std::to_string(num));
+    //        }
+    //        ++i;
+    //    }
+    //    return label_template;
+    //}
 
 }
 }

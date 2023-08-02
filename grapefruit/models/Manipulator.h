@@ -52,7 +52,7 @@ namespace DiscreteModel {
 
         private:
             //static ConvertedProperties convertProperties(const ManipulatorModelProperties& model_props);
-            static std::string templateToLabel(std::string label_template, uint32_t num);
+            //static std::string templateToLabel(std::string label_template, uint32_t num);
 
     };
 }
