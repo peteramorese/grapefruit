@@ -53,7 +53,6 @@ std::pair<bool, Eigen::Matrix<float, N, 1>> deserializeDefaultMean(const std::st
 
         // Convert to Eigen
         Eigen::Matrix<float, N, 1> mean_converted;
-        Eigen::Matrix<float, GF::Stats::Distributions::FixedMultivariateNormal<N>::uniqueCovarianceElements(), 1> minimal_cov_converted;
         for (uint32_t i = 0; i < N; ++i)
             mean_converted(i) = mean[i];
 

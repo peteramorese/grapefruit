@@ -20,8 +20,6 @@ int main() {
 
 	ManipulatorModelProperties ts_props;
 	ts_props.objects = {"obj_0", "obj_1"};
-	ManipulatorModelProperties ts_props;
-	ts_props.objects = {"obj_0", "obj_1"};
 	ts_props.locations = {"loc_L0", "loc_L1", "loc_L2"};
 	ts_props.init_obj_locations["obj_0"] = "loc_L0";
 	ts_props.init_obj_locations["obj_1"] = "loc_L1";
