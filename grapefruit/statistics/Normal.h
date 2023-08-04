@@ -111,7 +111,7 @@ class FixedMultivariateNormalSampler {
         FixedMultivariateNormalSampler(const FixedMultivariateNormal<N>& dist) 
         {
             //resetDist(dist);
-            ASSERT(isCovariancePositiveSemiDef(dist.Sigma), "Sigma is not positive semi-definite. Sigma: \n" << dist.Sigma);
+            ASSERT(GF_IS_COV_POS_SEMI_DEF(dist.Sigma), "Sigma is not positive semi-definite. Sigma: \n" << dist.Sigma);
             m_dist = dist;
             Eigen::SelfAdjointEigenSolver<Eigen::Matrix<float, N, N>> solver(dist.Sigma);
             m_transform = solver.eigenvectors() * solver.eigenvalues().cwiseSqrt().asDiagonal();

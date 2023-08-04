@@ -2,6 +2,16 @@
 
 #include <Eigen/Dense>
 
+#define GF_CHECK_MATRIX_POS_DEF
+
+#ifdef GF_CHECK_MATRIX_POS_DEF
+    #define GF_IS_MATRIX_POS_SEMI_DEF(matrix) GF::isMatrixPositiveSemiDef(matrix)
+    #define GF_IS_COV_POS_SEMI_DEF(matrix) GF::isCovariancePositiveSemiDef(matrix)
+#else
+    #define GF_IS_MATRIX_POS_SEMI_DEF(matrix) true
+    #define GF_IS_COV_POS_SEMI_DEF(matrix) true
+#endif
+
 namespace GF {
 
     template <typename T>
@@ -42,6 +52,7 @@ namespace GF {
         return label_template;
     }
 
+#ifdef GF_CHECK_MATRIX_POS_DEF
     template <class MATRIX_T>
     static bool isMatrixPositiveSemiDef(const MATRIX_T& matrix) {
         if (!matrix.isApprox(matrix.transpose()))
@@ -59,4 +70,6 @@ namespace GF {
             return false;
         return true;
     }
+#endif
+
 }

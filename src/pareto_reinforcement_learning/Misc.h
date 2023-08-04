@@ -31,7 +31,7 @@ GF::Stats::Distributions::FixedMultivariateNormal<N> deserializePreferenceDist(c
         GF::Stats::Distributions::FixedMultivariateNormal<N> dist;
         dist.mu = mean_converted;
         dist.setSigmaFromUniqueElementVector(minimal_cov_converted);
-        ASSERT(GF::isCovariancePositiveSemiDef(dist.Sigma), "Preference Covariance: \n" << dist.Sigma <<"\nis not positive semi-definite");
+        ASSERT(GF_IS_COV_POS_SEMI_DEF(dist.Sigma), "Preference Covariance: \n" << dist.Sigma <<"\nis not positive semi-definite");
         return dist;
     } catch (YAML::ParserException e) {
         ERROR("Failed to load file" << config_filepath << " ("<< e.what() <<")");
