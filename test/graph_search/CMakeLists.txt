@@ -2,6 +2,6 @@ add_executable(TestMOSearchAlgorithms TestMOSearchAlgorithms.cpp)
 target_link_libraries(TestMOSearchAlgorithms PUBLIC
 )
 target_include_directories(TestMOSearchAlgorithms PUBLIC
-	${TP_LIBRARY_DIR}
-	${TP_DEPENDENCY_INCLUDE_DIRS}
+	${GF_LIBRARY_DIR}
+	${GF_DEPENDENCY_INCLUDE_DIRS}
 )

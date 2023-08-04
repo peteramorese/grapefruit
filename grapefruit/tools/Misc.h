@@ -2,8 +2,6 @@
 
 #include <Eigen/Dense>
 
-#define GF_CHECK_MATRIX_POS_DEF
-
 #ifdef GF_CHECK_MATRIX_POS_DEF
     #define GF_IS_MATRIX_POS_SEMI_DEF(matrix) GF::isMatrixPositiveSemiDef(matrix)
     #define GF_IS_COV_POS_SEMI_DEF(matrix) GF::isCovariancePositiveSemiDef(matrix)

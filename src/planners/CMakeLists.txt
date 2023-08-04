@@ -5,7 +5,7 @@ target_link_libraries(BOPartialSatisfactionPreferencePlanner PUBLIC
 	Planners
 )
 target_include_directories(BOPartialSatisfactionPreferencePlanner PUBLIC
-	${TP_LIBRARY_DIR}
+	${GF_LIBRARY_DIR}
 )
 
 add_executable(BOActionCostPreferencePlanner BOActionCostPreferencePlanner.cpp)
@@ -22,5 +22,5 @@ target_link_libraries(MOPreferencePlanner PUBLIC
 	Planners
 )
 target_include_directories(MOPreferencePlanner PUBLIC
-	${TP_LIBRARY_DIR}
+	${GF_LIBRARY_DIR}
 )

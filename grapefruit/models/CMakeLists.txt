@@ -6,5 +6,5 @@ target_link_libraries(Models PUBLIC
     Core
 )
 target_include_directories(Models PUBLIC
-    ${TP_LIBRARY_DIR}
+    ${GF_LIBRARY_DIR}
 )
