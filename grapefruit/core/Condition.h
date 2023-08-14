@@ -4,6 +4,7 @@
 #include<unordered_map>
 
 #include "tools/Logging.h"
+#include "tools/Serializer.h"
 
 namespace GF {
 namespace DiscreteModel {
@@ -11,13 +12,13 @@ namespace DiscreteModel {
 	class State;
 	class StateAccessCapture;
 
-	enum class ConditionType {
+	enum ConditionType : uint16_t {
 		// Type of condition (for TransitionCondition)
 		Pre, 			// Applies to the anterior state
 		Post, 			// Applies to the posterior state
 	};
 
-	enum class ConditionArg {
+	enum ConditionArg : uint16_t {
 		None = 0,
 
 		// Operand
@@ -32,18 +33,18 @@ namespace DiscreteModel {
 
 	};
 
-	enum class ConditionLogical {
+	enum ConditionLogical : uint16_t {
 		// Logical
 		True,			// Argument must evaluate to 'true'
 		Negate, 		// Argument must evaluate to 'false'
 	};
 	
-	enum class ConditionJunction {
+	enum ConditionJunction : uint16_t {
 		Conjunction,	// Conditions are conjoined
 		Disjunction,	// Conditions are disjoined
 	};
 
-	enum class ConditionOperator {
+	enum ConditionOperator : uint16_t {
 		// Operator
 		Equals,			// Check if a 'Label' equals a 'Variable'
 		InDomain,			// Check if a 'Variable' or the variable inside a 'Label' is inside a 'Domain'
@@ -118,6 +119,9 @@ namespace DiscreteModel {
 
 			// TODO
 			virtual void print() const override {}
+
+            void serialize(GF::Serializer& szr) const;
+            void deserialize(const GF::Deserializer& dszr);
 		private:
 		 	std::string m_name;
 			std::vector<SubCondition> m_sub_conditions;

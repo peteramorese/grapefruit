@@ -152,7 +152,7 @@ namespace DiscreteModel {
     }
 
 
-    void TransitionSystem::serialize(GF::Serializer& szr) {
+    void TransitionSystem::serialize(GF::Serializer& szr) const {
         YAML::Emitter& out = szr.get();
 
         out << YAML::Key << "Graph" << YAML::Value << YAML::BeginMap;
@@ -171,7 +171,6 @@ namespace DiscreteModel {
                 out << YAML::Key << "Action" << YAML::Value << list.forward.edges[i].action;
                 out << YAML::Key << "Cost" << YAML::Value << list.forward.edges[i].cost;
                 out << YAML::EndMap;
-                //PRINT_NAMED("    - child State " << list.forward.nodes[i], m_node_container[list.forward.nodes[i]].to_str() << " with edge (action: " << list.forward.edges[i].action << ", cost: " << list.forward.edges[i].cost << ")");
             }
             out << YAML::EndMap; // Neighbors
             out << YAML::EndMap;

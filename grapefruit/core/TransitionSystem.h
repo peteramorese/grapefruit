@@ -102,14 +102,15 @@ namespace DiscreteModel {
 
 			void listPropositions() const {
 				LOG("Listing proposition names");
-				for (const auto&[name, _] : m_propositions) PRINT(" - " << name);
+				for (const auto&[name, _] : m_propositions) 
+					PRINT(" - " << name);
 			}
 
 			const ObservationContainer& getObservationContainer() const {return m_observation_container;}
 
 			void addProposition(const Condition& prop) {m_propositions[prop.getName()].push_back(prop);}
 
-            void serialize(GF::Serializer& szr);
+            void serialize(GF::Serializer& szr) const;
             void deserialize(const GF::Deserializer& dszr);
 
 		private:

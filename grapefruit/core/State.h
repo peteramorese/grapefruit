@@ -99,7 +99,7 @@ namespace DiscreteModel {
 			static inline std::string to_str(const State& state) {return state.to_str();}
 
 
-			void serialize(GF::Serializer& szr) {
+			void serialize(GF::Serializer& szr) const {
 				YAML::Emitter& out = szr.get();
 				out << YAML::BeginSeq;
 				for (dimension_t dim = 0; dim < m_ss->rank(); ++dim) {

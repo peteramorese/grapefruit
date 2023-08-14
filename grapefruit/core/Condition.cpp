@@ -6,6 +6,7 @@
 
 #include "core/State.h"
 #include "tools/Logging.h"
+#include "tools/Debug.h"
 
 namespace GF {
 namespace DiscreteModel {
@@ -120,6 +121,54 @@ namespace DiscreteModel {
 			return false;
 		}
 	}
+
+	void Condition::serialize(GF::Serializer& szr) const {
+        YAML::Emitter& out = szr.get();
+		
+		out << YAML::Key << "Name" << YAML::Value << m_name;
+		out << YAML::Key << "Junction Type" << YAML::Value << m_junction_type;
+		out << YAML::Key << "Sub Conditions" << YAML::Value; 
+		out << YAML::BeginSeq;
+		for (auto[lhs_type, rhs_type, condition_operator, lhs, rhs, condition_name, logical] : m_sub_conditions) {
+			out << YAML::BeginMap;
+			
+			out << YAML::Key << "LHS Type" << YAML::Value << lhs_type;
+			out << YAML::Key << "RHS Type" << YAML::Value << rhs_type;
+			out << YAML::Key << "Condition Operator" << YAML::Value << condition_operator;
+			out << YAML::Key << "LHS" << YAML::Value << lhs;
+			out << YAML::Key << "RHS" << YAML::Value << rhs;
+			out << YAML::Key << "Condition Name" << YAML::Value << condition_name;
+			out << YAML::Key << "Logical" << YAML::Value << logical;
+
+
+			out << YAML::EndMap;
+		};
+		out << YAML::EndSeq;
+	}
+
+	void Condition::deserialize(const GF::Deserializer& dszr) {
+		const YAML::Node& node = dszr.get();
+		m_name = node["Name"].as<std::string>();
+		m_junction_type = static_cast<ConditionJunction>(node["Junction Type"].as<uint16_t>());
+
+		m_sub_conditions.clear();
+		const YAML::Node sub_condition_node = node["Sub Conditions"];
+		for (auto it = sub_condition_node.begin(); it != sub_condition_node.end(); ++it) {
+			const YAML::Node& sub_condition = *it;
+			//LOG("key: " << it->first.as<std::string>());
+			m_sub_conditions.emplace_back(
+				static_cast<ConditionArg>(sub_condition["LHS Type"].as<uint16_t>()),
+				sub_condition["LHS"].as<std::string>(),
+				static_cast<ConditionOperator>(sub_condition["Condition Operator"].as<uint16_t>()),
+				static_cast<ConditionArg>(sub_condition["RHS Type"].as<uint16_t>()),
+				sub_condition["RHS"].as<std::string>(),
+				sub_condition["Condition Name"].as<std::string>(),
+				static_cast<ConditionLogical>(sub_condition["Logical"].as<uint16_t>())
+			);
+		}
+	}
+
+	// TransitionCondition
 
 	bool TransitionCondition::evaluate(const State& pre_state, const State& post_state) const {
 		clearArgValues();
