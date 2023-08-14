@@ -155,6 +155,11 @@ namespace DiscreteModel {
     void TransitionSystem::serialize(GF::Serializer& szr) const {
         YAML::Emitter& out = szr.get();
 
+        out << YAML::Key << "State Space" << YAML::Value << YAML::BeginMap;
+        m_ss->serialize(szr);
+        out << YAML::EndMap;
+
+
         out << YAML::Key << "Graph" << YAML::Value << YAML::BeginMap;
 
         uint32_t node_ind = 0;
@@ -177,11 +182,60 @@ namespace DiscreteModel {
         }
         out << YAML::EndMap; // Graph
 
+        out << YAML::Key << "Propositions" << YAML::Value << YAML::BeginMap;
+        for (const auto&[name, props] : m_propositions) {
+            out << YAML::Key << name << YAML::Value << YAML::BeginSeq;
+            for (const Condition& prop : props) {
+                out << YAML::BeginMap;
+                prop.serialize(szr);
+                out << YAML::EndMap;
+            }
+            out << YAML::EndSeq;
+        }
+        out << YAML::EndMap; // Propositions
+
         out << YAML::EndMap;
     }
 
     void TransitionSystem::deserialize(const GF::Deserializer& dszr) {
+        LOG("Deserializing");
+        const YAML::Node& node = dszr.get();
 
+        m_ss.reset(new StateSpace);
+        m_ss->deserialize(node["State Space"]);
+        m_ss->print();
+
+        YAML::Node graph_node = node["Graph"];
+        for (auto src_it = graph_node.begin(); src_it != graph_node.end(); ++src_it) {
+            const YAML::Node& src_node = src_it->second;
+            State src(m_ss.get());
+            src = src_node["Vars"].as<std::vector<std::string>>();
+            
+            const YAML::Node& neighbors = src_node["Neighbors"];
+            for (auto dst_it = neighbors.begin(); dst_it != neighbors.end(); ++dst_it) {
+                const YAML::Node& dst_node = dst_it->second;
+                State dst(m_ss.get());
+                dst = dst_node["Vars"].as<std::vector<std::string>>();
+                float cost = dst_node["Cost"].as<float>();
+                std::string action = dst_node["Action"].as<std::string>();
+                connect(src, dst, TransitionSystemLabel(cost, action));
+            }
+        }
+
+        YAML::Node propositions_node = node["Propositions"];
+        for (auto prop_it = propositions_node.begin(); prop_it != propositions_node.end(); ++prop_it) {
+            std::string prop_name = prop_it->first.as<std::string>();
+            const YAML::Node& conditions_node = prop_it->second;
+
+            std::vector<Condition> conditions;
+            for (auto cond_it = conditions_node.begin(); cond_it != conditions_node.end(); ++cond_it) {
+                Condition cond;
+                cond.deserialize(*cond_it);
+                conditions.emplace_back(std::move(cond));
+            }
+
+            m_propositions.insert(std::make_pair(std::move(prop_name), std::move(conditions)));
+        }
     }
 
 } // namespace DiscreteModel

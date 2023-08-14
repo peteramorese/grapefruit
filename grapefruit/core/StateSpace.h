@@ -99,10 +99,8 @@ namespace DiscreteModel {
 			friend class VariableReference;
 
 		public:
+		 	StateSpace() : m_data(0) {}
 			StateSpace(dimension_t rank) : m_data(rank) {}
-			StateSpace(const std::string& filepath) : m_data(0) {
-				deserialize(Deserializer(filepath));
-			}
 
 			inline dimension_t rank() const {return m_data.rank();}
 

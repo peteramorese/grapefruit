@@ -72,15 +72,12 @@ namespace DiscreteModel {
 
 	class TransitionSystem : public NodeGenericGraph<State, TransitionSystemLabel, Node, true, true> {
 		public:
-		 	TransitionSystem() = delete;
+		 	/// @brief  For deserialization only
+		 	TransitionSystem() {}
+
 			TransitionSystem(const std::shared_ptr<StateSpace>& ss) 
 				: m_ss(ss)
 				{};
-			TransitionSystem(const std::string& filepath) 
-				: NodeGenericGraph<State, TransitionSystemLabel>()
-			{
-				//deserialize
-			}
 			virtual ~TransitionSystem() {};
 
 			// Parses observation and evaluates it according to state

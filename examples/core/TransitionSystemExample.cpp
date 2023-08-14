@@ -152,5 +152,14 @@ int main() {
 	ts->serialize(szr);
 	szr.done();
 
+	std::shared_ptr<TransitionSystem> same_ts = std::make_shared<TransitionSystem>();
+	Deserializer dszr("test_ts.yaml");
+	same_ts->deserialize(dszr);
+	NEW_LINE;
+	LOG("Printing the transtion system after serialization...");
+	same_ts->print();
+	same_ts->listPropositions();
+	
+
 	return 0;
 }
