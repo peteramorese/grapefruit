@@ -72,9 +72,11 @@ namespace DiscreteModel {
 
 	class TransitionSystem : public NodeGenericGraph<State, TransitionSystemLabel, Node, true, true> {
 		public:
-		 	/// @brief  For deserialization only
+		 	/// @brief  For deserialization only (undefined state)
 		 	TransitionSystem() {}
 
+			/// @brief Create with a state space that has already been generated
+			/// @param ss State space
 			TransitionSystem(const std::shared_ptr<StateSpace>& ss) 
 				: m_ss(ss)
 				{};

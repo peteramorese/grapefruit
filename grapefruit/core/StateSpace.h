@@ -37,7 +37,7 @@ namespace DiscreteModel {
 					std::vector<Dimension> m_state_space;
 					std::unordered_map<std::string, uint32_t> m_label_to_dim;
 				public:
-					StateSpaceData(uint32_t rank) : m_state_space(rank) {}
+					StateSpaceData(dimension_t rank) : m_state_space(rank) {}
 
 					inline dimension_t rank() const {return m_state_space.size();}
 					bool hasVariable(const std::string& variable) const {
@@ -59,7 +59,7 @@ namespace DiscreteModel {
 					inline bool hasLabel(const std::string& variable) const {return m_label_to_dim.find(variable) != m_label_to_dim.end();}
 
 					inline dimension_t getDimension(const std::string& label) const {return m_label_to_dim.at(label);}
-					inline const std::string& getLabel(uint32_t index) const {return m_state_space[index].label;}
+					inline const std::string& getLabel(dimension_t dim) const {return m_state_space[dim].label;}
 					inline const std::vector<std::string>& getVariables(dimension_t dim) const {return m_state_space[dim].variables;}
 					inline const std::vector<std::string>& getVariables(const std::string& label) const {return m_state_space[m_label_to_dim.at(label)].variables;}
 

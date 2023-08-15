@@ -91,7 +91,9 @@ namespace DiscreteModel {
 			begin = true;
 		}
 
+		std::vector<std::string> labels(m_data.rank());
 		for (dimension_t i=0; i < m_data.rank(); ++i) {
+			labels[i] = m_data.getLabel(i);
 			if (begin) {
 				out << YAML::Key << "State Space" << YAML::Value << YAML::BeginMap;
 				begin = false;
@@ -100,40 +102,44 @@ namespace DiscreteModel {
 			out << YAML::Value << m_data.getVariables(i);
 		}
 		out << YAML::EndMap;
+
+		out << YAML::Key << "Dimension Labels" << YAML::Value << labels;
 	}
 
 	void StateSpace::deserialize(const Deserializer& dszr) {
 		const YAML::Node& data = dszr.get();
-			if (data["Rank"].as<uint32_t>() == 0 || !data["State Space"]) {
-				WARN("Attempted to deserialize empty state space");
-			}
+		if (data["Rank"].as<uint32_t>() == 0 || !data["State Space"]) {
+			WARN("Attempted to deserialize empty state space");
+		}
 
-			m_data.reset(data["Rank"].as<uint32_t>());
+		m_data.reset(data["Rank"].as<uint32_t>());
 
-			typedef std::map<std::string, std::vector<std::string>> StrToStrArr;
+		std::vector<std::string> dimension_labels = data["Dimension Labels"].as<std::vector<std::string>>();
+		ASSERT(dimension_labels.size() == m_data.rank(), "Number of dimension labels does not match rank");
 
-			StrToStrArr state_space = data["State Space"].as<StrToStrArr>();
-			dimension_t dim = 0;
-			for (auto&[name, label_bundle] : state_space) {
-				m_data.setDimension(dim++, name, label_bundle);
-			}
-			
-			m_domains.clear();
-			if (data["Domains"]) {
-				StrToStrArr domain_map = data["Domains"].as<StrToStrArr>();
-				for (auto&[name, label_bundle] : domain_map) {
-					addDomain(name, label_bundle);
-				}
-			}
-			
-			m_groups.clear();
-			if (data["Groups"]) {
-				StrToStrArr group_map = data["Groups"].as<StrToStrArr>();
-				for (auto&[name, label_bundle] : group_map) {
-					addGroup(name, label_bundle);
-				}
+		typedef std::map<std::string, std::vector<std::string>> StrToStrArr;
 
+		StrToStrArr state_space = data["State Space"].as<StrToStrArr>();
+		for (dimension_t dim = 0; dim < dimension_labels.size(); ++dim) {
+		 	const std::string& dim_label = dimension_labels[dim];
+			m_data.setDimension(dim, dim_label, state_space[dim_label]);
+		}
+		
+		m_domains.clear();
+		if (data["Domains"]) {
+			StrToStrArr domain_map = data["Domains"].as<StrToStrArr>();
+			for (auto&[name, label_bundle] : domain_map) {
+				addDomain(name, label_bundle);
 			}
+		}
+		
+		m_groups.clear();
+		if (data["Groups"]) {
+			StrToStrArr group_map = data["Groups"].as<StrToStrArr>();
+			for (auto&[name, label_bundle] : group_map) {
+				addGroup(name, label_bundle);
+			}
+		}
 	}
 
 	void StateSpace::print() const {
