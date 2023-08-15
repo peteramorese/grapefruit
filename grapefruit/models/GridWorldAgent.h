@@ -7,6 +7,7 @@
 #include <functional>
 
 #include "core/TransitionSystem.h"
+#include "models/ModelProperties.h"
 
 namespace GF {
 namespace DiscreteModel {
@@ -19,6 +20,7 @@ namespace DiscreteModel {
         uint32_t lower_left_y;
         uint32_t upper_right_y;
         std::string color;
+        bool operator==(const RectangleGridWorldRegion&) const = default;
     };
 
     struct Obstacle {
@@ -33,6 +35,7 @@ namespace DiscreteModel {
                 && y >= lower_left_y
                 && y <= upper_right_y;
         }
+        bool operator==(const Obstacle&) const = default;
     };
 
     struct GridWorldEnvironment {
@@ -45,6 +48,7 @@ namespace DiscreteModel {
             }
             return false;
         }
+        bool operator==(const GridWorldEnvironment&) const = default;
         // TODO cost map
     };
 
@@ -95,7 +99,7 @@ namespace DiscreteModel {
     };
 
 
-    struct GridWorldAgentProperties {
+    struct GridWorldAgentProperties : public TransitionSystemModelProperties {
         uint32_t n_x;
         uint32_t n_y;
         
@@ -112,11 +116,19 @@ namespace DiscreteModel {
         std::shared_ptr<BadCellCostMap<float>> cost_map;
 
         /// @brief Properties are the simplest way to compare the equivalence of generated transtion systems
-        bool operator==(const GridWorldAgentProperties&) const = default;
-        
+        virtual bool isEqual(const TransitionSystemModelProperties& other_) const override {
+            auto other = dynamic_cast<const GridWorldAgentProperties&>(other_);
+            return other.n_x == n_x
+                && other.n_y == n_y
+                && other.init_coordinate_x == init_coordinate_x
+                && other.init_coordinate_y == init_coordinate_y
+                && other.coord_label_template == coord_label_template
+                && other.environment == environment
+                && other.cost_map == cost_map;
+        }
         // TODO
-        void serialize(GF::Serializer& szr) const;
-        void deserialize(const GF::Deserializer& dszr);
+        virtual void serialize(GF::Serializer& szr) const override {}
+        virtual void deserialize(const GF::Deserializer& dszr) override {}
     };
 
     class GridWorldAgent {

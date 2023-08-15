@@ -5,11 +5,12 @@
 #include <memory>
 
 #include "core/TransitionSystem.h"
+#include "models/ModelProperties.h"
 
 namespace GF {
 namespace DiscreteModel {
 
-    struct ManipulatorModelProperties {
+    struct ManipulatorModelProperties : public TransitionSystemModelProperties {
         std::vector<std::string> locations;
         std::vector<std::string> objects;
         
@@ -45,10 +46,16 @@ namespace DiscreteModel {
         }
 
         /// @brief Properties are the simplest way to compare the equivalence of generated transtion systems
-        bool operator==(const ManipulatorModelProperties&) const = default;
-
-        void serialize(GF::Serializer& szr) const;
-        void deserialize(const GF::Deserializer& dszr);
+        virtual bool isEqual(const TransitionSystemModelProperties& other_) const override {
+            auto other = dynamic_cast<const ManipulatorModelProperties&>(other_);
+            return other.locations == locations
+                && other.objects == objects
+                && other.init_ee_location == init_ee_location
+                && other.init_obj_locations == init_obj_locations
+                && other.include_stow == include_stow;
+        }
+        virtual void serialize(GF::Serializer& szr) const override;
+        virtual void deserialize(const GF::Deserializer& dszr) override;
     };
 
 
