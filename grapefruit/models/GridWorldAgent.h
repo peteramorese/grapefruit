@@ -113,6 +113,10 @@ namespace DiscreteModel {
 
         /// @brief Properties are the simplest way to compare the equivalence of generated transtion systems
         bool operator==(const GridWorldAgentProperties&) const = default;
+        
+        // TODO
+        void serialize(GF::Serializer& szr) const;
+        void deserialize(const GF::Deserializer& dszr);
     };
 
     class GridWorldAgent {

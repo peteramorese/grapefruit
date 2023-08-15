@@ -46,6 +46,9 @@ namespace DiscreteModel {
 
         /// @brief Properties are the simplest way to compare the equivalence of generated transtion systems
         bool operator==(const ManipulatorModelProperties&) const = default;
+
+        void serialize(GF::Serializer& szr) const;
+        void deserialize(const GF::Deserializer& dszr);
     };
 
 

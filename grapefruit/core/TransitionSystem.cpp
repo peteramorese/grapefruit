@@ -194,7 +194,6 @@ namespace DiscreteModel {
     }
 
     void TransitionSystem::deserialize(const GF::Deserializer& dszr) {
-        LOG("Deserializing");
         const YAML::Node& node = dszr.get();
 
         m_ss.reset(new StateSpace);

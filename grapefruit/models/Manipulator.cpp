@@ -47,6 +47,25 @@ namespace DiscreteModel {
     //    return converted_props;
     //}
 
+    void ManipulatorModelProperties::serialize(GF::Serializer& szr) const {
+        YAML::Emitter& out = szr.get();
+        
+        out << YAML::Key << "Locations" << YAML::Value << locations;
+        out << YAML::Key << "Objects" << YAML::Value << objects;
+        out << YAML::Key << "Init EEF Location" << YAML::Value << init_ee_location;
+        out << YAML::Key << "Init Object Locations" << YAML::Value << init_obj_locations;
+        out << YAML::Key << "Include Stow" << YAML::Value << include_stow;
+    }
+
+    void ManipulatorModelProperties::deserialize(const GF::Deserializer& dszr) {
+        const YAML::Node& node = dszr.get();
+        locations = node["Locations"].as<std::vector<std::string>>();
+        objects = node["Objects"].as<std::vector<std::string>>();
+        init_ee_location = node["Init EEF Location"].as<std::string>();
+        init_obj_locations = node["Init Object Locations"].as<std::map<std::string, std::string>>();
+        include_stow = node["Include Stow"].as<bool>();
+    }
+
     State Manipulator::makeInitState(const ManipulatorModelProperties& model_props, const std::shared_ptr<TransitionSystem>& ts) {
         return State(ts->getStateSpace().lock().get(), model_props.getInitStateVars());
     }
