@@ -110,6 +110,9 @@ namespace DiscreteModel {
         inline static const char s_delimeter = '#';
 
         std::shared_ptr<BadCellCostMap<float>> cost_map;
+
+        /// @brief Properties are the simplest way to compare the equivalence of generated transtion systems
+        bool operator==(const GridWorldAgentProperties&) const = default;
     };
 
     class GridWorldAgent {

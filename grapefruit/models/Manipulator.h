@@ -43,7 +43,11 @@ namespace DiscreteModel {
             vars.push_back(holding ? "T" : "F");
             return vars;
         }
+
+        /// @brief Properties are the simplest way to compare the equivalence of generated transtion systems
+        bool operator==(const ManipulatorModelProperties&) const = default;
     };
+
 
     class Manipulator {
         public:
