@@ -71,7 +71,7 @@ namespace DiscreteModel {
                     sub_eval = false;
                     ASSERT(bool_stack.size() > 1, "Found ')' with out opening bracket");
                     if (!collapse) {
-                        sub_eval = evaluateAllPropositionsAtState(proposition_stack.back(), state);
+                        sub_eval = evaluatePropositionAtState(proposition_stack.back(), state);
                     }
                     if (negate_next_stack.back()) sub_eval = !sub_eval;
                     proposition_stack.back().clear();
@@ -91,7 +91,7 @@ namespace DiscreteModel {
             bool at_end = i == observation.size() - 1;
             if (character == '|' || character == '&' || at_end) {
                 if (at_end) proposition_stack.back().push_back(character);
-                if (!collapse) sub_eval = evaluateAllPropositionsAtState(proposition_stack.back(), state);
+                if (!collapse) sub_eval = evaluatePropositionAtState(proposition_stack.back(), state);
                 collapse = false;
                 if (negate_next_stack.back()) {
                     sub_eval = !sub_eval;
@@ -182,17 +182,13 @@ namespace DiscreteModel {
         }
         out << YAML::EndMap; // Graph
 
-        out << YAML::Key << "Propositions" << YAML::Value << YAML::BeginMap;
-        for (const auto&[name, props] : m_propositions) {
-            out << YAML::Key << name << YAML::Value << YAML::BeginSeq;
-            for (const Condition& prop : props) {
-                out << YAML::BeginMap;
-                prop.serialize(szr);
-                out << YAML::EndMap;
-            }
-            out << YAML::EndSeq;
+        out << YAML::Key << "Propositions" << YAML::Value << YAML::BeginSeq;
+        for (const auto&[name, prop] : m_propositions) {
+            out << YAML::BeginMap;
+            prop.serialize(szr);
+            out << YAML::EndMap;
         }
-        out << YAML::EndMap; // Propositions
+        out << YAML::EndSeq; // Propositions
 
         out << YAML::EndMap;
     }
@@ -224,17 +220,12 @@ namespace DiscreteModel {
 
         YAML::Node propositions_node = node["Propositions"];
         for (auto prop_it = propositions_node.begin(); prop_it != propositions_node.end(); ++prop_it) {
-            std::string prop_name = prop_it->first.as<std::string>();
-            const YAML::Node& conditions_node = prop_it->second;
+            const YAML::Node& prop_node = *prop_it;
 
-            std::vector<Condition> conditions;
-            for (auto cond_it = conditions_node.begin(); cond_it != conditions_node.end(); ++cond_it) {
-                Condition cond;
-                cond.deserialize(*cond_it);
-                conditions.emplace_back(std::move(cond));
-            }
+            Condition proposition;
+            proposition.deserialize(prop_node);
 
-            m_propositions.insert(std::make_pair(std::move(prop_name), std::move(conditions)));
+            addProposition(proposition);
         }
     }
 
