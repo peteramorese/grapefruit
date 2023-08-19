@@ -114,18 +114,25 @@ namespace DiscreteModel {
             void serialize(GF::Serializer& szr) const;
             void deserialize(const GF::Deserializer& dszr);
 
-		private:
-			void addObservationsToNode(Node node, const FormalMethods::Alphabet& alphabet);
-
-		protected:
-			inline const Condition& getProposition(const std::string& name) const {
-				ASSERT(m_propositions.contains(name), "Proposition '" << name << "' was not found");
-				return m_propositions.at(name);
+			/// @brief Get the proposition by name
+			/// @param label Proposition label
+			/// @return Proposition condition
+			inline const Condition& getProposition(const std::string& label) const {
+				ASSERT(m_propositions.contains(label), "Proposition '" << label << "' was not found");
+				return m_propositions.at(label);
 			}
 
+			/// @brief Determines if a proposition is true at a given state
+			/// @param prop_label Proposition name
+			/// @param state Test state
+			/// @return True if proposition holds, false otherwise
 			bool evaluatePropositionAtState(const std::string& prop_label, const State& state) const {
 				return getProposition(prop_label).evaluate(state);
 			}
+
+		private:
+			void addObservationsToNode(Node node, const FormalMethods::Alphabet& alphabet);
+
 		protected:
 			std::shared_ptr<StateSpace> m_ss;
 
