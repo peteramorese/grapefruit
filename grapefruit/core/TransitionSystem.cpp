@@ -151,7 +151,6 @@ namespace DiscreteModel {
         }
     }
 
-
     void TransitionSystem::serialize(GF::Serializer& szr) const {
         YAML::Emitter& out = szr.get();
 
@@ -198,7 +197,6 @@ namespace DiscreteModel {
 
         m_ss.reset(new StateSpace);
         m_ss->deserialize(node["State Space"]);
-        m_ss->print();
 
         YAML::Node graph_node = node["Graph"];
         for (auto src_it = graph_node.begin(); src_it != graph_node.end(); ++src_it) {
