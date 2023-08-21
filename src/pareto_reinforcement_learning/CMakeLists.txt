@@ -21,3 +21,6 @@ target_include_directories(PRLGridWorldAgentBenchmark PUBLIC
 	${GF_LIBRARY_DIR}
 	${GF_DEPENDENCY_INCLUDE_DIRS}
 )
+
+set(PRL_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+add_subdirectory(efe_approx)
