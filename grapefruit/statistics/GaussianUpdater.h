@@ -102,7 +102,7 @@ class MultivariateGaussianUpdater {
 
         inline uint32_t nSamples() const {return m_sample_set.size();}
 
-        void serialize(Serializer& szr) {
+        void serialize(Serializer& szr) const {
             YAML::Emitter& out = szr.get();
 
             std::size_t sample_i = 0;
