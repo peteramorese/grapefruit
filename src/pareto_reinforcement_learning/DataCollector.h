@@ -109,7 +109,7 @@ class DataCollector {
             return avg;
         }
 
-        void serialize(GF::Serializer& szr, bool exclude_plans = false) {
+        void serialize(GF::Serializer& szr, bool exclude_plans = false) const {
             static_assert(N == 2, "Does not support serialization of more than two cost objectives");
 
             YAML::Emitter& out = szr.get();

@@ -49,7 +49,7 @@ namespace PRL {
             const GF::Stats::MultivariateGaussianUpdater<M>& getUpdater() const {return m_updater;}
             GF::Stats::MultivariateGaussianUpdater<M>& getUpdater() {return m_updater;}
 
-            void serialize(GF::Serializer& szr) {
+            void serialize(GF::Serializer& szr) const {
                 YAML::Emitter& out = szr.get();
                 out << YAML::Key << "UCB" << YAML::Value << YAML::BeginMap;
                 out << YAML::Key << "Confidence" << YAML::Value << m_confidence;
