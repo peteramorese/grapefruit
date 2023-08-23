@@ -108,8 +108,8 @@ class MultivariateGaussianUpdater {
             std::size_t sample_i = 0;
             for (const auto& sample : m_sample_set.getSamples()) {
                 out << YAML::Key << sample_i++ << YAML::Value << YAML::BeginSeq;
-                for (auto sample_value : sample) {
-                    out << sample_value;
+                for (std::size_t i = 0; i < N; ++i) {
+                    out << sample(i);
                 }
                 out << YAML::EndSeq;
             }

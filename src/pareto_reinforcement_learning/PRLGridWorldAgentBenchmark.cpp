@@ -127,10 +127,12 @@ int main(int argc, char* argv[]) {
 		}
 
 		++trial;
+
 	}
 	
 	if (szr_ptr)
 		szr_ptr->done();
+
 
 	return 0;
 }
