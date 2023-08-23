@@ -43,7 +43,7 @@ namespace PRL {
                 this->getElement(src_model_node, action).pull(sample);
             }
 
-            void serialize(GF::Serializer& szr) {
+            void serialize(GF::Serializer& szr) const {
                 YAML::Emitter& out = szr.get();
                 out << YAML::Key << "Behavior Handler" << YAML::Value;
                 out << YAML::BeginSeq;
