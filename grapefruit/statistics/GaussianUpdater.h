@@ -106,7 +106,7 @@ class MultivariateGaussianUpdater {
             YAML::Emitter& out = szr.get();
 
             std::size_t sample_i = 0;
-            for (auto& sample : m_sample_set.getSamples()) {
+            for (const auto& sample : m_sample_set.getSamples()) {
                 out << YAML::Key << sample_i++ << YAML::Value << YAML::BeginSeq;
                 for (auto sample_value : sample) {
                     out << sample_value;
