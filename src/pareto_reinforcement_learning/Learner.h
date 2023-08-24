@@ -230,7 +230,7 @@ class Learner {
         }
 
         const GF::DiscreteModel::State& getCurrentState() {
-            GF::Node ts_node = m_product->getUnwrappedNode(m_current_product_node);
+            GF::Node ts_node = m_product->getUnwrappedNode(m_current_product_node).ts_node;
             return m_product->getModel().getGenericNodeContainer()[ts_node];
         }
 
