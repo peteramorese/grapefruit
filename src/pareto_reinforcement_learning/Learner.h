@@ -229,6 +229,11 @@ class Learner {
             m_initialized = true;
         }
 
+        const GF::DiscreteModel::State& getCurrentState() {
+            GF::Node ts_node = m_product->getUnwrappedNode(m_current_product_node);
+            return m_product->getModel().getGenericNodeContainer()[ts_node];
+        }
+
     protected:
         void log(const std::string& msg, bool sub_msg = false) {
             if (m_verbose) {
