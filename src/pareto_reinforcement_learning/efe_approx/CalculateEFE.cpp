@@ -9,8 +9,12 @@ int main(int argc, char* argv[]) {
 	auto fake_plan_file = parser.parse<std::string>("filepath", 'f', "Fake plan file");
 	auto n_samples = parser.parse<uint32_t>("n-efe-samples", 'n', 3000, "Number of EFE samples");
 
+    parser.enableHelp();
+
     GF::Deserializer dszr(fake_plan_file.get());
     FakePlan fake_plan(n_samples.get());
+    fake_plan.deserialize(dszr);
+
     LOG("EFE: " << fake_plan.calculateEFE());
     return 0;
 }
