@@ -167,15 +167,20 @@ namespace DiscreteModel {
 
         /////////////////   Propositions   /////////////////
 
-        uint32_t num_propositions = model_props.locations.size() * model_props.objects.size();
+        uint32_t num_propositions = 2 * model_props.locations.size() * model_props.objects.size();
         props.propositions.reserve(num_propositions);
         for (uint32_t i = 0; i < model_props.locations.size(); ++i) {
             for (uint32_t j = 0; j < model_props.objects.size(); ++j) {
                 Condition prop;
                 prop.addCondition(ConditionArg::Label, model_props.objects[j], ConditionOperator::Equals, ConditionArg::Variable, model_props.locations[i]);
-                //prop.addCondition(ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "F");
                 prop.setName(model_props.objects[j] + "_" + model_props.locations[i]);
-                props.propositions.push_back(prop);
+                props.propositions.push_back(std::move(prop));
+
+                Condition holding_prop;
+                holding_prop.addCondition(ConditionArg::Label, model_props.objects[j], ConditionOperator::Equals, ConditionArg::Variable, "ee");
+                holding_prop.addCondition(ConditionArg::Label, "ee_loc", ConditionOperator::Equals, ConditionArg::Variable, model_props.locations[i]);
+                holding_prop.setName("holding_" + model_props.objects[j] + "_" + model_props.locations[i]);
+                props.propositions.push_back(std::move(holding_prop));
             }
         }
 
