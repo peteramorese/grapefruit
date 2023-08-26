@@ -1,3 +1,6 @@
 [submodule "dependencies/yaml-cpp"]
 	path = dependencies/yaml-cpp
 	url = https://github.com/peteramorese/yaml-cpp.git
+[submodule "src/pareto_reinforcement_learning/efe_approx/niw_approx_check"]
+	path = src/pareto_reinforcement_learning/efe_approx/niw_approx_check
+	url = git@github.com:shoheiw/niw_approx_check.git

@@ -49,7 +49,7 @@ class FakePlan {
         }
 
         float calculateEFE() const {
-            return GaussianEFE<2>::calculate(m_traj_updaters, m_pref_dist, m_n_samples);
+            return GaussianEFE<2, 1>::calculate(m_traj_updaters, m_pref_dist, m_n_samples);
         }
     private:
         uint32_t m_n_samples;

@@ -117,6 +117,7 @@ class GaussianEFE {
                 
                 unnormalized_entropy += posterior_convolver.getConvolutedEstimateMVN().entropy();
             }
+            //LOG("unnormalized entropy: " << unnormalized_entropy);
             return unnormalized_entropy;
         }
 };
