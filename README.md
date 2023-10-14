@@ -31,12 +31,11 @@ The **Deterministic Task Planner** will autonomously plan a sequence of actions 
  - SpotLTL
  - YAML-cpp
  - Eigen
- - MATLAB (deprecating)
 
 
 ###### Building
 1. Install Spot https://spot.lre.epita.fr/install.html and Eigen https://eigen.tuxfamily.org/dox/GettingStarted.html
-2. Pull/clone YAML-cpp as a git submodule in the `dependencies` directory.
+2. `git submodule update --init --recursive`
 3. `mkdir build && cd build`
 4. `cmake ..`
 5. `make`
