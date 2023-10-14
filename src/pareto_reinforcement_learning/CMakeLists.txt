@@ -23,4 +23,3 @@ target_include_directories(PRLGridWorldAgentBenchmark PUBLIC
 )
 
 set(PRL_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-add_subdirectory(efe_approx)

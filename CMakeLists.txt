@@ -11,6 +11,10 @@ if(NOT DEFINED GF_BUILD_EXECUTABLES)
     option(GF_BUILD_EXECUTABLES "Build executables (set to OFF for building just the library target)" ON)
 endif()
 
+if(NOT DEFINED GF_BUILD_YAML)
+    option(GF_BUILD_YAML "Build the yaml-cpp dependency" ON)
+endif()
+
 if(NOT DEFINED ENABLE_MATRIX_CHECKS)
     option(ENABLE_MATRIX_CHECKS "Enable matrix pos-def/pos-semi-def checks (Eigen >= 3.3.8)" ON)
 endif()
@@ -24,7 +28,9 @@ message("CMAKE_RUNTIME_OUTPUT_DIRECTORY: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 message("CMAKE_LIBRARY_OUTPUT_DIRECTORY: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 
 # Dependencies
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp)
+if(GF_BUILD_YAML)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp)
+endif()
 
 set(GF_DEPENDENCY_INCLUDE_DIRS 
     ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp/include
