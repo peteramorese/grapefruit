@@ -1,0 +1,50 @@
+Grid X: 20
+Grid Y: 20
+
+Region Labels:
+  - Base
+  - Deposit
+  - Wash
+  - Sample
+  - Mud
+
+# Preference distribution
+PRL Preference: 
+  Mean:
+    - 100.0
+    - 10.0
+  Covariance: # Unique elements (upper triangular)
+    - 20.0 # 11
+    - 2.0 # 12
+    - 6.0 # 22
+
+Base:
+  N Cells: 15
+
+Deposit:
+  N Cells: 1
+
+Wash:
+  N Cells: 2
+
+Sample:
+  N Cells: 5
+
+Mud:
+  N Cells: 30
+
+Obstacles: 50
+
+True Mean Lower Bound: 
+  - 2.0
+  - 0.1
+True Mean Upper Bound: 
+  - 10.0
+  - 1.0
+
+Estimate Mean Lower Bound: 
+  - 0.0
+  - 0.0
+Estimate Mean Upper Bound: 
+  - 1.0
+  - 1.0

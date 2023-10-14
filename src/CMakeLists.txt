@@ -1,1 +1,2 @@
 add_subdirectory(planners)
+add_subdirectory(pareto_reinforcement_learning)

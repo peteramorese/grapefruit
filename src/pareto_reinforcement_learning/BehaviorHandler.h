@@ -2,67 +2,80 @@
 
 #include <memory>
 
-#include "TaskPlanner.h"
+#include "Grapefruit.h"
+
+#include "HistoryNode.h"
+#include "Storage.h"
+#include "Behavior.h"
 
 namespace PRL {
 
-    // Behavior Criterion
-    /*
-    struct BehaviorCriterion {
-        void setToDefaultPrior();
-        float getExpectation();
-        float getVariance();
-    };
-    */
-
-    template <class...T_ARGS>
-    struct Behavior {
+    template <class SYMBOLIC_GRAPH_T, uint64_t N>
+    class BehaviorHandler : public Storage<JointCostArray<N>> {
         public:
-            using CostVector = TP::Containers::FixedArray<TP::Containers::TypeGenericArray<T_ARGS...>::size(), float>;
+            using CostVector = GF::Containers::FixedArray<N, float>;
         public:
-            Behavior() {
-                auto setAllToDefaultPrior = []<typename T>(const T& behavior) {behavior.setToDefaultPrior();};
-                m_behavior_criteria.forEach(setAllToDefaultPrior);
-            }
-
-            Behavior(T_ARGS&&...priors) 
-                : m_behavior_criteria(std::forward<T_ARGS>(priors)...) 
+            BehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, uint8_t completed_tasks_horizon, float ucb_confidence)
+                : Storage<JointCostArray<N>>(JointCostArray<N>(ucb_confidence))
+                , m_product(product)
+                , m_completed_tasks_horizon(completed_tasks_horizon)
             {}
 
-            CostVector getCostVector() const {
-                CostVector cv;
-                auto extract = [&cv]<typename T, uint32_t I>(const T& behavior) {
-                    cv.template get<I + I>() = behavior.getExpectation();
-                    cv.template get<I + I + 1>() = behavior.getVariance();
-                };
-                m_behavior_criteria.forEachWithI(extract);
-                return cv;
+            BehaviorHandler(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, uint8_t completed_tasks_horizon, float ucb_confidence, const Eigen::Matrix<float, N, 1>& default_mean)
+                : Storage<JointCostArray<N>>(JointCostArray<N>(ucb_confidence, default_mean))
+                , m_product(product)
+                , m_completed_tasks_horizon(completed_tasks_horizon)
+            {}
+            
+            static constexpr std::size_t size() noexcept {return N;}
+            uint8_t getCompletedTasksHorizon() const {return m_completed_tasks_horizon;}
+
+            CostVector getCostVector(const TaskHistoryNode<GF::WideNode>& src_node, const TaskHistoryNode<GF::WideNode>& dst_node, const GF::DiscreteModel::Action& action) {
+                GF::Node src_model_node = m_product->getUnwrappedNode(src_node.base_node).ts_node;
+                return this->getElement(src_model_node, action).getRectifiedUCBVector(m_state_visits);
+            }
+
+            inline const std::shared_ptr<SYMBOLIC_GRAPH_T>& getProduct() const {return m_product;}
+
+            void visit(const TaskHistoryNode<GF::WideNode>& node, const GF::DiscreteModel::Action& action, const CostVector& sample) {
+                GF::Node src_model_node = m_product->getUnwrappedNode(node.base_node).ts_node;
+                ++m_state_visits;
+                this->getElement(src_model_node, action).pull(sample);
+            }
+
+            void serialize(GF::Serializer& szr) const {
+                YAML::Emitter& out = szr.get();
+                out << YAML::Key << "Behavior Handler" << YAML::Value;
+                out << YAML::BeginSeq;
+                for (auto&[nap, joint_cost_array] : this->m_node_action_pair_elements) {
+                    out << YAML::BeginMap;
+                    out << YAML::Key << "Node" << YAML::Value << nap.node;
+                    out << YAML::Key << "Action" << YAML::Value << nap.action;
+                    out << YAML::Key << "Updater" << YAML::Value << YAML::BeginMap;
+                    joint_cost_array.serialize(szr);
+                    out << YAML::EndMap << YAML::EndMap;
+                }
+                out << YAML::EndSeq;
             }
             
-            TP::Containers::TypeGenericArray<T_ARGS...> m_behavior_criteria;
+            void deserialize(const GF::Deserializer& dszr) {
 
-    };
-
-    template <class...T_ARGS>
-    class BehaviorHandler {
-        public:
-            struct NodeActionPair {
-                TP::WideNode node;
-                TP::DiscreteModel::Action action;
-            };
-            struct NodeActionPairHash {
-                std::size_t operator()(const NodeActionPair& node_action_pair) const {
-                    return std::hash<TP::WideNode>{}(node_action_pair.node) ^ std::hash<TP::DiscreteModel::Action>{}(node_action_pair.action);
+                const YAML::Node& node = dszr.get();
+                YAML::Node behavior_handler_node = node["Behavior Handler"];
+                for (YAML::iterator it = behavior_handler_node.begin(); it != behavior_handler_node.end(); ++it) {
+                    const YAML::Node& nap_node = *it;
+                    JointCostArray<N> joint_cost_array;
+                    GF::Deserializer updater_dszr(nap_node["Updater"]);
+                    joint_cost_array.deserialize(updater_dszr);
+                    typename Storage<JointCostArray<N>>::NodeActionPair nap(nap_node["Node"].as<GF::Node>(), nap_node["Action"].as<GF::DiscreteModel::Action>());
+                    this->m_node_action_pair_elements.insert(std::make_pair(nap, joint_cost_array));
                 }
-            };
-            using CostVector = TP::Containers::FixedArray<TP::Containers::TypeGenericArray<T_ARGS...>::size(), float>;
-        public:
-            BehaviorHandler(const std::shared_ptr<TP::DiscreteModel::TransitionSystem>& ts);
-            
-            CostVector getCostVector(TP::WideNode node, const TP::DiscreteModel::Action& action) const {return m_behaviors.at(NodeActionPair{node, action}).getCostVector();}
+            }
 
         private:
-            std::shared_ptr<TP::DiscreteModel::TransitionSystem> m_ts;
-            std::unordered_map<NodeActionPair, Behavior<T_ARGS...>, NodeActionPairHash> m_behaviors;
+            std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;
+            uint8_t m_completed_tasks_horizon = 1;
+            uint32_t m_state_visits = 0;
     };
+
 }

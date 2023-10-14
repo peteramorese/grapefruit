@@ -6,8 +6,8 @@
 
 #include "tools/Logging.h"
 
-using namespace TP;
-using namespace TP::DiscreteModel;
+using namespace GF;
+using namespace GF::DiscreteModel;
 
 void printConditionEvaluation(const std::string& condition_name, Condition& cond, const State& state) {
 	LOG("Input state for condition '" << condition_name << "':");
@@ -104,6 +104,20 @@ int main() {
 
 	state = {"L3", "ee", "L1", "L2", "F"};
 	printConditionEvaluation("obj_locations in drop_locs", cond, state);
+
+	Serializer szr("test_condition.yaml");
+	cond.serialize(szr);
+	szr.done();
+
+	Condition same_cond;
+	Deserializer dszr("test_condition.yaml");
+	same_cond.deserialize(dszr);
+
+	state = {"L3", "L2", "L1", "L0", "F"};
+	printConditionEvaluation("obj_locations in drop_locs (after serialization)", same_cond, state);
+
+	state = {"L3", "ee", "L1", "L2", "F"};
+	printConditionEvaluation("obj_locations in drop_locs (after serialization)", same_cond, state);
 	}
 
 	// ArgFind:
@@ -112,14 +126,15 @@ int main() {
 	// "'ee' is found among the group 'spc_locations'"
 	Condition cond(ConditionJunction::Conjunction); // Each sub-condition is conjoined
 	cond.addCondition(ConditionArg::Group, "spc_objs", ConditionOperator::ArgFind, ConditionArg::Variable, "ee", "ee_spc_objs"); // find among "spc_objs" the variable "ee"
+	cond.addCondition(ConditionArg::Label, "holding", ConditionOperator::Equals, ConditionArg::Variable, "T", "is_holding"); 
 	
 	State state(&ss_manipulator, {"L3", "L2", "ee", "L0", "F"});
 	printConditionEvaluation("ee found among spc_objs", cond, state);
 
 	state = {"L3", "L4", "L1", "ee", "F"};
 	printConditionEvaluation("ee found among spc_objs", cond, state);
-	}
 
+	}
 
 	/////////////////   TransitionCondition   /////////////////
 	// ArgFind:
@@ -194,6 +209,8 @@ int main() {
 	post_state = {"L4", "ee", "L4", "L0", "T"};
 	printTransitionConditionEvaluation("Release", cond, pre_state, post_state);
 	}
+
+
 
 	return 0;
 }

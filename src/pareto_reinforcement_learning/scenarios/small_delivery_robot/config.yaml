@@ -1,0 +1,92 @@
+Grid X: 5
+Grid Y: 5
+Init X Coord: 0
+Init Y Coord: 0
+Coord Label Template: x_#_y_#
+Region Labels:
+  - p1
+  - tacos
+  - pizza
+  - mud
+PRL Cost Objectives:
+  - Energy
+  - Time
+
+# Preference distribution
+PRL Preference: 
+  Mean:
+    - 65.0
+    - 52.0
+  Covariance: # Unique elements (upper triangular)
+    - 55.0 # 11
+    - -10.2 # 12
+    - 33.5 # 22
+
+# Default PRL cost for transitions
+PRL Default Cost: 
+  Mean:
+    - 3.0
+    - 6.0
+  Covariance: # Unique elements (upper triangular)
+    - 1.0 # 11
+    - 0.2 # 12
+    - 1.0 # 22
+
+Obstacles:
+  wall_1:
+    Bounds:
+      - 0
+      - 2
+      - 4
+      - 4
+
+# Regions
+p1:
+  Bounds:
+    - 2
+    - 2
+    - 0
+    - 0
+  Color: mediumseagreen
+tacos:
+  Bounds:
+    - 4
+    - 4
+    - 1
+    - 1
+  Color: darkgoldenrod
+  PRL Cost Mean: 
+    - 1.0
+    - 100.0
+  PRL Cost Covariance: 
+    - 0.01 # 11
+    - 0.1 # 12
+    - 10.0 # 22
+pizza:
+  Bounds:
+    - 2
+    - 2
+    - 4
+    - 4
+  Color: tomato
+  #PRL Cost Mean: 
+  #  - 10.0
+  #  - 5.0
+  #PRL Cost Covariance: 
+  #  - 2.0 # 11
+  #  - 0.1 # 12
+  #  - 1.5 # 22
+mud:
+  Bounds:
+    - 1
+    - 4
+    - 2
+    - 2
+  Color: sienna
+  PRL Cost Mean: 
+    - 20.0
+    - 5.0
+  PRL Cost Covariance: 
+    - 5.0 # 11
+    - 0.1 # 12
+    - 1.5 # 22

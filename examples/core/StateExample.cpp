@@ -3,7 +3,7 @@
 #include "core/State.h"
 #include "core/StateSpace.h"
 
-using namespace TP;
+using namespace GF;
 
 int main() {
  

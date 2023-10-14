@@ -1,0 +1,90 @@
+Title: "Candidate Plan 1 at decision instance: 0"
+Action Sequence:
+  - right
+  - up
+  - up
+  - right
+  - up
+  - up
+  - up
+  - right
+  - up
+  - up
+  - up
+  - up
+  - right
+  - up
+  - up
+  - right
+  - right
+  - right
+  - right
+  - right
+  - right
+  - right
+  - down
+  - down
+  - down
+  - right
+  - down
+  - down
+  - down
+  - down
+  - left
+  - left
+  - left
+  - down
+  - left
+  - left
+  - left
+  - left
+  - down
+  - down
+  - left
+  - down
+  - left
+State Sequence:
+  - x0, y0
+  - x1, y0
+  - x1, y1
+  - x1, y2
+  - x2, y2
+  - x2, y3
+  - x2, y4
+  - x2, y5
+  - x3, y5
+  - x3, y6
+  - x3, y7
+  - x3, y8
+  - x3, y9
+  - x4, y9
+  - x4, y10
+  - x4, y11
+  - x5, y11
+  - x6, y11
+  - x7, y11
+  - x8, y11
+  - x9, y11
+  - x10, y11
+  - x11, y11
+  - x11, y10
+  - x11, y9
+  - x11, y8
+  - x12, y8
+  - x12, y7
+  - x12, y6
+  - x12, y5
+  - x12, y4
+  - x11, y4
+  - x10, y4
+  - x9, y4
+  - x9, y3
+  - x8, y3
+  - x7, y3
+  - x6, y3
+  - x5, y3
+  - x5, y2
+  - x5, y1
+  - x4, y1
+  - x4, y0
+  - x3, y0

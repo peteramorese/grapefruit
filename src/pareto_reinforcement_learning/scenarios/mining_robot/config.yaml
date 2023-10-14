@@ -1,0 +1,128 @@
+Grid X: 20
+Grid Y: 20
+Init X Coord: 0
+Init Y Coord: 0
+Coord Label Template: x_#_y_#
+Region Labels:
+  - sediment_deposit
+  - rock_deposit
+  - dry_station
+  - water_1
+  - water_2
+  - sediment_1
+  - sediment_2
+  - rock_1
+  - rock_2
+PRL Cost Objectives:
+  - Energy
+  - Time
+
+# Preference distribution
+PRL Preference: 
+  Mean:
+    - 350.0
+    - 600.0
+  Covariance: # Unique elements (upper triangular)
+    - 200.0 # 11
+    - -100.0 # 12
+    - 500.0 # 22
+
+# Default PRL cost for transitions
+PRL Default Cost: 
+  Mean:
+    - 5.0
+    - 10.0
+  Covariance: # Unique elements (upper triangular)
+    - 1.0 # 11
+    - 0.2 # 12
+    - 0.5 # 22
+sediment_deposit:
+  Bounds:
+    - 2 
+    - 3 
+    - 0 
+    - 0 
+  Color: coral 
+rock_deposit:
+  Bounds:
+    - 15 
+    - 16 
+    - 0 
+    - 0 
+  Color: coral 
+dry_station:
+  Bounds:
+    - 12 
+    - 13 
+    - 5 
+    - 6 
+  Color: darkseagreen 
+  PRL Cost Mean: # Drying takes little energy, and a lot of time
+    - 0.0
+    - 40.0
+  PRL Cost Covariance: # Unique elements (upper triangular)
+    - 1.0 # 11
+    - 0.0 # 12
+    - 10.0 # 22
+water_1:
+  Bounds:
+    - 0 
+    - 10 
+    - 8 
+    - 14 
+  Color: aqua
+  PRL Cost Mean: # Water takes more energy, but is quicker
+    - 20.0
+    - 5.0
+  PRL Cost Covariance: # Unique elements (upper triangular)
+    - 5.0 # 11
+    - 0.1 # 12
+    - 1.5 # 22
+  Proposition: water
+water_2:
+  Bounds:
+    - 11 
+    - 18 
+    - 11 
+    - 17 
+  Color: aqua
+  PRL Cost Mean:
+    - 20.0
+    - 5.0
+  PRL Cost Covariance: # Unique elements (upper triangular)
+    - 5.0 # 11
+    - 0.1 # 12
+    - 1.5 # 22
+  Proposition: water
+sediment_1:
+  Bounds:
+    - 4
+    - 4
+    - 11
+    - 11
+  Color: navajowhite
+  Proposition: sediment
+sediment_2:
+  Bounds:
+    - 13
+    - 13
+    - 14
+    - 14
+  Color: navajowhite
+  Proposition: sediment
+rock_1:
+  Bounds:
+    - 0
+    - 0
+    - 16
+    - 16
+  Color: gray
+  Proposition: rock
+rock_2:
+  Bounds:
+    - 10
+    - 10
+    - 19
+    - 19
+  Color: gray
+  Proposition: rock

@@ -1,0 +1,2 @@
+DFAs:
+  - "GF((sediment & F(sediment_deposit)) | (rock & F(rock_deposit))) & G(water -> (!sediment_deposit | !rock_deposit) U dry_station)"

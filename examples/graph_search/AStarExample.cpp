@@ -9,8 +9,8 @@
 #include "graph_search/SearchProblem.h"
 #include "graph_search/AStar.h"
 
-using namespace TP;
-using namespace TP::GraphSearch;
+using namespace GF;
+using namespace GF::GraphSearch;
 
 struct Edge {
     // Edge does not need to be default constructable
@@ -75,7 +75,7 @@ int main() {
     LOG("Finished!");
     LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));
     if (result.success) {
-        LOG("Path length: " << result.solution.path_cost);
+        LOG("Path length: " << result.cost);
 
         std::string path_str = std::to_string(result.solution.node_path.front());
         auto edge_path_it = result.solution.edge_path.begin();

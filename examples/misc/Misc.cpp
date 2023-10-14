@@ -1,30 +1,45 @@
-#include "tools/Containers.h"
+#include "Grapefruit.h"
 
-#include "tools/Logging.h"
+#include <Eigen/Dense>
 
-using namespace TP;
+#include <iostream>
+#include <spot/misc/version.hh>
 
-template <typename T>
-void print(const Containers::RandomAccessList<T>& l, const std::string& name) {
-    for (uint32_t i = 0; i < l.size(); ++i) LOG(name << "[" << i <<"]: " << l[i]);
-}
+using namespace GF;
 
 int main() {
 
-    Containers::RandomAccessList<int> l;    
+    std::string filepath = "test_state_space.yaml";
 
-    l.push_back(1);
-    l.push_back(5);
-    l.push_back(3);
-    l.push_back(2);
-    l.push_back(7);
-    l.push_back(3);
+	DiscreteModel::StateSpace ss_camera(3);
 
-    print(l, "l");
+	// Create state space:
+	ss_camera.setDimension(0, "pan", {"left","center","right"}); //pan
+	ss_camera.setDimension(1, "tilt", {"up","center","down"}); // tilt
+	ss_camera.setDimension(2, "power", {"on","off"}); // power
 
-    Containers::RandomAccessList<int> l2 = l;    
+	ss_camera.addGroup("pointing locations", {"pan", "tilt"});
+	   
+	// Write to file
+    //ss_camera.serialize(filepath);
 
-    print(l2, "l2");
+	// Read from file
+	//DiscreteModel::StateSpace ss_camera_deserialize(filepath);
+	//ss_camera_deserialize.print();
 
+    DiscreteModel::State state_1(&ss_camera);
+    state_1 = {"left", "down", "on"};
+    Serializer szr("test.yaml");
+    YAML::Emitter& out = szr.get();
+    out << YAML::Key << "test_state" << YAML::Value;
+    state_1.serialize(szr);
+
+    DiscreteModel::State state_2(&ss_camera);
+    state_2 = {"right", "down", "on"};
+    out << YAML::Key << "test_state_2" << YAML::Value;
+    state_2.serialize(szr);
+
+    szr.done();
+    
     return 0;
 }

@@ -35,11 +35,8 @@ The **Deterministic Task Planner** will autonomously plan a sequence of actions 
 
 
 ###### Building
-First install YAML-cpp (git submodule) and Eigen in the `dependencies` directory.
-
-Then simply build using CMake
-```
-mkdir build && cd build
-cmake ..
-make
-```
+1. Install Spot https://spot.lre.epita.fr/install.html and Eigen https://eigen.tuxfamily.org/dox/GettingStarted.html
+2. Pull/clone YAML-cpp as a git submodule in the `dependencies` directory.
+3. `mkdir build && cd build`
+4. `cmake ..`
+5. `make`

@@ -4,15 +4,15 @@ Init X Coord: 0
 Init Y Coord: 0
 Coord Label Template: x_#_y_#
 N Regions: 8
-Regions Labels:
-  - House 1
-  - House 2
-  - Tacos
-  - Cheese
-  - House 3
-  - House 4
-  - Grocer
-  - Pizza
+Region Labels:
+  - p1
+  - p2
+  - tacos
+  - cheese
+  - p3
+  - p4
+  - grocer
+  - pizza
 Lower Left Cells X:
   - 2 #House 1 
   - 7 #House 2
@@ -58,3 +58,12 @@ Region Colors:
   - mediumseagreen #House 4
   - skyblue #Grocer
   - firebrick #Pizza
+Region Costs:
+  - 1.0
+  - 1.0
+  - 30.0
+  - 6.0
+  - 1.0
+  - 1.0
+  - 7.0
+  - 20.0

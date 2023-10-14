@@ -6,7 +6,7 @@
 
 #include "tools/Logging.h"
 #include "tools/Test.h"
-#include "tools/Random.h"
+#include "statistics/Random.h"
 #include "core/Graph.h"
 #include "graph_search/MultiObjectiveSearchProblem.h"
 #include "graph_search/NAMOAStar.h"
@@ -15,20 +15,20 @@
 
 #include "tools/ArgParser.h"
 
-using namespace TP;
-using namespace TP::GraphSearch;
+using namespace GF;
+using namespace GF::GraphSearch;
 
 struct Edge {
 
     public:
-        Edge(uint32_t cost_1, uint32_t cost_2) : cv({cost_1, cost_2}) {}
+        Edge(uint32_t cost_1, uint32_t cost_2) : cv(cost_1, cost_2) {}
         bool operator==(const Edge& other) const {return cv == other.cv;}
 
     public:
 
-        Containers::FixedArray<2, uint32_t> cv;
-        static Containers::FixedArray<2, uint32_t> edgeToCostVector(const Edge& edge) {return edge.cv;}
-        static std::string cvToStr(const Containers::FixedArray<2, uint32_t>& cv) {return "(" + std::to_string(cv[0]) + ", " + std::to_string(cv[1]) + ")";}
+        Containers::TypeGenericArray<uint32_t, uint32_t> cv;
+        static Containers::TypeGenericArray<uint32_t, uint32_t> edgeToCostVector(const Edge& edge) {return edge.cv;}
+        static std::string cvToStr(const Containers::TypeGenericArray<uint32_t, uint32_t>& cv) {return "(" + std::to_string(cv.template get<0>()) + ", " + std::to_string(cv.template get<1>()) + ")";}
         static std::string edgeToStr(const Edge& edge) {return "cost: " + cvToStr(edge.cv);}
 };
 
@@ -36,37 +36,38 @@ int main(int argc, char* argv[]) {
 
 	ArgParser parser(argc, argv);
 
-	bool verbose = parser.hasFlag('v');
+	bool verbose = parser.parse<void>('v', "Run in verbose mode").has();
+
+    bool boa_only = parser.parse<void>("boa-only", "Analyze BOA* only").has();
+    bool namoa_only = parser.parse<void>("namoa-only", "Analyze NAMOA* only").has();
+    ASSERT(!boa_only || !namoa_only, "Cannot specify boa only and namoa only");
     
-	uint32_t size = parser.parse<uint32_t>("size", 100);
-	uint32_t max_edges_per_node = parser.parse<uint32_t>("max-edges-per-node", 5);
-	uint32_t trials = parser.parse<uint32_t>("trials", 1);
+	auto size = parser.parse<uint32_t>("size", 's', 100, "Random graph size");
+	auto max_edges_per_node = parser.parse<uint32_t>("max-edges-per-node", 5, "Max number of edges to extend from");
+	auto trials = parser.parse<uint32_t>("trials", 't', 1, "Number of randomized trials to run");
+    auto seed_arg = parser.parse<uint32_t>("seed", 0, "Specify a certain seed for generating graph");
 
-	uint32_t seed;
-    if (parser.hasKey("seed")) {
-        seed = parser.parse<uint32_t>("seed", 0);
-    } else {
-        seed = RNG::randi(0, UINT32_MAX);
-    }
+	uint32_t seed = (seed_arg.has()) ? seed_arg.get() : RNG::randi(0, INT32_MAX);
 
-    ASSERT(size, "Size must be greater than zero");
-    ASSERT(max_edges_per_node, "Max number of edges per node must be greater than zero");
+	parser.enableHelp();
+
+    ASSERT(size.get() > 0, "Size must be greater than zero");
+    ASSERT(max_edges_per_node.get() > 0, "Max number of edges per node must be greater than zero");
 
     RNG::seed(seed);
 
     if (verbose) LOG("Generating random graph...");
 
-    RandomGraphGenerator random_graph_generator(size, max_edges_per_node);
+    RandomGraphGenerator random_graph_generator(size.get(), max_edges_per_node.get());
 
     auto createRandomEdge = [](uint32_t min, uint32_t max) {
+        LOG("min: " << min << " max: " << max);
         return Edge(RNG::srandi(min, max), RNG::srandi(min, max));
     };
 
-    for (uint32_t trial=0; trial<trials; ++trial) {
+    for (uint32_t trial=0; trial<trials.get(); ++trial) {
 
-        LOG("b4 generate");
         std::shared_ptr<Graph<Edge>> graph = random_graph_generator.generate<Edge>(createRandomEdge);
-        LOG("af generate");
 
         if (verbose) {
             LOG("Done.");
@@ -78,13 +79,33 @@ int main(int argc, char* argv[]) {
         Node goal = random_graph_generator.getRandomGoal();
         if (verbose) LOG("Starting node: " << start << ", goal node: " << goal);
     
-        MOQuantitativeGraphSearchProblem<Graph<Edge>, Containers::FixedArray<2, uint32_t>, SearchDirection::Forward> problem(graph, {start}, {goal}, &Edge::edgeToCostVector);
+        MOQuantitativeGraphSearchProblem<Graph<Edge>, Containers::TypeGenericArray<uint32_t, uint32_t>, SearchDirection::Forward> problem(graph, {start}, {goal}, &Edge::edgeToCostVector);
 
         if (verbose) LOG("Searching BOA*...");
-        auto boa_result = BOAStar<Containers::FixedArray<2, uint32_t>, decltype(problem)>::search(problem);
-        if (verbose) LOG("Searching NAMOA*...");
-        auto namoa_result = NAMOAStar<Containers::FixedArray<2, uint32_t>, decltype(problem)>::search(problem);
+        auto boa_result = BOAStar<Containers::TypeGenericArray<uint32_t, uint32_t>, decltype(problem)>::search(problem);
         if (verbose) LOG("Done.");
+        if (boa_only) {
+            if (verbose) {
+                for (uint32_t pt = 0; pt < boa_result.pf.size(); ++pt) {
+                    LOG("Pareto point " << pt);
+                    LOG("   BOA* Path cost: " << Edge::cvToStr(boa_result.pf[pt]));
+                }
+            }
+            continue;
+        }
+        if (verbose) LOG("Searching NAMOA*...");
+        auto namoa_result = NAMOAStar<Containers::TypeGenericArray<uint32_t, uint32_t>, decltype(problem)>::search(problem);
+        if (verbose) LOG("Done.");
+        if (namoa_only) {
+            if (verbose) {
+                uint32_t pt = 0;
+                for (uint32_t pt = 0; pt < namoa_result.pf.size(); ++pt) {
+                    LOG("Pareto point " << pt);
+                    LOG("   NAMOA* Path cost: " << Edge::cvToStr(namoa_result.pf[pt]));
+                }
+            }
+            continue;
+        }
 
 
         if (boa_result.success) {
@@ -108,8 +129,8 @@ int main(int argc, char* argv[]) {
             auto namoa_it = namoa_result.solution_set.begin();
             uint32_t pt = 0;
             for (; boa_it != boa_result.solution_set.end();) {
-                const auto& boa_path_cost = boa_it->path_cost;
-                const auto& namoa_path_cost = boa_it->path_cost;
+                const auto& boa_path_cost = boa_result.pf[pt];
+                const auto& namoa_path_cost = namoa_result.pf[pt];
 
                 if (verbose) {
                     LOG("Pareto point " << pt++);
@@ -119,8 +140,6 @@ int main(int argc, char* argv[]) {
 
                 TEST_ASSERT(boa_path_cost == namoa_path_cost, "Path costs are not equal BOA*: " << Edge::cvToStr(boa_path_cost) << " NAMOA*: " << Edge::cvToStr(namoa_path_cost));
 
-                ++boa_it;
-                ++namoa_it;
             }
         }
     }

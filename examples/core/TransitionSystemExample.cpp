@@ -7,8 +7,8 @@
 
 #include "tools/Logging.h"
 
-using namespace TP;
-using namespace TP::DiscreteModel;
+using namespace GF;
+using namespace GF::DiscreteModel;
 
 int main() {
  
@@ -126,6 +126,7 @@ int main() {
     // Generate
     std::shared_ptr<TransitionSystem> ts = TransitionSystemGenerator::generate(props);
     ts->print();
+    ts->rprint();
 	ts->listPropositions();
 
 
@@ -146,6 +147,19 @@ int main() {
 	std::string observation = "!(obj_0_loc_L2 | obj_0_loc_L1)";
 	LOG("Observation: " << observation << ", State: " << test_state.to_str() << " Result: " << ts->parseAndObserve(test_state, observation));
 	}
+
+	Serializer szr("test_ts.yaml");
+	ts->serialize(szr);
+	szr.done();
+
+	std::shared_ptr<TransitionSystem> same_ts = std::make_shared<TransitionSystem>();
+	Deserializer dszr("test_ts.yaml");
+	same_ts->deserialize(dszr);
+	NEW_LINE;
+	LOG("Printing the transtion system after serialization...");
+	same_ts->print();
+	same_ts->listPropositions();
+	
 
 	return 0;
 }

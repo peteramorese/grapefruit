@@ -1,0 +1,458 @@
+PRL Preference Mean:
+  - 76
+  - 10
+PRL Preference Covariance:
+  - 50
+  - 10
+  - 70
+Instances: 150
+Instance 0:
+  Regret: 18.9061966
+  Cumulative Regret: 18.9061966
+Instance 1:
+  Regret: 22.8329086
+  Cumulative Regret: 41.7391052
+Instance 2:
+  Regret: 54.6763077
+  Cumulative Regret: 96.4154129
+Instance 3:
+  Regret: 0.650279999
+  Cumulative Regret: 97.0656891
+Instance 4:
+  Regret: 19.6735306
+  Cumulative Regret: 116.73922
+Instance 5:
+  Regret: 20.9048691
+  Cumulative Regret: 137.644089
+Instance 6:
+  Regret: 0.455501556
+  Cumulative Regret: 138.099594
+Instance 7:
+  Regret: 0
+  Cumulative Regret: 138.099594
+Instance 8:
+  Regret: 4.23870087
+  Cumulative Regret: 142.338287
+Instance 9:
+  Regret: 26.2305069
+  Cumulative Regret: 168.568787
+Instance 10:
+  Regret: 26.036026
+  Cumulative Regret: 194.604813
+Instance 11:
+  Regret: 6.61339951
+  Cumulative Regret: 201.218216
+Instance 12:
+  Regret: 0
+  Cumulative Regret: 201.218216
+Instance 13:
+  Regret: 2.62033844
+  Cumulative Regret: 203.838562
+Instance 14:
+  Regret: 0
+  Cumulative Regret: 203.838562
+Instance 15:
+  Regret: 0
+  Cumulative Regret: 203.838562
+Instance 16:
+  Regret: 0.260314941
+  Cumulative Regret: 204.098877
+Instance 17:
+  Regret: 3.5147934
+  Cumulative Regret: 207.613678
+Instance 18:
+  Regret: 0
+  Cumulative Regret: 207.613678
+Instance 19:
+  Regret: 0
+  Cumulative Regret: 207.613678
+Instance 20:
+  Regret: 5.86277008
+  Cumulative Regret: 213.47644
+Instance 21:
+  Regret: 0.767097473
+  Cumulative Regret: 214.24353
+Instance 22:
+  Regret: 0
+  Cumulative Regret: 214.24353
+Instance 23:
+  Regret: 0.397216797
+  Cumulative Regret: 214.640747
+Instance 24:
+  Regret: 4.34860229
+  Cumulative Regret: 218.989349
+Instance 25:
+  Regret: 0.494693756
+  Cumulative Regret: 219.484039
+Instance 26:
+  Regret: 0
+  Cumulative Regret: 219.484039
+Instance 27:
+  Regret: 0
+  Cumulative Regret: 219.484039
+Instance 28:
+  Regret: 0
+  Cumulative Regret: 219.484039
+Instance 29:
+  Regret: 3.83486557
+  Cumulative Regret: 223.318909
+Instance 30:
+  Regret: 0
+  Cumulative Regret: 223.318909
+Instance 31:
+  Regret: 0
+  Cumulative Regret: 223.318909
+Instance 32:
+  Regret: 0
+  Cumulative Regret: 223.318909
+Instance 33:
+  Regret: 0.108818054
+  Cumulative Regret: 223.427734
+Instance 34:
+  Regret: 4.5123558
+  Cumulative Regret: 227.940094
+Instance 35:
+  Regret: 0
+  Cumulative Regret: 227.940094
+Instance 36:
+  Regret: 0
+  Cumulative Regret: 227.940094
+Instance 37:
+  Regret: 0
+  Cumulative Regret: 227.940094
+Instance 38:
+  Regret: 0
+  Cumulative Regret: 227.940094
+Instance 39:
+  Regret: 0
+  Cumulative Regret: 227.940094
+Instance 40:
+  Regret: 2.7590704
+  Cumulative Regret: 230.699158
+Instance 41:
+  Regret: 0
+  Cumulative Regret: 230.699158
+Instance 42:
+  Regret: 0.370071411
+  Cumulative Regret: 231.069229
+Instance 43:
+  Regret: 2.31116199
+  Cumulative Regret: 233.380386
+Instance 44:
+  Regret: 3.42110443
+  Cumulative Regret: 236.801483
+Instance 45:
+  Regret: 2.22148132
+  Cumulative Regret: 239.022964
+Instance 46:
+  Regret: 0
+  Cumulative Regret: 239.022964
+Instance 47:
+  Regret: 0.693367004
+  Cumulative Regret: 239.716339
+Instance 48:
+  Regret: 2.07272339
+  Cumulative Regret: 241.789062
+Instance 49:
+  Regret: 0.474075317
+  Cumulative Regret: 242.263138
+Instance 50:
+  Regret: 1.02300644
+  Cumulative Regret: 243.286148
+Instance 51:
+  Regret: 0
+  Cumulative Regret: 243.286148
+Instance 52:
+  Regret: 0.657432556
+  Cumulative Regret: 243.943573
+Instance 53:
+  Regret: 0
+  Cumulative Regret: 243.943573
+Instance 54:
+  Regret: 1.78970623
+  Cumulative Regret: 245.733276
+Instance 55:
+  Regret: 3.39730072
+  Cumulative Regret: 249.130585
+Instance 56:
+  Regret: 1.11576748
+  Cumulative Regret: 250.246353
+Instance 57:
+  Regret: 1.50323486
+  Cumulative Regret: 251.749588
+Instance 58:
+  Regret: 0
+  Cumulative Regret: 251.749588
+Instance 59:
+  Regret: 3.50112534
+  Cumulative Regret: 255.250717
+Instance 60:
+  Regret: 0
+  Cumulative Regret: 255.250717
+Instance 61:
+  Regret: 0
+  Cumulative Regret: 255.250717
+Instance 62:
+  Regret: 1.36391449
+  Cumulative Regret: 256.614624
+Instance 63:
+  Regret: 0
+  Cumulative Regret: 256.614624
+Instance 64:
+  Regret: 0
+  Cumulative Regret: 256.614624
+Instance 65:
+  Regret: 0.528755188
+  Cumulative Regret: 257.143372
+Instance 66:
+  Regret: 1.59998322
+  Cumulative Regret: 258.743347
+Instance 67:
+  Regret: 0.0386581421
+  Cumulative Regret: 258.782013
+Instance 68:
+  Regret: 1.49659729
+  Cumulative Regret: 260.278625
+Instance 69:
+  Regret: 2.10861206
+  Cumulative Regret: 262.387238
+Instance 70:
+  Regret: 0
+  Cumulative Regret: 262.387238
+Instance 71:
+  Regret: 0.564315796
+  Cumulative Regret: 262.951538
+Instance 72:
+  Regret: 1.48584747
+  Cumulative Regret: 264.437378
+Instance 73:
+  Regret: 0
+  Cumulative Regret: 264.437378
+Instance 74:
+  Regret: 0
+  Cumulative Regret: 264.437378
+Instance 75:
+  Regret: 2.89936829
+  Cumulative Regret: 267.336731
+Instance 76:
+  Regret: 0
+  Cumulative Regret: 267.336731
+Instance 77:
+  Regret: 2.18086338
+  Cumulative Regret: 269.517609
+Instance 78:
+  Regret: 0
+  Cumulative Regret: 269.517609
+Instance 79:
+  Regret: 0
+  Cumulative Regret: 269.517609
+Instance 80:
+  Regret: 0.142625809
+  Cumulative Regret: 269.660248
+Instance 81:
+  Regret: 1.01230717
+  Cumulative Regret: 270.672546
+Instance 82:
+  Regret: 0
+  Cumulative Regret: 270.672546
+Instance 83:
+  Regret: 0
+  Cumulative Regret: 270.672546
+Instance 84:
+  Regret: 0
+  Cumulative Regret: 270.672546
+Instance 85:
+  Regret: 1.44238472
+  Cumulative Regret: 272.114929
+Instance 86:
+  Regret: 0
+  Cumulative Regret: 272.114929
+Instance 87:
+  Regret: 2.73952198
+  Cumulative Regret: 274.854462
+Instance 88:
+  Regret: 0
+  Cumulative Regret: 274.854462
+Instance 89:
+  Regret: 4.02182484
+  Cumulative Regret: 278.876282
+Instance 90:
+  Regret: 0.0868415833
+  Cumulative Regret: 278.963135
+Instance 91:
+  Regret: 0
+  Cumulative Regret: 278.963135
+Instance 92:
+  Regret: 0
+  Cumulative Regret: 278.963135
+Instance 93:
+  Regret: 0
+  Cumulative Regret: 278.963135
+Instance 94:
+  Regret: 0
+  Cumulative Regret: 278.963135
+Instance 95:
+  Regret: 0
+  Cumulative Regret: 278.963135
+Instance 96:
+  Regret: 0
+  Cumulative Regret: 278.963135
+Instance 97:
+  Regret: 0
+  Cumulative Regret: 278.963135
+Instance 98:
+  Regret: 0
+  Cumulative Regret: 278.963135
+Instance 99:
+  Regret: 0
+  Cumulative Regret: 278.963135
+Instance 100:
+  Regret: 0
+  Cumulative Regret: 278.963135
+Instance 101:
+  Regret: 0
+  Cumulative Regret: 278.963135
+Instance 102:
+  Regret: 0
+  Cumulative Regret: 278.963135
+Instance 103:
+  Regret: 0.634941101
+  Cumulative Regret: 279.598083
+Instance 104:
+  Regret: 0
+  Cumulative Regret: 279.598083
+Instance 105:
+  Regret: 0
+  Cumulative Regret: 279.598083
+Instance 106:
+  Regret: 0
+  Cumulative Regret: 279.598083
+Instance 107:
+  Regret: 0
+  Cumulative Regret: 279.598083
+Instance 108:
+  Regret: 0.201522827
+  Cumulative Regret: 279.799622
+Instance 109:
+  Regret: 1.14296913
+  Cumulative Regret: 280.942596
+Instance 110:
+  Regret: 0
+  Cumulative Regret: 280.942596
+Instance 111:
+  Regret: 0
+  Cumulative Regret: 280.942596
+Instance 112:
+  Regret: 1.2073822
+  Cumulative Regret: 282.149963
+Instance 113:
+  Regret: 0
+  Cumulative Regret: 282.149963
+Instance 114:
+  Regret: 0
+  Cumulative Regret: 282.149963
+Instance 115:
+  Regret: 0
+  Cumulative Regret: 282.149963
+Instance 116:
+  Regret: 0
+  Cumulative Regret: 282.149963
+Instance 117:
+  Regret: 0
+  Cumulative Regret: 282.149963
+Instance 118:
+  Regret: 3.58388519
+  Cumulative Regret: 285.733856
+Instance 119:
+  Regret: 0.980224609
+  Cumulative Regret: 286.714081
+Instance 120:
+  Regret: 0
+  Cumulative Regret: 286.714081
+Instance 121:
+  Regret: 0.175387383
+  Cumulative Regret: 286.889465
+Instance 122:
+  Regret: 0
+  Cumulative Regret: 286.889465
+Instance 123:
+  Regret: 0.212867737
+  Cumulative Regret: 287.102325
+Instance 124:
+  Regret: 0
+  Cumulative Regret: 287.102325
+Instance 125:
+  Regret: 0
+  Cumulative Regret: 287.102325
+Instance 126:
+  Regret: 1.64807129
+  Cumulative Regret: 288.750397
+Instance 127:
+  Regret: 0
+  Cumulative Regret: 288.750397
+Instance 128:
+  Regret: 0
+  Cumulative Regret: 288.750397
+Instance 129:
+  Regret: 0
+  Cumulative Regret: 288.750397
+Instance 130:
+  Regret: 0
+  Cumulative Regret: 288.750397
+Instance 131:
+  Regret: 1.84507656
+  Cumulative Regret: 290.595459
+Instance 132:
+  Regret: 0
+  Cumulative Regret: 290.595459
+Instance 133:
+  Regret: 0
+  Cumulative Regret: 290.595459
+Instance 134:
+  Regret: 0
+  Cumulative Regret: 290.595459
+Instance 135:
+  Regret: 0
+  Cumulative Regret: 290.595459
+Instance 136:
+  Regret: 0
+  Cumulative Regret: 290.595459
+Instance 137:
+  Regret: 0
+  Cumulative Regret: 290.595459
+Instance 138:
+  Regret: 0
+  Cumulative Regret: 290.595459
+Instance 139:
+  Regret: 0
+  Cumulative Regret: 290.595459
+Instance 140:
+  Regret: 0.39466095
+  Cumulative Regret: 290.990112
+Instance 141:
+  Regret: 0
+  Cumulative Regret: 290.990112
+Instance 142:
+  Regret: 0
+  Cumulative Regret: 290.990112
+Instance 143:
+  Regret: 0.246525764
+  Cumulative Regret: 291.236633
+Instance 144:
+  Regret: 0
+  Cumulative Regret: 291.236633
+Instance 145:
+  Regret: 0
+  Cumulative Regret: 291.236633
+Instance 146:
+  Regret: 0
+  Cumulative Regret: 291.236633
+Instance 147:
+  Regret: 0
+  Cumulative Regret: 291.236633
+Instance 148:
+  Regret: 0
+  Cumulative Regret: 291.236633
+Instance 149:
+  Regret: 0
+  Cumulative Regret: 291.236633

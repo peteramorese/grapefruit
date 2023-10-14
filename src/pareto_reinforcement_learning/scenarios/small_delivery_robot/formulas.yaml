@@ -1,0 +1,3 @@
+DFAs:
+        - GF((tacos & F(p1)) | pizza & F(p1))
+        #- GF(pizza & F(p1))

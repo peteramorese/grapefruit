@@ -1,0 +1,419 @@
+PRL Preference Mean:
+  - 50
+  - 10
+PRL Preference Variance:
+  - 25
+  - 4
+Instances: 5
+Instance 0:
+  Chosen Plan: Candidate Plan 0
+  Candidate Plan 0:
+    Title: Candidate Plan 0
+    Action Sequence:
+      - right
+      - right
+      - right
+      - right
+      - up
+      - up
+      - up
+      - left
+      - up
+      - left
+      - down
+      - down
+      - down
+      - down
+    State Sequence:
+      - x0, y0
+      - x1, y0
+      - x2, y0
+      - x3, y0
+      - x4, y0
+      - x4, y1
+      - x4, y2
+      - x4, y3
+      - x3, y3
+      - x3, y4
+      - x2, y4
+      - x2, y3
+      - x2, y2
+      - x2, y1
+      - x2, y0
+    Plan Mean:
+      - 14
+      - 2
+    Plan Variance:
+      - 9.33333302
+      - 1.33333337
+  Candidate Plan 1:
+    Title: Candidate Plan 1
+    Action Sequence:
+      - right
+      - right
+      - right
+      - right
+      - up
+      - down
+      - left
+      - left
+    State Sequence:
+      - x0, y0
+      - x1, y0
+      - x2, y0
+      - x3, y0
+      - x4, y0
+      - x4, y1
+      - x4, y0
+      - x3, y0
+      - x2, y0
+    Plan Mean:
+      - 8
+      - 1
+    Plan Variance:
+      - 5.33333302
+      - 0.666666687
+  Sample:
+    - 86.6045227
+    - 21.1002083
+Instance 1:
+  Chosen Plan: Candidate Plan 0
+  Candidate Plan 0:
+    Title: Candidate Plan 0
+    Action Sequence:
+      - left
+      - up
+      - up
+      - right
+      - up
+      - up
+      - right
+      - down
+      - down
+      - down
+      - right
+      - down
+      - left
+      - left
+    State Sequence:
+      - x2, y0
+      - x1, y0
+      - x1, y1
+      - x1, y2
+      - x2, y2
+      - x2, y3
+      - x2, y4
+      - x3, y4
+      - x3, y3
+      - x3, y2
+      - x3, y1
+      - x4, y1
+      - x4, y0
+      - x3, y0
+      - x2, y0
+    Plan Mean:
+      - 14
+      - 11.5501041
+    Plan Variance:
+      - 9.33333302
+      - 17.1274643
+  Sample:
+    - 100.137642
+    - 15.6396713
+Instance 2:
+  Chosen Plan: Candidate Plan 0
+  Candidate Plan 0:
+    Title: Candidate Plan 0
+    Action Sequence:
+      - up
+      - up
+      - left
+      - up
+      - up
+      - right
+      - left
+      - down
+      - down
+      - down
+      - right
+      - up
+      - right
+      - right
+      - down
+      - left
+      - left
+      - down
+    State Sequence:
+      - x2, y0
+      - x2, y1
+      - x2, y2
+      - x1, y2
+      - x1, y3
+      - x1, y4
+      - x2, y4
+      - x1, y4
+      - x1, y3
+      - x1, y2
+      - x1, y1
+      - x2, y1
+      - x2, y2
+      - x3, y2
+      - x4, y2
+      - x4, y1
+      - x3, y1
+      - x2, y1
+      - x2, y0
+    Plan Mean:
+      - 19.7119789
+      - 12.9132938
+    Plan Variance:
+      - 12.9769573
+      - 13.7320118
+  Sample:
+    - 145.550156
+    - 19.5757484
+Instance 3:
+  Chosen Plan: Candidate Plan 0
+  Candidate Plan 0:
+    Title: Candidate Plan 0
+    Action Sequence:
+      - right
+      - up
+      - right
+      - up
+      - left
+      - up
+      - left
+      - left
+      - left
+      - up
+      - right
+      - right
+      - right
+      - right
+      - down
+      - down
+      - left
+      - up
+      - left
+      - left
+      - left
+      - down
+      - down
+      - right
+      - down
+      - right
+    State Sequence:
+      - x2, y0
+      - x3, y0
+      - x3, y1
+      - x4, y1
+      - x4, y2
+      - x3, y2
+      - x3, y3
+      - x2, y3
+      - x1, y3
+      - x0, y3
+      - x0, y4
+      - x1, y4
+      - x2, y4
+      - x3, y4
+      - x4, y4
+      - x4, y3
+      - x4, y2
+      - x3, y2
+      - x3, y3
+      - x2, y3
+      - x1, y3
+      - x0, y3
+      - x0, y2
+      - x0, y1
+      - x1, y1
+      - x1, y0
+      - x2, y0
+    Plan Mean:
+      - 37.047493
+      - 14.578907
+    Plan Variance:
+      - 24.6732216
+      - 15.8512268
+  Candidate Plan 1:
+    Title: Candidate Plan 1
+    Action Sequence:
+      - right
+      - up
+      - right
+      - up
+      - left
+      - up
+      - left
+      - left
+      - left
+      - down
+      - down
+      - right
+      - down
+      - right
+    State Sequence:
+      - x2, y0
+      - x3, y0
+      - x3, y1
+      - x4, y1
+      - x4, y2
+      - x3, y2
+      - x3, y3
+      - x2, y3
+      - x1, y3
+      - x0, y3
+      - x0, y2
+      - x0, y1
+      - x1, y1
+      - x1, y0
+      - x2, y0
+    Plan Mean:
+      - 21.8556786
+      - 7.76409721
+    Plan Variance:
+      - 14.8529053
+      - 9.53156185
+  Candidate Plan 2:
+    Title: Candidate Plan 2
+    Action Sequence:
+      - right
+      - up
+      - up
+      - up
+      - left
+      - left
+      - left
+      - up
+      - right
+      - right
+      - right
+      - right
+      - down
+      - down
+      - left
+      - up
+      - left
+      - left
+      - left
+      - down
+      - down
+      - right
+      - down
+      - right
+    State Sequence:
+      - x2, y0
+      - x3, y0
+      - x3, y1
+      - x3, y2
+      - x3, y3
+      - x2, y3
+      - x1, y3
+      - x0, y3
+      - x0, y4
+      - x1, y4
+      - x2, y4
+      - x3, y4
+      - x4, y4
+      - x4, y3
+      - x4, y2
+      - x3, y2
+      - x3, y3
+      - x2, y3
+      - x1, y3
+      - x0, y3
+      - x0, y2
+      - x0, y1
+      - x1, y1
+      - x1, y0
+      - x2, y0
+    Plan Mean:
+      - 30.7460346
+      - 6.8148098
+    Plan Variance:
+      - 20.2047157
+      - 6.31966496
+  Sample:
+    - 172.955521
+    - 18.1091537
+Instance 4:
+  Chosen Plan: Candidate Plan 0
+  Candidate Plan 0:
+    Title: Candidate Plan 0
+    Action Sequence:
+      - up
+      - left
+      - left
+      - up
+      - up
+      - right
+      - right
+      - right
+      - right
+      - up
+      - left
+      - left
+      - down
+      - right
+      - right
+      - down
+      - down
+      - left
+      - down
+      - left
+    State Sequence:
+      - x2, y0
+      - x2, y1
+      - x1, y1
+      - x0, y1
+      - x0, y2
+      - x0, y3
+      - x1, y3
+      - x2, y3
+      - x3, y3
+      - x4, y3
+      - x4, y4
+      - x3, y4
+      - x2, y4
+      - x2, y3
+      - x3, y3
+      - x4, y3
+      - x4, y2
+      - x4, y1
+      - x3, y1
+      - x3, y0
+      - x2, y0
+    Plan Mean:
+      - 38.558342
+      - 15.284956
+    Plan Variance:
+      - 34.6836815
+      - 13.2297316
+  Candidate Plan 1:
+    Title: Candidate Plan 1
+    Action Sequence:
+      - up
+      - right
+      - right
+      - left
+      - down
+      - left
+    State Sequence:
+      - x2, y0
+      - x2, y1
+      - x3, y1
+      - x4, y1
+      - x3, y1
+      - x3, y0
+      - x2, y0
+    Plan Mean:
+      - 14.9740639
+      - 8.00504589
+    Plan Variance:
+      - 9.60079575
+      - 7.74136257
+  Sample:
+    - 114.10318
+    - 17.974556

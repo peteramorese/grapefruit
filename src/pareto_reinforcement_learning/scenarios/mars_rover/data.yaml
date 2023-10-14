@@ -1,0 +1,68 @@
+PRL Preference Mean:
+  - 100
+  - 10
+PRL Preference Covariance:
+  - 100
+  - 10
+  - 30
+Instances: 10
+Instance 0:
+  Sample:
+    - 146.286072
+    - 12.7782402
+  Regret: 0
+  Cumulative Regret: 0
+Instance 1:
+  Sample:
+    - 304.008209
+    - 22.4183121
+  Regret: 7.54328251
+  Cumulative Regret: 7.54328251
+Instance 2:
+  Sample:
+    - 152.590149
+    - 12.7374439
+  Regret: 6.55013943
+  Cumulative Regret: 14.0934219
+Instance 3:
+  Sample:
+    - 427.587311
+    - 31.8531189
+  Regret: 16.9780884
+  Cumulative Regret: 31.0715103
+Instance 4:
+  Sample:
+    - 182.915924
+    - 13.3388567
+  Regret: 7.1515522
+  Cumulative Regret: 38.2230606
+Instance 5:
+  Sample:
+    - 127.781708
+    - 10.6614265
+  Regret: 4.47412205
+  Cumulative Regret: 42.6971817
+Instance 6:
+  Sample:
+    - 317.641144
+    - 29.4250088
+  Regret: 14.5499792
+  Cumulative Regret: 57.2471619
+Instance 7:
+  Sample:
+    - 132.498047
+    - 7.10493422
+  Regret: 0.917629719
+  Cumulative Regret: 58.1647911
+Instance 8:
+  Sample:
+    - 374.634155
+    - 29.0714188
+  Regret: 22.8841133
+  Cumulative Regret: 81.0489044
+Instance 9:
+  Sample:
+    - 347.942047
+    - 28.9170341
+  Regret: 14.0420046
+  Cumulative Regret: 95.0909119
