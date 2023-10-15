@@ -24,8 +24,8 @@ namespace GF {
 
 namespace GraphSearch {
 
-    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::NAMOASearchResult NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::search(const SEARCH_PROBLEM_T& problem) {
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, typename EDGE_STORAGE_T>
+    NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, EDGE_STORAGE_T>::NAMOASearchResult NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, EDGE_STORAGE_T>::search(const SEARCH_PROBLEM_T& problem) {
 
         // If custom edge storage type is used with explicit search, assert that the outgoingEdges method is explicit (returns a persistent const reference)
         constexpr bool _PTR_EDGE_STORAGE_TYPE = !std::is_same<EDGE_STORAGE_T, edge_t>::value;
@@ -191,8 +191,8 @@ namespace GraphSearch {
         return result;
     };
 
-    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    void NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPaths(std::vector<std::pair<GraphNode, const CostMapItem*>>& solution_set, NAMOASearchResult& result, const SEARCH_PROBLEM_T& problem) {
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, typename EDGE_STORAGE_T>
+    void NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, EDGE_STORAGE_T>::extractPaths(std::vector<std::pair<GraphNode, const CostMapItem*>>& solution_set, NAMOASearchResult& result, const SEARCH_PROBLEM_T& problem) {
 
         constexpr bool _PTR_EDGE_STORAGE_TYPE = !std::is_same<EDGE_STORAGE_T, edge_t>::value;
 
@@ -292,8 +292,8 @@ namespace GraphSearch {
         }
     }
 
-    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    void NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>>& node_map) {
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, typename EDGE_STORAGE_T>
+    void NAMOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<GraphNode, EDGE_STORAGE_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, SearchGraphEdge<COST_VECTOR_T, EDGE_STORAGE_T>>& node_map) {
         EnumeratedNode curr_enum_node = goal_node;
         path_solution.node_path.emplace_back(node_map.getNode(curr_enum_node));
 

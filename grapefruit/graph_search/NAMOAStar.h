@@ -17,7 +17,7 @@ namespace GF {
 
 namespace GraphSearch {
 
-    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T = ZeroHeuristic<Node, COST_VECTOR_T>, typename EDGE_STORAGE_T = typename SEARCH_PROBLEM_T::edge_t>
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, typename EDGE_STORAGE_T = typename SEARCH_PROBLEM_T::edge_t>
     class NAMOAStar {
         public:
             using GraphNode = SEARCH_PROBLEM_T::node_t;

@@ -19,8 +19,8 @@ namespace GraphSearch {
 
     
 
-    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    MultiObjectiveSearchResult<typename SEARCH_PROBLEM_T::node_t, EDGE_STORAGE_T, COST_VECTOR_T> BOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::search(const SEARCH_PROBLEM_T& problem) {
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, typename EDGE_STORAGE_T>
+    MultiObjectiveSearchResult<typename SEARCH_PROBLEM_T::node_t, EDGE_STORAGE_T, COST_VECTOR_T> BOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, EDGE_STORAGE_T>::search(const SEARCH_PROBLEM_T& problem) {
 
         // If custom edge storage type is used with explicit search, assert that the outgoingEdges method is explicit (returns a persistent pointer)
         constexpr bool _PTR_EDGE_STORAGE_TYPE = !std::is_same<EDGE_STORAGE_T, edge_t>::value;
@@ -139,8 +139,8 @@ namespace GraphSearch {
         return result;
     };
 
-    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    void BOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<typename SEARCH_PROBLEM_T::node_t, EDGE_STORAGE_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, EDGE_STORAGE_T>& node_map) {
+    template <class COST_VECTOR_T, class SEARCH_PROBLEM_T, typename EDGE_STORAGE_T>
+    void BOAStar<COST_VECTOR_T, SEARCH_PROBLEM_T, EDGE_STORAGE_T>::extractPath(const EnumeratedNode& goal_node, PathSolution<typename SEARCH_PROBLEM_T::node_t, EDGE_STORAGE_T>& path_solution, const PathEnumeratedNodeMap<GraphNode, EnumeratedNode, EDGE_STORAGE_T>& node_map) {
         EnumeratedNode curr_enum_node = goal_node;
         path_solution.node_path.emplace_back(node_map.getNode(curr_enum_node));
 

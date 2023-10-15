@@ -70,7 +70,7 @@ int main() {
 
     NEW_LINE;
     LOG("Searching...");
-    auto result = AStar<Node, Edge, uint32_t, decltype(astar_problem), MyHeuristic>::search(astar_problem);
+    auto result = AStar<Node, Edge, uint32_t, decltype(astar_problem)>::search(astar_problem);
 
     LOG("Finished!");
     LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));

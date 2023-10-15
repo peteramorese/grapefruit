@@ -80,7 +80,7 @@ int main() {
     QuantitativeGraphSearchProblem<Graph<Edge>, uint32_t, SearchDirection::Forward> dijkstras_problem(graph, {1}, {6});
 
     LOG("Searching...");
-    auto result = AStar<Node, Edge, uint32_t, decltype(dijkstras_problem), ZeroHeuristic<Node, uint32_t>, const Edge*>::search(dijkstras_problem);
+    auto result = AStar<Node, Edge, uint32_t, decltype(dijkstras_problem), const Edge*>::search(dijkstras_problem);
 
     LOG("Finished!");
     LOG(((result.success) ? "Found path (success)" : "Did not find path (failure)"));

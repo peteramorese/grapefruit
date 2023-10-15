@@ -14,8 +14,8 @@
 namespace GF {
 namespace GraphSearch {
 
-    template <class NODE_T, class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    SingleObjectiveSearchResult<NODE_T, EDGE_STORAGE_T, COST_T> AStar<NODE_T, EDGE_T, COST_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::search(const SEARCH_PROBLEM_T& problem) {
+    template <class NODE_T, class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, typename EDGE_STORAGE_T>
+    SingleObjectiveSearchResult<NODE_T, EDGE_STORAGE_T, COST_T> AStar<NODE_T, EDGE_T, COST_T, SEARCH_PROBLEM_T, EDGE_STORAGE_T>::search(const SEARCH_PROBLEM_T& problem) {
 
 
         // If custom edge storage type is used with explicit search, assert that the outgoingEdges method is explicit (returns a persistent const reference)
@@ -112,8 +112,8 @@ namespace GraphSearch {
         return result;
     };
 
-    template <class NODE_T, class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, class HEURISTIC_T, typename EDGE_STORAGE_T>
-    void AStar<NODE_T, EDGE_T, COST_T, SEARCH_PROBLEM_T, HEURISTIC_T, EDGE_STORAGE_T>::extractPath(const NODE_T& goal_node, SingleObjectiveSearchResult<NODE_T, EDGE_STORAGE_T, COST_T>& result) {
+    template <class NODE_T, class EDGE_T, class COST_T, class SEARCH_PROBLEM_T, typename EDGE_STORAGE_T>
+    void AStar<NODE_T, EDGE_T, COST_T, SEARCH_PROBLEM_T, EDGE_STORAGE_T>::extractPath(const NODE_T& goal_node, SingleObjectiveSearchResult<NODE_T, EDGE_STORAGE_T, COST_T>& result) {
 
         result.success = true;
         result.cost = (*result.min_cost_map)[goal_node];
