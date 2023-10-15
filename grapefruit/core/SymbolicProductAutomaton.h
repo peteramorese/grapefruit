@@ -96,13 +96,13 @@ namespace DiscreteModel {
             inline const Containers::SizedArray<std::size_t>& getGraphSizes() const {return m_graph_sizes;}
 
             // Graph movement methods
-		    std::vector<typename EDGE_INHERITOR::type> getOutgoingEdges(WideNode node);
+		    std::vector<typename EDGE_INHERITOR::type> outgoingEdges(WideNode node);
 
-		    std::vector<WideNode> getChildren(WideNode node);
+		    std::vector<WideNode> children(WideNode node);
 
-		    std::vector<typename EDGE_INHERITOR::type> getIncomingEdges(WideNode node);
+		    std::vector<typename EDGE_INHERITOR::type> incomingEdges(WideNode node);
 
-		    std::vector<WideNode> getParents(WideNode node);
+		    std::vector<WideNode> parents(WideNode node);
 
             // Access the graphs
             const MODEL_T& getModel() const {return *m_model;}

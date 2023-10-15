@@ -47,12 +47,12 @@ namespace Planner {
             
             // Extension methods
             inline std::vector<ProdNode> neighbors(ProdNode node) const {
-                return m_graph->getChildren(node);
+                return m_graph->children(node);
             }
 
             // Direct conversion 
             inline std::vector<edge_t> neighborEdges(ProdNode node) const {
-                std::vector<typename SYMBOLIC_GRAPH_T::edge_t> inherited_edges = m_graph->getOutgoingEdges(node);
+                std::vector<typename SYMBOLIC_GRAPH_T::edge_t> inherited_edges = m_graph->outgoingEdges(node);
                 std::vector<edge_t> converted_edges;
 
                 converted_edges.reserve(inherited_edges.size());

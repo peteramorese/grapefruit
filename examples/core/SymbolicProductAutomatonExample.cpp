@@ -105,8 +105,8 @@ int main() {
 
 	WideNode p = AugmentedNodeIndex::wrap(p_unwrapped, product.getGraphSizes());
 
-	auto children = product.getChildren(p);
-	auto outgoing_edges = product.getOutgoingEdges(p);
+	auto children = product.children(p);
+	auto outgoing_edges = product.outgoingEdges(p);
 
 	NEW_LINE;
 	LOG("Children");
@@ -131,7 +131,7 @@ int main() {
 
 	WideNode pp = AugmentedNodeIndex::wrap(pp_unwrapped, product.getGraphSizes());
 
-	auto parents = product.getParents(pp);
+	auto parents = product.parents(pp);
 
 	NEW_LINE;
 	LOG("Parents");
@@ -160,8 +160,8 @@ int main() {
 
 	WideNode p = AugmentedNodeIndex::wrap(p_unwrapped, product.getGraphSizes());
 
-	auto children = product.getChildren(p);
-	auto outgoing_edges = product.getOutgoingEdges(p);
+	auto children = product.children(p);
+	auto outgoing_edges = product.outgoingEdges(p);
 
 	NEW_LINE;
 	LOG("Children");

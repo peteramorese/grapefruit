@@ -104,7 +104,7 @@ namespace DiscreteModel {
     }
 
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR>
-    std::vector<typename EDGE_INHERITOR::type> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getOutgoingEdges(WideNode node) {
+    std::vector<typename EDGE_INHERITOR::type> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::outgoingEdges(WideNode node) {
         const AugmentedNodePermutationArray& perm_array = post(node);
 
         std::vector<typename EDGE_INHERITOR::type> product_outgoing_edges;
@@ -116,11 +116,11 @@ namespace DiscreteModel {
 
         for (const auto& perm : perm_array.array) {
             auto onPermutation = [&, this] (const Containers::SizedArray<uint32_t>& option_indices) {
-                const auto& model_edge = m_model->getOutgoingEdges(unwrapped_nodes[0])[perm.ts_ind_option];
+                const auto& model_edge = m_model->outgoingEdges(unwrapped_nodes[0])[perm.ts_ind_option];
 
                 Containers::SizedArray<typename AUTOMATON_T::edge_t> automaton_edges(rank() - 1);
                 for (ProductRank i=1; i<rank(); ++i) {
-                    const auto& outgoing_edges = m_automata[i - 1]->getOutgoingEdges(unwrapped_nodes[i]);
+                    const auto& outgoing_edges = m_automata[i - 1]->outgoingEdges(unwrapped_nodes[i]);
                     automaton_edges[i-1] = outgoing_edges[perm.getSetIndex(i - 1, option_indices[i - 1])];
                 }
 
@@ -135,7 +135,7 @@ namespace DiscreteModel {
     }
 	
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR>
-    std::vector<WideNode> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getChildren(WideNode node) {
+    std::vector<WideNode> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::children(WideNode node) {
         const AugmentedNodePermutationArray& perm_array = post(node);
 
         std::vector<WideNode> product_children;
@@ -148,10 +148,10 @@ namespace DiscreteModel {
         for (const auto& perm : perm_array.array) {
             auto onPermutation = [&, this] (const Containers::SizedArray<uint32_t>& option_indices) {
                 Containers::SizedArray<Node> unwrapped_pp(rank());
-                unwrapped_pp[0] = m_model->getChildren(unwrapped_nodes[0])[perm.ts_ind_option];
+                unwrapped_pp[0] = m_model->children(unwrapped_nodes[0])[perm.ts_ind_option];
 
                 for (ProductRank i=1; i<rank(); ++i) {
-                    const auto& children = m_automata[i - 1]->getChildren(unwrapped_nodes[i]);
+                    const auto& children = m_automata[i - 1]->children(unwrapped_nodes[i]);
                     unwrapped_pp[i] = children[perm.getSetIndex(i - 1, option_indices[i - 1])];
                 }
 
@@ -166,7 +166,7 @@ namespace DiscreteModel {
     }
 	
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR>
-    std::vector<typename EDGE_INHERITOR::type> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getIncomingEdges(WideNode node) {
+    std::vector<typename EDGE_INHERITOR::type> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::incomingEdges(WideNode node) {
         const AugmentedNodePermutationArray& perm_array = pre(node);
 
         std::vector<typename EDGE_INHERITOR::type> product_incoming_edges;
@@ -179,12 +179,12 @@ namespace DiscreteModel {
 
         const auto& unwrapped_nodes = perm_array.src_unwrapped_nodes;
 
-        const auto& model_parents = m_model->getParents(unwrapped_nodes[0]);
+        const auto& model_parents = m_model->parents(unwrapped_nodes[0]);
 
         uint32_t model_parent_ind = 0;
         for (auto model_parent : model_parents) {
 
-            const auto& model_edge = m_model->getIncomingEdges(unwrapped_nodes[0])[model_parent_ind++];
+            const auto& model_edge = m_model->incomingEdges(unwrapped_nodes[0])[model_parent_ind++];
 
             auto onPermutation = [&, this] (const Containers::SizedArray<uint32_t>& option_indices) {
                 Containers::SizedArray<Node> unwrapped_pp(rank());
@@ -192,7 +192,7 @@ namespace DiscreteModel {
 
                 Containers::SizedArray<typename AUTOMATON_T::edge_t> automaton_edges(rank() - 1);
                 for (ProductRank i=1; i<rank(); ++i) {
-                    const auto& incoming_edges = m_automata[i - 1]->getIncomingEdges(unwrapped_nodes[i]);
+                    const auto& incoming_edges = m_automata[i - 1]->incomingEdges(unwrapped_nodes[i]);
                     automaton_edges[i-1] = incoming_edges[perm.getSetIndex(i - 1, option_indices[i - 1])];
                 }
 
@@ -207,7 +207,7 @@ namespace DiscreteModel {
     }
 		
     template <class MODEL_T, class AUTOMATON_T, class EDGE_INHERITOR>
-    std::vector<WideNode> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::getParents(WideNode node) {
+    std::vector<WideNode> SymbolicProductAutomaton<MODEL_T, AUTOMATON_T, EDGE_INHERITOR>::parents(WideNode node) {
         const AugmentedNodePermutationArray& perm_array = pre(node);
 
         std::vector<WideNode> product_parents;
@@ -220,7 +220,7 @@ namespace DiscreteModel {
 
         const auto& unwrapped_nodes = perm_array.src_unwrapped_nodes;
 
-        const auto& model_parents = m_model->getParents(unwrapped_nodes[0]);
+        const auto& model_parents = m_model->parents(unwrapped_nodes[0]);
 
         for (auto model_parent : model_parents) {
             auto onPermutation = [&, this] (const Containers::SizedArray<uint32_t>& option_indices) {
@@ -228,7 +228,7 @@ namespace DiscreteModel {
                 unwrapped_pp[0] = model_parent;
 
                 for (ProductRank i=1; i<rank(); ++i) {
-                    const auto& automaton_parents = m_automata[i - 1]->getParents(unwrapped_nodes[i]);
+                    const auto& automaton_parents = m_automata[i - 1]->parents(unwrapped_nodes[i]);
                     unwrapped_pp[i] = automaton_parents[perm.getSetIndex(i - 1, option_indices[i - 1])];
                 }
 
@@ -253,8 +253,8 @@ namespace DiscreteModel {
         const Containers::SizedArray<Node>& unwrapped_nodes = perm_array.src_unwrapped_nodes;
 
         // Get the children of the model
-        const auto& model_children = m_model->getChildren(unwrapped_nodes[0]);
-        const auto& model_outgoing_edges = m_model->getOutgoingEdges(unwrapped_nodes[0]);
+        const auto& model_children = m_model->children(unwrapped_nodes[0]);
+        const auto& model_outgoing_edges = m_model->outgoingEdges(unwrapped_nodes[0]);
 
         uint32_t sp_ind = 0;
         for (auto sp : model_children) {
@@ -267,8 +267,8 @@ namespace DiscreteModel {
             ProductRank automaton_ind = 1;
             for (const auto& automaton : m_automata) {
                 bool transition_enabled = false;
-                const auto& automaton_children = automaton->getChildren(unwrapped_nodes[automaton_ind]);
-                const auto& automaton_outgoing_edges = automaton->getOutgoingEdges(unwrapped_nodes[automaton_ind]);
+                const auto& automaton_children = automaton->children(unwrapped_nodes[automaton_ind]);
+                const auto& automaton_outgoing_edges = automaton->outgoingEdges(unwrapped_nodes[automaton_ind]);
 
                 //LOG("working automaton " << automaton_ind);
                 for (uint32_t i=0; i<automaton_children.size(); ++i) {
@@ -310,8 +310,8 @@ namespace DiscreteModel {
         Node sp = unwrapped_nodes[0];
 
         // Get the children of the model
-        const auto& model_parents = m_model->getParents(unwrapped_nodes[0]);
-        const auto& model_incoming_edges = m_model->getIncomingEdges(unwrapped_nodes[0]);
+        const auto& model_parents = m_model->parents(unwrapped_nodes[0]);
+        const auto& model_incoming_edges = m_model->incomingEdges(unwrapped_nodes[0]);
 
         // Observation only depends current state, so no iteration over model parents is needed
         bool enabled = true;
@@ -322,8 +322,8 @@ namespace DiscreteModel {
         ProductRank automaton_ind = 1;
         for (const auto& automaton : m_automata) {
             bool transition_enabled = false;
-            const auto& automaton_parents = automaton->getParents(unwrapped_nodes[automaton_ind]);
-            const auto& automaton_incoming_edges = automaton->getIncomingEdges(unwrapped_nodes[automaton_ind]);
+            const auto& automaton_parents = automaton->parents(unwrapped_nodes[automaton_ind]);
+            const auto& automaton_incoming_edges = automaton->incomingEdges(unwrapped_nodes[automaton_ind]);
 
             for (uint32_t i=0; i<automaton_parents.size(); ++i) {
                 if (m_model->observe(sp, automaton_incoming_edges[i])) {

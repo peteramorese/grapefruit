@@ -25,7 +25,7 @@ struct SearchProblem {
         
         // Extension methods (increment the history node)
         inline const std::vector<node_t> neighbors(const node_t& node) const {
-            std::vector<SymbolicProductGraph::node_t> children = m_product->getChildren(node.base_node);
+            std::vector<SymbolicProductGraph::node_t> children = m_product->children(node.base_node);
             std::vector<node_t> history_nodes;
             history_nodes.reserve(children.size());
             for (uint32_t i=0; i<children.size(); ++i) {
@@ -41,7 +41,7 @@ struct SearchProblem {
         }
 
         inline const std::vector<edge_t> neighborEdges(const node_t& node) const {
-            return m_product->getOutgoingEdges(node.base_node);
+            return m_product->outgoingEdges(node.base_node);
         }
 
         // Termination goal node (terminate at the step horizon)

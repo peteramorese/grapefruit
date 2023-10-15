@@ -33,7 +33,7 @@ namespace FormalMethods {
 
             virtual bool connect(Node src, Node dst, const PartialSatisfactionEdge& edge) override {
                 if (src < this->size()) {
-                    const std::vector<PartialSatisfactionEdge>& outgoing_edges = this->getOutgoingEdges(src);
+                    const std::vector<PartialSatisfactionEdge>& outgoing_edges = this->outgoingEdges(src);
                     for (const auto& curr_edge : outgoing_edges) {
                         // Do not connect if there is already
                         if (curr_edge.observation == edge.observation) return false;
@@ -83,8 +83,8 @@ namespace FormalMethods {
 
                     for (NATIVE_NODE_T src_node = 0; src_node < this->size(); ++src_node) {
                         // Copy so that recursive substitutions do not happen
-                        std::vector<NATIVE_NODE_T> children = this->getChildren(src_node);
-                        std::vector<PartialSatisfactionEdge> edges = this->getOutgoingEdges(src_node);
+                        std::vector<NATIVE_NODE_T> children = this->children(src_node);
+                        std::vector<PartialSatisfactionEdge> edges = this->outgoingEdges(src_node);
                         for (uint32_t i=0; i<children.size(); ++i) {
                             const auto it = sub_map.find(edges[i].observation);
                             if (it != sub_map.end()) {

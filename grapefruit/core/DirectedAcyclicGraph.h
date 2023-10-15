@@ -32,10 +32,10 @@ class DirectedAcyclicGraph : public Graph<EDGE_T, NATIVE_NODE_T, true> {
                 NATIVE_NODE_T curr_dead_leaf = dead_leaf_stack.back();
                 dead_leaf_stack.pop_back();
 
-                for (auto par : this->getParents(curr_dead_leaf)) {
+                for (auto par : this->parents(curr_dead_leaf)) {
 
                     // If the parent is only leads to the dead leaf, it itself is dead
-                    if (this->getChildren(par).size() == 1) {
+                    if (this->children(par).size() == 1) {
                         dead_leaf_stack.push_back(par);
                     }
 

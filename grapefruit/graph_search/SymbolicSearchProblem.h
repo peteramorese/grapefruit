@@ -19,16 +19,16 @@ namespace GraphSearch {
             // Extension methods
             inline std::vector<typename SYMBOLIC_GRAPH_T::node_t> neighbors(Node node) const {
                 if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
-                    return m_graph->getChildren(node);
+                    return m_graph->children(node);
                 else 
-                    return m_graph->getParents(node);
+                    return m_graph->parents(node);
             }
 
             inline std::vector<typename SYMBOLIC_GRAPH_T::edge_t> neighborEdges(Node node) const {
                 if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
-                    return m_graph->getOutgoingEdges(node);
+                    return m_graph->outgoingEdges(node);
                 else
-                    return m_graph->getIncomingEdges(node);
+                    return m_graph->incomingEdges(node);
             }
 
             // Termination goal function
@@ -36,11 +36,11 @@ namespace GraphSearch {
 
             // Quantative methods
             inline COST_T gScore(const Node& src_node, const Node& dst_node, const COST_T& parent_g_score, const SYMBOLIC_GRAPH_T::edge_t& edge) const {return parent_g_score + static_cast<COST_T>(edge);}
-            COST_T hScore(const SYMBOLIC_GRAPH_T::node_t& node) const {return heuristic.operator()(node);}
+            COST_T hScore(const SYMBOLIC_GRAPH_T::node_t& node) const {return heuristic->operator()(node);}
 
             // Member variables
             std::vector<typename SYMBOLIC_GRAPH_T::node_t> initial_node_set;
-            HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
+            std::shared_ptr<HEURISTIC_T> heuristic = std::make_shared<HEURISTIC_T>(); // assumes default ctor
 
         public:
             //typedef COST_T(*edgeToCostFunction)(const SYMBOLIC_GRAPH_T::edge_t&);

@@ -75,20 +75,20 @@ class Graph {
 			return nodes;
 		}
 
-		inline const std::vector<EDGE_T>& getOutgoingEdges(NATIVE_NODE_T node) const {
+		inline const std::vector<EDGE_T>& outgoingEdges(NATIVE_NODE_T node) const {
 			return m_graph[node].forward.edges;
 		}
 
-		inline const std::vector<NATIVE_NODE_T>& getChildren(NATIVE_NODE_T node) const {
+		inline const std::vector<NATIVE_NODE_T>& children(NATIVE_NODE_T node) const {
 			return m_graph[node].forward.nodes;
 		}
 		
-		inline const std::vector<EDGE_T>& getIncomingEdges(NATIVE_NODE_T node) const {
+		inline const std::vector<EDGE_T>& incomingEdges(NATIVE_NODE_T node) const {
 			static_assert(REVERSIBLE, "Graph must be reversible");
 			return m_graph[node].backward.edges;
 		}
 
-		inline const std::vector<NATIVE_NODE_T>& getParents(NATIVE_NODE_T node) const {
+		inline const std::vector<NATIVE_NODE_T>& parents(NATIVE_NODE_T node) const {
 			static_assert(REVERSIBLE, "Graph must be reversible");
 			return m_graph[node].backward.nodes;
 		}
@@ -296,14 +296,14 @@ class NodeGenericGraph : public Graph<EDGE_T, NATIVE_NODE_T, REVERSIBLE, DIRECTE
 		virtual ~NodeGenericGraph() {}
 
 		inline std::vector<NODE_T> getChildrenGenericNodes(NATIVE_NODE_T node) {
-			const std::vector<NATIVE_NODE_T>& children = this->getChildren(node);
+			const std::vector<NATIVE_NODE_T>& children = this->children(node);
 			std::vector<NODE_T> nodes(children.size());
 			for (uint32_t i=0; i < children.size(); ++i) nodes[i] = m_node_container[children[i]];
 			return nodes;
 		}
 
 		inline const std::vector<NATIVE_NODE_T>& getParentsGenericNodes(NATIVE_NODE_T node) {
-			const std::vector<NATIVE_NODE_T>& parents = this->getParents(node);
+			const std::vector<NATIVE_NODE_T>& parents = this->parents(node);
 			std::vector<NODE_T> nodes(parents.size());
 			for (uint32_t i=0; i < parents.size(); ++i) nodes[i] = m_node_container[parents[i]];
 			return nodes;

@@ -164,7 +164,7 @@ class GridWorldTrueBehavior : public TrueBehavior<
                                 if (!ts.getGenericNodeContainer().contains(s))
                                     continue;
                                 GF::Node model_node = ts.getGenericNodeContainer()[s];
-                                for (const auto& outgoing_edge : ts.getOutgoingEdges(model_node)) {
+                                for (const auto& outgoing_edge : ts.outgoingEdges(model_node)) {
                                     GF::Stats::Distributions::FixedMultivariateNormalSampler<N>& sampler = this->getElement(model_node, outgoing_edge.action);
                                     GF::Stats::Distributions::FixedMultivariateNormal<N> dist = sampler.dist(); // copy out the distribution
                                     dist.convolveWith(region_dist);

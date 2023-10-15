@@ -66,7 +66,7 @@ namespace FormalMethods {
 
             virtual bool connect(NATIVE_NODE_T src, NATIVE_NODE_T dst, const Observation& edge) override {
                 if (src < this->size()) {
-                    const std::vector<Observation>& outgoing_edges = this->getOutgoingEdges(src);
+                    const std::vector<Observation>& outgoing_edges = this->outgoingEdges(src);
                     for (const auto& label : outgoing_edges) {
                         // Do not connect if there is already
                         if (label == edge) return false;

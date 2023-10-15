@@ -57,7 +57,7 @@ int main() {
     QuantitativeGraphSearchProblem<Graph<Edge>, uint32_t, SearchDirection::Forward, MyHeuristic> astar_problem(graph, {1}, {6});
 
     // Manually insert heuristic values (i.e. integer min number of edges to goal):
-    MyHeuristic& heuristic = astar_problem.heuristic;
+    MyHeuristic& heuristic = *astar_problem.heuristic;
     heuristic.m_heuristic_values[0] = 3;
     heuristic.m_heuristic_values[1] = 2;
     heuristic.m_heuristic_values[2] = 2;

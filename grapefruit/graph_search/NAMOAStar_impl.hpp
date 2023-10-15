@@ -252,8 +252,8 @@ namespace GraphSearch {
                 continue;
             }
             
-            const auto& children = graph_copy.getChildren(curr_node);
-            const auto& outgoing_edges = graph_copy.getOutgoingEdges(curr_node);
+            const auto& children = graph_copy.children(curr_node);
+            const auto& outgoing_edges = graph_copy.outgoingEdges(curr_node);
             for (uint32_t i=0; i<children.size(); ++i) {
                 //LOG("   child: " << children[i]);
                 //LOG("   edge: " << edgeToStr(outgoing_edges[i]));

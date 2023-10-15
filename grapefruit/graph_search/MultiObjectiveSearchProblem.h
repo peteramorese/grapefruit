@@ -105,16 +105,16 @@ namespace GraphSearch {
             // Extension methods
             inline const std::vector<node_t>& neighbors(Node node) const {
                 if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
-                    return m_graph->getChildren(node);
+                    return m_graph->children(node);
                 else 
-                    return m_graph->getParents(node);
+                    return m_graph->parents(node);
             }
 
             inline const std::vector<edge_t>& neighborEdges(Node node) const {
                 if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
-                    return m_graph->getOutgoingEdges(node);
+                    return m_graph->outgoingEdges(node);
                 else
-                    return m_graph->getIncomingEdges(node);
+                    return m_graph->incomingEdges(node);
             }
 
             // Termination goal node
@@ -122,11 +122,11 @@ namespace GraphSearch {
 
             // Quantative methods
             inline COST_VECTOR_T gScore(const Node& src_node, const Node& dst_node, const COST_VECTOR_T& parent_g_score, const edge_t& edge) const {return parent_g_score + m_edgeToCostVector(edge);}
-            COST_VECTOR_T hScore(const Node& node) const {return heuristic.operator()(node);}
+            COST_VECTOR_T hScore(const Node& node) const {return heuristic->operator()(node);}
 
             // Member variables
             std::set<Node> initial_node_set;
-            HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
+            std::shared_ptr<HEURISTIC_T> heuristic = std::shared_ptr<HEURISTIC_T>(); // assumes default ctor
 
         public:
             typedef COST_VECTOR_T(*edgeToCostVectorFunction)(const edge_t&);

@@ -53,7 +53,7 @@ int main() {
     MOQuantitativeGraphSearchProblem<Graph<Edge>, Containers::FixedArray<2, uint32_t>, SearchDirection::Forward, MyHeuristic> astar_problem(graph, {0}, {3}, &Edge::edgeToCostVector);
 
     // Manually insert heuristic values (i.e. integer min number of edges to goal):
-    MyHeuristic& heuristic = astar_problem.heuristic;
+    MyHeuristic& heuristic = *astar_problem.heuristic;
     heuristic.m_heuristic_values[0] = {{0, 2}};
     heuristic.m_heuristic_values[1] = {{0, 1}};
     heuristic.m_heuristic_values[2] = {{1, 1}};

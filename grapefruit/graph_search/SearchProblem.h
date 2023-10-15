@@ -95,16 +95,16 @@ namespace GraphSearch {
             // Extension methods
             inline const std::vector<typename EXPLICIT_GRAPH_T::node_t>& neighbors(Node node) const {
                 if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
-                    return m_graph->getChildren(node);
+                    return m_graph->children(node);
                 else 
-                    return m_graph->getParents(node);
+                    return m_graph->parents(node);
             }
 
             inline const std::vector<typename EXPLICIT_GRAPH_T::edge_t>& neighborEdges(Node node) const {
                 if constexpr (SEARCH_DIRECTION == SearchDirection::Forward)
-                    return m_graph->getOutgoingEdges(node);
+                    return m_graph->outgoingEdges(node);
                 else
-                    return m_graph->getIncomingEdges(node);
+                    return m_graph->incomingEdges(node);
             }
 
             // Termination goal node
@@ -112,26 +112,21 @@ namespace GraphSearch {
 
             // Quantative methods
             inline COST_T gScore(const Node& src_node, const Node& dst_node, const COST_T& parent_g_score, const EXPLICIT_GRAPH_T::edge_t& edge) const {return parent_g_score + static_cast<COST_T>(edge);}
-            //inline COST_T gScore(const COST_T& parent_g_score, const EXPLICIT_GRAPH_T::edge_t& edge) const {return parent_g_score + m_edgeToCost(edge);}
-            COST_T hScore(const EXPLICIT_GRAPH_T::node_t& node) const {return heuristic.operator()(node);}
+            COST_T hScore(const EXPLICIT_GRAPH_T::node_t& node) const {return heuristic->operator()(node);}
 
             // Member variables
             std::set<typename EXPLICIT_GRAPH_T::node_t> initial_node_set;
-            HEURISTIC_T heuristic = HEURISTIC_T{}; // assumes default ctor
+            std::shared_ptr<HEURISTIC_T> heuristic = std::make_shared<HEURISTIC_T>(); // assumes default ctor
 
         public:
-            //typedef COST_T(*edgeToCostFunction)(const EXPLICIT_GRAPH_T::edge_t&);
-
-            //QuantitativeGraphSearchProblem(const std::shared_ptr<EXPLICIT_GRAPH_T>& graph, const std::vector<typename EXPLICIT_GRAPH_T::node_t>& initial_node_set_, const std::set<typename EXPLICIT_GRAPH_T::node_t>& goal_node_set, edgeToCostFunction edgeToCost) 
             QuantitativeGraphSearchProblem(const std::shared_ptr<EXPLICIT_GRAPH_T>& graph, const std::set<typename EXPLICIT_GRAPH_T::node_t>& initial_node_set_, const std::set<typename EXPLICIT_GRAPH_T::node_t>& goal_node_set) 
                 : initial_node_set(initial_node_set_) 
                 , m_graph(graph)
                 , m_goal_node_set(goal_node_set)
-                //, m_edgeToCost(edgeToCost)
                 {}
 
         private:
-            const std::shared_ptr<EXPLICIT_GRAPH_T> m_graph;
+            const std::shared_ptr<const EXPLICIT_GRAPH_T> m_graph;
             std::set<typename EXPLICIT_GRAPH_T::node_t> m_goal_node_set;
             //edgeToCostFunction m_edgeToCost;
 
