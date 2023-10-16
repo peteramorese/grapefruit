@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "tools/Algorithms.h"
+#include "tools/ObjectiveContainers.h"
 
 namespace GF {
 

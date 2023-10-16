@@ -7,6 +7,7 @@
 #include "core/TransitionSystem.h"
 #include "core/Graph.h"
 #include "tools/Serializer.h"
+#include "tools/ObjectiveContainers.h"
 
 #include "graph_search/SearchProblem.h"
 

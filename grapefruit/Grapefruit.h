@@ -2,6 +2,7 @@
 
 // Tools
 #include "tools/Containers.h"
+#include "tools/ObjectiveContainers.h"
 #include "tools/ArgParser.h"
 #include "tools/Algorithms.h"
 #include "tools/Debug.h"
