@@ -111,8 +111,8 @@ namespace GraphSearch {
             virtual inline bool goal(const Node& node) const {return m_goal_node_set.contains(node);}
 
             // Quantative methods
-            inline COST_T gScore(const Node& src_node, const Node& dst_node, const COST_T& parent_g_score, const EXPLICIT_GRAPH_T::edge_t& edge) const {return parent_g_score + static_cast<COST_T>(edge);}
-            COST_T hScore(const EXPLICIT_GRAPH_T::node_t& node) const {return heuristic->operator()(node);}
+            inline COST_T gScore(const Node& src_node, const Node& dst_node, const COST_T& parent_g_score, const typename EXPLICIT_GRAPH_T::edge_t& edge) const {return parent_g_score + static_cast<COST_T>(edge);}
+            COST_T hScore(const typename EXPLICIT_GRAPH_T::node_t& node) const {return heuristic->operator()(node);}
 
             // Member variables
             std::set<typename EXPLICIT_GRAPH_T::node_t> initial_node_set;
