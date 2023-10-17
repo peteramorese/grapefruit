@@ -21,7 +21,7 @@ namespace GraphSearch {
         // If custom edge storage type is used with explicit search, assert that the outgoingEdges method is explicit (returns a persistent const reference)
         constexpr bool _PTR_EDGE_STORAGE_TYPE = !std::is_same<EDGE_STORAGE_T, EDGE_T>::value;
         if constexpr (_PTR_EDGE_STORAGE_TYPE) {
-            using _EDGE_CONTAINER_T = typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighborEdges)(SEARCH_PROBLEM_T, NODE_T)>::type;
+            using _EDGE_CONTAINER_T = std::invoke_result_t<decltype(&SEARCH_PROBLEM_T::neighborEdges), SEARCH_PROBLEM_T, NODE_T>;
             constexpr bool _IS_EXPLICIT = std::is_reference<_EDGE_CONTAINER_T>();
             static_assert(_IS_EXPLICIT, "Must use explicit graph construction with non-default EDGE_STORAGE_T");
             static_assert(std::is_same<EDGE_STORAGE_T, const EDGE_T*>::value, "EDGE_STORAGE_T must be a persistent const COST_T pointer");
@@ -74,8 +74,11 @@ namespace GraphSearch {
             }
             
             // If neighbors() and outgoingEdges() return a persistent const reference, do not copy, otherwise do copy
-            typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighbors)(SEARCH_PROBLEM_T, NODE_T)>::type neighbors = problem.neighbors(curr_node);
-            typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighborEdges)(SEARCH_PROBLEM_T, NODE_T)>::type to_neighbor_edges = problem.neighborEdges(curr_node);
+            //typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighbors)(SEARCH_PROBLEM_T, NODE_T)>::type neighbors = problem.neighbors(curr_node);
+            //typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighborEdges)(SEARCH_PROBLEM_T, NODE_T)>::type to_neighbor_edges = problem.neighborEdges(curr_node);
+            auto neighbors = std::invoke_result_t<decltype(&SEARCH_PROBLEM_T::neighbors), SEARCH_PROBLEM_T, NODE_T>(problem, curr_node);
+            auto to_neighbor_edges = std::invoke_result_t<decltype(&SEARCH_PROBLEM_T::neighborEdges), SEARCH_PROBLEM_T, NODE_T>(problem, curr_node);
+
             ASSERT(neighbors.size() == to_neighbor_edges.size(), "Number of neighbors does not match the number of outgoing edges");
 
 
