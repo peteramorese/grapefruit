@@ -76,10 +76,10 @@ namespace GraphSearch {
             // If neighbors() and outgoingEdges() return a persistent const reference, do not copy, otherwise do copy
             //typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighbors)(SEARCH_PROBLEM_T, NODE_T)>::type neighbors = problem.neighbors(curr_node);
             //typename std::result_of<decltype(&SEARCH_PROBLEM_T::neighborEdges)(SEARCH_PROBLEM_T, NODE_T)>::type to_neighbor_edges = problem.neighborEdges(curr_node);
-            //auto neighbors = std::invoke_result_t<decltype(&SEARCH_PROBLEM_T::neighbors), SEARCH_PROBLEM_T, NODE_T>(problem, curr_node);
-            //auto to_neighbor_edges = std::invoke_result_t<decltype(&SEARCH_PROBLEM_T::neighborEdges), SEARCH_PROBLEM_T, NODE_T>(problem, curr_node);
-            auto neighbors = std::invoke_result_t<decltype(&SEARCH_PROBLEM_T::neighbors), SEARCH_PROBLEM_T, NODE_T>::type(problem, curr_node);
-            auto to_neighbor_edges = std::invoke_result_t<decltype(&SEARCH_PROBLEM_T::neighborEdges), SEARCH_PROBLEM_T, NODE_T>::type(problem, curr_node);
+            std::invoke_result_t<decltype(&SEARCH_PROBLEM_T::neighbors), SEARCH_PROBLEM_T, NODE_T> neighbors = problem.neighbors(curr_node);
+            std::invoke_result_t<decltype(&SEARCH_PROBLEM_T::neighborEdges), SEARCH_PROBLEM_T, NODE_T> to_neighbor_edges = problem.neighborEdges(curr_node);
+            //auto neighbors = std::invoke_result_t<decltype(&SEARCH_PROBLEM_T::neighbors), SEARCH_PROBLEM_T, NODE_T>::type(problem, curr_node);
+            //auto to_neighbor_edges = std::invoke_result_t<decltype(&SEARCH_PROBLEM_T::neighborEdges), SEARCH_PROBLEM_T, NODE_T>::type(problem, curr_node);
 
             ASSERT(neighbors.size() == to_neighbor_edges.size(), "Number of neighbors does not match the number of outgoing edges");
 
