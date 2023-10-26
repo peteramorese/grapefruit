@@ -31,7 +31,12 @@ namespace DiscreteModel {
                 if (!(src_state == dst_state)) {
                     for (auto& cond : props.conditions) {
                         if (cond.evaluate(src_state, dst_state)) {
-                            ts->Graph<TransitionSystemLabel>::connect(state_ind, ts->m_node_container.tryInsert(dst_state).first, TransitionSystemLabel(cond.getActionCost(), cond.getActionLabel()));
+                            Node dst = ts->m_node_container.tryInsert(dst_state).first;
+                            if (props.deterministic_action_labels) {
+                                ts->Graph<TransitionSystemLabel>::connect(state_ind, dst, TransitionSystemLabel(cond.getActionCost(), getDeterministicActionLabel(cond.getActionLabel(), dst)));
+                            } else {
+                                ts->Graph<TransitionSystemLabel>::connect(state_ind, dst, TransitionSystemLabel(cond.getActionCost(), cond.getActionLabel()));
+                            }
                         }
                     }
                 }
@@ -40,6 +45,10 @@ namespace DiscreteModel {
         }
         ts->addAlphabet(props.alphabet);
         return ts;
+    }
+
+    std::string TransitionSystemGenerator::getDeterministicActionLabel(const Action& action, Node dst) {
+        return action + "_" + std::to_string(dst);
     }
 
     // TransitionSystem

@@ -151,7 +151,7 @@ namespace DiscreteModel {
 		std::vector<Condition> propositions;
 		std::vector<TransitionCondition> conditions;
 		State init_state;
-		bool global_unique_actions = true;
+		bool deterministic_action_labels = true;
 		FormalMethods::Alphabet alphabet;
 		std::shared_ptr<StateSpace> ss;
 	};
@@ -159,6 +159,8 @@ namespace DiscreteModel {
 	class TransitionSystemGenerator {
 		public:
 			static std::shared_ptr<TransitionSystem> generate(TransitionSystemProperties& specs);
+		private:
+			static std::string getDeterministicActionLabel(const Action& action, Node dst);
 	};
 } // namespace DiscreteModel
 } // namespace GF
