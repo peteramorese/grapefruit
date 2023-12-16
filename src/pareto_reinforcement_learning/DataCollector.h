@@ -45,9 +45,17 @@ class DataCollector {
                     ASSERT(m_regret.second, "Cannot access regret data for unfinished instance");
                     return m_regret.first;
                 }
+
+                float getBias() const {
+                    ASSERT(static_cast<bool>(m_super->m_regret_handler), "No regret handler was given");
+                    ASSERT(m_regret.second, "Cannot access regret data for unfinished instance");
+                    return m_bias;
+                }
             private:
                 void setRegret(float regret) {m_regret = {regret, true};}
+                void setBias(float bias) {m_bias = bias;}
                 std::pair<float, bool> m_regret = {0.0f, false};
+                float m_bias;
                 
                 DataCollector* m_super;
                 friend class DataCollector;
@@ -90,6 +98,7 @@ class DataCollector {
             if (m_regret_handler) {
                 SymbolicProductGraph::node_t starting_node = m_buffer_instance.paths[0].node_path[0]; // first node of the first path
                 m_buffer_instance.setRegret(m_regret_handler->getRegret(starting_node, m_buffer_instance.cost_sample));
+                m_buffer_instance.setBias(m_regret_handler->getBias(starting_node, m_buffer_instance.trajectory_distributions));
             }
 
             // Move the buffer instance into the instance array and reset the buffer
@@ -176,6 +185,9 @@ class DataCollector {
                 // Cumulative Regret
                 cumulative_regret += instance_regret;
                 out << YAML::Key << "Cumulative Regret" << YAML::Value << cumulative_regret;
+
+                // Bias
+                out << YAML::Key << "Bias" << YAML::Value << instance.getBias();
 
                 out << YAML::EndMap;
             }

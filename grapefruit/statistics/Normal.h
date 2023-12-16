@@ -141,9 +141,6 @@ template <std::size_t N>
 inline static const Eigen::Matrix<float, N, 1>& E(const Distributions::FixedMultivariateNormal<N>& p) {return p.mu;}
 template <std::size_t N>
 inline static const Eigen::Matrix<float, N, N>& var(const Distributions::FixedMultivariateNormal<N>& p) {return p.Sigma;}
-//inline static Distributions::MultivariateNormal convolve(const Distributions::MultivariateNormal& lhs, const Distributions::MultivariateNormal& rhs) {
-//    return Distributions::Normal(lhs.mu + rhs.mu, lhs.covariance + rhs.covariance);
-//}
 
 } // namespace Stats
 } // namespace GF

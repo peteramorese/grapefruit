@@ -59,4 +59,5 @@
 #include "statistics/NormalGamma.h"
 #include "statistics/NormalInverseWishart.h"
 #include "statistics/Random.h"
+#include "statistics/StatisticalDistance.h"
 #include "statistics/StatTools.h"
