@@ -53,7 +53,7 @@ class DataCollector {
                 }
             private:
                 void setRegret(float regret) {m_regret = {regret, true};}
-                void setBias(float bias) {m_bias = bias;}
+                void setBias(float bias) {LOG("bias: " << bias); m_bias = bias;}
                 std::pair<float, bool> m_regret = {0.0f, false};
                 float m_bias;
                 
