@@ -87,7 +87,8 @@ class Learner {
 
                 float info_gain;
                 float efe = GaussianEFE<N>::calculate(traj_updaters, p_ev, m_n_efe_samples, &info_gain);
-                LOG("-> efe: " << efe << " (info gain: " << info_gain << ")");
+                if (m_verbose)
+                    LOG("-> efe: " << efe << " (info gain: " << info_gain << ")");
                 if (i > 0) {
                     if (efe < min_efe) {
                         min_efe = efe;
@@ -121,11 +122,11 @@ class Learner {
         bool run(const PreferenceDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_instances, Selector selector) {
             ASSERT(m_initialized, "Must initialize before running");
             m_num_instances = 0;
-            LOG("running " << max_instances << " instances");
             while (m_num_instances < max_instances) {
                 SearchResult result = plan(m_behavior_handler->getCompletedTasksHorizon());
                 if (!result.success) {
-                    ERROR("Planner did not succeed!");
+                    if (m_verbose)
+                        ERROR("Planner did not succeed!");
                     return false;
                 }
                 log("Selection Phase (2)");
@@ -224,7 +225,8 @@ class Learner {
         void initialize(const GF::DiscreteModel::State& init_state) {
             GF::Containers::SizedArray<GF::Node> init_aut_nodes(m_product->rank() - 1);
             for (uint32_t i=0; i<init_aut_nodes.size(); ++i) init_aut_nodes[i] = *(m_product->getAutomaton(i).getInitStates().begin());
-            LOG("Init model state: " <<  m_product->getModel().getGenericNodeContainer()[init_state]);
+            if (m_verbose)
+                LOG("Init model state: " <<  m_product->getModel().getGenericNodeContainer()[init_state]);
             m_current_product_node = m_product->getWrappedNode(m_product->getModel().getGenericNodeContainer()[init_state], init_aut_nodes);
             m_initialized = true;
         }

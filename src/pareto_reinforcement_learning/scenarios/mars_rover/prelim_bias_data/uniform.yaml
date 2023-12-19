@@ -1,0 +1,178 @@
+Trials: 3
+Trial 0:
+  PRL Preference Mean:
+    - 100
+    - 10
+  PRL Preference Covariance:
+    - 100
+    - 10
+    - 30
+  Instances: 5
+  Instance 0:
+    Sample:
+      - 101.251785
+      - 6.62155104
+    Regret: 0.989041805
+    Cumulative Regret: 0.989041805
+    Coverage Bias: 535.063904
+    Containment Bias: 470.727203
+    Total Bias: 1005.79114
+    Worst outlier Bias: 484.307617
+  Instance 1:
+    Sample:
+      - 137.111969
+      - 10.3964939
+    Regret: 4.78654432
+    Cumulative Regret: 5.77558613
+    Coverage Bias: 285.277893
+    Containment Bias: 228.532471
+    Total Bias: 513.810364
+    Worst outlier Bias: 228.532471
+  Instance 2:
+    Sample:
+      - 942.793091
+      - 77.5847855
+    Regret: 71.9748383
+    Cumulative Regret: 77.7504272
+    Coverage Bias: 52.7189102
+    Containment Bias: 51.8831787
+    Total Bias: 104.602089
+    Worst outlier Bias: 51.8831787
+  Instance 3:
+    Sample:
+      - 238.980759
+      - 21.5937958
+    Regret: 15.9838467
+    Cumulative Regret: 93.7342758
+    Coverage Bias: 116.432281
+    Containment Bias: 91.4581146
+    Total Bias: 207.890396
+    Worst outlier Bias: 91.4581146
+  Instance 4:
+    Sample:
+      - 458.709473
+      - 41.1507187
+    Regret: 35.5407677
+    Cumulative Regret: 129.27504
+    Coverage Bias: 31.5849571
+    Containment Bias: 26.0866966
+    Total Bias: 57.6716537
+    Worst outlier Bias: 26.0866966
+Trial 1:
+  PRL Preference Mean:
+    - 100
+    - 10
+  PRL Preference Covariance:
+    - 100
+    - 10
+    - 30
+  Instances: 5
+  Instance 0:
+    Sample:
+      - 167.591354
+      - 14.8034773
+    Regret: 4.05757046
+    Cumulative Regret: 4.05757046
+    Coverage Bias: 801.386292
+    Containment Bias: 694.565247
+    Total Bias: 1495.95154
+    Worst outlier Bias: 736.814514
+  Instance 1:
+    Sample:
+      - 437.284607
+      - 42.9642792
+    Regret: 33.1436081
+    Cumulative Regret: 37.2011795
+    Coverage Bias: 241.993103
+    Containment Bias: 209.198608
+    Total Bias: 451.191711
+    Worst outlier Bias: 209.198608
+  Instance 2:
+    Sample:
+      - 520.852539
+      - 52.621933
+    Regret: 42.8012619
+    Cumulative Regret: 80.0024414
+    Coverage Bias: 147.123581
+    Containment Bias: 125.189003
+    Total Bias: 272.312592
+    Worst outlier Bias: 125.189003
+  Instance 3:
+    Sample:
+      - 491.720032
+      - 45.2728577
+    Regret: 35.4521866
+    Cumulative Regret: 115.454628
+    Coverage Bias: 159.609116
+    Containment Bias: 136.90802
+    Total Bias: 296.517151
+    Worst outlier Bias: 136.90802
+  Instance 4:
+    Sample:
+      - 327.050781
+      - 29.9151573
+    Regret: 20.0944881
+    Cumulative Regret: 135.549118
+    Coverage Bias: 212.735229
+    Containment Bias: 183.783157
+    Total Bias: 396.518372
+    Worst outlier Bias: 183.783157
+Trial 2:
+  PRL Preference Mean:
+    - 100
+    - 10
+  PRL Preference Covariance:
+    - 100
+    - 10
+    - 30
+  Instances: 5
+  Instance 0:
+    Sample:
+      - 150.675446
+      - 14.6364317
+    Regret: 4.57529068
+    Cumulative Regret: 4.57529068
+    Coverage Bias: 706.500793
+    Containment Bias: 718.387146
+    Total Bias: 1424.88794
+    Worst outlier Bias: 768.924805
+  Instance 1:
+    Sample:
+      - 432.116669
+      - 36.527092
+    Regret: 23.2442932
+    Cumulative Regret: 27.8195839
+    Coverage Bias: 436.884644
+    Containment Bias: 294.592377
+    Total Bias: 731.477051
+    Worst outlier Bias: 294.592377
+  Instance 2:
+    Sample:
+      - 786.044556
+      - 79.3615952
+    Regret: 59.6723709
+    Cumulative Regret: 87.4919586
+    Coverage Bias: 378.589935
+    Containment Bias: 236.924026
+    Total Bias: 615.513977
+    Worst outlier Bias: 236.924026
+  Instance 3:
+    Sample:
+      - 297.487396
+      - 27.219593
+    Regret: 13.9367943
+    Cumulative Regret: 101.428757
+    Coverage Bias: 508.546692
+    Containment Bias: 349.528076
+    Total Bias: 858.074768
+    Worst outlier Bias: 349.528076
+  Instance 4:
+    Sample:
+      - 270.085785
+      - 27.2857933
+    Regret: 14.0029945
+    Cumulative Regret: 115.431747
+    Coverage Bias: 464.741669
+    Containment Bias: 317.704742
+    Total Bias: 782.446411
+    Worst outlier Bias: 317.704742

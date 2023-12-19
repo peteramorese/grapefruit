@@ -74,6 +74,9 @@ int main(int argc, char* argv[]) {
 	uint32_t trial = 0;
 	while (trial < n_trials.get()) {
 
+		// For easy to read log files
+		std::cout << "Trial: " << trial + 1 << "/" << n_trials.get() << "\n";
+
 		auto targets = RandomGridWorldGenerator<N>::generate(props, dfas, confidence.get());
 		
 		std::shared_ptr<Regret<SymbolicGraph, N>> regret_handler = std::make_shared<Regret<SymbolicGraph, N>>(targets.product, targets.true_behavior);

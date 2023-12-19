@@ -7,6 +7,12 @@
 
 namespace PRL {
 
+struct Biases {
+    float coverage = 0.0f;
+    float containment = 0.0f;
+    float worst_outlier = 0.0f;
+};
+
 template <class SYMBOLIC_GRAPH_T, uint64_t N>
 class Regret {
     public:
@@ -19,6 +25,7 @@ class Regret {
 
         using Plan = GF::Planner::Plan<SearchProblem<N, TrueBehavior<SYMBOLIC_GRAPH_T, N>>>;
 
+
     public:
         Regret(const std::shared_ptr<SYMBOLIC_GRAPH_T>& product, const std::shared_ptr<TrueBehavior<SYMBOLIC_GRAPH_T, N>>& true_behavior)
             : m_product(product)
@@ -29,14 +36,18 @@ class Regret {
             return queryCache(starting_node)->second.pf.regret(sample);
         }
 
-        float getBias(SYMBOLIC_GRAPH_T::node_t starting_node, const std::vector<GF::Stats::Distributions::FixedMultivariateNormal<N>>& candidate_plan_distributions) {
+        Biases getBias(SYMBOLIC_GRAPH_T::node_t starting_node, const std::vector<GF::Stats::Distributions::FixedMultivariateNormal<N>>& candidate_plan_distributions) {
             const SearchResult& result = queryCache(starting_node)->second;
 
-            // Calculate the bias
-            float bias = 0.0f;
+            // Calculate the bias types
+            Biases biases;
 
             ASSERT(result.solution_set.size() == result.pf.size(), "Corrupted search result (pf size does not match solution set size)");
+            
+            // Forward bias (coverage)
             auto pf_it = result.pf.begin();
+            std::vector<GF::Stats::Distributions::FixedMultivariateNormal<N>> true_plan_dists;
+            true_plan_dists.reserve(result.solution_set.size());
             for (const auto& path_soln : result.solution_set) {
                 // Calculate the true Pareto point distribution
 
@@ -51,7 +62,7 @@ class Regret {
                     ++state_it;
                 }
 
-                float min_kld = -1.0;
+                float min_kld = -1.0f;
                 for (const auto& candidate_dist : candidate_plan_distributions) {
                     float kld = GF::Stats::KLD(true_plan_dist, candidate_dist);
                     if (kld < min_kld || min_kld < 0.0f) {
@@ -59,10 +70,28 @@ class Regret {
                     }
                 }
 
-                bias += min_kld;
+                biases.coverage += min_kld;
+                true_plan_dists.push_back(std::move(true_plan_dist));
             }
+            biases.coverage /= static_cast<float>(result.solution_set.size());
 
-            return bias / static_cast<float>(result.solution_set.size());
+            // Backward bias (containment)
+            for (const auto& candidate_dist : candidate_plan_distributions) {
+                float min_kld = -1.0f;
+                for (const auto& true_plan_dist : true_plan_dists) {
+                    float kld = GF::Stats::KLD(true_plan_dist, candidate_dist);
+                    if (kld < min_kld || min_kld < 0.0f) {
+                        min_kld = kld;
+                    }
+                }
+                biases.containment += min_kld;
+                // Calclulate the worse outlier
+                if (min_kld > biases.worst_outlier)
+                    biases.worst_outlier = min_kld;
+            }
+            biases.containment /= static_cast<float>(candidate_plan_distributions.size());
+
+            return biases;
         }
 
     private:

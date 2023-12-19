@@ -46,16 +46,16 @@ class DataCollector {
                     return m_regret.first;
                 }
 
-                float getBias() const {
+                Biases getBiases() const {
                     ASSERT(static_cast<bool>(m_super->m_regret_handler), "No regret handler was given");
                     ASSERT(m_regret.second, "Cannot access regret data for unfinished instance");
-                    return m_bias;
+                    return m_biases;
                 }
             private:
                 void setRegret(float regret) {m_regret = {regret, true};}
-                void setBias(float bias) {LOG("bias: " << bias); m_bias = bias;}
+                void setBias(const Biases biases) {m_biases = biases;}
                 std::pair<float, bool> m_regret = {0.0f, false};
-                float m_bias;
+                Biases m_biases;
                 
                 DataCollector* m_super;
                 friend class DataCollector;
@@ -135,8 +135,6 @@ class DataCollector {
             out << YAML::Key << "Instances" << YAML::Value << m_instances.size();
 
 
-            LOG("Serializing " << m_instances.size() << " instances");
-
             float cumulative_regret = 0.0f;
 
             for (uint32_t i = 0; i < m_instances.size(); ++i) {
@@ -186,8 +184,12 @@ class DataCollector {
                 cumulative_regret += instance_regret;
                 out << YAML::Key << "Cumulative Regret" << YAML::Value << cumulative_regret;
 
-                // Bias
-                out << YAML::Key << "Bias" << YAML::Value << instance.getBias();
+                // Biases
+                Biases biases = instance.getBiases();
+                out << YAML::Key << "Coverage Bias" << YAML::Value << biases.coverage;
+                out << YAML::Key << "Containment Bias" << YAML::Value << biases.containment;
+                out << YAML::Key << "Total Bias" << YAML::Value << biases.coverage + biases.containment;
+                out << YAML::Key << "Worst outlier Bias" << YAML::Value << biases.worst_outlier;
 
                 out << YAML::EndMap;
             }
