@@ -32,8 +32,10 @@ class PRLRegret:
         self._n_trials = None
 
     def deserialize_data_set(self, filepath, label = None, color = visualize_config["default_color"], cumulative_regret = True):
+        print("Loading data file...")
         with open(filepath, "r") as f:
             data = yaml.safe_load(f)
+        print("Done.")
         self._data_sets.append({
             "data": data,
             "label": label,
@@ -41,49 +43,52 @@ class PRLRegret:
             "cumulative": cumulative_regret
             })
         if "Trials" in data.keys():
-            data_set_trials = list()
+            trials_data = list()
             self._n_trials = data["Trials"]
             for trial in range(self._n_trials):
-                data_set_trials.append(self._create_data_set(data["Trial " + str(trial)], label, color, cumulative_regret))
-            self._data_sets_avg.append(self._average_data_across_trials(data_set_trials))
+                print("Parsing trial ", trial + 1, "/", self._n_trials)
+                trials_data.append(self._create_data_set(data["Trial " + str(trial)], label, color, cumulative_regret))
+            self._data_sets_avg.append(self._average_data_across_trials(trials_data))
         else:
             self._data_sets_avg.append(self._create_data_set(data, label, color, cumulative_regret))
 
     def _create_data_set(self, raw_data, label, color, cumulative_regret):
         data_set = {
-            "data": [],
+            "data": np.zeros((5, raw_data["Instances"])),
             "label": label,
             "color": color,
             "cumulative": cumulative_regret
         }
-        regret_values = list()
         for inst in range(0, raw_data["Instances"]):
             instance_key = "Instance " + str(inst)
             try:
                 instance_data = raw_data[instance_key]
             except ValueError:
-                print(instance_key," not found in animation file")
-            regret_values.append(instance_data["Cumulative Regret" if cumulative_regret else "Regret"])
-        data_set["data"] = regret_values
+                print(instance_key," not found in data file")
+            data_set["data"][0][inst] = instance_data["Cumulative Regret" if cumulative_regret else "Regret"]
+            data_set["data"][1][inst] = instance_data["Coverage Bias"]
+            data_set["data"][2][inst] = instance_data["Containment Bias"]
+            data_set["data"][3][inst] = instance_data["Total Bias"]
+            data_set["data"][4][inst] = instance_data["Worst outlier Bias"]
         return data_set
 
-    def _average_data_across_trials(self, data_set_trials : list):
-        n_instances = len(data_set_trials[0]["data"])
-        instance_data = [list() for _ in data_set_trials[0]["data"]]
-        for data_set in data_set_trials:
+    def _average_data_across_trials(self, trials_data : list):
+        n_instances = len(trials_data[0]["data"])
+        instance_data = [list() for _ in trials_data[0]["data"]]
+        #instance_data = np.zeros((5, len(trials_data[0]["data"])))
+        for data_set in trials_data:
             data = data_set["data"]
             assert len(data) == n_instances 
             for i in range(n_instances):
-                instance_data[i].append(data[i])
+                instance_data[i].append(data[:, i])
         return {
             "mean": [np.mean(data) for data in instance_data],
             "std": [np.std(data) for data in instance_data],
-            "label": data_set_trials[0]["label"],
-            "color": data_set_trials[0]["color"],
-            "cumulative": data_set_trials[0]["cumulative"]
+            "label": trials_data[0]["label"],
+            "color": trials_data[0]["color"],
+            "cumulative": trials_data[0]["cumulative"]
         }
             
-
     def sketch_data_set(self, data_set : dict, ax = None, start_instance = None, end_instance = None):
         if not ax:
             ax = plt.gca()
@@ -129,7 +134,7 @@ class PRLRegret:
                 if regret > x_max:
                     x_max = regret
                 instance_cumulative_regrets.append(regret)
-                #data_set_trials.append(self._create_data_set(data["Trial " + str(trial)], label, color, cumulative_regret))
+                #trials_data.append(self._create_data_set(data["Trial " + str(trial)], label, color, cumulative_regret))
             ax.hist(instance_cumulative_regrets, bins=n_bins, color=data_set["color"])
             ax.set_title(data_set["label"])
         for ax in axs:
