@@ -25,17 +25,64 @@ visualize_config = {
     "legend_fontsize": 10
 }
 
+benchmark_fields = [
+    "Regret",
+    "Cumulative Regret",
+    "Coverage Bias",
+    "Containment Bias",
+    "Total Bias",
+    "Worst outlier Bias",
+]
+
+class DataSet:
+    def __init__(self, filepath, label, color):
+        print("Loading data file...")
+        with open(filepath, "r") as f:
+            raw_data = yaml.safe_load(f)
+        print("Done.")
+        self.n_trials = raw_data["Trials"]
+        assert self.n_trials > 0
+        self.n_instances = raw_data["Trial 0"]["Instances"]
+        self.label = label
+        self.color = color
+        
+        self.data = np.zeros((self.n_instances, self.n_trials, len(benchmark_fields)))
+        self.avg_data = None 
+        for trial in range(self.n_trials):
+            print("Parsing trial ", trial + 1, "/", self.n_trials)
+            trial_key = "Trial " + str(trial)
+            try:
+                trial_data = raw_data[trial_key]
+            except ValueError:
+                print(trial_key," not found in data file")
+            
+            for instance in range(self.n_instances):
+                instance_key = "Instance " + str(instance)
+                try:
+                    instance_data = trial_data[instance_key]
+                except ValueError:
+                    print(instance_key," not found in data file")
+
+                for idx, benchmark_field in enumerate(benchmark_fields):
+                    self.data[instance][trial][idx] = instance_data[benchmark_field]
+        
+
+    def get_avg_data(self, benchmark_field : str):
+        if self.avg_data is None:
+            self.avg_data = np.mean(self.data, axis=1)
+        for idx, field in enumerate(benchmark_fields):
+            if field == benchmark_field:
+                return self.avg_data[:, idx]
+
+            
+
 class PRLRegret:
     def __init__(self):
         self._data_sets = list()
         self._data_sets_avg = list()
         self._n_trials = None
 
-    def deserialize_data_set(self, filepath, label = None, color = visualize_config["default_color"], cumulative_regret = True):
-        print("Loading data file...")
-        with open(filepath, "r") as f:
-            data = yaml.safe_load(f)
-        print("Done.")
+    def deserialize(self, filepath, label = None, color = visualize_config["default_color"]):
         self._data_sets.append({
             "data": data,
             "label": label,
