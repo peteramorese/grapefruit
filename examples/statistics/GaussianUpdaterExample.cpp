@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
 	GF::Argument<std::string> sample_filepath = parser.parse<std::string>("sample-filepath", "Filepath to write samples to for visualization");
     bool mv = parser.parse<void>("mv", "Multivariate test").has();
 
-    if (parser.enableHelp()) return 0;
+    parser.enableHelp();
 
     if (!mv) {
         GaussianUpdater upd(0.0f, 0.0f, 3, 1.0f);
@@ -55,6 +55,9 @@ int main(int argc, char** argv) {
                 LOG("Estimated normal distribution: \n-mean: \n" << E(estimate) << "\n-variance: \n" << var(estimate) << "\n");
             }
         }
+
+        PRINT_NAMED("True normal distribution", "\n-mean: \n" << E(mv_true_dist) << "\n-variance: \n" << var(mv_true_dist) << "\n");
+
 
         if (sample_filepath.has()) {
             LOG("writing...");
