@@ -122,7 +122,8 @@ class PRLDecisionInstanceViewer:
             self.instance_distributions.append(instance)
 
             # Add bias values
-            self.bias_values[inst] = instance_data["Total Bias"]
+            self.bias_values[inst] = instance_data["Cumulative Bias"]
+            #self.bias_values[inst] = instance_data["Total Bias"]
         
         assert len(self.instance_distributions) == trial_data["Instances"]
 
@@ -199,6 +200,7 @@ class PRLDecisionInstanceViewer:
             ax = plt.gca()
 
         ax.plot(self.bias_values[:instance], ls="-", color="blue")
+        ax.set_title("Bias: " + str(self.bias_values[instance]))
 
 if __name__ == "__main__":
     parser =  argparse.ArgumentParser()

@@ -1,5 +1,6 @@
 # Ignore build directory
 build/
+logs/
 spot_automaton_file_dump/dfas/
 **/__pycache__/
 *.swp
