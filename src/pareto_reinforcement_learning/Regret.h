@@ -36,15 +36,10 @@ class Regret {
             return queryCache(starting_node)->second.pf.regret(sample);
         }
 
-        Biases getBias(SYMBOLIC_GRAPH_T::node_t starting_node, const std::vector<GF::Stats::Distributions::FixedMultivariateNormal<N>>& candidate_plan_distributions) {
+        std::vector<GF::Stats::Distributions::FixedMultivariateNormal<N>> getTruePlanDistributions(SYMBOLIC_GRAPH_T::node_t starting_node) {
             const SearchResult& result = queryCache(starting_node)->second;
-
-            // Calculate the bias types
-            Biases biases;
-
             ASSERT(result.solution_set.size() == result.pf.size(), "Corrupted search result (pf size does not match solution set size)");
             
-            // Forward bias (coverage)
             auto pf_it = result.pf.begin();
             std::vector<GF::Stats::Distributions::FixedMultivariateNormal<N>> true_plan_dists;
             true_plan_dists.reserve(result.solution_set.size());
@@ -61,10 +56,23 @@ class Regret {
                     true_plan_dist.convolveWith(true_state_action_dist);
                     ++state_it;
                 }
+                true_plan_dists.push_back(std::move(true_plan_dist));
+            }
+            return true_plan_dists;
+        }
+
+        Biases getBias(SYMBOLIC_GRAPH_T::node_t starting_node, const std::vector<GF::Stats::Distributions::FixedMultivariateNormal<N>>& candidate_plan_distributions) {
+            // Calculate the bias types
+            Biases biases;
+
+            // Forward bias (coverage)
+            std::vector<GF::Stats::Distributions::FixedMultivariateNormal<N>> true_plan_dists = getTruePlanDistributions(starting_node);
+            for (const auto& true_plan_dist : true_plan_dists) {
 
                 float min_kld = -1.0f;
                 for (const auto& candidate_dist : candidate_plan_distributions) {
-                    float kld = GF::Stats::KLD(true_plan_dist, candidate_dist);
+                    //float kld = GF::Stats::KLD(true_plan_dist, candidate_dist);
+                    float kld = (true_plan_dist.mu - candidate_dist.mu).norm();
                     if (kld < min_kld || min_kld < 0.0f) {
                         min_kld = kld;
                     }
@@ -73,13 +81,15 @@ class Regret {
                 biases.coverage += min_kld;
                 true_plan_dists.push_back(std::move(true_plan_dist));
             }
-            biases.coverage /= static_cast<float>(result.solution_set.size());
+            LOG("True pf size: " << true_plan_dists.size());
+            biases.coverage /= static_cast<float>(true_plan_dists.size());
 
             // Backward bias (containment)
             for (const auto& candidate_dist : candidate_plan_distributions) {
                 float min_kld = -1.0f;
                 for (const auto& true_plan_dist : true_plan_dists) {
-                    float kld = GF::Stats::KLD(true_plan_dist, candidate_dist);
+                    //float kld = GF::Stats::KLD(true_plan_dist, candidate_dist);
+                    float kld = (true_plan_dist.mu - candidate_dist.mu).norm();
                     if (kld < min_kld || min_kld < 0.0f) {
                         min_kld = kld;
                     }
@@ -89,8 +99,10 @@ class Regret {
                 if (min_kld > biases.worst_outlier)
                     biases.worst_outlier = min_kld;
             }
+            LOG("Estimate pf size: " << candidate_plan_distributions.size());
             biases.containment /= static_cast<float>(candidate_plan_distributions.size());
 
+            LOG(" - Total bias: " << biases.containment + biases.coverage);
             return biases;
         }
 

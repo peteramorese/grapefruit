@@ -32,14 +32,16 @@ namespace PRL {
 
             CostVector getCostVector(const TaskHistoryNode<GF::WideNode>& src_node, const TaskHistoryNode<GF::WideNode>& dst_node, const GF::DiscreteModel::Action& action) {
                 GF::Node src_model_node = m_product->getUnwrappedNode(src_node.base_node).ts_node;
-                return this->getElement(src_model_node, action).getRectifiedUCBVector(m_state_visits);
+                //return this->getElement(src_model_node, action).getRectifiedUCBVector(m_state_visits);
+                return this->getElement(src_model_node, action).getRectifiedUCBVector(m_state_visits[src_model_node]);
             }
 
             inline const std::shared_ptr<SYMBOLIC_GRAPH_T>& getProduct() const {return m_product;}
 
             void visit(const TaskHistoryNode<GF::WideNode>& node, const GF::DiscreteModel::Action& action, const CostVector& sample) {
                 GF::Node src_model_node = m_product->getUnwrappedNode(node.base_node).ts_node;
-                ++m_state_visits;
+                //++m_state_visits;
+                ++m_state_visits[src_model_node];
                 this->getElement(src_model_node, action).pull(sample);
             }
 
@@ -75,7 +77,9 @@ namespace PRL {
         private:
             std::shared_ptr<SYMBOLIC_GRAPH_T> m_product;
             uint8_t m_completed_tasks_horizon = 1;
-            uint32_t m_state_visits = 0;
+            //uint32_t m_state_visits = 0;
+
+            std::map<GF::Node, uint32_t> m_state_visits;
     };
 
 }

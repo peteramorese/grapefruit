@@ -17,24 +17,29 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
     def __init__(self):
         super().__init__()
 
-    def deserialize_data_set(self, filepath, label = None, color = None):
+    def deserialize_data_set(self, filepath, trial = 0, label = None, color = None):
         with open(filepath, "r") as f:
             data = yaml.safe_load(f)
+
+        trial_key = "Trial " + str(trial)
+        trial_data = data[trial_key]
+        
         samples = {
             "Objective 0": [],
             "Objective 1": [],
         }
+        samples = np.zeros((2, data["Instances"]))
         for inst in range(0, data["Instances"]):
             instance_key = "Instance " + str(inst)
             try:
-                instance_data = data[instance_key]
+                instance_data = trial_data[instance_key]
             except ValueError:
                 print(instance_key," not found in animation file")
             samples["Objective 0"].append(instance_data["Sample"][0])
             samples["Objective 1"].append(instance_data["Sample"][1])
         self.add_data_set(samples, label, color)
-        self._data["PRL Preference Mean"] = data["PRL Preference Mean"]
-        self._data["PRL Preference Covariance"] = data["PRL Preference Covariance"]
+        self._data["PRL Preference Mean"] = trial_data["PRL Preference Mean"]
+        self._data["PRL Preference Covariance"] = trial_data["PRL Preference Covariance"]
         self._organize_data_sets()
         #super().deserialize(filepath)
         #mu = self._data["PRL Preference Mean"]
@@ -114,7 +119,7 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
     #    return ax
 
 if __name__ == "__main__":
-    parser =  argparse.ArgumentParser()
+    parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--filepath", help="Specify a filepath to the pareto-front file")
     parser.add_argument("-m", "--minimal-filepath", help="Specify a filepath to the minimal data file")
     parser.add_argument("--filepaths", nargs='+', help="Specify multiple filepaths to the each data file")

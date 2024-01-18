@@ -37,6 +37,7 @@ class DataCollector {
                 std::vector<PathSolution> paths;
                 GF::ParetoFront<typename SearchProblem<N, BehaviorHandlerType>::cost_t> ucb_pf;
                 std::vector<TrajectoryDistribution> trajectory_distributions;
+                std::vector<TrajectoryDistribution> true_trajectory_distributions;
                 uint32_t selected_plan_index = 0;
                 GF::Containers::FixedArray<N, float> cost_sample;
 
@@ -99,6 +100,7 @@ class DataCollector {
                 SymbolicProductGraph::node_t starting_node = m_buffer_instance.paths[0].node_path[0]; // first node of the first path
                 m_buffer_instance.setRegret(m_regret_handler->getRegret(starting_node, m_buffer_instance.cost_sample));
                 m_buffer_instance.setBias(m_regret_handler->getBias(starting_node, m_buffer_instance.trajectory_distributions));
+                m_buffer_instance.true_trajectory_distributions = m_regret_handler->getTruePlanDistributions(starting_node);
             }
 
             // Move the buffer instance into the instance array and reset the buffer
@@ -136,6 +138,7 @@ class DataCollector {
 
 
             float cumulative_regret = 0.0f;
+            float cumulative_bias = 0.0f;
 
             for (uint32_t i = 0; i < m_instances.size(); ++i) {
                 const Instance& instance = m_instances[i];
@@ -155,11 +158,11 @@ class DataCollector {
                         Plan plan(instance.paths[i], instance.ucb_pf[i], m_product, true);
                         plan.serialize(szr, title);
 
-                        out << YAML::Key << "Plan Mean Mean" << YAML::Value << YAML::BeginSeq;
+                        out << YAML::Key << "Plan Mean" << YAML::Value << YAML::BeginSeq;
                         out << instance.trajectory_distributions[i].mu(0) << instance.trajectory_distributions[i].mu(1);
                         out << YAML::EndSeq;
 
-                        out << YAML::Key << "Plan Mean Covariance" << YAML::Value << YAML::BeginSeq;
+                        out << YAML::Key << "Plan Covariance" << YAML::Value << YAML::BeginSeq;
                         out << instance.trajectory_distributions[i].Sigma(0, 0) << instance.trajectory_distributions[i].Sigma(0, 1) << instance.trajectory_distributions[i].Sigma(1, 1);
                         out << YAML::EndSeq;
 
@@ -170,6 +173,21 @@ class DataCollector {
                         out << YAML::EndMap;
                     }
 
+                    for (uint32_t i = 0; i < instance.true_trajectory_distributions.size(); ++i) {
+                        std::string title = "True Plan " + std::to_string(i);
+                        out << YAML::Key << title << YAML::Value << YAML::BeginMap;
+
+                        out << YAML::Key << "True Plan Mean" << YAML::Value << YAML::BeginSeq;
+                        out << instance.true_trajectory_distributions[i].mu(0) << instance.true_trajectory_distributions[i].mu(1);
+                        out << YAML::EndSeq;
+
+                        out << YAML::Key << "True Plan Covariance" << YAML::Value << YAML::BeginSeq;
+                        out << instance.true_trajectory_distributions[i].Sigma(0, 0) << instance.true_trajectory_distributions[i].Sigma(0, 1) << instance.true_trajectory_distributions[i].Sigma(1, 1);
+                        out << YAML::EndSeq;
+
+                        out << YAML::EndMap;
+                        
+                    }
                 }
 
                 // Cumulative cost sample for the chosen plan
@@ -188,7 +206,12 @@ class DataCollector {
                 Biases biases = instance.getBiases();
                 out << YAML::Key << "Coverage Bias" << YAML::Value << biases.coverage;
                 out << YAML::Key << "Containment Bias" << YAML::Value << biases.containment;
-                out << YAML::Key << "Total Bias" << YAML::Value << biases.coverage + biases.containment;
+                
+                float total_bias = biases.coverage + biases.containment;
+                out << YAML::Key << "Total Bias" << YAML::Value << total_bias;
+                cumulative_bias += total_bias;
+                out << YAML::Key << "Cumulative Bias" << YAML::Value << cumulative_bias;
+
                 out << YAML::Key << "Worst outlier Bias" << YAML::Value << biases.worst_outlier;
 
                 out << YAML::EndMap;

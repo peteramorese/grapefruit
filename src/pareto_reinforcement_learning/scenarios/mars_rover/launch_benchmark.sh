@@ -1,6 +1,6 @@
-n_instances=5
-n_trials=3
-data_directory=prelim_bias_data
+n_instances=50
+n_trials=5
+data_directory=small_benchmark
 
 mkdir -p $data_directory
 mkdir -p logs

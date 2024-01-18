@@ -108,7 +108,7 @@ class RandomGridWorldGenerator {
 
             // Randomly make obstacles
             for (uint32_t i = 0; i < random_model_props.n_obstacle_cells; ++i) {
-                uint32_t wrapped_cell = GF::RNG::randi(1, n_cells);
+                uint32_t wrapped_cell = GF::RNG::srandi(1, n_cells);
                 for (uint32_t i = wrapped_cell; i < n_cells; ++i) {
                     if (!occupied[i]) {
                         occupied[i] = true;
@@ -124,7 +124,7 @@ class RandomGridWorldGenerator {
             // Randomly make proposition regions
             for (const auto& region_spec : random_model_props.region_specs) {
                 for (uint32_t i = 0; i < region_spec.n_cells; ++i) {
-                    uint32_t wrapped_cell = GF::RNG::randi(1, n_cells);
+                    uint32_t wrapped_cell = GF::RNG::srandi(1, n_cells);
                     for (uint32_t i = wrapped_cell; i < n_cells; ++i) {
                         if (!occupied[i]) {
                             occupied[i] = true;

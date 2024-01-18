@@ -1,0 +1,7901 @@
+Trials: 1
+Trial 0:
+  PRL Preference Mean:
+    - 76
+    - 10
+  PRL Preference Covariance:
+    - 50
+    - 10
+    - 70
+  Instances: 20
+  Instance 0:
+    Chosen Plan: Candidate Plan 0
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x0, y19
+        - x1, y19
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 93.5999527
+        - 85.7999344
+      Plan Covariance:
+        - 26.0000114
+        - 0
+        - 26.0000114
+      Plan Pareto UCB:
+        - 93.5999527
+        - 85.7999344
+    True Plan 0:
+      True Plan Mean:
+        - 67.399971
+        - 1.13999927
+      True Plan Covariance:
+        - 7.56880283
+        - 0
+        - 0.00020200001
+    True Plan 1:
+      True Plan Mean:
+        - 73.2000046
+        - 0.939999402
+      True Plan Covariance:
+        - 5.76439762
+        - 0
+        - 0.00013799993
+    True Plan 2:
+      True Plan Mean:
+        - 83
+        - 0.779999554
+      True Plan Covariance:
+        - 4.11999846
+        - 0
+        - 7.80000191e-05
+    Sample:
+      - 86.9494858
+      - 0.78895992
+    Regret: 0.00896036625
+    Cumulative Regret: 0.00896036625
+    Coverage Bias: 43.5961723
+    Containment Bias: 85.6781693
+    Total Bias: 129.274338
+    Cumulative Bias: 129.274338
+    Worst outlier Bias: 85.6781693
+  Instance 1:
+    Chosen Plan: Candidate Plan 1
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 88.3674393
+        - 47.6741943
+      Plan Covariance:
+        - 21.3983746
+        - 2.07982397
+        - 31.4876518
+      Plan Pareto UCB:
+        - 82.2714844
+        - 41.5781975
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 92.8155289
+        - 46.5853348
+      Plan Covariance:
+        - 26.3165226
+        - 0.869135737
+        - 31.6173859
+      Plan Pareto UCB:
+        - 86.7807922
+        - 40.5505676
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 86.453476
+      - 0.790938735
+    Regret: 0
+    Cumulative Regret: 0.00896036625
+    Coverage Bias: 23.8064213
+    Containment Bias: 46.7212982
+    Total Bias: 70.5277176
+    Cumulative Bias: 199.802063
+    Worst outlier Bias: 46.9949989
+  Instance 2:
+    Chosen Plan: Candidate Plan 3
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x4, y19
+        - x3, y19
+        - x2, y19
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 85.3596039
+        - 34.9512138
+      Plan Covariance:
+        - 18.2547626
+        - 2.34919834
+        - 28.6840401
+      Plan Pareto UCB:
+        - 79.8162384
+        - 29.4078808
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x4, y19
+        - x3, y19
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 85.3756104
+        - 34.2240944
+      Plan Covariance:
+        - 18.130394
+        - 2.34568286
+        - 28.7093182
+      Plan Pareto UCB:
+        - 79.8798218
+        - 28.7283382
+    Candidate Plan 2:
+      Title: Candidate Plan 2
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 85.282608
+        - 32.0460167
+      Plan Covariance:
+        - 17.7813358
+        - 2.36601901
+        - 28.7837219
+      Plan Pareto UCB:
+        - 79.9295502
+        - 26.6929932
+    Candidate Plan 3:
+      Title: Candidate Plan 3
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 90.5174789
+        - 30.5935249
+      Plan Covariance:
+        - 22.5349731
+        - 1.22563696
+        - 28.8335152
+      Plan Pareto UCB:
+        - 85.2595825
+        - 25.335659
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 89.2072067
+      - 0.8056615
+    Regret: 0.00566196442
+    Cumulative Regret: 0.0146223307
+    Coverage Bias: 15.8319979
+    Containment Bias: 32.2816811
+    Total Bias: 48.113678
+    Cumulative Bias: 247.915741
+    Worst outlier Bias: 34.1531067
+  Instance 3:
+    Chosen Plan: Candidate Plan 2
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x4, y19
+        - x3, y19
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 83.6303024
+        - 27.0513191
+      Plan Covariance:
+        - 15.8292189
+        - 2.26708722
+        - 25.4779739
+      Plan Pareto UCB:
+        - 78.6212311
+        - 22.0422249
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 83.5585632
+        - 24.5994473
+      Plan Covariance:
+        - 15.3800364
+        - 2.28015184
+        - 25.4232826
+      Plan Pareto UCB:
+        - 78.7249756
+        - 19.765871
+    Candidate Plan 2:
+      Title: Candidate Plan 2
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 90.1884232
+        - 22.9648819
+      Plan Covariance:
+        - 21.2500286
+        - 1.07582009
+        - 25.3868179
+      Plan Pareto UCB:
+        - 85.4718552
+        - 18.2483139
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 86.0021362
+      - 0.796384156
+    Regret: 0
+    Cumulative Regret: 0.0146223307
+    Coverage Bias: 12.0453386
+    Containment Bias: 24.2980442
+    Total Bias: 36.3433838
+    Cumulative Bias: 284.259125
+    Worst outlier Bias: 26.2870293
+  Instance 4:
+    Chosen Plan: Candidate Plan 1
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 82.4962006
+        - 20.2018776
+      Plan Covariance:
+        - 13.6723757
+        - 2.11827755
+        - 22.5468674
+      Plan Pareto UCB:
+        - 78.042923
+        - 15.7486162
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 89.3432083
+        - 18.4585533
+      Plan Covariance:
+        - 18.8657684
+        - 1.05208683
+        - 22.4372711
+      Plan Pareto UCB:
+        - 85.0226364
+        - 14.1380205
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 87.9649124
+      - 0.800069928
+    Regret: 7.03930855e-05
+    Cumulative Regret: 0.0146927238
+    Coverage Bias: 9.78907108
+    Containment Bias: 18.8337822
+    Total Bias: 28.6228523
+    Cumulative Bias: 312.881989
+    Worst outlier Bias: 19.4827385
+  Instance 5:
+    Chosen Plan: Candidate Plan 1
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 81.6501465
+        - 17.2953777
+      Plan Covariance:
+        - 12.4563036
+        - 1.96965432
+        - 20.1895733
+      Plan Pareto UCB:
+        - 77.4899292
+        - 13.135169
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 89.0896683
+        - 15.4790659
+      Plan Covariance:
+        - 17.7436771
+        - 0.95544523
+        - 20.0203323
+      Plan Pareto UCB:
+        - 85.0742645
+        - 11.4636784
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 91.3150787
+      - 0.790561795
+    Regret: 0
+    Cumulative Regret: 0.0146927238
+    Coverage Bias: 8.30055141
+    Containment Bias: 15.8583364
+    Total Bias: 24.1588879
+    Cumulative Bias: 337.040863
+    Worst outlier Bias: 16.47855
+  Instance 6:
+    Chosen Plan: Candidate Plan 1
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 81.4843292
+        - 15.2283821
+      Plan Covariance:
+        - 11.4495792
+        - 1.76828361
+        - 18.2575531
+      Plan Pareto UCB:
+        - 77.558815
+        - 11.302906
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 89.4186859
+        - 13.3600025
+      Plan Covariance:
+        - 16.6658936
+        - 0.806599081
+        - 18.0393677
+      Plan Pareto UCB:
+        - 85.6476974
+        - 9.58905697
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 90.9455719
+      - 0.79317224
+    Regret: 0
+    Cumulative Regret: 0.0146927238
+    Coverage Bias: 7.31938314
+    Containment Bias: 13.8625927
+    Total Bias: 21.1819763
+    Cumulative Bias: 358.222839
+    Worst outlier Bias: 14.4105902
+  Instance 7:
+    Chosen Plan: Candidate Plan 1
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 81.1749802
+        - 13.6836529
+      Plan Covariance:
+        - 10.7072525
+        - 1.6237371
+        - 16.6571045
+      Plan Pareto UCB:
+        - 77.4431076
+        - 9.95177174
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 89.6129227
+        - 11.776186
+      Plan Covariance:
+        - 16.0464935
+        - 0.703091621
+        - 16.3983498
+      Plan Pareto UCB:
+        - 86.0436249
+        - 8.20689774
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 94.0262299
+      - 0.817438602
+    Regret: 0.0174390674
+    Cumulative Regret: 0.0321317911
+    Coverage Bias: 6.57491541
+    Containment Bias: 12.3713093
+    Total Bias: 18.9462242
+    Cumulative Bias: 377.169067
+    Worst outlier Bias: 12.8364973
+  Instance 8:
+    Chosen Plan: Candidate Plan 1
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 81.3107376
+        - 12.4875336
+      Plan Covariance:
+        - 9.99092865
+        - 1.46147823
+        - 15.3143768
+      Plan Pareto UCB:
+        - 77.7421722
+        - 8.91896534
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 90.1068649
+        - 10.5498943
+      Plan Covariance:
+        - 15.2420006
+        - 0.589126289
+        - 15.0215187
+      Plan Pareto UCB:
+        - 86.7077408
+        - 7.15076876
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 90.018837
+      - 0.811053455
+    Regret: 0.0110539198
+    Cumulative Regret: 0.0431857109
+    Coverage Bias: 6.07830954
+    Containment Bias: 11.3431139
+    Total Bias: 17.421423
+    Cumulative Bias: 394.590485
+    Worst outlier Bias: 11.679842
+  Instance 9:
+    Chosen Plan: Candidate Plan 0
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 81.1377487
+        - 11.5316553
+      Plan Covariance:
+        - 9.45692539
+        - 1.35524213
+        - 14.1748028
+      Plan Pareto UCB:
+        - 77.7094345
+        - 8.10334969
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 90.0909271
+        - 9.56996822
+      Plan Covariance:
+        - 14.7061052
+        - 0.541627526
+        - 13.8529606
+      Plan Pareto UCB:
+        - 86.8379822
+        - 6.31703091
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 86.9479523
+      - 0.804875612
+    Regret: 0.00487607718
+    Cumulative Regret: 0.0480617881
+    Coverage Bias: 5.62615585
+    Containment Bias: 10.4244747
+    Total Bias: 16.0506306
+    Cumulative Bias: 410.641113
+    Worst outlier Bias: 10.7084408
+  Instance 10:
+    Chosen Plan: Candidate Plan 0
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 84.4021225
+        - 9.66139317
+      Plan Covariance:
+        - 14.2159595
+        - 0.347290099
+        - 13.3264132
+      Plan Pareto UCB:
+        - 81.1717377
+        - 6.43103361
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 90.014534
+        - 8.78837681
+      Plan Covariance:
+        - 14.3183498
+        - 0.442975879
+        - 12.8749361
+      Plan Pareto UCB:
+        - 86.8852158
+        - 5.65907192
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 86.5926437
+      - 0.788622916
+    Regret: 0
+    Cumulative Regret: 0.0480617881
+    Coverage Bias: 5.4774437
+    Containment Bias: 9.1566925
+    Total Bias: 14.6341362
+    Cumulative Bias: 425.275238
+    Worst outlier Bias: 9.43184566
+  Instance 11:
+    Chosen Plan: Candidate Plan 0
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 84.9349823
+        - 8.64628124
+      Plan Covariance:
+        - 12.9973364
+        - 0.332548767
+        - 12.3986034
+      Plan Pareto UCB:
+        - 81.8467331
+        - 5.55805016
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 90.0818634
+        - 8.13649559
+      Plan Covariance:
+        - 13.9027624
+        - 0.347388148
+        - 12.0272264
+      Plan Pareto UCB:
+        - 87.0615921
+        - 5.11624813
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 84.5904236
+      - 0.806867242
+    Regret: 0
+    Cumulative Regret: 0.0480617881
+    Coverage Bias: 5.18903685
+    Containment Bias: 8.3856039
+    Total Bias: 13.5746403
+    Cumulative Bias: 438.849884
+    Worst outlier Bias: 8.92465687
+  Instance 12:
+    Chosen Plan: Candidate Plan 0
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 85.0509872
+        - 7.91525841
+      Plan Covariance:
+        - 11.9674721
+        - 0.361748308
+        - 11.5703096
+      Plan Pareto UCB:
+        - 82.0797958
+        - 4.94403934
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 89.9886627
+        - 7.58668613
+      Plan Covariance:
+        - 13.5697336
+        - 0.276608586
+        - 11.2854614
+      Plan Pareto UCB:
+        - 87.0656281
+        - 4.66362047
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 85.1831512
+      - 0.807738185
+    Regret: 0.00773864985
+    Cumulative Regret: 0.0558004379
+    Coverage Bias: 4.93692589
+    Containment Bias: 7.76918936
+    Total Bias: 12.7061157
+    Cumulative Bias: 451.556
+    Worst outlier Bias: 8.42293739
+  Instance 13:
+    Chosen Plan: Candidate Plan 0
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 85.1756668
+        - 7.33526325
+      Plan Covariance:
+        - 11.1583805
+        - 0.373121798
+        - 10.8433313
+      Plan Pareto UCB:
+        - 82.3054123
+        - 4.46501684
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 89.9350128
+        - 7.11608076
+      Plan Covariance:
+        - 13.2641249
+        - 0.212002739
+        - 10.6313391
+      Plan Pareto UCB:
+        - 87.0992966
+        - 4.28035688
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 84.4816055
+      - 0.801500976
+    Regret: 0
+    Cumulative Regret: 0.0558004379
+    Coverage Bias: 4.75409889
+    Containment Bias: 7.27653027
+    Total Bias: 12.0306292
+    Cumulative Bias: 463.586639
+    Worst outlier Bias: 8.01543713
+  Instance 14:
+    Chosen Plan: Candidate Plan 0
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 85.2513428
+        - 6.85410023
+      Plan Covariance:
+        - 10.6897097
+        - 0.374149948
+        - 10.2028952
+      Plan Pareto UCB:
+        - 82.4703598
+        - 4.07308245
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 89.8025818
+        - 6.70818424
+      Plan Covariance:
+        - 12.9744511
+        - 0.160167828
+        - 10.0504417
+      Plan Pareto UCB:
+        - 87.04599
+        - 3.95154834
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 87.3439484
+      - 0.801210225
+    Regret: 0.00121068954
+    Cumulative Regret: 0.0570111275
+    Coverage Bias: 4.60165167
+    Containment Bias: 6.8366065
+    Total Bias: 11.4382582
+    Cumulative Bias: 475.024902
+    Worst outlier Bias: 7.61389732
+  Instance 15:
+    Chosen Plan: Candidate Plan 0
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 85.4024811
+        - 6.44541311
+      Plan Covariance:
+        - 10.0529985
+        - 0.375187486
+        - 9.63466549
+      Plan Pareto UCB:
+        - 82.7014771
+        - 3.74441195
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 89.9147491
+        - 6.351192
+      Plan Covariance:
+        - 12.7352476
+        - 0.0992715359
+        - 9.53122902
+      Plan Pareto UCB:
+        - 87.2301636
+        - 3.66662884
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 84.799057
+      - 0.783847094
+    Regret: 0
+    Cumulative Regret: 0.0570111275
+    Coverage Bias: 4.50201178
+    Containment Bias: 6.53697586
+    Total Bias: 11.0389881
+    Cumulative Bias: 486.063904
+    Worst outlier Bias: 7.41420889
+  Instance 16:
+    Chosen Plan: Candidate Plan 0
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 85.3173676
+        - 6.0906086
+      Plan Covariance:
+        - 9.58104134
+        - 0.390689582
+        - 9.12740326
+      Plan Pareto UCB:
+        - 82.6889114
+        - 3.46211648
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 89.9175873
+        - 6.03548431
+      Plan Covariance:
+        - 12.5637054
+        - 0.0513690412
+        - 9.06451416
+      Plan Pareto UCB:
+        - 87.2990875
+        - 3.41697598
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 81.0950546
+      - 0.805154324
+    Regret: 0
+    Cumulative Regret: 0.0570111275
+    Coverage Bias: 4.35673332
+    Containment Bias: 6.24147129
+    Total Bias: 10.5982046
+    Cumulative Bias: 496.662109
+    Worst outlier Bias: 7.18282413
+  Instance 17:
+    Chosen Plan: Candidate Plan 0
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 85.097168
+        - 5.78094053
+      Plan Covariance:
+        - 9.18323135
+        - 0.401205301
+        - 8.67138481
+      Plan Pareto UCB:
+        - 82.5349121
+        - 3.21867704
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 89.6670837
+        - 5.75610924
+      Plan Covariance:
+        - 12.4267454
+        - 0.0217561536
+        - 8.64255714
+      Plan Pareto UCB:
+        - 87.1094208
+        - 3.19844031
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 83.7294388
+      - 0.81891036
+    Regret: 0
+    Cumulative Regret: 0.0570111275
+    Coverage Bias: 4.18930149
+    Containment Bias: 5.89479065
+    Total Bias: 10.0840921
+    Cumulative Bias: 506.746216
+    Worst outlier Bias: 6.80769348
+  Instance 18:
+    Chosen Plan: Candidate Plan 0
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 85.0043259
+        - 5.50746536
+      Plan Covariance:
+        - 8.84867191
+        - 0.404060483
+        - 8.25920582
+      Plan Pareto UCB:
+        - 82.5029373
+        - 3.00608659
+    Candidate Plan 1:
+      Title: Candidate Plan 1
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - left
+        - up
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x20, y8
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 89.6181793
+        - 5.50705338
+      Plan Covariance:
+        - 12.2971716
+        - -0.0155615574
+        - 8.25927925
+      Plan Pareto UCB:
+        - 87.1167755
+        - 3.0056746
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 81.9382553
+      - 0.803373992
+    Regret: 0
+    Cumulative Regret: 0.0570111275
+    Coverage Bias: 4.07240915
+    Containment Bias: 5.65085125
+    Total Bias: 9.72326088
+    Cumulative Bias: 516.469482
+    Worst outlier Bias: 6.59423494
+  Instance 19:
+    Chosen Plan: Candidate Plan 0
+    Candidate Plan 0:
+      Title: Candidate Plan 0
+      Action Sequence:
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - down
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+        - right
+        - right
+        - right
+        - down
+        - down
+        - down
+        - up
+        - left
+        - left
+        - up
+        - left
+        - up
+        - up
+        - up
+        - up
+        - right
+        - right
+        - right
+        - up
+        - up
+        - up
+        - up
+        - up
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - left
+        - down
+        - left
+        - left
+        - left
+        - down
+        - down
+        - down
+      State Sequence:
+        - x2, y15
+        - x2, y16
+        - x2, y17
+        - x2, y18
+        - x2, y19
+        - x3, y19
+        - x4, y19
+        - x5, y19
+        - x6, y19
+        - x7, y19
+        - x8, y19
+        - x9, y19
+        - x10, y19
+        - x11, y19
+        - x12, y19
+        - x13, y19
+        - x14, y19
+        - x15, y19
+        - x16, y19
+        - x17, y19
+        - x18, y19
+        - x19, y19
+        - x20, y19
+        - x21, y19
+        - x21, y18
+        - x21, y17
+        - x21, y16
+        - x21, y15
+        - x21, y14
+        - x20, y14
+        - x19, y14
+        - x18, y14
+        - x18, y13
+        - x18, y12
+        - x18, y11
+        - x19, y11
+        - x20, y11
+        - x21, y11
+        - x21, y10
+        - x21, y9
+        - x21, y8
+        - x21, y9
+        - x20, y9
+        - x19, y9
+        - x19, y10
+        - x18, y10
+        - x18, y11
+        - x18, y12
+        - x18, y13
+        - x18, y14
+        - x19, y14
+        - x20, y14
+        - x21, y14
+        - x21, y15
+        - x21, y16
+        - x21, y17
+        - x21, y18
+        - x21, y19
+        - x20, y19
+        - x19, y19
+        - x18, y19
+        - x17, y19
+        - x16, y19
+        - x15, y19
+        - x14, y19
+        - x13, y19
+        - x12, y19
+        - x11, y19
+        - x10, y19
+        - x9, y19
+        - x8, y19
+        - x7, y19
+        - x6, y19
+        - x5, y19
+        - x5, y18
+        - x4, y18
+        - x3, y18
+        - x2, y18
+        - x2, y17
+        - x2, y16
+        - x2, y15
+      Plan Mean:
+        - 84.8055954
+        - 5.26267862
+      Plan Covariance:
+        - 8.57210732
+        - 0.41141209
+        - 7.88486099
+      Plan Pareto UCB:
+        - 82.3604965
+        - 2.81757164
+    True Plan 0:
+      True Plan Mean:
+        - 73.3999863
+        - 1.19999921
+      True Plan Covariance:
+        - 7.8088026
+        - 0
+        - 0.000208000012
+    True Plan 1:
+      True Plan Mean:
+        - 79.1999893
+        - 0.999999344
+      True Plan Covariance:
+        - 6.00439739
+        - 0
+        - 0.000143999889
+    True Plan 2:
+      True Plan Mean:
+        - 85
+        - 0.799999535
+      True Plan Covariance:
+        - 4.19999838
+        - 0
+        - 8.00000198e-05
+    Sample:
+      - 82.9203568
+      - 0.793687403
+    Regret: 0
+    Cumulative Regret: 0.0570111275
+    Coverage Bias: 3.9361217
+    Containment Bias: 4.46691132
+    Total Bias: 8.40303326
+    Cumulative Bias: 524.872498
+    Worst outlier Bias: 4.46691132

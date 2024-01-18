@@ -1,4 +1,4 @@
-Trials: 3
+Trials: 2
 Trial 0:
   PRL Preference Mean:
     - 100
@@ -7,57 +7,407 @@ Trial 0:
     - 100
     - 10
     - 30
-  Instances: 5
+  Instances: 40
   Instance 0:
     Sample:
-      - 165.494263
-      - 17.0146904
-    Regret: 5.55317974
-    Cumulative Regret: 5.55317974
-    Coverage Bias: 638.832397
-    Containment Bias: 539.59906
-    Total Bias: 1178.4314
-    Worst outlier Bias: 576.043884
+      - 105.779503
+      - 9.22589111
+    Regret: 1.3938756
+    Cumulative Regret: 1.3938756
+    Coverage Bias: 670.187256
+    Containment Bias: 580.658508
+    Total Bias: 1250.8457
+    Worst outlier Bias: 613.794495
   Instance 1:
     Sample:
-      - 68.2661438
-      - 5.15634918
-    Regret: 3.56672144
-    Cumulative Regret: 9.11990166
-    Coverage Bias: 12.4732685
-    Containment Bias: 12.4732685
-    Total Bias: 24.946537
-    Worst outlier Bias: 12.4732685
+      - 762.444641
+      - 70.366066
+    Regret: 65.5692825
+    Cumulative Regret: 66.9631577
+    Coverage Bias: 37.3073502
+    Containment Bias: 37.3073502
+    Total Bias: 74.6147003
+    Worst outlier Bias: 37.3073502
   Instance 2:
     Sample:
-      - 714.204407
-      - 64.9824448
-    Regret: 63.3928185
-    Cumulative Regret: 72.5127182
-    Coverage Bias: 70.0361099
-    Containment Bias: 70.0361099
-    Total Bias: 140.07222
-    Worst outlier Bias: 70.0361099
+      - 686.67981
+      - 63.2476234
+    Regret: 54.0509338
+    Cumulative Regret: 121.014091
+    Coverage Bias: 53.5209885
+    Containment Bias: 48.881134
+    Total Bias: 102.402122
+    Worst outlier Bias: 48.881134
   Instance 3:
     Sample:
-      - 752.018799
-      - 81.8927994
-    Regret: 80.3031693
-    Cumulative Regret: 152.815887
-    Coverage Bias: 96.6404648
-    Containment Bias: 96.6404648
-    Total Bias: 193.28093
-    Worst outlier Bias: 96.6404648
+      - 525.2854
+      - 52.6019249
+    Regret: 43.4052353
+    Cumulative Regret: 164.419327
+    Coverage Bias: 47.2112923
+    Containment Bias: 41.3767014
+    Total Bias: 88.5879974
+    Worst outlier Bias: 41.3767014
   Instance 4:
     Sample:
-      - 278.38443
-      - 27.0119457
-    Regret: 25.4223175
-    Cumulative Regret: 178.238205
-    Coverage Bias: 24.6383343
-    Containment Bias: 24.6383343
-    Total Bias: 49.2766685
-    Worst outlier Bias: 24.6383343
+      - 649.869507
+      - 57.3316536
+    Regret: 48.134964
+    Cumulative Regret: 212.554291
+    Coverage Bias: 38.8492851
+    Containment Bias: 35.3177261
+    Total Bias: 74.1670074
+    Worst outlier Bias: 35.3177261
+  Instance 5:
+    Sample:
+      - 389.237122
+      - 37.7464638
+    Regret: 32.9496803
+    Cumulative Regret: 245.503967
+    Coverage Bias: 23.4266815
+    Containment Bias: 23.4266815
+    Total Bias: 46.853363
+    Worst outlier Bias: 23.4266815
+  Instance 6:
+    Sample:
+      - 430.063721
+      - 46.5748253
+    Regret: 41.7780418
+    Cumulative Regret: 287.282013
+    Coverage Bias: 24.8379402
+    Containment Bias: 24.8379402
+    Total Bias: 49.6758804
+    Worst outlier Bias: 24.8379402
+  Instance 7:
+    Sample:
+      - 139.945694
+      - 11.7609596
+    Regret: 6.96417665
+    Cumulative Regret: 294.246185
+    Coverage Bias: 6.85920238
+    Containment Bias: 6.85920238
+    Total Bias: 13.7184048
+    Worst outlier Bias: 6.85920238
+  Instance 8:
+    Sample:
+      - 495.075256
+      - 49.0760841
+    Regret: 44.2793007
+    Cumulative Regret: 338.525482
+    Coverage Bias: 38.6859016
+    Containment Bias: 38.6859016
+    Total Bias: 77.3718033
+    Worst outlier Bias: 38.6859016
+  Instance 9:
+    Sample:
+      - 109.025223
+      - 11.2360802
+    Regret: 6.4392972
+    Cumulative Regret: 344.964783
+    Coverage Bias: 4.99968529
+    Containment Bias: 4.99968529
+    Total Bias: 9.99937057
+    Worst outlier Bias: 4.99968529
+  Instance 10:
+    Sample:
+      - 103.021713
+      - 12.3862724
+    Regret: 7.58948946
+    Cumulative Regret: 352.55426
+    Coverage Bias: 4.84613323
+    Containment Bias: 4.84613323
+    Total Bias: 9.69226646
+    Worst outlier Bias: 4.84613323
+  Instance 11:
+    Sample:
+      - 45.7636871
+      - 5.23199081
+    Regret: 0
+    Cumulative Regret: 352.55426
+    Coverage Bias: 2.20589757
+    Containment Bias: 2.20589757
+    Total Bias: 4.41179514
+    Worst outlier Bias: 2.20589757
+  Instance 12:
+    Sample:
+      - 45.0013657
+      - 4.49031734
+    Regret: 0
+    Cumulative Regret: 352.55426
+    Coverage Bias: 2.04459047
+    Containment Bias: 2.04459047
+    Total Bias: 4.08918095
+    Worst outlier Bias: 2.04459047
+  Instance 13:
+    Sample:
+      - 63.7078743
+      - 8.42672157
+    Regret: 3.6299386
+    Cumulative Regret: 356.184204
+    Coverage Bias: 2.19775081
+    Containment Bias: 7.04930878
+    Total Bias: 9.24705982
+    Worst outlier Bias: 11.9008665
+  Instance 14:
+    Sample:
+      - 51.9521027
+      - 3.41426182
+    Regret: 0
+    Cumulative Regret: 356.184204
+    Coverage Bias: 1.89320374
+    Containment Bias: 5.47982645
+    Total Bias: 7.37303019
+    Worst outlier Bias: 9.06644917
+  Instance 15:
+    Sample:
+      - 101.155434
+      - 8.19703674
+    Regret: 3.40025377
+    Cumulative Regret: 359.584473
+    Coverage Bias: 4.28056049
+    Containment Bias: 6.8534503
+    Total Bias: 11.1340103
+    Worst outlier Bias: 9.4263401
+  Instance 16:
+    Sample:
+      - 57.3326683
+      - 4.34170771
+    Regret: 0
+    Cumulative Regret: 359.584473
+    Coverage Bias: 1.52338624
+    Containment Bias: 7.60824347
+    Total Bias: 9.13162994
+    Worst outlier Bias: 13.6931009
+  Instance 17:
+    Sample:
+      - 49.5992432
+      - 4.82000685
+    Regret: 0.023223877
+    Cumulative Regret: 359.607697
+    Coverage Bias: 1.58666623
+    Containment Bias: 6.52973747
+    Total Bias: 8.11640358
+    Worst outlier Bias: 11.4728088
+  Instance 18:
+    Sample:
+      - 162.888672
+      - 16.4134216
+    Regret: 11.6166382
+    Cumulative Regret: 371.224335
+    Coverage Bias: 13.849822
+    Containment Bias: 19.949255
+    Total Bias: 33.7990761
+    Worst outlier Bias: 29.8961258
+  Instance 19:
+    Sample:
+      - 47.5788422
+      - 4.52130556
+    Regret: 0
+    Cumulative Regret: 371.224335
+    Coverage Bias: 1.53862035
+    Containment Bias: 5.05361652
+    Total Bias: 6.592237
+    Worst outlier Bias: 11.6594105
+  Instance 20:
+    Sample:
+      - 49.6263695
+      - 5.52231932
+    Regret: 0.638366699
+    Cumulative Regret: 371.862701
+    Coverage Bias: 1.53394866
+    Containment Bias: 5.09683275
+    Total Bias: 6.63078117
+    Worst outlier Bias: 11.7922611
+  Instance 21:
+    Sample:
+      - 50.5285568
+      - 3.98019099
+    Regret: 0
+    Cumulative Regret: 371.862701
+    Coverage Bias: 1.47473168
+    Containment Bias: 11.883215
+    Total Bias: 13.3579464
+    Worst outlier Bias: 32.0731773
+  Instance 22:
+    Sample:
+      - 60.8466072
+      - 7.27943802
+    Regret: 2.48265505
+    Cumulative Regret: 374.345367
+    Coverage Bias: 1.99756241
+    Containment Bias: 15.3896284
+    Total Bias: 17.3871918
+    Worst outlier Bias: 32.0731773
+  Instance 23:
+    Sample:
+      - 146.244904
+      - 15.0092583
+    Regret: 10.2124748
+    Cumulative Regret: 384.557831
+    Coverage Bias: 12.6724663
+    Containment Bias: 24.4517765
+    Total Bias: 37.1242447
+    Worst outlier Bias: 32.0731773
+  Instance 24:
+    Sample:
+      - 50.4610367
+      - 5.0193305
+    Regret: 0.222547531
+    Cumulative Regret: 384.780365
+    Coverage Bias: 1.43518841
+    Containment Bias: 9.56059361
+    Total Bias: 10.9957819
+    Worst outlier Bias: 15.0728102
+  Instance 25:
+    Sample:
+      - 51.4570961
+      - 4.63806629
+    Regret: 0
+    Cumulative Regret: 384.780365
+    Coverage Bias: 1.39444208
+    Containment Bias: 9.60905361
+    Total Bias: 11.0034962
+    Worst outlier Bias: 15.175498
+  Instance 26:
+    Sample:
+      - 46.5769424
+      - 5.4837532
+    Regret: 0
+    Cumulative Regret: 384.780365
+    Coverage Bias: 1.36805177
+    Containment Bias: 9.67422104
+    Total Bias: 11.0422726
+    Worst outlier Bias: 15.2843704
+  Instance 27:
+    Sample:
+      - 49.3267326
+      - 4.29708147
+    Regret: 0
+    Cumulative Regret: 384.780365
+    Coverage Bias: 1.37506592
+    Containment Bias: 9.70263004
+    Total Bias: 11.0776958
+    Worst outlier Bias: 15.328434
+  Instance 28:
+    Sample:
+      - 46.9335632
+      - 5.63748598
+    Regret: 0
+    Cumulative Regret: 384.780365
+    Coverage Bias: 1.38362694
+    Containment Bias: 10.5510015
+    Total Bias: 11.9346285
+    Worst outlier Bias: 17.7791042
+  Instance 29:
+    Sample:
+      - 46.3421211
+      - 3.40561891
+    Regret: 0
+    Cumulative Regret: 384.780365
+    Coverage Bias: 1.38002396
+    Containment Bias: 10.5698786
+    Total Bias: 11.9499025
+    Worst outlier Bias: 17.7791042
+  Instance 30:
+    Sample:
+      - 140.612305
+      - 12.5445967
+    Regret: 7.7478137
+    Cumulative Regret: 392.528168
+    Coverage Bias: 12.508441
+    Containment Bias: 15.1396179
+    Total Bias: 27.6480598
+    Worst outlier Bias: 17.7791042
+  Instance 31:
+    Sample:
+      - 49.0745087
+      - 4.20238256
+    Regret: 0
+    Cumulative Regret: 392.528168
+    Coverage Bias: 1.38343477
+    Containment Bias: 6.08420467
+    Total Bias: 7.46763945
+    Worst outlier Bias: 10.5240612
+  Instance 32:
+    Sample:
+      - 47.5062256
+      - 3.71590948
+    Regret: 0
+    Cumulative Regret: 392.528168
+    Coverage Bias: 1.37404728
+    Containment Bias: 6.08265257
+    Total Bias: 7.45669985
+    Worst outlier Bias: 10.5240612
+  Instance 33:
+    Sample:
+      - 47.9787064
+      - 3.9419117
+    Regret: 0
+    Cumulative Regret: 392.528168
+    Coverage Bias: 1.38178849
+    Containment Bias: 6.07612419
+    Total Bias: 7.45791245
+    Worst outlier Bias: 10.5240612
+  Instance 34:
+    Sample:
+      - 48.5819511
+      - 4.35168123
+    Regret: 0
+    Cumulative Regret: 392.528168
+    Coverage Bias: 1.38101959
+    Containment Bias: 6.06228113
+    Total Bias: 7.44330072
+    Worst outlier Bias: 10.5240612
+  Instance 35:
+    Sample:
+      - 48.3164368
+      - 5.43434906
+    Regret: 0
+    Cumulative Regret: 392.528168
+    Coverage Bias: 1.3898747
+    Containment Bias: 6.05835485
+    Total Bias: 7.44822979
+    Worst outlier Bias: 10.5240612
+  Instance 36:
+    Sample:
+      - 47.7267227
+      - 5.27717066
+    Regret: 0
+    Cumulative Regret: 392.528168
+    Coverage Bias: 1.35990047
+    Containment Bias: 6.07503843
+    Total Bias: 7.43493891
+    Worst outlier Bias: 10.5240612
+  Instance 37:
+    Sample:
+      - 48.270195
+      - 5.99765062
+    Regret: 0
+    Cumulative Regret: 392.528168
+    Coverage Bias: 1.36652899
+    Containment Bias: 6.09271908
+    Total Bias: 7.45924807
+    Worst outlier Bias: 10.5240612
+  Instance 38:
+    Sample:
+      - 48.6872101
+      - 4.75155067
+    Regret: 0
+    Cumulative Regret: 392.528168
+    Coverage Bias: 1.3195864
+    Containment Bias: 6.09033394
+    Total Bias: 7.40992022
+    Worst outlier Bias: 10.5240612
+  Instance 39:
+    Sample:
+      - 49.0304565
+      - 4.30755806
+    Regret: 0
+    Cumulative Regret: 392.528168
+    Coverage Bias: 1.32253146
+    Containment Bias: 6.10303593
+    Total Bias: 7.42556763
+    Worst outlier Bias: 10.5240612
 Trial 1:
   PRL Preference Mean:
     - 100
@@ -66,113 +416,404 @@ Trial 1:
     - 100
     - 10
     - 30
-  Instances: 5
+  Instances: 40
   Instance 0:
     Sample:
-      - 204.362228
-      - 19.7960243
-    Regret: 7.16529751
-    Cumulative Regret: 7.16529751
-    Coverage Bias: 710.45874
-    Containment Bias: 504.127838
-    Total Bias: 1214.58655
-    Worst outlier Bias: 524.58728
+      - 141.819183
+      - 13.3165884
+    Regret: 1.84249592
+    Cumulative Regret: 1.84249592
+    Coverage Bias: 917.966736
+    Containment Bias: 866.222961
+    Total Bias: 1784.1897
+    Worst outlier Bias: 926.844666
   Instance 1:
     Sample:
-      - 812.404968
-      - 70.5003662
-    Regret: 62.1036377
-    Cumulative Regret: 69.2689362
-    Coverage Bias: 53.7803917
-    Containment Bias: 39.6270943
-    Total Bias: 93.407486
-    Worst outlier Bias: 39.6270943
+      - 689.295959
+      - 64.725708
+    Regret: 54.7923775
+    Cumulative Regret: 56.6348724
+    Coverage Bias: 91.6663818
+    Containment Bias: 68.8800049
+    Total Bias: 160.546387
+    Worst outlier Bias: 68.8800049
   Instance 2:
     Sample:
-      - 539.552734
-      - 54.843647
-    Regret: 46.4469185
-    Cumulative Regret: 115.715851
-    Coverage Bias: 70.5848694
-    Containment Bias: 42.5625076
-    Total Bias: 113.147377
-    Worst outlier Bias: 42.5625076
+      - 378.987518
+      - 36.3553429
+    Regret: 26.4220123
+    Cumulative Regret: 83.0568848
+    Coverage Bias: 225.156204
+    Containment Bias: 176.336334
+    Total Bias: 401.492554
+    Worst outlier Bias: 176.336334
   Instance 3:
     Sample:
-      - 726.555908
-      - 68.0391998
-    Regret: 53.6924782
-    Cumulative Regret: 169.408325
-    Coverage Bias: 166.223557
-    Containment Bias: 112.099052
-    Total Bias: 278.322601
-    Worst outlier Bias: 112.099052
+      - 466.686951
+      - 37.9766884
+    Regret: 28.0433578
+    Cumulative Regret: 111.100243
+    Coverage Bias: 157.611465
+    Containment Bias: 122.148758
+    Total Bias: 279.760223
+    Worst outlier Bias: 122.148758
   Instance 4:
     Sample:
-      - 149.401199
-      - 13.9666815
-    Regret: 5.56995296
-    Cumulative Regret: 174.978271
-    Coverage Bias: 197.445465
-    Containment Bias: 125.539726
-    Total Bias: 322.985199
-    Worst outlier Bias: 125.539726
-Trial 2:
-  PRL Preference Mean:
-    - 100
-    - 10
-  PRL Preference Covariance:
-    - 100
-    - 10
-    - 30
-  Instances: 5
-  Instance 0:
+      - 766.175781
+      - 73.8724518
+    Regret: 49.4405022
+    Cumulative Regret: 160.540741
+    Coverage Bias: 467.791473
+    Containment Bias: 352.25174
+    Total Bias: 820.043213
+    Worst outlier Bias: 352.25174
+  Instance 5:
     Sample:
-      - 231.296951
-      - 16.9777355
-    Regret: 3.74057674
-    Cumulative Regret: 3.74057674
-    Coverage Bias: 830.015137
-    Containment Bias: 851.451965
-    Total Bias: 1681.46704
-    Worst outlier Bias: 899.797852
-  Instance 1:
+      - 414.325592
+      - 32.8355484
+    Regret: 22.9022179
+    Cumulative Regret: 183.442963
+    Coverage Bias: 93.3038254
+    Containment Bias: 68.7345047
+    Total Bias: 162.03833
+    Worst outlier Bias: 68.7345047
+  Instance 6:
     Sample:
-      - 434.478699
-      - 35.9444656
-    Regret: 18.8677845
-    Cumulative Regret: 22.6083603
-    Coverage Bias: 597.997253
-    Containment Bias: 472.011414
-    Total Bias: 1070.00867
-    Worst outlier Bias: 472.011414
-  Instance 2:
+      - 696.246216
+      - 64.4981918
+    Regret: 54.5648613
+    Cumulative Regret: 238.007828
+    Coverage Bias: 40.8800011
+    Containment Bias: 31.6273308
+    Total Bias: 72.5073318
+    Worst outlier Bias: 31.6273308
+  Instance 7:
     Sample:
-      - 1069.62012
-      - 102.935722
-    Regret: 85.8590393
-    Cumulative Regret: 108.4674
-    Coverage Bias: 112.173737
-    Containment Bias: 85.966362
-    Total Bias: 198.140106
-    Worst outlier Bias: 85.966362
-  Instance 3:
+      - 603.867432
+      - 62.0353279
+    Regret: 52.1019974
+    Cumulative Regret: 290.109833
+    Coverage Bias: 34.6948738
+    Containment Bias: 26.5861797
+    Total Bias: 61.2810516
+    Worst outlier Bias: 26.5861797
+  Instance 8:
     Sample:
-      - 541.742126
-      - 49.9996719
-    Regret: 32.9229889
-    Cumulative Regret: 141.390381
-    Coverage Bias: 242.698471
-    Containment Bias: 184.27565
-    Total Bias: 426.974121
-    Worst outlier Bias: 184.27565
-  Instance 4:
+      - 146.894897
+      - 13.806385
+    Regret: 3.87305355
+    Cumulative Regret: 293.98288
+    Coverage Bias: 75.1404114
+    Containment Bias: 58.4812202
+    Total Bias: 133.621628
+    Worst outlier Bias: 58.4812202
+  Instance 9:
     Sample:
-      - 552.01355
-      - 55.2707558
-    Regret: 32.0164642
-    Cumulative Regret: 173.406845
-    Coverage Bias: 432.160004
-    Containment Bias: 323.597351
-    Total Bias: 755.757324
-    Worst outlier Bias: 323.597351
+      - 569.979675
+      - 52.1674805
+    Regret: 42.2341499
+    Cumulative Regret: 336.217041
+    Coverage Bias: 34.6944656
+    Containment Bias: 27.3482838
+    Total Bias: 62.0427475
+    Worst outlier Bias: 27.3482838
+  Instance 10:
+    Sample:
+      - 533.427856
+      - 52.8435593
+    Regret: 28.4116096
+    Cumulative Regret: 364.628662
+    Coverage Bias: 165.026688
+    Containment Bias: 114.297333
+    Total Bias: 279.324036
+    Worst outlier Bias: 114.297333
+  Instance 11:
+    Sample:
+      - 157.607101
+      - 16.053936
+    Regret: 6.12060452
+    Cumulative Regret: 370.749268
+    Coverage Bias: 34.0490379
+    Containment Bias: 24.8823128
+    Total Bias: 58.9313507
+    Worst outlier Bias: 24.8823128
+  Instance 12:
+    Sample:
+      - 191.630142
+      - 24.0652523
+    Regret: 14.1319208
+    Cumulative Regret: 384.881195
+    Coverage Bias: 18.4176998
+    Containment Bias: 9.68233585
+    Total Bias: 28.1000366
+    Worst outlier Bias: 9.68233585
+  Instance 13:
+    Sample:
+      - 179.422684
+      - 19.9270039
+    Regret: 9.99367237
+    Cumulative Regret: 394.874878
+    Coverage Bias: 10.7566347
+    Containment Bias: 5.69053078
+    Total Bias: 16.4471664
+    Worst outlier Bias: 5.99220276
+  Instance 14:
+    Sample:
+      - 494.154602
+      - 53.2642136
+    Regret: 28.8322639
+    Cumulative Regret: 423.707153
+    Coverage Bias: 100.90638
+    Containment Bias: 74.1529236
+    Total Bias: 175.059296
+    Worst outlier Bias: 81.6935959
+  Instance 15:
+    Sample:
+      - 155.037033
+      - 13.9482346
+    Regret: 4.01490307
+    Cumulative Regret: 427.722046
+    Coverage Bias: 8.10600758
+    Containment Bias: 7.55541992
+    Total Bias: 15.6614275
+    Worst outlier Bias: 10.3789148
+  Instance 16:
+    Sample:
+      - 287.62558
+      - 24.1143112
+    Regret: 14.1809797
+    Cumulative Regret: 441.903015
+    Coverage Bias: 10.9699755
+    Containment Bias: 6.68105841
+    Total Bias: 17.6510334
+    Worst outlier Bias: 6.82453728
+  Instance 17:
+    Sample:
+      - 251.042465
+      - 21.826004
+    Regret: 11.8926725
+    Cumulative Regret: 453.795685
+    Coverage Bias: 6.01015902
+    Containment Bias: 2.86780834
+    Total Bias: 8.87796783
+    Worst outlier Bias: 3.12601995
+  Instance 18:
+    Sample:
+      - 160.800446
+      - 17.1980076
+    Regret: 7.26467609
+    Cumulative Regret: 461.060364
+    Coverage Bias: 5.50500631
+    Containment Bias: 3.16966105
+    Total Bias: 8.67466736
+    Worst outlier Bias: 4.87902737
+  Instance 19:
+    Sample:
+      - 118.309181
+      - 15.678771
+    Regret: 0
+    Cumulative Regret: 461.060364
+    Coverage Bias: 11.0944328
+    Containment Bias: 9.39060974
+    Total Bias: 20.4850426
+    Worst outlier Bias: 13.9531651
+  Instance 20:
+    Sample:
+      - 123.949051
+      - 10.6746502
+    Regret: 0
+    Cumulative Regret: 461.060364
+    Coverage Bias: 8.86336899
+    Containment Bias: 9.76672077
+    Total Bias: 18.6300888
+    Worst outlier Bias: 13.9288139
+  Instance 21:
+    Sample:
+      - 193.668961
+      - 19.4910393
+    Regret: 9.55770779
+    Cumulative Regret: 470.618073
+    Coverage Bias: 4.83756542
+    Containment Bias: 7.71687984
+    Total Bias: 12.5544453
+    Worst outlier Bias: 13.9276657
+  Instance 22:
+    Sample:
+      - 382.404358
+      - 36.8840103
+    Regret: 12.4520607
+    Cumulative Regret: 483.070129
+    Coverage Bias: 36.7791176
+    Containment Bias: 31.1478977
+    Total Bias: 67.9270172
+    Worst outlier Bias: 43.3926926
+  Instance 23:
+    Sample:
+      - 137.243759
+      - 12.0830078
+    Regret: 1.92401791
+    Cumulative Regret: 484.994141
+    Coverage Bias: 3.09626174
+    Containment Bias: 2.33384228
+    Total Bias: 5.43010426
+    Worst outlier Bias: 3.99750257
+  Instance 24:
+    Sample:
+      - 176.099533
+      - 21.595438
+    Regret: 11.6621065
+    Cumulative Regret: 496.65625
+    Coverage Bias: 4.77030849
+    Containment Bias: 2.56156874
+    Total Bias: 7.33187723
+    Worst outlier Bias: 3.15959167
+  Instance 25:
+    Sample:
+      - 132.863388
+      - 13.7832632
+    Regret: 3.17278671
+    Cumulative Regret: 499.829041
+    Coverage Bias: 4.93055153
+    Containment Bias: 10.8404551
+    Total Bias: 15.7710066
+    Worst outlier Bias: 26.8645515
+  Instance 26:
+    Sample:
+      - 162.718536
+      - 19.1128483
+    Regret: 9.17951679
+    Cumulative Regret: 509.008545
+    Coverage Bias: 10.7482519
+    Containment Bias: 19.1687679
+    Total Bias: 29.9170189
+    Worst outlier Bias: 26.885704
+  Instance 27:
+    Sample:
+      - 145.901291
+      - 18.5649071
+    Regret: 8.43515396
+    Cumulative Regret: 517.443726
+    Coverage Bias: 3.62329483
+    Containment Bias: 11.5079594
+    Total Bias: 15.1312542
+    Worst outlier Bias: 23.8800259
+  Instance 28:
+    Sample:
+      - 431.084778
+      - 48.6906319
+    Regret: 24.2586823
+    Cumulative Regret: 541.702393
+    Coverage Bias: 34.2562828
+    Containment Bias: 22.5504799
+    Total Bias: 56.8067627
+    Worst outlier Bias: 25.1894379
+  Instance 29:
+    Sample:
+      - 120.672127
+      - 11.1915445
+    Regret: 0
+    Cumulative Regret: 541.702393
+    Coverage Bias: 2.66374993
+    Containment Bias: 3.94193268
+    Total Bias: 6.60568237
+    Worst outlier Bias: 7.42615557
+  Instance 30:
+    Sample:
+      - 149.922409
+      - 11.7942114
+    Regret: 1.8608799
+    Cumulative Regret: 543.563293
+    Coverage Bias: 2.94714284
+    Containment Bias: 4.33155918
+    Total Bias: 7.27870178
+    Worst outlier Bias: 7.42615557
+  Instance 31:
+    Sample:
+      - 131.093597
+      - 18.848484
+    Regret: 7.52753735
+    Cumulative Regret: 551.09082
+    Coverage Bias: 6.7830348
+    Containment Bias: 4.39190054
+    Total Bias: 11.1749353
+    Worst outlier Bias: 5.73870087
+  Instance 32:
+    Sample:
+      - 144.46785
+      - 17.3447609
+    Regret: 7.21500778
+    Cumulative Regret: 558.305847
+    Coverage Bias: 7.33842134
+    Containment Bias: 5.08091354
+    Total Bias: 12.4193344
+    Worst outlier Bias: 7.81467581
+  Instance 33:
+    Sample:
+      - 255.130981
+      - 23.0843735
+    Regret: 13.151042
+    Cumulative Regret: 571.456909
+    Coverage Bias: 7.74905729
+    Containment Bias: 4.74917555
+    Total Bias: 12.4982328
+    Worst outlier Bias: 5.64387512
+  Instance 34:
+    Sample:
+      - 144.798386
+      - 12.2898808
+    Regret: 2.35654926
+    Cumulative Regret: 573.813477
+    Coverage Bias: 2.72146749
+    Containment Bias: 1.81331766
+    Total Bias: 4.53478527
+    Worst outlier Bias: 3.32154536
+  Instance 35:
+    Sample:
+      - 155.19046
+      - 13.9271727
+    Regret: 3.99384117
+    Cumulative Regret: 577.807312
+    Coverage Bias: 2.81933618
+    Containment Bias: 3.20070124
+    Total Bias: 6.02003765
+    Worst outlier Bias: 6.60329056
+  Instance 36:
+    Sample:
+      - 127.745895
+      - 12.3141642
+    Regret: 1.33150578
+    Cumulative Regret: 579.138794
+    Coverage Bias: 3.22409582
+    Containment Bias: 1.97284889
+    Total Bias: 5.19694471
+    Worst outlier Bias: 5.1602869
+  Instance 37:
+    Sample:
+      - 188.513611
+      - 20.6365891
+    Regret: 10.7032576
+    Cumulative Regret: 589.842041
+    Coverage Bias: 4.43676186
+    Containment Bias: 2.54109359
+    Total Bias: 6.97785568
+    Worst outlier Bias: 5.1602869
+  Instance 38:
+    Sample:
+      - 143.951447
+      - 10.1021852
+    Regret: 0.16885376
+    Cumulative Regret: 590.010864
+    Coverage Bias: 2.00652575
+    Containment Bias: 1.81079316
+    Total Bias: 3.81731892
+    Worst outlier Bias: 3.56270647
+  Instance 39:
+    Sample:
+      - 123.758743
+      - 9.8043766
+    Regret: 0
+    Cumulative Regret: 590.010864
+    Coverage Bias: 2.46955085
+    Containment Bias: 2.79068279
+    Total Bias: 5.26023388
+    Worst outlier Bias: 10.7528534

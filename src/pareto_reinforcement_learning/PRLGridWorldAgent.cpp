@@ -45,6 +45,8 @@ int main(int argc, char* argv[]) {
 
 	parser.enableHelp();
 
+	LOG("RUNNING WITH SELECTOR: " << selector_label.get());
+	LOG("CONFIDENCE: " << confidence.get());
 	Selector selector = getSelector(selector_label.get());
 	
 	/////////////////   Transition System   /////////////////
@@ -104,10 +106,10 @@ int main(int argc, char* argv[]) {
 	std::unique_ptr<GF::Serializer> szr_ptr;
 	if (data_filepath.has()) {
 		szr_ptr.reset(new GF::Serializer(data_filepath.get()));
-		if (n_trials.get() > 1) {
-			YAML::Emitter& out = szr_ptr->get();
-			out << YAML::Key << "Trials" << YAML::Value << n_trials.get();
-		}
+		//if (n_trials.get() > 1) {
+		YAML::Emitter& out = szr_ptr->get();
+		out << YAML::Key << "Trials" << YAML::Value << n_trials.get();
+		//}
 	}
 
 	for (uint32_t trial = 0; trial < n_trials.get(); ++trial) {
@@ -157,14 +159,14 @@ int main(int argc, char* argv[]) {
 
 
 		if (data_filepath.has()) {
-			if (n_trials.get() > 1) {
+			//if (n_trials.get() > 1) {
 				YAML::Emitter& out = szr_ptr->get();
 				out << YAML::Key << "Trial " + std::to_string(trial) << YAML::Value << YAML::BeginMap;
 				data_collector->serialize(*szr_ptr, exclude_plans);
 				out << YAML::EndMap;
-			} else {
-				data_collector->serialize(*szr_ptr, exclude_plans);
-			}
+			//} else {
+			//	data_collector->serialize(*szr_ptr, exclude_plans);
+			//}
 		}
 
 	}
