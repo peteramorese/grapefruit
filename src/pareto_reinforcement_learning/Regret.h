@@ -81,7 +81,7 @@ class Regret {
                 biases.coverage += min_kld;
                 true_plan_dists.push_back(std::move(true_plan_dist));
             }
-            LOG("True pf size: " << true_plan_dists.size());
+            //LOG("True pf size: " << true_plan_dists.size());
             biases.coverage /= static_cast<float>(true_plan_dists.size());
 
             // Backward bias (containment)
@@ -99,10 +99,10 @@ class Regret {
                 if (min_kld > biases.worst_outlier)
                     biases.worst_outlier = min_kld;
             }
-            LOG("Estimate pf size: " << candidate_plan_distributions.size());
+            //LOG("Estimate pf size: " << candidate_plan_distributions.size());
             biases.containment /= static_cast<float>(candidate_plan_distributions.size());
 
-            LOG(" - Total bias: " << biases.containment + biases.coverage);
+            //LOG(" - Total bias: " << biases.containment + biases.coverage);
             return biases;
         }
 
