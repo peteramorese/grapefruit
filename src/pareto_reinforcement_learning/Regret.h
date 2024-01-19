@@ -71,8 +71,8 @@ class Regret {
 
                 float min_kld = -1.0f;
                 for (const auto& candidate_dist : candidate_plan_distributions) {
-                    //float kld = GF::Stats::KLD(true_plan_dist, candidate_dist);
-                    float kld = (true_plan_dist.mu - candidate_dist.mu).norm();
+                    float kld = GF::Stats::KLD(true_plan_dist, candidate_dist);
+                    //float kld = (true_plan_dist.mu - candidate_dist.mu).norm();
                     if (kld < min_kld || min_kld < 0.0f) {
                         min_kld = kld;
                     }
@@ -88,8 +88,8 @@ class Regret {
             for (const auto& candidate_dist : candidate_plan_distributions) {
                 float min_kld = -1.0f;
                 for (const auto& true_plan_dist : true_plan_dists) {
-                    //float kld = GF::Stats::KLD(true_plan_dist, candidate_dist);
-                    float kld = (true_plan_dist.mu - candidate_dist.mu).norm();
+                    float kld = GF::Stats::KLD(true_plan_dist, candidate_dist);
+                    //float kld = (true_plan_dist.mu - candidate_dist.mu).norm();
                     if (kld < min_kld || min_kld < 0.0f) {
                         min_kld = kld;
                     }

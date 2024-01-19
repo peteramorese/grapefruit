@@ -156,7 +156,7 @@ class DataCollector {
                         std::string title = "Candidate Plan " + std::to_string(i);
                         out << YAML::Key << title << YAML::Value << YAML::BeginMap;
                         Plan plan(instance.paths[i], instance.ucb_pf[i], m_product, true);
-                        plan.serialize(szr, title);
+                        //plan.serialize(szr, title);
 
                         out << YAML::Key << "Plan Mean" << YAML::Value << YAML::BeginSeq;
                         out << instance.trajectory_distributions[i].mu(0) << instance.trajectory_distributions[i].mu(1);
