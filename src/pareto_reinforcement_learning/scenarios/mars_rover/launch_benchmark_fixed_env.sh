@@ -1,5 +1,5 @@
-n_instances=2
-n_trials=2
+n_instances=100
+n_trials=100
 data_directory=fixed_env_benchmark
 conf=0.1
 
