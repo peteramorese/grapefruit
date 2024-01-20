@@ -39,6 +39,7 @@ int main(int argc, char* argv[]) {
 	auto max_planning_instances = parser.parse<uint32_t>("instances", 'i', 10, "Max number of planning instances");
 	auto n_trials = parser.parse<uint32_t>("trials", 't', 1, "Number of trials to run");
 	auto n_efe_samples = parser.parse<uint32_t>("efe-samples", 300u, "Number of samples used for approximating the expected posterior entropy");
+	auto seed = parser.parse<uint32_t>("seed", 's', 0, "Seed for random environment");
 
 	auto confidence = parser.parse<float>("confidence", 1.0f, "UCB confidence for planner (exploration/expoitation)");
 
@@ -71,7 +72,9 @@ int main(int argc, char* argv[]) {
 	RandomGridWorldProperties props = RandomGridWorldGenerator<N>::deserializeConfig(random_config_filepath.get());
 	auto dfas = GF::FormalMethods::createDFAsFromFile(dszr);
 
+	GF::RNG::seed(seed.get());
 	auto targets = RandomGridWorldGenerator<N>::generate(props, dfas, confidence.get());
+	GF::RNG::seed(GF::RNG::randiUnbounded());
 	
 
 	uint32_t trial = 0;

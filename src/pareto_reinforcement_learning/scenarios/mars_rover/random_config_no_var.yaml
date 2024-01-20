@@ -19,7 +19,7 @@ PRL Preference:
     - 0.1 # 22
 
 Base:
-  N Cells: 15
+  N Cells: 2
 
 Deposit:
   N Cells: 1
@@ -31,9 +31,9 @@ Sample:
   N Cells: 5
 
 Mud:
-  N Cells: 30
+  N Cells: 40
 
-Obstacles: 50
+Obstacles: 40
 
 True Mean Lower Bound: 
   - 2.0

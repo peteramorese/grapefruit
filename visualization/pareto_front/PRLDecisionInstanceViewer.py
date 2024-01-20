@@ -226,8 +226,10 @@ if __name__ == "__main__":
         #plt.show(block=False)
         inp = input("[enter for next] [q to quit]: ")
         i += 1
-        if inp == "q":
+        if inp and inp == "q":
             break
+        elif inp:
+            i = int(inp)
         ax_1.clear()
         ax_2.clear()
 

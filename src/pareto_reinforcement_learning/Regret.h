@@ -81,7 +81,7 @@ class Regret {
                 biases.coverage += min_kld;
                 true_plan_dists.push_back(std::move(true_plan_dist));
             }
-            //LOG("True pf size: " << true_plan_dists.size());
+            LOG("True pf size: " << true_plan_dists.size());
             biases.coverage /= static_cast<float>(true_plan_dists.size());
 
             // Backward bias (containment)

@@ -163,9 +163,9 @@ class RandomGridWorldGenerator {
                     GF::Stats::Distributions::FixedMultivariateNormal<N> true_distribution;
                     Eigen::Matrix<float, N, 1>& niw_mu = targets.behavior_handler->getElement(node, action).getUpdater().priorDist().mu;
                     for (uint32_t i = 0; i < N; ++i) {
-                        true_distribution.mu(i) = GF::RNG::randf(random_model_props.true_mean_lower_bound[i], random_model_props.true_mean_upper_bound[i]);
+                        true_distribution.mu(i) = GF::RNG::srandf(random_model_props.true_mean_lower_bound[i], random_model_props.true_mean_upper_bound[i]);
                         true_distribution.Sigma(i,i) = 0.1f * true_distribution.mu(i);
-                        niw_mu(i) = GF::RNG::randf(random_model_props.estimate_mean_lower_bound[i], random_model_props.estimate_mean_upper_bound[i]);
+                        niw_mu(i) = GF::RNG::srandf(random_model_props.estimate_mean_lower_bound[i], random_model_props.estimate_mean_upper_bound[i]);
                     }
                     targets.true_behavior->getElement(node, action) = GF::Stats::Distributions::FixedMultivariateNormalSampler<N>(true_distribution);
                 }
