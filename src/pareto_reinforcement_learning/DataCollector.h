@@ -120,7 +120,7 @@ class DataCollector {
             return avg;
         }
 
-        void serialize(GF::Serializer& szr, bool exclude_plans = false) const {
+        void serialize(GF::Serializer& szr, bool incl_dist_data = true, bool incl_plan_data = false) const {
             static_assert(N == 2, "Does not support serialization of more than two cost objectives");
 
             YAML::Emitter& out = szr.get();
@@ -147,7 +147,7 @@ class DataCollector {
                 out << YAML::Key << "Instance " + std::to_string(i); 
                 out << YAML::Value << YAML::BeginMap;
 
-                if (!exclude_plans) {
+                if (incl_dist_data) {
                     // Chosen plan index
                     out << YAML::Key << "Chosen Plan" << YAML::Value << "Candidate Plan " + std::to_string(instance.selected_plan_index);
 
@@ -156,7 +156,8 @@ class DataCollector {
                         std::string title = "Candidate Plan " + std::to_string(i);
                         out << YAML::Key << title << YAML::Value << YAML::BeginMap;
                         Plan plan(instance.paths[i], instance.ucb_pf[i], m_product, true);
-                        //plan.serialize(szr, title);
+                        if (incl_plan_data)
+                            plan.serialize(szr, title);
 
                         out << YAML::Key << "Plan Mean" << YAML::Value << YAML::BeginSeq;
                         out << instance.trajectory_distributions[i].mu(0) << instance.trajectory_distributions[i].mu(1);

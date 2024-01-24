@@ -84,24 +84,24 @@ typename std::size_t ParetoSelector<COST_VECTOR_T>::scalarWeights(const ParetoFr
 
     norm(weights);
 
-    // Minimize the angle between the normalized pareto vector and the normalized weight vector
-    float max_weighted_sum = 0.0f;
-    std::size_t max_ind = 0;
+    float min_weighted_sum = -1.0f;
+    std::size_t min_ind = 0;
     for (std::size_t i = 0; i < pf.size(); ++i) {
-        COST_VECTOR_T normalized_path_cost = pf[i]; // copy it out to normalize it
-        norm(normalized_path_cost);
+        //COST_VECTOR_T normalized_path_cost = pf[i]; // copy it out to normalize it
+        //norm(normalized_path_cost);
+        const COST_VECTOR_T& path_cost = pf[i];
         float weighted_sum = 0.0f;
         auto weightSoln = [&weighted_sum, &weights] <typename T, uint32_t I> (const T& e) {
             weighted_sum += weights.template get<I>() * e;
             return true;
         };
-        normalized_path_cost.forEachWithI(weightSoln);
-        if (weighted_sum > max_weighted_sum) {
-            max_weighted_sum = weighted_sum;
-            max_ind = i;
+        path_cost.forEachWithI(weightSoln);
+        if (weighted_sum < min_weighted_sum || min_weighted_sum < 0.0f) {
+            min_weighted_sum = weighted_sum;
+            min_ind = i;
         }
     }
-    return max_ind;
+    return min_ind;
 }
 
 }

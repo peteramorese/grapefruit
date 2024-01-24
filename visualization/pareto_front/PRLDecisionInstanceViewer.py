@@ -85,6 +85,7 @@ class PRLDecisionInstanceViewer:
         self._pev_sigma = np.array([[covariance[0], covariance[1]], [covariance[1], covariance[2]]])
 
         self.bias_values = np.zeros(trial_data["Instances"])
+        self.cumulative_bias_values = np.zeros(trial_data["Instances"])
         self.n_instances = trial_data["Instances"]
         self.instance_distributions = list()
         #instance_benchmarks = list
@@ -122,7 +123,8 @@ class PRLDecisionInstanceViewer:
             self.instance_distributions.append(instance)
 
             # Add bias values
-            self.bias_values[inst] = instance_data["Cumulative Bias"]
+            self.bias_values[inst] = instance_data["Total Bias"]
+            self.cumulative_bias_values[inst] = instance_data["Cumulative Bias"]
             #self.bias_values[inst] = instance_data["Total Bias"]
         
         assert len(self.instance_distributions) == trial_data["Instances"]
@@ -202,6 +204,15 @@ class PRLDecisionInstanceViewer:
         ax.plot(self.bias_values[:instance], ls="-", color="blue")
         ax.set_title("Bias: " + str(self.bias_values[instance]))
 
+    def sketch_cumulative_bias_plot(self, instance : int, ax = None):
+        assert instance < self.n_instances
+
+        if not ax:
+            ax = plt.gca()
+
+        ax.plot(self.cumulative_bias_values[:instance], ls="-", color="blue")
+        ax.set_title("Cumulative Bias: " + str(self.cumulative_bias_values[instance]))
+
 if __name__ == "__main__":
     parser =  argparse.ArgumentParser()
     parser.add_argument("-f", "--filepath", help="Specify a filepath to the data file")
@@ -210,9 +221,10 @@ if __name__ == "__main__":
 
     viewer = PRLDecisionInstanceViewer()
 
-    viewer.deserialize_data_set(args.filepath)
-    fig, axes = plt.subplots(nrows=1, ncols=2)
-    ax_1, ax_2 = axes
+    viewer.deserialize_data_set(args.filepath, trial=args.trial)
+    fig, axes = plt.subplots(nrows=1, ncols=3)
+    fig.suptitle(args.filepath)
+    ax_1, ax_2, ax_3 = axes
 
     viewer.size_ax(ax_1)
 
@@ -221,6 +233,7 @@ if __name__ == "__main__":
         print("Displaying instance: ", i)
         viewer.sketch_instance(i, ax_1)
         viewer.sketch_bias_plot(i, ax_2)
+        viewer.sketch_cumulative_bias_plot(i, ax_3)
         viewer.size_ax(ax_1, i)
         plt.pause(0.1)
         #plt.show(block=False)
@@ -232,6 +245,7 @@ if __name__ == "__main__":
             i = int(inp)
         ax_1.clear()
         ax_2.clear()
+        ax_3.clear()
 
     plt.close()
 

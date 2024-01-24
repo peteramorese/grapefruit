@@ -29,7 +29,8 @@ int main(int argc, char* argv[]) {
 
 	bool verbose = parser.parse<void>('v', "Run in verbose mode").has();
 	bool calc_regret = parser.parse<void>("regret", 'r', "Calculate Pareto regret").has();
-	bool exclude_plans = parser.parse<void>("no-plan-data", "Exclude the plans from the data file (smaller file)").has();
+	bool incl_dist_data = parser.parse<void>("dist-data", "Include the distribution data for each decision instance in the data file").has();
+	bool incl_plan_data = parser.parse<void>("plan-data", "Include the plan data for each decision instance in the data file").has();
 	//bool compare = parser.hasKey("compare", "Compare the learned estimates to the true estimates");
 
 	auto formula_filepath = parser.parse<std::string>("formula-filepath", 'f', "formulas.yaml", "File that contains all formulas");
@@ -162,7 +163,7 @@ int main(int argc, char* argv[]) {
 			//if (n_trials.get() > 1) {
 				YAML::Emitter& out = szr_ptr->get();
 				out << YAML::Key << "Trial " + std::to_string(trial) << YAML::Value << YAML::BeginMap;
-				data_collector->serialize(*szr_ptr, exclude_plans);
+				data_collector->serialize(*szr_ptr, incl_dist_data, incl_plan_data);
 				out << YAML::EndMap;
 			//} else {
 			//	data_collector->serialize(*szr_ptr, exclude_plans);
