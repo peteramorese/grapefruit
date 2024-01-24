@@ -18,7 +18,10 @@ inline static float KLD(const Distributions::FixedMultivariateNormal<N>& p, cons
 
 template <std::size_t N>
 inline static float wasserstein2(const Distributions::FixedMultivariateNormal<N>& p, const Distributions::FixedMultivariateNormal<N>& q) {
-    return (p.mu - q.mu).squaredNorm() + (p.Sigma + q.Sigma - 2.0f * (p.Sigma * q.Sigma).sqrt()).trace();
+	Eigen::Matrix<float, N, N> cov_product = p.Sigma * q.Sigma;
+	Eigen::LLT<Eigen::Matrix<float, N, N>> llt(cov_product);
+    Eigen::Matrix<float, N, N> sqrt_cov_product = llt.matrixL();
+    return (p.mu - q.mu).squaredNorm() + (p.Sigma + q.Sigma - 2.0f * sqrt_cov_product).trace();
 }
 
     

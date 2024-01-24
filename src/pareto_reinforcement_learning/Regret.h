@@ -69,16 +69,17 @@ class Regret {
             std::vector<GF::Stats::Distributions::FixedMultivariateNormal<N>> true_plan_dists = getTruePlanDistributions(starting_node);
             for (const auto& true_plan_dist : true_plan_dists) {
 
-                float min_kld = -1.0f;
+                float min_diff = -1.0f;
                 for (const auto& candidate_dist : candidate_plan_distributions) {
-                    float kld = GF::Stats::KLD(true_plan_dist, candidate_dist);
-                    //float kld = (true_plan_dist.mu - candidate_dist.mu).norm();
-                    if (kld < min_kld || min_kld < 0.0f) {
-                        min_kld = kld;
+                    float diff = GF::Stats::wasserstein2(true_plan_dist, candidate_dist);
+                    //float diff = GF::Stats::KLD(true_plan_dist, candidate_dist);
+                    //float diff = (true_plan_dist.mu - candidate_dist.mu).norm();
+                    if (diff < min_diff || min_diff < 0.0f) {
+                        min_diff = diff;
                     }
                 }
 
-                biases.coverage += min_kld;
+                biases.coverage += min_diff;
                 true_plan_dists.push_back(std::move(true_plan_dist));
             }
             //LOG("True pf size: " << true_plan_dists.size());
@@ -86,18 +87,19 @@ class Regret {
 
             // Backward bias (containment)
             for (const auto& candidate_dist : candidate_plan_distributions) {
-                float min_kld = -1.0f;
+                float min_diff = -1.0f;
                 for (const auto& true_plan_dist : true_plan_dists) {
-                    float kld = GF::Stats::KLD(true_plan_dist, candidate_dist);
-                    //float kld = (true_plan_dist.mu - candidate_dist.mu).norm();
-                    if (kld < min_kld || min_kld < 0.0f) {
-                        min_kld = kld;
+                    float diff = GF::Stats::wasserstein2(true_plan_dist, candidate_dist);
+                    //float diff = GF::Stats::KLD(true_plan_dist, candidate_dist);
+                    //float diff = (true_plan_dist.mu - candidate_dist.mu).norm();
+                    if (diff < min_diff || min_diff < 0.0f) {
+                        min_diff = diff;
                     }
                 }
-                biases.containment += min_kld;
+                biases.containment += min_diff;
                 // Calclulate the worse outlier
-                if (min_kld > biases.worst_outlier)
-                    biases.worst_outlier = min_kld;
+                if (min_diff > biases.worst_outlier)
+                    biases.worst_outlier = min_diff;
             }
             //LOG("Estimate pf size: " << candidate_plan_distributions.size());
             biases.containment /= static_cast<float>(candidate_plan_distributions.size());
