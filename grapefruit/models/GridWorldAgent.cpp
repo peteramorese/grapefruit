@@ -131,6 +131,7 @@ namespace DiscreteModel {
                         Condition ap;
                         ap.addCondition(ConditionArg::Label, s_x_coord_label, ConditionOperator::Equals, ConditionArg::Variable, x_labels[i]);
                         ap.addCondition(ConditionArg::Label, s_y_coord_label, ConditionOperator::Equals, ConditionArg::Variable, y_labels[j]);
+                        LOG("cell " << x_labels[i] << ", " << y_labels[j] << " label: " << region.proposition);
                         ap.setName(region.proposition);
 
                         ts->addProposition(ap);

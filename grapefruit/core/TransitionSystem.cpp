@@ -191,10 +191,12 @@ namespace DiscreteModel {
         out << YAML::EndMap; // Graph
 
         out << YAML::Key << "Propositions" << YAML::Value << YAML::BeginSeq;
-        for (const auto&[name, prop] : m_propositions) {
-            out << YAML::BeginMap;
-            prop.serialize(szr);
-            out << YAML::EndMap;
+        for (const auto&[name, prop_arr] : m_propositions) {
+            for (const auto& prop : prop_arr) {
+                out << YAML::BeginMap;
+                prop.serialize(szr);
+                out << YAML::EndMap;
+            }
         }
         out << YAML::EndSeq; // Propositions
 

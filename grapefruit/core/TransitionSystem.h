@@ -109,7 +109,7 @@ namespace DiscreteModel {
 
 			const ObservationContainer& getObservationContainer() const {return m_observation_container;}
 
-			void addProposition(const Condition& prop) {m_propositions[prop.getName()] = prop;}
+			void addProposition(const Condition& prop) {m_propositions[prop.getName()].push_back(prop);}
 
             void serialize(GF::Serializer& szr) const;
             void deserialize(const GF::Deserializer& dszr);
@@ -117,7 +117,7 @@ namespace DiscreteModel {
 			/// @brief Get the proposition by name
 			/// @param label Proposition label
 			/// @return Proposition condition
-			inline const Condition& getProposition(const std::string& label) const {
+			inline const std::vector<Condition>& getProposition(const std::string& label) const {
 				ASSERT(m_propositions.contains(label), "Proposition '" << label << "' was not found");
 				return m_propositions.at(label);
 			}
@@ -127,7 +127,11 @@ namespace DiscreteModel {
 			/// @param state Test state
 			/// @return True if proposition holds, false otherwise
 			bool evaluatePropositionAtState(const std::string& prop_label, const State& state) const {
-				return getProposition(prop_label).evaluate(state);
+				for (const Condition& prop : getProposition(prop_label)) {
+					if (prop.evaluate(state))
+						return true;
+				}
+				return false;
 			}
 
 		private:
@@ -138,7 +142,9 @@ namespace DiscreteModel {
 
 		  	FormalMethods::Alphabet m_alphabet;
 		 	ObservationContainer m_observation_container;
-			std::unordered_map<std::string, Condition> m_propositions;
+
+			// Key: Proposition label, Value: array of propositions have have that label
+			std::unordered_map<std::string, std::vector<Condition>> m_propositions;
 			
 			friend class TransitionSystemGenerator;
 	};
