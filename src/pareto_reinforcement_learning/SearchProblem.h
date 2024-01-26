@@ -30,12 +30,13 @@ struct SearchProblem {
             history_nodes.reserve(children.size());
             for (uint32_t i=0; i<children.size(); ++i) {
                 uint8_t n_tasks_completed = 0;
-                for (GF::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
-                    if (!m_product->acc(node.base_node, automaton_i) && m_product->acc(children[i], automaton_i)) {
-                        ++n_tasks_completed;
-                    }
+                //for (GF::DiscreteModel::ProductRank automaton_i = 0; automaton_i < m_product->rank() - 1; ++automaton_i) {
+                if (!m_product->acc(node.base_node, 0) && m_product->acc(children[i], 0)) {
+                    //++n_tasks_completed;
+                    n_tasks_completed = 1;
                 }
-                history_nodes.emplace_back(children[i], node.n_completed_tasks + n_tasks_completed);
+                //}
+                history_nodes.emplace_back(children[i], n_tasks_completed);
             }
             return history_nodes;
         }
@@ -46,7 +47,10 @@ struct SearchProblem {
 
         // Termination goal node (terminate at the step horizon)
         inline bool goal(const node_t& node) const {
-            return node.n_completed_tasks >= m_completed_tasks_horizon;
+            bool tasks_completed = node.n_completed_tasks >= m_completed_tasks_horizon;
+            bool safety_satisfied = m_product->acc(node.base_node, 1);
+
+            return tasks_completed && safety_satisfied;
         }
 
         // Quantative methods

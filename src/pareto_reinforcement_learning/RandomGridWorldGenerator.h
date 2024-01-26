@@ -147,6 +147,7 @@ class RandomGridWorldGenerator {
 
             // Generate the transition system
             targets.ts = GF::DiscreteModel::GridWorldAgent::generate(targets.props);
+
             GF::FormalMethods::Alphabet combined_alphbet;
             for (const auto& dfa : dfas) {
                 combined_alphbet = combined_alphbet + dfa->getAlphabet();

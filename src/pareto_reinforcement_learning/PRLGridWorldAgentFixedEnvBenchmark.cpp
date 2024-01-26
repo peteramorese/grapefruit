@@ -28,7 +28,8 @@ int main(int argc, char* argv[]) {
 	GF::ArgParser parser(argc, argv);
 
 	bool verbose = parser.parse<void>('v', "Run in verbose mode").has();
-	bool exclude_plans = parser.parse<void>("no-plan-data", "Exclude the plans from the data file (smaller file)").has();
+	bool incl_dist_data = parser.parse<void>("dist-data", "Include the distribution data for each decision instance in the data file").has();
+	bool incl_plan_data = parser.parse<void>("plan-data", "Include the plan data for each decision instance in the data file").has();
 	//bool compare = parser.hasKey("compare", "Compare the learned estimates to the true estimates");
 
 	auto formula_filepath = parser.parse<std::string>("formula-filepath", 'f', "formulas.yaml", "File that contains all formulas");
@@ -70,7 +71,13 @@ int main(int argc, char* argv[]) {
 	GF::Deserializer dszr(formula_filepath.get());
 	Selector selector = getSelector(selector_label.get());
 	RandomGridWorldProperties props = RandomGridWorldGenerator<N>::deserializeConfig(random_config_filepath.get());
+
 	auto dfas = GF::FormalMethods::createDFAsFromFile(dszr);
+	ASSERT(dfas.size() == 2, "Did not receive two formulas (liveness & safety), check your formulas file");
+	GF::Node init_cs_state = dfas[0]->getInitStates()[0];
+	GF::Node acc_cs_state = *dfas[0]->getAcceptingStates().begin();
+	dfas[0]->disconnect(acc_cs_state, acc_cs_state, "1");
+	dfas[0]->connect(acc_cs_state, init_cs_state, "1");
 
 	GF::RNG::seed(seed.get());
 	auto targets = RandomGridWorldGenerator<N>::generate(props, dfas, confidence.get());
@@ -128,10 +135,10 @@ int main(int argc, char* argv[]) {
 			if (n_trials.get() > 1) {
 				YAML::Emitter& out = szr_ptr->get();
 				out << YAML::Key << "Trial " + std::to_string(trial) << YAML::Value << YAML::BeginMap;
-				data_collector->serialize(*szr_ptr, exclude_plans);
+				data_collector->serialize(*szr_ptr, incl_dist_data, incl_plan_data);
 				out << YAML::EndMap;
 			} else {
-				data_collector->serialize(*szr_ptr, exclude_plans);
+				data_collector->serialize(*szr_ptr, incl_dist_data, incl_plan_data);
 			}
 		}
 

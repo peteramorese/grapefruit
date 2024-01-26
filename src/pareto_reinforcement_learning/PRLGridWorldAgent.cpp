@@ -64,22 +64,35 @@ int main(int argc, char* argv[]) {
 
 	std::shared_ptr<GF::DiscreteModel::TransitionSystem> ts = GF::DiscreteModel::GridWorldAgent::generate(ts_props);
 
-	if (verbose) ts->print();
+	//if (verbose) ts->print();
 
 	/////////////////   DFAs   /////////////////
 
 	GF::Deserializer dszr(formula_filepath.get());
 	auto dfas = GF::FormalMethods::createDFAsFromFile(dszr);
 
-	GF::FormalMethods::Alphabet combined_alphbet;
-	for (const auto& dfa : dfas) {
-		combined_alphbet = combined_alphbet + dfa->getAlphabet();
-		if (verbose) dfa->print();
+	ASSERT(dfas.size() == 2, "Did not receive two formulas (liveness & safety), check your formulas file");
+
+	GF::Node init_cs_state = dfas[0]->getInitStates()[0];
+	GF::Node acc_cs_state = *dfas[0]->getAcceptingStates().begin();
+	dfas[0]->disconnect(acc_cs_state, acc_cs_state, "1");
+	dfas[0]->connect(acc_cs_state, init_cs_state, "1");
+	if (verbose) {
+		LOG("Liveness DFA");
+		dfas[0]->print();
+
+		LOG("Safety DFA");
+		dfas[1]->print();
 	}
 
 	if (verbose) ts->listPropositions();
 
-	ts->addAlphabet(combined_alphbet);
+	GF::FormalMethods::Alphabet combined_alphabet;
+	for (const auto& dfa : dfas) {
+		combined_alphabet = combined_alphabet + dfa->getAlphabet();
+	}
+
+	ts->addAlphabet(combined_alphabet);
 
 	/////////////////   Planner   /////////////////
 
@@ -160,6 +173,7 @@ int main(int argc, char* argv[]) {
 
 
 		if (data_filepath.has()) {
+			LOG("Serializing to data file: " << data_filepath.get());
 			//if (n_trials.get() > 1) {
 				YAML::Emitter& out = szr_ptr->get();
 				out << YAML::Key << "Trial " + std::to_string(trial) << YAML::Value << YAML::BeginMap;
