@@ -1,7 +1,7 @@
-n_instances=100
-n_trials=100
-data_directory=fixed_env_benchmark
-conf=0.1
+n_instances=150
+n_trials=20
+data_directory=fixed_env_benchmark_c_0p05_test
+conf=0.05
 
 mkdir -p $data_directory
 mkdir -p logs

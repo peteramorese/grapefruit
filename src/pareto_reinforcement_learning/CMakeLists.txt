@@ -34,4 +34,16 @@ target_include_directories(PRLGridWorldAgentFixedEnvBenchmark PUBLIC
 	${GF_DEPENDENCY_INCLUDE_DIRS}
 )
 
+add_executable(PRLGridWorldAgentRandDistBenchmark PRLGridWorldAgentRandDistBenchmark.cpp)
+target_link_libraries(PRLGridWorldAgentRandDistBenchmark PUBLIC
+	Eigen3::Eigen
+	Threads::Threads
+	Core
+	Models
+)
+target_include_directories(PRLGridWorldAgentRandDistBenchmark PUBLIC
+	${GF_LIBRARY_DIR}
+	${GF_DEPENDENCY_INCLUDE_DIRS}
+)
+
 set(PRL_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR})

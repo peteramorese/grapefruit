@@ -175,7 +175,23 @@ class RandomGridWorldGenerator {
             return targets;
         }
 
-    private:
+        static std::shared_ptr<TrueBehavior<SymbolicGraph, N>> makeRandomTrueBehavior(const RandomGridWorldProperties<N>& random_model_props, const std::shared_ptr<SymbolicGraph>& product) { 
+            // For each node and action, make a distribution for the true behavior as well as the estimated behavior
+            std::shared_ptr<TrueBehavior<SymbolicGraph, N>> true_behavior = std::make_shared<TrueBehavior<SymbolicGraph, N>>(product, GF::Stats::Distributions::FixedMultivariateNormal<N>());
+            for (auto node : product->getModel().nodes()) {
+                for (const auto& action : {"left", "right", "up", "down", "stay"}) {
+                    GF::Stats::Distributions::FixedMultivariateNormal<N> true_distribution;
+                    //Eigen::Matrix<float, N, 1>& niw_mu = targets.behavior_handler->getElement(node, action).getUpdater().priorDist().mu;
+                    for (uint32_t i = 0; i < N; ++i) {
+                        true_distribution.mu(i) = GF::RNG::srandf(random_model_props.true_mean_lower_bound[i], random_model_props.true_mean_upper_bound[i]);
+                        true_distribution.Sigma(i,i) = 0.1f * true_distribution.mu(i);
+                        //niw_mu(i) = GF::RNG::srandf(random_model_props.estimate_mean_lower_bound[i], random_model_props.estimate_mean_upper_bound[i]);
+                    }
+                    true_behavior->getElement(node, action) = GF::Stats::Distributions::FixedMultivariateNormalSampler<N>(true_distribution);
+                }
+            }
+            return true_behavior;
+        }
 };
 
 }
