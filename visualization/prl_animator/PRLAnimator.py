@@ -17,7 +17,7 @@ from pareto_front.PRLParetoFront import PRLParetoFrontVisualizer
 visualize_config = {
     "line_width": 0.4,
     "chosen_plan_color": "crimson",
-    "candidate_plan_color": "cadetblue",
+    "candidate_plan_color": "green",
     "show_legend": False,
     "legend_font_size": 10,
     "selection_line_color": "red",
@@ -41,9 +41,11 @@ class PRLAnimator:
         self._plan_visualizer = GridWorldAgentVisualizer(config_filepath)
         self._pf_visualizer = PRLParetoFrontVisualizer()
 
-    def deserialize(self, filepath):
+    def deserialize(self, filepath, trial = 0):
         with open(filepath, "r") as f:
-            self._data = yaml.safe_load(f)
+            data_trials = yaml.safe_load(f)
+        assert trial < data_trials["Trials"]
+        self._data = data_trials["Trial " + str(trial)]
 
     def initialize(self):
         self._instances = self._data["Instances"]
@@ -83,10 +85,15 @@ class PRLAnimator:
     def plot_frame(self, instance, plan_ax = None, pf_ax = None, samples = None, single_frame = True):
         pref_mean = self._data["PRL Preference Mean"]
         
-        if plan_ax is None or pf_ax is None:
-            fig, (plan_ax, pf_ax) = plt.subplots(2, 1)
+
+        if plan_ax is None:
+            fig, plan_ax = plt.subplots(1, 1)
             fig.set_size_inches(visualize_config["figure_size"][0], visualize_config["figure_size"][1])
-            fig.subplots_adjust(wspace=.02, hspace=.02, left=.15)
+            #fig.subplots_adjust(wspace=.02, hspace=.02, left=.15)
+        #if plan_ax is None or pf_ax is None:
+        #    fig, (plan_ax, pf_ax) = plt.subplots(2, 1)
+        #    fig.set_size_inches(visualize_config["figure_size"][0], visualize_config["figure_size"][1])
+        #    fig.subplots_adjust(wspace=.02, hspace=.02, left=.15)
         if single_frame:
             self.initialize()
 
@@ -98,7 +105,7 @@ class PRLAnimator:
 
         # Plan
         plan_ax.clear()
-        pf_ax.clear()
+        #pf_ax.clear()
         self._pf_visualizer.clear_data_sets()
         self._plan_visualizer.sketch_environment(plan_ax)
         instance_key = "Instance " + str(instance)
@@ -113,34 +120,34 @@ class PRLAnimator:
         chosen_plan = instance_data["Chosen Plan"]
 
         # Add samples to pf
-        self._pf_visualizer.add_data_set(samples.copy())
+        #self._pf_visualizer.add_data_set(samples.copy())
         # Plot preference first (base layer)
 
         for k, v in instance_data.items():
             if k.startswith("Candidate Plan"):
-                mean = np.array(v["Plan Mean Mean"])
-                variance = np.array(v["Plan Mean Covariance"])
+                mean = np.array(v["Plan Mean"])
+                variance = np.array(v["Plan Covariance"])
                 ucb_val = np.array(v["Plan Pareto UCB"])
                 self._plan_visualizer.load_from_dict(v.copy())
                 if k != chosen_plan:
                     color = visualize_config["candidate_plan_color"] 
                     title = k
                     self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, show_directions=False, ls=":")
-                    self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k)
+                    #self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k)
                     self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"))
                 else:
                     chosen_mean = mean
                     color = visualize_config["chosen_plan_color"]
                     title = "Chosen Plan"
                     self._plan_visualizer.sketch_plan(plan_ax, color=color, label=title, ls="-", zorder=len(instance_data) + 1)
-                    self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k, cmap="OrRd", marker_color="red", zorder=len(instance_data) + 1, lw=2)
-                    self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"), color="red")
+                    #self._pf_visualizer.sketch_distribution(mean, variance, pf_ax, levels=2, fill_contour=False, label=k, cmap="OrRd", marker_color="red", zorder=len(instance_data) + 1, lw=2)
+                    #self.__plot_ucb_pareto_point(pf_ax, mean, ucb_val, label = (k + " UCB value"), color="red")
 
         self._pf_visualizer.sketch_pareto_front(pf_ax, label="Samples", connect_points=visualize_config["connect_points"])
-        selection_line_pts = np.stack((pref_mean, chosen_mean))
-        pf_ax.plot(selection_line_pts[:,0], selection_line_pts[:,1], color=visualize_config["selection_line_color"], ls=":", lw=visualize_config["line_width"])
+        #selection_line_pts = np.stack((pref_mean, chosen_mean))
+        #pf_ax.plot(selection_line_pts[:,0], selection_line_pts[:,1], color=visualize_config["selection_line_color"], ls=":", lw=visualize_config["line_width"])
 
-        self._pf_visualizer.sketch_preference_distribution(pf_ax, zorder=0)
+        #self._pf_visualizer.sketch_preference_distribution(pf_ax, zorder=0)
         
         # Add legends
         if visualize_config["show_legend"]:
@@ -267,7 +274,7 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--repeat",action="store_true", help="Loop the animation")
     parser.add_argument("-s", "--save-filepath",default=None, help="Save the animation")
     parser.add_argument("--speed",default="rabbit", help="Playback speed from slow to quick: (turtle, rabbit, cheetah, plane, zoom)")
-    parser.add_argument("--config-filepath", default="../../build/bin/configs/grid_world_config.yaml", help="Specify a grid world config file")
+    parser.add_argument("-c", "--config-filepath", default="../../build/bin/configs/grid_world_config.yaml", help="Specify a grid world config file")
     parser.add_argument("--start-instance", default=0, type=int, help="Animation starting instance")
     parser.add_argument("--all-data", action="store_true", help="Show the sampled data from before the start-instance")
     parser.add_argument("--end-instance", default=None, type=int, help="Animation ending instance")
@@ -276,7 +283,7 @@ if __name__ == "__main__":
 
     animator = PRLAnimator(args.config_filepath)
 
-    if args.plot_frame:
+    if args.plot_frame is not None:
         animator.deserialize(args.filepath)
         samples = None
         if args.all_data:
