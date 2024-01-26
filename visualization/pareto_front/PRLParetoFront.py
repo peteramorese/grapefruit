@@ -9,9 +9,22 @@ import numpy as np
 import yaml
 import argparse
 from scipy.stats import multivariate_normal
+from matplotlib.colors import LinearSegmentedColormap
 
 sys.path.append("..")
 from pareto_front.DrawParetoFront import visualize_config, ParetoFrontVisualizer2D
+from pareto_front.PRLDecisionInstanceViewer import Instance
+
+def create_threshold_colormap(threshold=0.01):
+    # Define the color dictionary with white at the beginning and green at the end
+    colors = {'red': [(0.0, 1.0, 1.0), (threshold, 1.0, 1.0), (1.0, 0.2, 0.0)],
+              'green': [(0.0, 1.0, 1.0), (threshold, 1.0, 1.0), (1.0, 0.7, 0.0)],
+              'blue': [(0.0, 1.0, 1.0), (threshold, 1.0, 1.0), (1.0, 0.3, 0.0)]}
+
+    # Create the colormap
+    threshold_cmap = LinearSegmentedColormap('threshold_colormap', colors, N=256)
+    
+    return threshold_cmap
 
 class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
     def __init__(self):
@@ -28,7 +41,8 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
             "Objective 0": [],
             "Objective 1": [],
         }
-        samples = np.zeros((2, data["Instances"]))
+        #samples = np.zeros((2, data["Instances"]))
+        self.instance_distributions = list()
         for inst in range(0, data["Instances"]):
             instance_key = "Instance " + str(inst)
             try:
@@ -37,6 +51,31 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
                 print(instance_key," not found in animation file")
             samples["Objective 0"].append(instance_data["Sample"][0])
             samples["Objective 1"].append(instance_data["Sample"][1])
+
+            instance = Instance()
+            i = 0
+            while True:
+                try:
+                    candidate_plan_data = instance_data["Candidate Plan " + str(i)]
+                    instance.add_estimate_dist(candidate_plan_data)
+                    if "Candidate Plan " + str(i) == instance_data["Chosen Plan"]:
+                        instance.chosen_plan = i
+                    i += 1
+                except KeyError:
+                    break
+
+            i = 0
+            while True:
+                try:
+                    true_plan_data = instance_data["True Plan " + str(i)]
+                    instance.add_true_dist(true_plan_data)
+                    i += 1
+                except KeyError:
+                    break
+            
+            #self._push_bounds((instance.x_max, instance.y_max))
+            self.instance_distributions.append(instance)
+
         self.add_data_set(samples, label, color)
         self._data["PRL Preference Mean"] = trial_data["PRL Preference Mean"]
         self._data["PRL Preference Covariance"] = trial_data["PRL Preference Covariance"]
@@ -45,13 +84,14 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
         #mu = self._data["PRL Preference Mean"]
         #self._push_upper_axis_bounds((1.0 + visualize_config["margin_percent"][0]) * mu[0], (1.0 + visualize_config["margin_percent"][0]) * mu[1])
 
+
     
     def load_from_dict(self, data: dict):
         super().load_from_dict(data)
         #mu = self._data["PRL Preference Mean"]
         #self._push_upper_axis_bounds((1.0 + visualize_config["margin_percent"][0]) * mu[0], (1.0 + visualize_config["margin_percent"][0]) * mu[1])
 
-    def sketch_distribution(self, mean, covariance, ax = None, fill_contour = True, levels = 2, label = None, marker = "o", cmap = "GnBu", marker_color = "teal", zorder = None, lw = visualize_config["line_width"]):
+    def sketch_distribution(self, mean, covariance, ax = None, fill_contour = True, levels = 2, label = None, marker = "o", cmap = "Greens", marker_color = "teal", zorder = None, lw = visualize_config["line_width"]):
         if not ax:
             ax = plt.gca()
 
@@ -67,7 +107,7 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
             x, y = np.meshgrid(x_ls, y_ls)
             grid_point_arr = np.stack([x.flatten(), y.flatten()], axis=1)
             pdf_vals = multivariate_normal.pdf(x=grid_point_arr, cov = sigma, mean = mu)
-            ax.contourf(x, y, pdf_vals.reshape(x.shape), levels=levels, cmap=cmap, zorder=zorder)
+            ax.contourf(x, y, pdf_vals.reshape(x.shape), levels=levels, cmap=create_threshold_colormap(), zorder=zorder)
         else:
             """
             Source: https://stackoverflow.com/questions/12301071/multidimensional-confidence-intervals/12321306#12321306
@@ -85,7 +125,6 @@ class PRLParetoFrontVisualizer(ParetoFrontVisualizer2D):
                 ellipse = Ellipse(xy = mu, width=w, height=h, angle=theta, lw=lw, fill=False, color=color, zorder=zorder)
                 ax.add_artist(ellipse)
         
-
         if label:
             ax.scatter(x=mean[0], y=mean[1], s=1, c=marker_color, marker=marker, label=label)
         else:
