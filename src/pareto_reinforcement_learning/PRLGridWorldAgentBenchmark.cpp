@@ -86,9 +86,9 @@ int main(int argc, char* argv[]) {
 		std::cout << "Trial: " << trial + 1 << "/" << n_trials.get() << "\n";
 
 		//PRINT_NAMED("Seed", trial + 20);
-		//GF::RNG::seed(trial + 20);
+		GF::RNG::seed(trial + 10);
 		auto targets = RandomGridWorldGenerator<N>::generate(props, dfas, confidence.get());
-		//GF::RNG::seed(GF::RNG::randiUnbounded());
+		GF::RNG::seed(GF::RNG::randiUnbounded());
 		
 		std::shared_ptr<Regret<SymbolicGraph, N>> regret_handler = std::make_shared<Regret<SymbolicGraph, N>>(targets.product, targets.true_behavior);
 		std::shared_ptr<DataCollector<N>> data_collector = std::make_shared<DataCollector<N>>(targets.product, p_ev, regret_handler);

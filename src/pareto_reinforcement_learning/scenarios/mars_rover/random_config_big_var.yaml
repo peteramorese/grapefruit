@@ -11,12 +11,12 @@ Region Labels:
 # Preference distribution
 PRL Preference: 
   Mean:
-    - 100.0
-    - 10.0
+    - 20.0
+    - 20.0
   Covariance: # Unique elements (upper triangular)
     - 100.0 # 11
     - 10.0 # 12
-    - 30.0 # 22
+    - 100.0 # 22
 
 Base:
   N Cells: 2
@@ -28,7 +28,7 @@ Wash:
   N Cells: 2
 
 Sample:
-  N Cells: 5
+  N Cells: 2
 
 Mud:
   N Cells: 40
@@ -36,11 +36,11 @@ Mud:
 Obstacles: 40
 
 True Mean Lower Bound: 
-  - 2.0
-  - 0.1
-True Mean Upper Bound: 
-  - 10.0
   - 1.0
+  - 1.0
+True Mean Upper Bound: 
+  - 3.0
+  - 3.0
 
 Estimate Mean Lower Bound: 
   - 0.0

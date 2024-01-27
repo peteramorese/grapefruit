@@ -56,7 +56,6 @@ std::pair<bool, Eigen::Matrix<float, N, 1>> deserializeDefaultMean(const std::st
         for (uint32_t i = 0; i < N; ++i)
             mean_converted(i) = mean[i];
 
-        LOG("Default mean: " << mean_converted(0) << ", " << mean_converted(1));
         return std::make_pair(true, mean_converted);
     } catch (YAML::ParserException e) {
         ERROR("Failed to load file" << config_filepath << " ("<< e.what() <<")");
