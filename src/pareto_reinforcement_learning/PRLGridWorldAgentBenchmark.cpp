@@ -80,13 +80,14 @@ int main(int argc, char* argv[]) {
 
 
 	uint32_t trial = 0;
+	uint32_t seed = 10;
 	while (trial < n_trials.get()) {
 
 		// For easy to read log files
 		std::cout << "Trial: " << trial + 1 << "/" << n_trials.get() << "\n";
 
 		//PRINT_NAMED("Seed", trial + 20);
-		GF::RNG::seed(trial + 10);
+		GF::RNG::seed(seed);
 		auto targets = RandomGridWorldGenerator<N>::generate(props, dfas, confidence.get());
 		GF::RNG::seed(GF::RNG::randiUnbounded());
 		
@@ -107,8 +108,10 @@ int main(int argc, char* argv[]) {
 		// Run the PRL
 		bool success = prl.run(p_ev, samplerFunction, max_planning_instances.get(), selector);
 
-		if (!success)
+		if (!success) {
+			++seed;
 			continue;
+		}
 
 		if (verbose) {
 			LOG("Finished!");
@@ -144,7 +147,7 @@ int main(int argc, char* argv[]) {
 		//PAUSE;
 
 		++trial;
-
+		++seed;
 	}
 	
 	if (szr_ptr)
