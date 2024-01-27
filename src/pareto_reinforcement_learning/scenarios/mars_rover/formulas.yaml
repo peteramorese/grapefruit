@@ -1,2 +1,6 @@
 DFAs:
-  - "GF(Sample & F(Deposit)) & G(Mud -> (!Base & !Deposit) U Wash)"
+  #- "F(Mud)"
+  #- "(Mud -> ((!Base & !Deposit) U Wash))U(Sample & F(Deposit))"
+  #- "G(true)"
+  - "F(Sample & F(Deposit))"
+  - "G(Mud -> ((!Base & !Deposit) U Wash))"
