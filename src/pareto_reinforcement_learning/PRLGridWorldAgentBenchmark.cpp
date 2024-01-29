@@ -40,6 +40,7 @@ int main(int argc, char* argv[]) {
 	auto max_planning_instances = parser.parse<uint32_t>("instances", 'i', 10, "Max number of planning instances");
 	auto n_trials = parser.parse<uint32_t>("trials", 't', 1, "Number of trials to run");
 	auto n_efe_samples = parser.parse<uint32_t>("efe-samples", 300u, "Number of samples used for approximating the expected posterior entropy");
+	auto starting_seed = parser.parse<uint32_t>("starting-seed", 's', 0, "Starting seed for random environment");
 
 	auto confidence = parser.parse<float>("confidence", 1.0f, "UCB confidence for planner (exploration/expoitation)");
 
@@ -80,7 +81,7 @@ int main(int argc, char* argv[]) {
 
 
 	uint32_t trial = 0;
-	uint32_t seed = 10;
+	uint32_t seed = 10 + starting_seed.get();
 	while (trial < n_trials.get()) {
 
 		// For easy to read log files
