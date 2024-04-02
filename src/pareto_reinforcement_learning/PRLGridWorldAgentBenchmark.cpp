@@ -85,7 +85,8 @@ int main(int argc, char* argv[]) {
 	while (trial < n_trials.get()) {
 
 		// For easy to read log files
-		std::cout << "Trial: " << trial + 1 << "/" << n_trials.get() << "\n";
+		//std::cout << "Trial: " << trial + 1 << "/" << n_trials.get() << "\n";
+		std::cout << "Trial: " << trial << "/" << n_trials.get() - 1 << "\n";
 
 		//PRINT_NAMED("Seed", trial + 20);
 		GF::RNG::seed(seed);
@@ -147,6 +148,7 @@ int main(int argc, char* argv[]) {
 		//LOG("Done");
 		//PAUSE;
 
+		LOG(" -- Kept!");
 		++trial;
 		++seed;
 	}

@@ -40,6 +40,9 @@ class DataCollector {
                 std::vector<TrajectoryDistribution> true_trajectory_distributions;
                 uint32_t selected_plan_index = 0;
                 GF::Containers::FixedArray<N, float> cost_sample;
+                double planning_time = 0.0;
+                double selection_time = 0.0;
+                double execution_time = 0.0;
 
                 float getRegret() const {
                     ASSERT(static_cast<bool>(m_super->m_regret_handler), "No regret handler was given");
@@ -190,10 +193,17 @@ class DataCollector {
                         
                     }
                 }
+                // Number of candidate plans
+                out << YAML::Key << "N Candidate Plans" << YAML::Value << instance.ucb_pf.size();
 
                 // Cumulative cost sample for the chosen plan
                 out << YAML::Key << "Sample" << YAML::Value << YAML::BeginSeq;
                 out << instance.cost_sample[0] << instance.cost_sample[1] << YAML::EndSeq;
+
+                // Computation times
+                out << YAML::Key << "Planning Time" << YAML::Value << instance.planning_time;
+                out << YAML::Key << "Selection Time" << YAML::Value << instance.selection_time;
+                out << YAML::Key << "Execution Time" << YAML::Value << instance.execution_time;
 
                 // Regret
                 float instance_regret = instance.getRegret();

@@ -54,6 +54,9 @@ class Learner {
         {}
 
         virtual SearchResult plan(uint8_t completed_tasks_horizon) {
+            // PROFILE
+            GF::Timer timer("plan");
+
             log("Planning Phase (1)");
             SearchProblem<N, BehaviorHandlerType> problem(m_product, m_current_product_node, completed_tasks_horizon, m_behavior_handler);
             log("Planning...", true);
@@ -71,6 +74,7 @@ class Learner {
         }
 
         uint32_t selectAif(const SearchResult& search_result, const PreferenceDistribution& p_ev) {
+
             uint32_t min_ind = 0;
             float min_efe = 0.0f;
 
@@ -104,6 +108,9 @@ class Learner {
 
         template <typename SAMPLER_LAM_T>
         bool execute(const Plan& plan, SAMPLER_LAM_T sampler) {
+            // PROFILE
+            GF::Timer timer("execute");
+
             log("Execution Phase (3)");
             auto node_it = plan.product_node_sequence.begin();
             for (const auto& action : plan.action_sequence) {
@@ -122,8 +129,11 @@ class Learner {
         bool run(const PreferenceDistribution& p_ev, SAMPLER_LAM_T sampler, uint32_t max_instances, Selector selector) {
             ASSERT(m_initialized, "Must initialize before running");
             m_num_instances = 0;
+            
             while (m_num_instances < max_instances) {
+
                 SearchResult result = plan(m_behavior_handler->getCompletedTasksHorizon());
+
                 if (!result.success) {
                     if (m_verbose)
                         ERROR("Planner did not succeed!");
@@ -135,6 +145,9 @@ class Learner {
                 ParetoFront mean_pf = convertParetoFrontUCBToMean(result);
                 //typename std::list<PathSolution>::const_iterator path_solution;
                 std::size_t selected_ind = 0;
+
+                // PROFILE
+                GF::Timer selection_timer("select");
                 switch (selector) {
                     case Selector::Aif:
                         selected_ind = selectAif(result, p_ev);
@@ -164,6 +177,7 @@ class Learner {
                         selected_ind = 0;
                         ASSERT(false, "Unknown selector type");
                 }
+                selection_timer.stop();
 
 
                 log("Chosen solution: " + std::to_string(selected_ind), true);
@@ -192,6 +206,12 @@ class Learner {
                 data.paths = std::move(result.solution_set);
                 data.ucb_pf = std::move(ucb_pf);
                 data.selected_plan_index = selected_ind;
+                data.planning_time = GF::Profiler::getMostRecentProfile("plan");
+                log("Planning time: " + std::to_string(data.planning_time));
+                data.selection_time = GF::Profiler::getMostRecentProfile("select");
+                log("Selection time: " + std::to_string(data.selection_time));
+                data.execution_time = GF::Profiler::getMostRecentProfile("execute");
+                log("Execution time: " + std::to_string(data.execution_time));
 
                 m_data_collector->finishInstance();
                 

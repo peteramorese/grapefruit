@@ -68,10 +68,10 @@ class Regret {
             // Forward bias (coverage)
             std::vector<GF::Stats::Distributions::FixedMultivariateNormal<N>> true_plan_dists = getTruePlanDistributions(starting_node);
 
-            //Eigen::Matrix<float, N, 1> dbg_mu_avg = Eigen::Matrix<float, N, 1>::Zero();
+            Eigen::Matrix<float, N, 1> dbg_mu_avg = Eigen::Matrix<float, N, 1>::Zero();
 
             for (const auto& true_plan_dist : true_plan_dists) {
-                //dbg_mu_avg += true_plan_dist.mu;
+                dbg_mu_avg += true_plan_dist.mu;
                 float min_diff = -1.0f;
                 for (const auto& candidate_dist : candidate_plan_distributions) {
                     float diff = GF::Stats::wasserstein2(true_plan_dist, candidate_dist);
@@ -86,7 +86,10 @@ class Regret {
                 true_plan_dists.push_back(std::move(true_plan_dist));
             }
             //LOG("True pf size: " << true_plan_dists.size());
-            //LOG("Avg mu: " << dbg_mu_avg(0) / true_plan_dists.size() << ", " << dbg_mu_avg(1) / true_plan_dists.size());
+            dbg_mu_avg /= true_plan_dists.size();
+            LOG(" -- Avg mu: " << dbg_mu_avg(0) << ", " << dbg_mu_avg(1));
+            if (dbg_mu_avg(0) < 8.0f && dbg_mu_avg(1) < 8.0f)
+                WARN(">>>>>>>>>>>>> EXCLUDE <<<<<<<<<<<<<");
             biases.coverage /= static_cast<float>(true_plan_dists.size());
 
             // Backward bias (containment)

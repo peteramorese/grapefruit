@@ -9,6 +9,7 @@
 #include "tools/Misc.h"
 #include "tools/Serializer.h"
 #include "tools/Test.h"
+#include "tools/Time.h"
 #include "tools/TypeConversions.h"
 
 // Core

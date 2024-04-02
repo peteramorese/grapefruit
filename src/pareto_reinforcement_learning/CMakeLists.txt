@@ -3,6 +3,7 @@ target_link_libraries(PRLGridWorldAgent PUBLIC
 	Eigen3::Eigen
 	Threads::Threads
 	Core
+	Tools
 	Models
 )
 target_include_directories(PRLGridWorldAgent PUBLIC
@@ -15,6 +16,7 @@ target_link_libraries(PRLGridWorldAgentBenchmark PUBLIC
 	Eigen3::Eigen
 	Threads::Threads
 	Core
+	Tools
 	Models
 )
 target_include_directories(PRLGridWorldAgentBenchmark PUBLIC
@@ -27,6 +29,7 @@ target_link_libraries(PRLGridWorldAgentFixedEnvBenchmark PUBLIC
 	Eigen3::Eigen
 	Threads::Threads
 	Core
+	Tools
 	Models
 )
 target_include_directories(PRLGridWorldAgentFixedEnvBenchmark PUBLIC
@@ -39,6 +42,7 @@ target_link_libraries(PRLGridWorldAgentRandDistBenchmark PUBLIC
 	Eigen3::Eigen
 	Threads::Threads
 	Core
+	Tools
 	Models
 )
 target_include_directories(PRLGridWorldAgentRandDistBenchmark PUBLIC

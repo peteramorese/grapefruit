@@ -1,10 +1,6 @@
-add_library(Core 
-    Automaton.cpp
-    Condition.cpp
-    State.cpp
-    StateSpace.cpp
-    TransitionSystem.cpp
-)
+file(GLOB SOURCES *.cpp)
+
+add_library(Core ${SOURCES})
 target_link_libraries(Core PUBLIC
     yaml-cpp
     spot
